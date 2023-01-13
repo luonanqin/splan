@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.polygon-io</groupId>
-            <artifactId>client-jvm</artifactId>
-            <version>v4.2.0</version>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.7.2</version>
         </dependency>
     </dependencies>
 
