@@ -17,24 +17,32 @@ import java.util.stream.Collectors;
 public class Login {
 
     public static void main(String[] args) throws Exception {
-        
+        String downloadPath = "/Users/luonanqin/Downloads"; // 公司和家里通用
+
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
         ChromeDriver driver = new ChromeDriver(chromeOptions);
-        driver.get("https://www.barchart.com//");
+        System.out.println("start loading barchart");
+        driver.get("https://www.barchart.com/");
+        System.out.println("finish loading");
         WebElement loginBtn = driver.findElement(By.className("login"));
         loginBtn.click();
 
+        TimeUnit.SECONDS.sleep(5);
+
         // login
+        System.out.println("input email and pwd");
         driver.findElement(By.cssSelector("[name='email']")).sendKeys("qinnanluo@sina.com");
         driver.findElement(By.cssSelector("[name='password']")).sendKeys("luonq134931");
         driver.findElement(By.className("bc-nui-modal-login__button")).click();
+        System.out.println("start login");
         // 登录后需要休眠一会儿确定已经登录
         while (true) {
             String MyAccount;
             try {
                 MyAccount = driver.findElement(By.tagName("span")).getText();
                 if ("My Account".equals(MyAccount)) {
+                    System.out.println("finish login");
                     break;
                 }
             } catch (Exception e) {
@@ -45,26 +53,38 @@ public class Login {
         System.out.println();
 
         // download historical stock data
-        List<String> stockList = Lists.newArrayList("AAPL", "AMD", "FUTU", "NIO");
+        List<String> stockList = Lists.newArrayList("AACI", "AADI", "AAL", "AAME", "AAOI", "AAON", "AAPL", "AAWW", "ABCB", "ABCL", "ABEO", "ABGI", "ABIO", "ABNB", "ABOS", "ABSI", "ABST", "ABUS", "ABVC", "ACAB", "ACAC", "ACAD", "ACAH", "ACAX", "ACB", "ACBA", "ACCD", "ACDC", "ACER", "ACET", "ACGL", "ACHC", "ACHV", "ACIU", "ACIW", "ACLS", "ACLX", "ACMR", "ACNB", "ACNT", "ACON", "ACOR", "ACQR", "ACRS", "ACRV", "ACRX", "ACST", "ACT", "ACTG", "ACVA", "ACXP", "ADAL", "ADBE", "ADD", "ADEA", "ADER", "ADES", "ADI", "ADIL", "ADMA", "ADMP", "ADN", "ADOC", "ADP", "ADPT", "ADSE", "ADSK", "ADTH", "ADTN", "ADTX", "ADUS", "ADV", "ADVM", "AEAC", "AEAE", "AEHA", "AEHL", "AEHR", "AEI", "AEIS", "AEMD", "AEP", "AERC", "AEY", "AEYE", "AEZS", "AFAR", "AFBI", "AFCG", "AFIB", "AFMD", "AFRI", "AFRM", "AFYA", "AGAE", "AGBA", "AGEN", "AGFS", "AGFY", "AGGR");
         // 点击下载后，需要等一会儿确定文件已下载再跳转到下一个代码
-        File file = new File("/Users/luonanqin/Downloads");
+        File file = new File(downloadPath);
+        if (!file.exists()) {
+            System.out.println("please check the download path");
+            return;
+        }
         String[] existList = file.list();
         String searchKey = "_daily_historical-data";
-        Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s->s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
+        Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
         for (String stock : stockList) {
             if (hasDownload.contains(stock.toLowerCase())) {
+                System.out.println("has downloaded: " + stock);
                 continue;
             }
             driver.get("https://www.barchart.com/my/price-history/download/" + stock);
             driver.findElement(By.xpath("//a[@data-historical='historical']")).click();
 
+            int retryTimes = 1;
             while (true) {
                 String[] stockFile = file.list((dir, name) -> name.startsWith(stock.toLowerCase()));
                 if (ArrayUtils.isNotEmpty(stockFile)) {
+                    System.out.println("finish downloading " + stock);
                     break;
                 }
-                System.out.println("downloading " + stock);
+                System.out.println("downloading " + stock + " " + retryTimes);
                 TimeUnit.SECONDS.sleep(1);
+                if (retryTimes > 100) {
+                    driver.quit();
+                    return;
+                }
+                retryTimes++;
             }
         }
 
