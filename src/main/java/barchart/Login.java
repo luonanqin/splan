@@ -15,10 +15,12 @@ public class Login {
         WebElement loginBtn = driver.findElement(By.className("login"));
         loginBtn.click();
 
+        // login
         driver.findElement(By.cssSelector("[name='email']")).sendKeys("qinnanluo@sina.com");
         driver.findElement(By.cssSelector("[name='password']")).sendKeys("luonq134931");
         driver.findElement(By.className("bc-nui-modal-login__button")).click();
 
+        //
         driver.quit();
     }
 
