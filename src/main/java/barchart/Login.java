@@ -80,7 +80,7 @@ public class Login {
                 }
                 System.out.println("downloading " + stock + " " + retryTimes);
                 TimeUnit.SECONDS.sleep(1);
-                if (retryTimes > 100) {
+                if (retryTimes > 20) {
                     driver.quit();
                     return;
                 }
