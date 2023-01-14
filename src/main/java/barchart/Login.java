@@ -53,7 +53,7 @@ public class Login {
         System.out.println();
 
         // download historical stock data
-        List<String> stockList = Lists.newArrayList("AACI", "AADI", "AAL", "AAME", "AAOI", "AAON", "AAPL", "AAWW", "ABCB", "ABCL", "ABEO", "ABGI", "ABIO", "ABNB", "ABOS", "ABSI", "ABST", "ABUS", "ABVC", "ACAB", "ACAC", "ACAD", "ACAH", "ACAX", "ACB", "ACBA", "ACCD", "ACDC", "ACER", "ACET", "ACGL", "ACHC", "ACHV", "ACIU", "ACIW", "ACLS", "ACLX", "ACMR", "ACNB", "ACNT", "ACON", "ACOR", "ACQR", "ACRS", "ACRV", "ACRX", "ACST", "ACT", "ACTG", "ACVA", "ACXP", "ADAL", "ADBE", "ADD", "ADEA", "ADER", "ADES", "ADI", "ADIL", "ADMA", "ADMP", "ADN", "ADOC", "ADP", "ADPT", "ADSE", "ADSK", "ADTH", "ADTN", "ADTX", "ADUS", "ADV", "ADVM", "AEAC", "AEAE", "AEHA", "AEHL", "AEHR", "AEI", "AEIS", "AEMD", "AEP", "AERC", "AEY", "AEYE", "AEZS", "AFAR", "AFBI", "AFCG", "AFIB", "AFMD", "AFRI", "AFRM", "AFYA", "AGAE", "AGBA", "AGEN", "AGFS", "AGFY", "AGGR");
+        List<String> stockList = Lists.newArrayList("AGGR");
         // 点击下载后，需要等一会儿确定文件已下载再跳转到下一个代码
         File file = new File(downloadPath);
         if (!file.exists()) {
