@@ -30,7 +30,8 @@ public class Login {
         loginBarchart(driver);
 
         // has option stock
-        List<String> stockList = getStockList();
+        String market = "XNAS";
+        List<String> stockList = getStockList(market);
 
         File file = new File(downloadPath);
         if (!file.exists()) {
@@ -76,9 +77,9 @@ public class Login {
         }
     }
 
-    private static List<String> getStockList() throws IOException {
+    public static List<String> getStockList(String market) throws IOException {
         List<String> stockList = Lists.newArrayList();
-        BufferedReader br = new BufferedReader(new InputStreamReader(Login.class.getResourceAsStream("/historicalData/code/hasOption/XNAS")));
+        BufferedReader br = new BufferedReader(new InputStreamReader(Login.class.getResourceAsStream("/historicalData/code/hasOption/" + market)));
         String hasOption;
         while (StringUtils.isNotBlank(hasOption = br.readLine())) {
             stockList.add(hasOption);
