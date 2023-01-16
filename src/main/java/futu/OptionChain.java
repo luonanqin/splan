@@ -69,7 +69,7 @@ public class OptionChain implements FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_GetOptionChain(FTAPI_Conn client, int nSerialNo, QotGetOptionChain.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("get code=[%s] option chain failed: %s\n", rsp.getRetMsg());
+            System.out.printf("get code=[%s] option chain failed\n", rsp.getRetMsg());
         } else {
             try {
                 int optionChainCount = rsp.getS2C().getOptionChainCount();
@@ -114,9 +114,8 @@ public class OptionChain implements FTSPI_Qot, FTSPI_Conn {
 
         TimeUnit.SECONDS.sleep(5);
 
-        List<String> marketList = Lists.newArrayList("XNAS", "XNYS");
+        List<String> marketList = Lists.newArrayList("XNAS","XNYS");
         for (String market : marketList) {
-            //        List<String> codeList = Lists.newArrayList("AAPL","TSLA");
             List<String> codeList = qot.getCodeList(market);
             qot.fw = new FileWriter(market + "_x");
             for (int i = 0; i < codeList.size(); i++) {
@@ -136,9 +135,10 @@ public class OptionChain implements FTSPI_Qot, FTSPI_Conn {
 
                 if ((i + 1) % 10 == 0) {
                     qot.fw.flush();
-                    TimeUnit.SECONDS.sleep(30);
+                    TimeUnit.SECONDS.sleep(35);
                 }
             }
+            TimeUnit.SECONDS.sleep(35);
         }
     }
 
