@@ -1,6 +1,7 @@
 package barchart;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -9,18 +10,25 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class Login {
+public class StockHistory {
 
     public static void main(String[] args) throws Exception {
-        String downloadPath = "/Users/luonanqin/Downloads"; // 公司和家里通用
+        String downloadPath = "src/main/resources/historicalData/stock"; // 公司和家里通用
+
+        // has option stock
+        String market = "XNAS";
+        List<String> stockList = getStockList(market);
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -28,10 +36,6 @@ public class Login {
 
         // login
         loginBarchart(driver);
-
-        // has option stock
-        String market = "XNAS";
-        List<String> stockList = getStockList(market);
 
         File file = new File(downloadPath);
         if (!file.exists()) {
@@ -43,12 +47,13 @@ public class Login {
         Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
 
         // download historical stock data
-        downloadHistoricalStock(driver, stockList, file, hasDownload);
+        downloadHistoricalStock(driver, stockList, hasDownload);
 
         driver.quit();
     }
 
-    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, File file, Set<String> hasDownload) throws InterruptedException {
+    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, Set<String> hasDownload) throws InterruptedException {
+        File file = new File("/Users/luonanqin/Downloads");
         for (String stock : stockList) {
             if (hasDownload.contains(stock.toLowerCase())) {
                 System.out.println("has downloaded: " + stock);
@@ -79,12 +84,34 @@ public class Login {
 
     public static List<String> getStockList(String market) throws IOException {
         List<String> stockList = Lists.newArrayList();
-        BufferedReader br = new BufferedReader(new InputStreamReader(Login.class.getResourceAsStream("/historicalData/code/hasOption/" + market)));
+        BufferedReader br = new BufferedReader(new InputStreamReader(StockHistory.class.getResourceAsStream("/historicalData/code/hasOption/" + market)));
         String hasOption;
         while (StringUtils.isNotBlank(hasOption = br.readLine())) {
             stockList.add(hasOption);
         }
         br.close();
+
+        Map<String, String> openDate = Maps.newHashMap();
+        BufferedReader openBr = new BufferedReader(new FileReader("src/main/resources/historicalData/open/" + market + ".txt"));
+        String open;
+        while (StringUtils.isNotBlank(open = openBr.readLine())) {
+            String[] split = open.split("\t");
+            String code = split[0];
+            String date = split[1];
+            if (StringUtils.isBlank(date) || date.equalsIgnoreCase("null")) {
+                continue;
+            }
+
+            openDate.put(code, date);
+        }
+
+        stockList = stockList.stream().filter(s -> openDate.get(s) != null).sorted((o1, o2) -> {
+            String date1 = openDate.get(o1);
+            String date2 = openDate.get(o2);
+            LocalDate localDate1 = LocalDate.parse(date1);
+            LocalDate localDate2 = LocalDate.parse(date2);
+            return localDate1.isBefore(localDate2) ? -1 : 1;
+        }).collect(Collectors.toList());
 
         return stockList;
     }

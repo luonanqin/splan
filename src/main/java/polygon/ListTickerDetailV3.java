@@ -1,12 +1,16 @@
 package polygon;
 
-import barchart.Login;
+import barchart.StockHistory;
 import bean.TickerDetailV3;
 import bean.TickerDetailV3Resp;
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.List;
@@ -18,32 +22,52 @@ import java.util.concurrent.TimeUnit;
 public class ListTickerDetailV3 {
 
     public static void main(String[] args) throws Exception {
-        String market = "XNAS";
+        String market = "XNYS";
 
-        String apiKeyParam = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
+        String apiKeyParam = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
-        List<String> stockList = Login.getStockList(market);
+        List<String> stockList = StockHistory.getStockList(market);
         HttpClient httpclient = new HttpClient();
         FileWriter fw;
+        BufferedReader br;
         String fileName = String.format("%s.txt", market);
         try {
             fw = new FileWriter(fileName);
+            br = new BufferedReader(new FileReader("src/main/resources/historicalData/open/" + fileName));
+
+            List<String> hasDownload = Lists.newArrayList();
+            String download;
+            while (StringUtils.isNotBlank(download = br.readLine())) {
+                String code = download.substring(0, download.indexOf("\t"));
+                hasDownload.add(code);
+            }
 
             for (String stock : stockList) {
+                if (hasDownload.contains(stock)) {
+                    System.out.println("has downloaded: " + stock);
+                    continue;
+                }
+
                 String url = "https://api.polygon.io/v3/reference/tickers/" + stock + "?" + apiKeyParam;
                 GetMethod get = new GetMethod(url);
                 int code = httpclient.executeMethod(get);
                 if (code != 200) {
-                    System.err.println("request failed");
+                    System.err.println(stock + " request failed. code=" + code);
+                    continue;
                 }
 
                 InputStream stream = get.getResponseBodyAsStream();
                 TickerDetailV3Resp tickerResp = JSON.parseObject(stream, TickerDetailV3Resp.class);
                 TickerDetailV3 tickerDetailV3 = tickerResp.getResults();
-                String listDate = tickerDetailV3.getList_date();
-                String tickerName = tickerDetailV3.getTicker();
+                String data;
+                if (tickerDetailV3 == null || StringUtils.isBlank(tickerDetailV3.getList_date()) || StringUtils.isBlank(tickerDetailV3.getTicker())) {
+                    data = stock + "\t" + null + "\n";
+                } else {
+                    String listDate = tickerDetailV3.getList_date();
+                    String tickerName = tickerDetailV3.getTicker();
 
-                String data = tickerName + "\t" + listDate + "\n";
+                    data = tickerName + "\t" + listDate + "\n";
+                }
                 fw.write(data);
                 fw.flush();
 
