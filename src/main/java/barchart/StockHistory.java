@@ -28,7 +28,7 @@ public class StockHistory {
 
         // has option stock
         String market = "XNAS";
-        List<String> stockList = getStockList(market);
+        List<String> stockList = getFiltedStockList(market);
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -90,6 +90,12 @@ public class StockHistory {
             stockList.add(hasOption);
         }
         br.close();
+
+        return stockList;
+    }
+
+    public static List<String> getFiltedStockList(String market) throws IOException {
+        List<String> stockList = getStockList(market);
 
         Map<String, String> openDate = Maps.newHashMap();
         BufferedReader openBr = new BufferedReader(new FileReader("src/main/resources/historicalData/open/" + market + ".txt"));
