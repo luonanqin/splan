@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class StockHistory {
 
     public static void main(String[] args) throws Exception {
-        String downloadPath = "src/main/resources/historicalData/stock"; // 公司和家里通用
+        String hasDownloadPath = "src/main/resources/historicalData/stock";
 
         // has option stock
         String market = "XNAS";
@@ -37,7 +37,7 @@ public class StockHistory {
         // login
         loginBarchart(driver);
 
-        File file = new File(downloadPath);
+        File file = new File(hasDownloadPath);
         if (!file.exists()) {
             System.out.println("please check the download path");
             return;
@@ -53,7 +53,7 @@ public class StockHistory {
     }
 
     private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, Set<String> hasDownload) throws InterruptedException {
-        File file = new File("/Users/luonanqin/Downloads");
+        File file = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
             if (hasDownload.contains(stock.toLowerCase())) {
                 System.out.println("has downloaded: " + stock);
