@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class FilterStock {
     }
 
     public static List<StockDaily> getTwoMonthStockDaily(File file) throws Exception {
-//        System.out.println(file.getName());
+        //        System.out.println(file.getName());
         BufferedReader br = new BufferedReader(new FileReader(file));
         String data;
         br.readLine(); // table head
@@ -62,7 +63,7 @@ public class FilterStock {
 
                 StockDaily stockDaily = new StockDaily();
                 stockDaily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
-                stockDaily.setVolumn(Double.valueOf(volumn));
+                stockDaily.setVolumn(BigDecimal.valueOf(Double.valueOf(volumn)));
 
                 dataList.add(stockDaily);
 
@@ -88,11 +89,11 @@ public class FilterStock {
     }
 
     public static double calAvgVolumn(List<StockDaily> dataList) {
-        double sum = 0;
+        BigDecimal sum = BigDecimal.ZERO;
         for (StockDaily data : dataList) {
-            sum += data.getVolumn();
+            sum.add(data.getVolumn());
         }
 
-        return sum / dataList.size();
+        return sum.divide(BigDecimal.valueOf(dataList.size())).doubleValue();
     }
 }
