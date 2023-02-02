@@ -1,6 +1,7 @@
 package test;
 
 import bean.StockDaily;
+import bean.StockKLine;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
@@ -59,6 +60,27 @@ public class StockDailyTest {
         }
 
         return dailyList;
+    }
+
+    public static List<StockKLine> getMonthlyData(){
+        List<StockKLine> monthly = Lists.newArrayList();
+
+        monthly.add(StockKLine.builder().date("01/03/2023").open(133.88).close(133.41).high(134.26).low(131.44).volumn(BigDecimal.valueOf(71379600)).build());
+        monthly.add(StockKLine.builder().date("12/01/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(69458900)).build());
+        monthly.add(StockKLine.builder().date("11/01/2022").open(130.26).close(130.73).high(131.2636).low(128.12).volumn(BigDecimal.valueOf(63896100)).build());
+        monthly.add(StockKLine.builder().date("10/03/2022").open(130.46).close(130.15).high(133.41).low(129.89).volumn(BigDecimal.valueOf(70790800)).build());
+        monthly.add(StockKLine.builder().date("09/01/2022").open(126.01).close(129.62).high(130.29).low(124.89).volumn(BigDecimal.valueOf(87754700)).build());
+        monthly.add(StockKLine.builder().date("08/01/2022").open(127.13).close(125.02).high(127.77).low(124.76).volumn(BigDecimal.valueOf(80962700)).build());
+        monthly.add(StockKLine.builder().date("07/01/2022").open(126.89).close(126.36).high(128.6557).low(125.08).volumn(BigDecimal.valueOf(89113600)).build());
+        monthly.add(StockKLine.builder().date("06/01/2022").open(130.28).close(125.07).high(130.9).low(124.17).volumn(BigDecimal.valueOf(112117400)).build());
+        monthly.add(StockKLine.builder().date("05/02/2022").open(128.41).close(129.93).high(129.95).low(127.43).volumn(BigDecimal.valueOf(77034200)).build());
+        monthly.add(StockKLine.builder().date("04/01/2022").open(127.99).close(129.61).high(130.4814).low(127.73).volumn(BigDecimal.valueOf(75703700)).build());
+        monthly.add(StockKLine.builder().date("03/01/2022").open(129.67).close(126.04).high(131.0275).low(125.87).volumn(BigDecimal.valueOf(85438300)).build());
+        monthly.add(StockKLine.builder().date("02/01/2022").open(131.38).close(130.03).high(131.41).low(128.72).volumn(BigDecimal.valueOf(69007800)).build());
+        monthly.add(StockKLine.builder().date("01/03/2022").open(130.92).close(131.86).high(132.415).low(129.64).volumn(BigDecimal.valueOf(63814800)).build());
+        monthly.add(StockKLine.builder().date("12/01/2021").open(134.35).close(132.23).high(134.56).low(130.3).volumn(BigDecimal.valueOf(77852100)).build());
+
+        return monthly;
     }
 
     public static void main(String[] args) {

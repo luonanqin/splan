@@ -66,19 +66,57 @@ public class KLine {
         return Lists.reverse(week);
     }
 
-    // 历史月k线
-    public List<StockKLine> historicalMonthKLine(List<StockDaily> dailyList) {
-        return null;
-    }
-
-    // 历史季k线
-    public List<StockKLine> historicalSeasonKLine(List<StockDaily> dailyList) {
-        return null;
-    }
-
     // 历史年k线
-    public List<StockKLine> historicalYearKLine(List<StockDaily> dailyList) {
-        return null;
+    public List<StockKLine> historicalYearKLine(List<StockKLine> monthlyList) {
+        List<StockKLine> yearList = Lists.newArrayList();
+
+        String yearDate = null;
+        double yearOpen = 0, yearClose = 0, yearHigh = 0, yearLow = 1000000;
+        BigDecimal yearVolumn = BigDecimal.ZERO;
+
+        for (int i = 0; i < monthlyList.size(); i++) {
+            StockKLine monthly = monthlyList.get(i);
+            String date = monthly.getDate();
+            double open = monthly.getOpen();
+            double close = monthly.getClose();
+            double high = monthly.getHigh();
+            double low = monthly.getLow();
+            BigDecimal volumn = monthly.getVolumn();
+
+            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            int year = localDate.getYear();
+            int month = localDate.getMonthValue();
+
+            if (month == 12 && StringUtils.isNotBlank(yearDate)) {
+                StockKLine kLine = StockKLine.builder().date(yearDate).open(yearOpen).close(yearClose).high(yearHigh).low(yearLow).volumn(yearVolumn).build();
+                yearList.add(kLine);
+
+                yearOpen = 0;
+                yearClose = 0;
+                yearHigh = 0;
+                yearLow = 1000000;
+                yearVolumn = BigDecimal.ZERO;
+            }
+
+            if (yearClose == 0) {
+                yearClose = close;
+                yearDate = String.valueOf(year);
+            }
+            if (high > yearHigh) {
+                yearHigh = high;
+            }
+            if (low < yearLow) {
+                yearLow = low;
+            }
+            yearOpen = open;
+            yearVolumn = yearVolumn.add(volumn);
+
+            if (i + 1 == monthlyList.size()) {
+                StockKLine kLine = StockKLine.builder().date(yearDate).open(yearOpen).close(yearClose).high(yearHigh).low(yearLow).volumn(yearVolumn).build();
+                yearList.add(kLine);
+            }
+        }
+        return yearList;
     }
 
     // 实时周k线
@@ -104,7 +142,11 @@ public class KLine {
 
     public static void main(String[] args) {
         KLine kLine = new KLine();
-        List<StockKLine> weekKLine = kLine.historicalWeekKLine(StockDailyTest.getDailyData());
-        System.out.println(weekKLine);
+        //        List<StockKLine> weekKLine = kLine.historicalWeekKLine(StockDailyTest.getDailyData());
+        //        System.out.println(weekKLine);
+
+        List<StockKLine> yearKLine = kLine.historicalYearKLine(StockDailyTest.getMonthlyData());
+        System.out.println(yearKLine);
+
     }
 }
