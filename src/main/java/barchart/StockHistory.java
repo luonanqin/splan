@@ -24,11 +24,6 @@ import java.util.stream.Collectors;
 public class StockHistory {
 
     public static void main(String[] args) throws Exception {
-        String hasDownloadPath = "src/main/resources/historicalData/stock";
-
-        // has option stock
-        String market = "XNAS";
-        List<String> stockList = getFiltedStockList(market);
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -37,23 +32,38 @@ public class StockHistory {
         // login
         loginBarchart(driver);
 
-        File file = new File(hasDownloadPath);
-        if (!file.exists()) {
-            System.out.println("please check the download path");
-            return;
-        }
-        String[] existList = file.list();
-        String searchKey = "_daily_historical-data";
-        Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
+        // has option stock
+        String market = "XNAS";
+        List<String> stockList = getFiltedStockList(market);
 
-        // download historical stock data
-        downloadHistoricalStock(driver, stockList, hasDownload);
+        /** download historical stock data */
+        // for daily
+        downloadHistoricalStock(driver, stockList, "daily");
+
+        // for weekly
+        downloadHistoricalStock(driver, stockList, "weekly");
+
+        // for monthly
+        downloadHistoricalStock(driver, stockList, "monthly");
+
+        // for quarterly
+        downloadHistoricalStock(driver, stockList, "quarterly");
 
         driver.quit();
     }
 
-    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, Set<String> hasDownload) throws InterruptedException {
-        File file = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
+    private static void downloadHistoricalStockDaily(ChromeDriver driver, List<String> stockList) throws InterruptedException {
+        String hasDownloadPath = "src/main/resources/historicalData/daily";
+        File hasDownloadFile = new File(hasDownloadPath);
+        if (!hasDownloadFile.exists()) {
+            System.out.println("please check the download path");
+            return;
+        }
+        String[] existList = hasDownloadFile.list();
+        String searchKey = "_daily_historical-data";
+        Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
+
+        File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
             if (hasDownload.contains(stock.toLowerCase())) {
                 System.out.println("has downloaded: " + stock);
@@ -62,27 +72,62 @@ public class StockHistory {
             driver.get("https://www.barchart.com/my/price-history/download/" + stock);
             driver.findElement(By.xpath("//a[@data-historical='historical']")).click();
 
-            int retryTimes = 1;
-            while (true) {
-                String[] stockFile = file.list((dir, name) -> name.startsWith(stock.toLowerCase() + "_"));
-                if (ArrayUtils.isNotEmpty(stockFile)) {
-                    System.out.println("finish downloading " + stock);
-                    break;
-                }
-                // 点击下载后，需要等一会儿确定文件已下载再跳转到下一个代码
-                System.out.println("downloading " + stock + " " + retryTimes);
-                TimeUnit.SECONDS.sleep(1);
-
-                // 最多重试20次，超过则表示已达每日下载次数上限
-                if (retryTimes > 20) {
-                    return;
-                }
-                retryTimes++;
+            if (!downloadStockData(downloadDir, stock)) {
+                return;
             }
         }
     }
 
-    public static List<String> getStockList(String market) throws IOException {
+    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, String frequency) throws InterruptedException {
+        String hasDownloadPath = "src/main/resources/historicalData/"+ frequency;
+        File hasDownloadFile = new File(hasDownloadPath);
+        if (!hasDownloadFile.exists()) {
+            System.out.println("please check the download path");
+            return;
+        }
+        String[] existList = hasDownloadFile.list();
+        String searchKey = "_" + frequency + "_historical-data";
+        Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
+
+        File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
+        for (String stock : stockList) {
+            if (hasDownload.contains(stock.toLowerCase())) {
+                System.out.println("has downloaded: " + stock);
+                continue;
+            }
+            driver.get("https://www.barchart.com/my/price-history/download/" + stock);
+            driver.findElement(By.xpath("//select[@data-ng-model='frequency']")).click();
+            driver.findElement(By.xpath("//option[@value='string:" + frequency + "']")).click();
+            driver.findElement(By.xpath("//a[@data-historical='historical']")).click();
+
+            if (!downloadStockData(downloadDir, stock)) {
+                return;
+            }
+        }
+    }
+
+    private static boolean downloadStockData(File downloadDir, String stock) throws InterruptedException {
+        int retryTimes = 1;
+        while (true) {
+            String[] stockFile = downloadDir.list((dir, name) -> name.startsWith(stock.toLowerCase() + "_"));
+            if (ArrayUtils.isNotEmpty(stockFile)) {
+                System.out.println("finish downloading " + stock);
+                break;
+            }
+            // 点击下载后，需要等一会儿确定文件已下载再跳转到下一个代码
+            System.out.println("downloading " + stock + " " + retryTimes);
+            TimeUnit.SECONDS.sleep(1);
+
+            // 最多重试20次，超过则表示已达每日下载次数上限
+            if (retryTimes > 20) {
+                return false;
+            }
+            retryTimes++;
+        }
+        return true;
+    }
+
+    public static List<String> getHasOptionStockList(String market) throws IOException {
         List<String> stockList = Lists.newArrayList();
         BufferedReader br = new BufferedReader(new InputStreamReader(StockHistory.class.getResourceAsStream("/historicalData/code/hasOption/" + market)));
         String hasOption;
@@ -95,7 +140,7 @@ public class StockHistory {
     }
 
     public static List<String> getFiltedStockList(String market) throws IOException {
-        List<String> stockList = getStockList(market);
+        List<String> stockList = getHasOptionStockList(market);
 
         Map<String, String> openDate = Maps.newHashMap();
         BufferedReader openBr = new BufferedReader(new FileReader("src/main/resources/historicalData/open/" + market + ".txt"));

@@ -26,7 +26,7 @@ public class ListTickerDetailV3 {
 
         String apiKeyParam = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
-        List<String> stockList = StockHistory.getStockList(market);
+        List<String> stockList = StockHistory.getHasOptionStockList(market);
         HttpClient httpclient = new HttpClient();
         FileWriter fw;
         BufferedReader br;
