@@ -37,6 +37,7 @@ public class StockHistory {
         List<String> stockList = getFiltedStockList(market);
 
         /** download historical stock data */
+
         // for daily
         downloadHistoricalStock(driver, stockList, "daily");
 
@@ -50,32 +51,6 @@ public class StockHistory {
         downloadHistoricalStock(driver, stockList, "quarterly");
 
         driver.quit();
-    }
-
-    private static void downloadHistoricalStockDaily(ChromeDriver driver, List<String> stockList) throws InterruptedException {
-        String hasDownloadPath = "src/main/resources/historicalData/daily";
-        File hasDownloadFile = new File(hasDownloadPath);
-        if (!hasDownloadFile.exists()) {
-            System.out.println("please check the download path");
-            return;
-        }
-        String[] existList = hasDownloadFile.list();
-        String searchKey = "_daily_historical-data";
-        Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
-
-        File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
-        for (String stock : stockList) {
-            if (hasDownload.contains(stock.toLowerCase())) {
-                System.out.println("has downloaded: " + stock);
-                continue;
-            }
-            driver.get("https://www.barchart.com/my/price-history/download/" + stock);
-            driver.findElement(By.xpath("//a[@data-historical='historical']")).click();
-
-            if (!downloadStockData(downloadDir, stock)) {
-                return;
-            }
-        }
     }
 
     private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, String frequency) throws InterruptedException {
@@ -171,8 +146,6 @@ public class StockHistory {
         System.out.println("loading login page");
         driver.get("https://www.barchart.com/login");
         System.out.println("finish loding");
-        //        WebElement loginBtn = driver.findElement(By.className("login"));
-        //        loginBtn.click();
         TimeUnit.SECONDS.sleep(5);
 
         // login
