@@ -39,22 +39,22 @@ public class StockHistory {
         /** download historical stock data */
 
         // for daily
-        downloadHistoricalStock(driver, stockList, "daily");
+        downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-        downloadHistoricalStock(driver, stockList, "weekly");
+        //        downloadHistoricalStock(driver, stockList, "weekly", 30);
 
         // for monthly
-        downloadHistoricalStock(driver, stockList, "monthly");
+        //        downloadHistoricalStock(driver, stockList, "monthly", 30);
 
         // for quarterly
-        downloadHistoricalStock(driver, stockList, "quarterly");
+        downloadHistoricalStock(driver, stockList, "quarterly", 30);
 
         driver.quit();
     }
 
-    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, String frequency) throws InterruptedException {
-        String hasDownloadPath = "src/main/resources/historicalData/"+ frequency;
+    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, String frequency, int count) throws InterruptedException {
+        String hasDownloadPath = "src/main/resources/historicalData/" + frequency;
         File hasDownloadFile = new File(hasDownloadPath);
         if (!hasDownloadFile.exists()) {
             System.out.println("please check the download path");
@@ -75,9 +75,10 @@ public class StockHistory {
             driver.findElement(By.xpath("//option[@value='string:" + frequency + "']")).click();
             driver.findElement(By.xpath("//a[@data-historical='historical']")).click();
 
-            if (!downloadStockData(downloadDir, stock)) {
+            if (count == 0 || !downloadStockData(downloadDir, stock)) {
                 return;
             }
+            count--;
         }
     }
 
