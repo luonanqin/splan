@@ -3,7 +3,6 @@ package indicator;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
-import test.StockDailyTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -119,9 +118,51 @@ public class KLine {
     }
 
     // 实时周k线
-    public StockKLine realtimeWeekKLine(List<StockKLine> dailyList) {
+    public StockKLine realtimeWeekKLine(StockKLine latestWeekly, StockKLine latestDaily) {
+        String weeklyDate = latestWeekly.getDate();
+        String dailyDate = latestDaily.getDate();
 
-        return null;
+        LocalDate weeklyParse = LocalDate.parse(weeklyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        int weeklyDayOfYear = weeklyParse.getDayOfYear();
+        int dailyDayOfYear = dailyParse.getDayOfYear();
+
+        // 如果最新天数比最新一周的周一天数小，说明最新天为新的一年，需要判断是否闰年后再计算是否是新一周
+        if (dailyDayOfYear < weeklyDayOfYear) {
+            int year = weeklyParse.getYear();
+            dailyDayOfYear += 365;
+            if ((year % 100 == 0 && year % 400 == 0) || (year % 100 != 0 && year % 4 == 0)) { // 闰年多加1天
+                dailyDayOfYear += 1;
+            }
+        }
+
+        if (dailyDayOfYear - weeklyDayOfYear > 4) { // this is new weekly
+            int dayOfWeek = dailyParse.getDayOfWeek().getValue();
+            int dayOfMonth = dailyParse.getDayOfMonth();
+            if (dayOfWeek > 1) {
+                dayOfWeek = dayOfMonth - dayOfWeek + 1;
+                dailyParse = dailyParse.withDayOfMonth(dayOfWeek);
+                latestDaily.setDate(dailyParse.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+            }
+            return latestDaily;
+        } else {
+            StockKLine latestKLine = StockKLine.builder()
+              .date(latestWeekly.getDate())
+              .open(latestWeekly.getOpen())
+              .close(latestDaily.getClose())
+              .high(latestWeekly.getHigh())
+              .low(latestWeekly.getLow())
+              .volumn(latestWeekly.getVolumn().add(latestDaily.getVolumn()))
+              .build();
+            if (latestDaily.getHigh() > latestWeekly.getHigh()) {
+                latestKLine.setHigh(latestDaily.getHigh());
+            }
+            if (latestDaily.getLow() < latestWeekly.getLow()) {
+                latestKLine.setLow(latestDaily.getLow());
+            }
+            return latestKLine;
+        }
     }
 
     // 实时月k线
@@ -144,8 +185,19 @@ public class KLine {
         //        List<StockKLine> weekKLine = kLine.historicalWeekKLine(StockDailyTest.getDailyData());
         //        System.out.println(weekKLine);
 
-        List<StockKLine> yearKLine = kLine.historicalYearKLine(StockDailyTest.getMonthlyData());
-        System.out.println(yearKLine);
+        //        List<StockKLine> yearKLine = kLine.historicalYearKLine(StockDailyTest.getMonthlyData());
+        //        System.out.println(yearKLine);
 
+        StockKLine weekly1 = StockKLine.builder().date("01/03/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily1 = StockKLine.builder().date("01/07/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily1_1 = StockKLine.builder().date("01/11/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        System.out.println(kLine.realtimeWeekKLine(weekly1, daily1)); // old week
+        System.out.println(kLine.realtimeWeekKLine(weekly1, daily1_1)); // new week
+
+        StockKLine weekly2 = StockKLine.builder().date("12/30/2019").open(133.88).close(133.41).high(134.26).low(131.44).volumn(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily2 = StockKLine.builder().date("01/03/2020").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily2_2 = StockKLine.builder().date("01/07/2020").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        System.out.println(kLine.realtimeWeekKLine(weekly2, daily2)); // old week
+        System.out.println(kLine.realtimeWeekKLine(weekly2, daily2_2)); // new week
     }
 }
