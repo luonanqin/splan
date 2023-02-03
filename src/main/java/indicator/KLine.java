@@ -3,6 +3,7 @@ package indicator;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import test.StockDailyTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -166,17 +167,47 @@ public class KLine {
     }
 
     // 实时月k线
-    public List<StockKLine> realtimeMonthKLine(List<StockKLine> dailyList) {
-        return null;
+    public StockKLine realtimeMonthKLine(StockKLine latestMonthly, StockKLine latestDaily) {
+        String monthlyDate = latestMonthly.getDate();
+        String dailyDate = latestDaily.getDate();
+
+        LocalDate monthlyParse = LocalDate.parse(monthlyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        int latestMonth = monthlyParse.getMonthValue();
+        int dailyMonth = dailyParse.getMonthValue();
+
+        // 如果所在月份不一样，则最新天就是最新月
+        if (dailyMonth != latestMonth) {
+            String[] split = dailyDate.split("/");
+            latestDaily.setDate(String.format("%s/%s/%s", split[0], "01", split[2]));
+            return latestDaily;
+        } else {
+            StockKLine latestKLine = StockKLine.builder()
+              .date(latestMonthly.getDate())
+              .open(latestMonthly.getOpen())
+              .close(latestDaily.getClose())
+              .high(latestMonthly.getHigh())
+              .low(latestMonthly.getLow())
+              .volumn(latestMonthly.getVolumn().add(latestDaily.getVolumn()))
+              .build();
+            if (latestDaily.getHigh() > latestMonthly.getHigh()) {
+                latestKLine.setHigh(latestDaily.getHigh());
+            }
+            if (latestDaily.getLow() < latestMonthly.getLow()) {
+                latestKLine.setLow(latestDaily.getLow());
+            }
+            return latestKLine;
+        }
     }
 
     // 实时季k线
-    public List<StockKLine> realtimeSeasonKLine(List<StockKLine> dailyList) {
+    public StockKLine realtimeSeasonKLine(List<StockKLine> dailyList) {
         return null;
     }
 
     // 实时年k线
-    public List<StockKLine> realtimeYearKLine(List<StockKLine> dailyList) {
+    public StockKLine realtimeYearKLine(List<StockKLine> dailyList) {
         return null;
     }
 
@@ -185,9 +216,17 @@ public class KLine {
         //        List<StockKLine> weekKLine = kLine.historicalWeekKLine(StockDailyTest.getDailyData());
         //        System.out.println(weekKLine);
 
-        //        List<StockKLine> yearKLine = kLine.historicalYearKLine(StockDailyTest.getMonthlyData());
-        //        System.out.println(yearKLine);
+        //        test_historicalYearKLine(kLine);
+        //        test_realtimeWeekKLine(kLine);
+        test_realtimeMonthKLine(kLine);
+    }
 
+    private static void test_historicalYearKLine(KLine kLine) {
+        List<StockKLine> yearKLine = kLine.historicalYearKLine(StockDailyTest.getMonthlyData());
+        System.out.println(yearKLine);
+    }
+
+    private static void test_realtimeWeekKLine(KLine kLine) {
         StockKLine weekly1 = StockKLine.builder().date("01/03/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
         StockKLine daily1 = StockKLine.builder().date("01/07/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
         StockKLine daily1_1 = StockKLine.builder().date("01/11/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
@@ -199,5 +238,18 @@ public class KLine {
         StockKLine daily2_2 = StockKLine.builder().date("01/07/2020").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeWeekKLine(weekly2, daily2)); // old week
         System.out.println(kLine.realtimeWeekKLine(weekly2, daily2_2)); // new week
+    }
+
+    private static void test_realtimeMonthKLine(KLine kLine) {
+        StockKLine monthy1 = StockKLine.builder().date("04/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily1 = StockKLine.builder().date("04/27/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily1_1 = StockKLine.builder().date("05/02/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        System.out.println(kLine.realtimeMonthKLine(monthy1, daily1)); // old month
+        System.out.println(kLine.realtimeMonthKLine(monthy1, daily1_1)); // new month
+
+        StockKLine monthy2 = StockKLine.builder().date("12/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily2 = StockKLine.builder().date("01/02/2023").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        System.out.println(kLine.realtimeMonthKLine(monthy2, daily2)); // new month
+
     }
 }
