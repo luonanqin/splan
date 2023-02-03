@@ -1,6 +1,5 @@
 package indicator;
 
-import bean.StockDaily;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +16,7 @@ import java.util.List;
 public class KLine {
 
     // 历史周k线
-    public List<StockKLine> historicalWeekKLine(List<StockDaily> dailyList) {
+    public List<StockKLine> historicalWeekKLine(List<StockKLine> dailyList) {
         List<StockKLine> week = Lists.newArrayList();
 
         //        boolean startNewWeek = false;
@@ -26,7 +25,7 @@ public class KLine {
         BigDecimal weekVolumn = BigDecimal.ZERO;
 
         for (int i = dailyList.size() - 1; i >= 0; i--) {
-            StockDaily daily = dailyList.get(i);
+            StockKLine daily = dailyList.get(i);
             String date = daily.getDate();
             double open = daily.getOpen();
             double close = daily.getClose();
@@ -120,23 +119,23 @@ public class KLine {
     }
 
     // 实时周k线
-    public StockKLine realtimeWeekKLine(List<StockDaily> dailyList) {
+    public StockKLine realtimeWeekKLine(List<StockKLine> dailyList) {
 
         return null;
     }
 
     // 实时月k线
-    public List<StockKLine> realtimeMonthKLine(List<StockDaily> dailyList) {
+    public List<StockKLine> realtimeMonthKLine(List<StockKLine> dailyList) {
         return null;
     }
 
     // 实时季k线
-    public List<StockKLine> realtimeSeasonKLine(List<StockDaily> dailyList) {
+    public List<StockKLine> realtimeSeasonKLine(List<StockKLine> dailyList) {
         return null;
     }
 
     // 实时年k线
-    public List<StockKLine> realtimeYearKLine(List<StockDaily> dailyList) {
+    public List<StockKLine> realtimeYearKLine(List<StockKLine> dailyList) {
         return null;
     }
 

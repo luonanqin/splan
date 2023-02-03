@@ -1,6 +1,6 @@
 package stock;
 
-import bean.StockDaily;
+import bean.StockKLine;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,7 +28,7 @@ public class FilterStock {
 
             //            System.out.println(code);
 
-            List<StockDaily> dataList = getTwoMonthStockDaily(file);
+            List<StockKLine> dataList = getTwoMonthStockDaily(file);
             double avgChangePnt = calAvgChangePnt(dataList);
             double avgVolumn = calAvgVolumn(dataList);
 
@@ -42,13 +42,13 @@ public class FilterStock {
 
     }
 
-    public static List<StockDaily> getTwoMonthStockDaily(File file) throws Exception {
+    public static List<StockKLine> getTwoMonthStockDaily(File file) throws Exception {
         //        System.out.println(file.getName());
         BufferedReader br = new BufferedReader(new FileReader(file));
         String data;
         br.readLine(); // table head
 
-        List<StockDaily> dataList = Lists.newArrayList();
+        List<StockKLine> dataList = Lists.newArrayList();
         int count = 0;
         while (StringUtils.isNotBlank(data = br.readLine())) {
             String[] split = data.split(",");
@@ -61,7 +61,7 @@ public class FilterStock {
                 String changePnt = split[6];
                 String volumn = split[7];
 
-                StockDaily stockDaily = new StockDaily();
+                StockKLine stockDaily = new StockKLine();
                 stockDaily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
                 stockDaily.setVolumn(BigDecimal.valueOf(Double.valueOf(volumn)));
 
@@ -79,18 +79,18 @@ public class FilterStock {
         return dataList;
     }
 
-    public static double calAvgChangePnt(List<StockDaily> dataList) {
+    public static double calAvgChangePnt(List<StockKLine> dataList) {
         double sum = 0;
-        for (StockDaily data : dataList) {
+        for (StockKLine data : dataList) {
             sum += Math.abs(data.getChangePnt());
         }
 
         return sum / dataList.size();
     }
 
-    public static double calAvgVolumn(List<StockDaily> dataList) {
+    public static double calAvgVolumn(List<StockKLine> dataList) {
         BigDecimal sum = BigDecimal.ZERO;
-        for (StockDaily data : dataList) {
+        for (StockKLine data : dataList) {
             sum.add(data.getVolumn());
         }
 
