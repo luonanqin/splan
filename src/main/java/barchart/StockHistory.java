@@ -39,7 +39,7 @@ public class StockHistory {
         /** download historical stock data */
 
         // for daily
-        downloadHistoricalStock(driver, stockList, "daily", 100);
+                downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
         //        downloadHistoricalStock(driver, stockList, "weekly", 30);
@@ -48,7 +48,7 @@ public class StockHistory {
         //        downloadHistoricalStock(driver, stockList, "monthly", 30);
 
         // for quarterly
-        downloadHistoricalStock(driver, stockList, "quarterly", 30);
+        //        downloadHistoricalStock(driver, stockList, "quarterly", 30);
 
         driver.quit();
     }
