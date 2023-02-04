@@ -143,7 +143,7 @@ public class StockHistory {
         return stockList;
     }
 
-    private static void loginBarchart(ChromeDriver driver) throws InterruptedException {
+    public static void loginBarchart(ChromeDriver driver) throws InterruptedException {
         System.out.println("loading login page");
         driver.get("https://www.barchart.com/login");
         System.out.println("finish loding");
