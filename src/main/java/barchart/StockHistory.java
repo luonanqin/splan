@@ -1,16 +1,15 @@
 package barchart;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import util.BaseUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
@@ -118,19 +117,7 @@ public class StockHistory {
     public static List<String> getFiltedStockList(String market) throws IOException {
         List<String> stockList = getHasOptionStockList(market);
 
-        Map<String, String> openDate = Maps.newHashMap();
-        BufferedReader openBr = new BufferedReader(new FileReader("src/main/resources/historicalData/open/" + market + ".txt"));
-        String open;
-        while (StringUtils.isNotBlank(open = openBr.readLine())) {
-            String[] split = open.split("\t");
-            String code = split[0];
-            String date = split[1];
-            if (StringUtils.isBlank(date) || date.equalsIgnoreCase("null")) {
-                continue;
-            }
-
-            openDate.put(code, date);
-        }
+        Map<String, String> openDate = BaseUtils.getOpenData(market);
 
         stockList = stockList.stream().filter(s -> openDate.get(s) != null).sorted((o1, o2) -> {
             String date1 = openDate.get(o1);
