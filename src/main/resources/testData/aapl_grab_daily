@@ -244,6 +244,4 @@ date:01/31/2023 open:142.70 close:144.29 high:144.34 low:142.28 change:1.29 volu
 date:02/01/2023 open:143.97 close:145.43 high:146.61 low:141.32 change:1.14 volume:77,663,600 MA5:144.52 MA10:142.13 MA20:136.80 MA30:134.69 MA60:139.74 bollUpper:149.40 bollMiddle:136.80 bollLower:124.19
 date:02/02/2023 open:148.90 close:150.82 high:151.18 low:148.17 change:5.39 volume:118,338,900 MA5:145.89 MA10:143.68 MA20:138.02 MA30:135.31 MA60:139.95 bollUpper:151.08 bollMiddle:138.02 bollLower:124.96
 date:02/03/2023 open:148.03 close:154.50 high:157.38 low:147.83 change:3.68 volume:154,357,300 MA5:147.61 MA10:145.34 MA20:139.49 MA30:136.05 MA60:140.21 bollUpper:152.99 bollMiddle:139.49 bollLower:125.99
-date:02/06/2023 open:152.57 close:151.73 high:153.44 low:150.78 change:-2.77 volume:69,858,300 MA5:149.35 MA10:146.41 MA20:140.60 MA30:136.59 MA60:140.41 bollUpper:154.30 bollMiddle:140.60 bollLower:126.89
-date: open: close: high: low: change: volume: MA5: MA10: MA20: MA30: MA60: bollUpper: bollMiddle: bollLower:
-1675770854824-1675770622544
+date:02/06/2023 open:152.57 close:151.73 high:153.10 low:150.78 change:-2.77 volume:69,858,300 MA5:149.35 MA10:146.41 MA20:140.60 MA30:136.59 MA60:140.41 bollUpper:154.30 bollMiddle:140.60 bollLower:126.89

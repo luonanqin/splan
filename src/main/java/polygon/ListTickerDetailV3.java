@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
+import util.BaseUtils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,7 +27,7 @@ public class ListTickerDetailV3 {
 
         String apiKeyParam = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
-        List<String> stockList = StockHistory.getHasOptionStockList(market);
+        List<String> stockList = BaseUtils.getHasOptionStockList(market);
         HttpClient httpclient = new HttpClient();
         FileWriter fw;
         BufferedReader br;

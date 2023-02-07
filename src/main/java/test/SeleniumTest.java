@@ -1,11 +1,11 @@
 package test;
 
-import barchart.StockHistory;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -22,19 +22,52 @@ import java.util.concurrent.TimeUnit;
 public class SeleniumTest {
 
     public static void main(String[] args) throws Exception {
-        getDataFromCanvas();
-        //        groupOpenDataByYear();
-    }
-
-    private static void getDataFromCanvas() throws InterruptedException {
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
-        //        chromeOptions.setPageLoadTimeout(Duration.ofSeconds(20));
         ChromeDriver driver = new ChromeDriver(chromeOptions);
-        //        driver.manage().window().maximize();
 
-        // login
-        StockHistory.loginBarchart(driver);
+        //        getDataFromCanvas(driver);
+        //        groupOpenDataByYear();
+        setDateRange(driver);
+    }
+
+    private static void setDateRange(ChromeDriver driver) throws Exception {
+        BaseUtils.loginBarchart(driver);
+
+        try {
+            driver.get("https://www.barchart.com/stocks/quotes/AAPL/interactive-chart");
+        } catch (Exception e) {
+            System.out.println("load timeout");
+        }
+
+        while (true) {
+            try {
+                driver.findElement(By.className("chart-canvas-container"));
+                break;
+            } catch (Exception e) {
+                System.out.println("canvas not find");
+            }
+            TimeUnit.SECONDS.sleep(1);
+        }
+
+        //        driver.findElement(By.xpath("//span[@data-ng-show='label' and text()='Date']")).click();
+        driver.findElement(By.xpath("//div[@data-dropdown-id='bc-interactive-chart-dropdown-period']//i[@class='bc-glyph-chevron-down bc-dropdown-flexible-arrow']")).click();
+        System.out.println("click period finish");
+        driver.findElement(By.xpath("//li[@data-ng-click='changePeriod(item.period)' and contains(text(),'Date Range')]")).click();
+        System.out.println("click Date Range");
+        driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.from']")).sendKeys(Keys.chord(Keys.COMMAND, "a"), Keys.DELETE, "03/01/2019");
+        System.out.println("input begin date finish");
+        driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.to']")).sendKeys("10/01/2019");
+        System.out.println("input end date finish");
+//        driver.findElement(By.xpath("//button[@data-ng-click='modalConfirm()']")).click();
+        driver.findElement(By.xpath("//button[text()='Apply']")).click();
+        System.out.println("confirm");
+
+
+    }
+
+    private static void getDataFromCanvas(ChromeDriver driver) throws InterruptedException {
+        BaseUtils.loginBarchart(driver);
 
         try {
             driver.get("https://www.barchart.com/stocks/quotes/AAPL/interactive-chart");
