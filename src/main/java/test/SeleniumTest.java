@@ -59,8 +59,9 @@ public class SeleniumTest {
         System.out.println("input begin date finish");
         driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.to']")).sendKeys("10/01/2019");
         System.out.println("input end date finish");
-//        driver.findElement(By.xpath("//button[@data-ng-click='modalConfirm()']")).click();
-        driver.findElement(By.xpath("//button[text()='Apply']")).click();
+        new Actions(driver).sendKeys(Keys.ENTER).perform();
+        driver.findElement(By.xpath("//button[@data-ng-click='modalConfirm()']")).click();
+//        driver.findElement(By.xpath("//button[text()='Apply']")).click();
         System.out.println("confirm");
 
 
