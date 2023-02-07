@@ -26,7 +26,7 @@ public class SeleniumTest {
     private static void getDataFromCanvas() throws InterruptedException {
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
-//        chromeOptions.setPageLoadTimeout(Duration.ofSeconds(20));
+        //        chromeOptions.setPageLoadTimeout(Duration.ofSeconds(20));
         ChromeDriver driver = new ChromeDriver(chromeOptions);
         //        driver.manage().window().maximize();
 
@@ -52,11 +52,11 @@ public class SeleniumTest {
 
         //        WebElement canvas = driver.findElement(By.className("chart-canvas-container"));
         Actions actions = new Actions(driver);
-        int xOffset = -475;
         actions.moveToElement(canvas, 0, 0).perform();
-        actions.moveByOffset(xOffset, 0).perform();
-        String date1 = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
-        System.out.println("first date:" + date1);
+        //        int xOffset = -475;
+        //        actions.moveByOffset(xOffset, 0).perform();
+        //        String date1 = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
+        //        System.out.println("first date:" + date1);
         //        actions.moveByOffset(-xOffset, 0).perform();
         //        actions.moveByOffset(xOffset, 0).perform();
         //        while (true) {
@@ -71,15 +71,18 @@ public class SeleniumTest {
         //            System.out.println(xOffset + 1);
         //        }
         int x = 0;
-        int step = 3;
+        int step = -1;
         String lastDate = null;
         int moveAdd = 0;
-        System.out.println(System.currentTimeMillis());
+        int moveAddSum = 0;
+        int moveAddTimes = 0;
         while (true) {
             String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
             if (!StringUtils.equals(lastDate, date)) {
                 System.out.println("left move date:" + date);
                 System.out.println("moveAdd " + moveAdd);
+                moveAddSum += moveAdd;
+                moveAddTimes += 1;
                 moveAdd = 0;
             }
             System.out.println("retry");
@@ -88,15 +91,18 @@ public class SeleniumTest {
             moveAdd += step;
             actions.moveByOffset(step, 0).perform();
 
-            if (lastDate != null && lastDate.equals(date) && moveAdd > 10) {
+            if (lastDate != null && lastDate.equals(date) && moveAdd < -15) {
                 break;
             }
 
             lastDate = date;
         }
         System.out.println("xxxxxx=" + x);
-        System.out.println(System.currentTimeMillis());
+        int avgStep = moveAddSum / moveAddTimes;
+        System.out.println("avg move add = " + avgStep);
 
+        int xOffset = moveAddSum + 2;
+        getMoveData(driver, actions, xOffset, -avgStep);
         //        actions.moveByOffset(1, 0).perform();
 
         //        String lastDate2 = null;
@@ -126,6 +132,35 @@ public class SeleniumTest {
         //        }
 
         System.out.println();
+    }
+
+    private static void getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
+        WebElement canvas = driver.findElement(By.className("chart-canvas-container"));
+        actions.moveToElement(canvas, 0, 0).perform();
+        actions.moveByOffset(xOffset, 0).perform();
+
+        System.out.println(System.currentTimeMillis());
+        String lastDate = null;
+        int moveAdd = 0;
+        System.out.println(System.currentTimeMillis());
+        while (true) {
+            String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
+            if (!StringUtils.equals(lastDate, date)) {
+                System.out.println("left move date:" + date);
+                moveAdd = 0;
+            }
+            System.out.println("retry");
+
+            moveAdd += step;
+            actions.moveByOffset(step, 0).perform();
+
+            if (lastDate != null && lastDate.equals(date) && moveAdd > 15) {
+                break;
+            }
+
+            lastDate = date;
+        }
+        System.out.println(System.currentTimeMillis());
     }
 
     private static void groupOpenDataByYear() throws Exception {
