@@ -2,6 +2,8 @@ package test;
 
 import barchart.StockHistory;
 import com.google.common.collect.Maps;
+import lombok.Data;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -10,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import util.BaseUtils;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -53,23 +56,105 @@ public class SeleniumTest {
         //        WebElement canvas = driver.findElement(By.className("chart-canvas-container"));
         Actions actions = new Actions(driver);
         actions.moveToElement(canvas, 0, 0).perform();
-        //        int xOffset = -475;
-        //        actions.moveByOffset(xOffset, 0).perform();
-        //        String date1 = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
-        //        System.out.println("first date:" + date1);
-        //        actions.moveByOffset(-xOffset, 0).perform();
-        //        actions.moveByOffset(xOffset, 0).perform();
-        //        while (true) {
-        //            try {
-        //                String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
-        //                System.out.println("first date:" + date);
-        //                break;
-        //            } catch (Exception e) {
-        //                System.out.println("right move");
-        //            }
-        //            actions.moveByOffset(1, 0).perform();
-        //            System.out.println(xOffset + 1);
+
+        //        MoveInfo moveInfo = getMoveInfo(driver, actions);
+        //        int xOffset = moveInfo.getXOffset();
+        //        int avgStep = moveInfo.getAvgStep();
+        //        getMoveData(driver, actions, xOffset, avgStep);
+        getMoveData(driver, actions, -474, 3);
+        //        actions.moveByOffset(1, 0).perform();
+
+        //        for (int i = 0; i < 10; i++) {
+        //            actions.moveByOffset(10, 0).perform();
+        //            String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
+        //            System.out.println(date);
+        //            //            String text = driver.findElement(By.cssSelector("[style='color: #808080']")).getText();
+        //            //            System.out.println(text);
+        //            TimeUnit.MILLISECONDS.sleep(500);
         //        }
+
+        System.out.println();
+    }
+
+    private static void getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
+        WebElement canvas = driver.findElement(By.className("chart-canvas-container"));
+        actions.moveToElement(canvas, 0, 0).perform();
+        actions.moveByOffset(xOffset, 0).perform();
+
+        System.out.println(System.currentTimeMillis());
+        String lastDate = null;
+        int moveAdd = 0;
+        System.out.println(System.currentTimeMillis());
+        while (true) {
+            String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
+            // 获取O H L C delta volume
+            //            List<WebElement> elements = driver.findElements(By.xpath("//span[@style='color: #ef4226']"));
+            //            String open = elements.get(0).getText();
+            //            String high = elements.get(1).getText();
+            //            String low = elements.get(2).getText();
+            //            String close = elements.get(3).getText();
+            //            String change = elements.get(4).getText();
+            //
+            //            // ma5
+            //            String MA5 = driver.findElement(By.xpath("//span[@style='color: #808080']")).getText();
+            //
+            //            //ma10
+            //            String MA10 = driver.findElement(By.xpath("//span[@style='color: #f75f60']")).getText();
+            //
+            //            //ma20
+            //            String MA20 = driver.findElement(By.xpath("//span[@style='color: #f58620']")).getText();
+            //
+            //            //ma30
+            //            String MA30 = driver.findElement(By.xpath("//span[@style='color: #ff53d6]")).getText();
+            //
+            //            //ma60
+            //            String MA60 = driver.findElement(By.xpath("//span[@style='color: #a288d2]")).getText();
+            //
+            //            //boll upper
+            //            String bollUpper = driver.findElement(By.xpath("//span[@style='color: #9075d6']")).getText();
+            //
+            //            //boll middle
+            //            String bollMiddle = driver.findElement(By.xpath("//span[@style='color: #89211e']")).getText();
+            //
+            //            //boll lower
+            //            String bollLower = driver.findElement(By.xpath("//span[@style='color: #00aaab']")).getText();
+
+            List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
+            String open = elements.get(0).getText();
+            String high = elements.get(1).getText();
+            String low = elements.get(2).getText();
+            String close = elements.get(3).getText();
+            String change = elements.get(4).getText();
+            String MA5 = elements.get(5).getText();
+            String MA10 = elements.get(6).getText();
+            String MA20 = elements.get(7).getText();
+            String MA30 = elements.get(8).getText();
+            String MA60 = elements.get(9).getText();
+            String bollUpper = elements.get(10).getText();
+            String bollMiddle = elements.get(11).getText();
+            String bollLower = elements.get(12).getText();
+            String volume = elements.get(13).getText();
+
+            if (!StringUtils.equals(lastDate, date)) {
+                //                System.out.println("left move date:" + date);
+                System.out.println(String.format("date:%s open:%s close:%s high:%s low:%s change:%s volume:%s MA5:%s MA10:%S MA20:%s MA30:%s MA60:%S bollUpper:%s bollMiddle:%s bollLower:%s", date, open, close, high, low, change, volume, MA5, MA10, MA20, MA30, MA60, bollUpper, bollMiddle, bollLower));
+                moveAdd = 0;
+            }
+            //            System.out.println("retry");
+
+            moveAdd += step;
+            actions.moveByOffset(step, 0).perform();
+
+            if (lastDate != null && lastDate.equals(date) && moveAdd > 15) {
+                break;
+            }
+
+            lastDate = date;
+        }
+        System.out.println(System.currentTimeMillis());
+    }
+
+    private static MoveInfo getMoveInfo(ChromeDriver driver, Actions actions) {
         int x = 0;
         int step = -1;
         String lastDate = null;
@@ -97,70 +182,14 @@ public class SeleniumTest {
 
             lastDate = date;
         }
-        System.out.println("xxxxxx=" + x);
         int avgStep = moveAddSum / moveAddTimes;
-        System.out.println("avg move add = " + avgStep);
 
-        int xOffset = moveAddSum + 2;
-        getMoveData(driver, actions, xOffset, -avgStep);
-        //        actions.moveByOffset(1, 0).perform();
+        MoveInfo moveInfo = new MoveInfo();
+        moveInfo.setAvgStep(-avgStep);
+        moveInfo.setXOffset(moveAddSum + 2);
 
-        //        String lastDate2 = null;
-        //        int x2 = 0;
-        //        while (true) {
-        //            try {
-        //                String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
-        //                System.out.println("right move date:" + date);
-        //                actions.moveByOffset(1, 0).perform();
-        //                if (StringUtils.isNotBlank(lastDate2) && lastDate.equals(date)) {
-        //                    break;
-        //                }
-        //                lastDate2 = date;
-        //                x2 = x2 + 1;
-        //            } catch (Exception e) {
-        //                break;
-        //            }
-        //        }
-        //        System.out.println("x2222222=" + x2);
-        //        for (int i = 0; i < 10; i++) {
-        //            actions.moveByOffset(10, 0).perform();
-        //            String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
-        //            System.out.println(date);
-        //            //            String text = driver.findElement(By.cssSelector("[style='color: #808080']")).getText();
-        //            //            System.out.println(text);
-        //            TimeUnit.MILLISECONDS.sleep(500);
-        //        }
-
-        System.out.println();
-    }
-
-    private static void getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
-        WebElement canvas = driver.findElement(By.className("chart-canvas-container"));
-        actions.moveToElement(canvas, 0, 0).perform();
-        actions.moveByOffset(xOffset, 0).perform();
-
-        System.out.println(System.currentTimeMillis());
-        String lastDate = null;
-        int moveAdd = 0;
-        System.out.println(System.currentTimeMillis());
-        while (true) {
-            String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
-            if (!StringUtils.equals(lastDate, date)) {
-                System.out.println("left move date:" + date);
-                moveAdd = 0;
-            }
-            System.out.println("retry");
-
-            moveAdd += step;
-            actions.moveByOffset(step, 0).perform();
-
-            if (lastDate != null && lastDate.equals(date) && moveAdd > 15) {
-                break;
-            }
-
-            lastDate = date;
-        }
-        System.out.println(System.currentTimeMillis());
+        System.out.println(moveInfo);
+        return moveInfo;
     }
 
     private static void groupOpenDataByYear() throws Exception {
@@ -181,5 +210,12 @@ public class SeleniumTest {
         }
 
         System.out.println(countMap);
+    }
+
+    @Data
+    @ToString
+    static class MoveInfo {
+        private int avgStep;
+        private int xOffset;
     }
 }
