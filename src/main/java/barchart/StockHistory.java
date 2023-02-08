@@ -26,7 +26,7 @@ public class StockHistory {
 
         // has option stock
         String market = "XNYS";
-        List<String> stockList = BaseUtils.getFiltedStockList(market);
+        List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
 
         /** download historical stock data */
 

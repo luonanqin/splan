@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static util.Constants.DAY_FORMATTER;
+
 /**
  * Created by Luonanqin on 2023/2/1.
  */
@@ -31,14 +33,14 @@ public class KLine {
             double close = daily.getClose();
             double high = daily.getHigh();
             double low = daily.getLow();
-            BigDecimal volumn = daily.getVolumn();
+            BigDecimal volume = daily.getVolume();
 
-            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(DAY_FORMATTER));
             int dayOfWeek = localDate.getDayOfWeek().getValue();
 
             // 后一天是周一 或者 后一天和前一天之间有没有周末
             if (dayOfWeek == 1 && StringUtils.isNotBlank(weekDate)) {
-                StockKLine kLine = StockKLine.builder().date(weekDate).open(weekOpen).close(weekClose).high(weekHigh).low(weekLow).volumn(weekVolumn).build();
+                StockKLine kLine = StockKLine.builder().date(weekDate).open(weekOpen).close(weekClose).high(weekHigh).low(weekLow).volume(weekVolumn).build();
                 week.add(kLine);
 
                 weekOpen = 0;
@@ -58,7 +60,7 @@ public class KLine {
                     weekLow = low;
                 }
                 weekClose = close;
-                weekVolumn = weekVolumn.add(volumn);
+                weekVolumn = weekVolumn.add(volume);
             }
         }
 
@@ -80,13 +82,13 @@ public class KLine {
             double close = monthly.getClose();
             double high = monthly.getHigh();
             double low = monthly.getLow();
-            BigDecimal volumn = monthly.getVolumn();
+            BigDecimal volume = monthly.getVolume();
 
-            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(DAY_FORMATTER));
             int month = localDate.getMonthValue();
 
             if (month == 12 && StringUtils.isNotBlank(yearDate)) {
-                StockKLine kLine = StockKLine.builder().date(yearDate).open(yearOpen).close(yearClose).high(yearHigh).low(yearLow).volumn(yearVolumn).build();
+                StockKLine kLine = StockKLine.builder().date(yearDate).open(yearOpen).close(yearClose).high(yearHigh).low(yearLow).volume(yearVolumn).build();
                 yearList.add(kLine);
 
                 yearOpen = 0;
@@ -99,7 +101,7 @@ public class KLine {
             if (yearClose == 0) {
                 yearClose = close;
                 localDate = localDate.withMonth(1).withDayOfYear(1);
-                yearDate = localDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                yearDate = localDate.format(DateTimeFormatter.ofPattern(DAY_FORMATTER));
             }
             if (high > yearHigh) {
                 yearHigh = high;
@@ -108,10 +110,10 @@ public class KLine {
                 yearLow = low;
             }
             yearOpen = open;
-            yearVolumn = yearVolumn.add(volumn);
+            yearVolumn = yearVolumn.add(volume);
 
             if (i + 1 == monthlyList.size()) {
-                StockKLine kLine = StockKLine.builder().date(yearDate).open(yearOpen).close(yearClose).high(yearHigh).low(yearLow).volumn(yearVolumn).build();
+                StockKLine kLine = StockKLine.builder().date(yearDate).open(yearOpen).close(yearClose).high(yearHigh).low(yearLow).volume(yearVolumn).build();
                 yearList.add(kLine);
             }
         }
@@ -123,8 +125,8 @@ public class KLine {
         String weeklyDate = latestWeekly.getDate();
         String dailyDate = latestDaily.getDate();
 
-        LocalDate weeklyParse = LocalDate.parse(weeklyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate weeklyParse = LocalDate.parse(weeklyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
+        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
 
         int weeklyDayOfYear = weeklyParse.getDayOfYear();
         int dailyDayOfYear = dailyParse.getDayOfYear();
@@ -144,7 +146,7 @@ public class KLine {
             if (dayOfWeek > 1) {
                 dayOfWeek = dayOfMonth - dayOfWeek + 1;
                 dailyParse = dailyParse.withDayOfMonth(dayOfWeek);
-                latestDaily.setDate(dailyParse.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                latestDaily.setDate(dailyParse.format(DateTimeFormatter.ofPattern(DAY_FORMATTER)));
             }
             return latestDaily;
         } else {
@@ -154,7 +156,7 @@ public class KLine {
               .close(latestDaily.getClose())
               .high(latestWeekly.getHigh())
               .low(latestWeekly.getLow())
-              .volumn(latestWeekly.getVolumn().add(latestDaily.getVolumn()))
+              .volume(latestWeekly.getVolume().add(latestDaily.getVolume()))
               .build();
             if (latestDaily.getHigh() > latestWeekly.getHigh()) {
                 latestKLine.setHigh(latestDaily.getHigh());
@@ -171,8 +173,8 @@ public class KLine {
         String monthlyDate = latestMonthly.getDate();
         String dailyDate = latestDaily.getDate();
 
-        LocalDate monthlyParse = LocalDate.parse(monthlyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate monthlyParse = LocalDate.parse(monthlyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
+        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
 
         int latestMonth = monthlyParse.getMonthValue();
         int dailyMonth = dailyParse.getMonthValue();
@@ -189,7 +191,7 @@ public class KLine {
               .close(latestDaily.getClose())
               .high(latestMonthly.getHigh())
               .low(latestMonthly.getLow())
-              .volumn(latestMonthly.getVolumn().add(latestDaily.getVolumn()))
+              .volume(latestMonthly.getVolume().add(latestDaily.getVolume()))
               .build();
             if (latestDaily.getHigh() > latestMonthly.getHigh()) {
                 latestKLine.setHigh(latestDaily.getHigh());
@@ -206,8 +208,8 @@ public class KLine {
         String quarterlyDate = latestQuarterly.getDate();
         String dailyDate = latestDaily.getDate();
 
-        LocalDate quarterlyParse = LocalDate.parse(quarterlyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate quarterlyParse = LocalDate.parse(quarterlyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
+        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
 
         int latestMonth = quarterlyParse.getMonthValue();
         int dailyMonth = dailyParse.getMonthValue();
@@ -225,7 +227,7 @@ public class KLine {
               .close(latestDaily.getClose())
               .high(latestQuarterly.getHigh())
               .low(latestQuarterly.getLow())
-              .volumn(latestQuarterly.getVolumn().add(latestDaily.getVolumn()))
+              .volume(latestQuarterly.getVolume().add(latestDaily.getVolume()))
               .build();
             if (latestDaily.getHigh() > latestQuarterly.getHigh()) {
                 latestKLine.setHigh(latestDaily.getHigh());
@@ -242,8 +244,8 @@ public class KLine {
         String yearlyDate = latestYearly.getDate();
         String dailyDate = latestDaily.getDate();
 
-        LocalDate yearlyParse = LocalDate.parse(yearlyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        LocalDate yearlyParse = LocalDate.parse(yearlyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
+        LocalDate dailyParse = LocalDate.parse(dailyDate, DateTimeFormatter.ofPattern(DAY_FORMATTER));
 
         int latestYear = yearlyParse.getYear();
         int dailyYear = dailyParse.getYear();
@@ -260,7 +262,7 @@ public class KLine {
               .close(latestDaily.getClose())
               .high(latestYearly.getHigh())
               .low(latestYearly.getLow())
-              .volumn(latestYearly.getVolumn().add(latestDaily.getVolumn()))
+              .volume(latestYearly.getVolume().add(latestDaily.getVolume()))
               .build();
             if (latestDaily.getHigh() > latestYearly.getHigh()) {
                 latestKLine.setHigh(latestDaily.getHigh());
@@ -290,49 +292,49 @@ public class KLine {
     }
 
     private static void test_realtimeWeekKLine(KLine kLine) {
-        StockKLine weekly1 = StockKLine.builder().date("01/03/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
-        StockKLine daily1 = StockKLine.builder().date("01/07/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
-        StockKLine daily1_1 = StockKLine.builder().date("01/11/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine weekly1 = StockKLine.builder().date("01/03/2022").open(133.88).close(133.41).high(134.26).low(129.44).volume(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily1 = StockKLine.builder().date("01/07/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily1_1 = StockKLine.builder().date("01/11/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeWeekKLine(weekly1, daily1)); // old week
         System.out.println(kLine.realtimeWeekKLine(weekly1, daily1_1)); // new week
 
-        StockKLine weekly2 = StockKLine.builder().date("12/30/2019").open(133.88).close(133.41).high(134.26).low(131.44).volumn(BigDecimal.valueOf(71379600)).build();
-        StockKLine daily2 = StockKLine.builder().date("01/03/2020").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
-        StockKLine daily2_2 = StockKLine.builder().date("01/07/2020").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine weekly2 = StockKLine.builder().date("12/30/2019").open(133.88).close(133.41).high(134.26).low(131.44).volume(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily2 = StockKLine.builder().date("01/03/2020").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily2_2 = StockKLine.builder().date("01/07/2020").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeWeekKLine(weekly2, daily2)); // old week
         System.out.println(kLine.realtimeWeekKLine(weekly2, daily2_2)); // new week
     }
 
     private static void test_realtimeMonthKLine(KLine kLine) {
-        StockKLine monthly1 = StockKLine.builder().date("04/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
-        StockKLine daily1 = StockKLine.builder().date("04/27/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
-        StockKLine daily1_1 = StockKLine.builder().date("05/02/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine monthly1 = StockKLine.builder().date("04/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volume(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily1 = StockKLine.builder().date("04/27/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily1_1 = StockKLine.builder().date("05/02/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeMonthKLine(monthly1, daily1)); // old month
         System.out.println(kLine.realtimeMonthKLine(monthly1, daily1_1)); // new month
 
-        StockKLine monthly2 = StockKLine.builder().date("12/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
-        StockKLine daily2 = StockKLine.builder().date("01/02/2023").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine monthly2 = StockKLine.builder().date("12/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volume(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily2 = StockKLine.builder().date("01/02/2023").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeMonthKLine(monthly2, daily2)); // new month
     }
 
     private static void test_realtimeQuarterKLine(KLine kLine) {
-        StockKLine quarterly1 = StockKLine.builder().date("01/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
-        StockKLine daily1 = StockKLine.builder().date("03/27/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
-        StockKLine daily1_1 = StockKLine.builder().date("05/02/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine quarterly1 = StockKLine.builder().date("01/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volume(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily1 = StockKLine.builder().date("03/27/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily1_1 = StockKLine.builder().date("05/02/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeQuarterKLine(quarterly1, daily1)); // old quarter
         System.out.println(kLine.realtimeQuarterKLine(quarterly1, daily1_1)); // new quarter
 
-        StockKLine quarterly2 = StockKLine.builder().date("12/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
-        StockKLine daily2 = StockKLine.builder().date("12/30/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
-        StockKLine daily2_2 = StockKLine.builder().date("01/02/2023").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine quarterly2 = StockKLine.builder().date("12/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volume(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily2 = StockKLine.builder().date("12/30/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily2_2 = StockKLine.builder().date("01/02/2023").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeQuarterKLine(quarterly2, daily2)); // old quarter
         System.out.println(kLine.realtimeQuarterKLine(quarterly2, daily2_2)); // new quarter
     }
 
     private static void test_realtimeYearKLine(KLine kLine) {
-        StockKLine yearly1 = StockKLine.builder().date("01/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volumn(BigDecimal.valueOf(71379600)).build();
-        StockKLine daily1 = StockKLine.builder().date("03/27/2022").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
-        StockKLine daily1_1 = StockKLine.builder().date("01/02/2023").open(131.25).close(133.49).high(133.51).low(130.46).volumn(BigDecimal.valueOf(6945890)).build();
+        StockKLine yearly1 = StockKLine.builder().date("01/01/2022").open(133.88).close(133.41).high(134.26).low(129.44).volume(BigDecimal.valueOf(71379600)).build();
+        StockKLine daily1 = StockKLine.builder().date("03/27/2022").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
+        StockKLine daily1_1 = StockKLine.builder().date("01/02/2023").open(131.25).close(133.49).high(133.51).low(130.46).volume(BigDecimal.valueOf(6945890)).build();
         System.out.println(kLine.realtimeYearKLine(yearly1, daily1)); // old year
         System.out.println(kLine.realtimeYearKLine(yearly1, daily1_1)); // new year
     }

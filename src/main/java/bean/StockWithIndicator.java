@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StockKLine {
+public class StockWithIndicator {
 
     private String date;
     private double open;
@@ -23,9 +23,15 @@ public class StockKLine {
     private double high;
     private double low;
     private double change; // 涨跌金额
-    private double changePnt; // 涨跌百分比
-    //    private double volume; // 成交量非成交额
     private BigDecimal volume; // 成交量非成交额
+    private double ma5;
+    private double ma10;
+    private double ma20;
+    private double ma30;
+    private double ma60;
+    private double bollUpper;
+    private double bollMiddle;
+    private double bollLower;
 
     @Override
     public String toString() {

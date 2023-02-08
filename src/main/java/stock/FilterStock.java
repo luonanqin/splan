@@ -63,7 +63,7 @@ public class FilterStock {
 
                 StockKLine stockDaily = new StockKLine();
                 stockDaily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
-                stockDaily.setVolumn(BigDecimal.valueOf(Double.valueOf(volumn)));
+                stockDaily.setVolume(BigDecimal.valueOf(Double.valueOf(volumn)));
 
                 dataList.add(stockDaily);
 
@@ -91,7 +91,7 @@ public class FilterStock {
     public static double calAvgVolumn(List<StockKLine> dataList) {
         BigDecimal sum = BigDecimal.ZERO;
         for (StockKLine data : dataList) {
-            sum.add(data.getVolumn());
+            sum.add(data.getVolume());
         }
 
         return sum.divide(BigDecimal.valueOf(dataList.size())).doubleValue();

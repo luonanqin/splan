@@ -79,7 +79,15 @@ public class BaseUtils {
         return stockList;
     }
 
-    public static List<String> getFiltedStockList(String market) throws IOException {
+    public static List<String> getStockListOrderByOpenDesc(String market) throws IOException {
+        return getStockListOrderByOpen(market, false);
+    }
+
+    public static List<String> getStockListOrderByOpenAsc(String market) throws IOException {
+        return getStockListOrderByOpen(market, true);
+    }
+
+    public static List<String> getStockListOrderByOpen(String market, boolean asc) throws IOException {
         List<String> stockList = getHasOptionStockList(market);
 
         Map<String, String> openDate = getOpenData(market);
@@ -89,7 +97,11 @@ public class BaseUtils {
             String date2 = openDate.get(o2);
             LocalDate localDate1 = LocalDate.parse(date1);
             LocalDate localDate2 = LocalDate.parse(date2);
-            return localDate1.isBefore(localDate2) ? -1 : 1;
+            if (asc) {
+                return localDate1.isBefore(localDate2) ? -1 : 1;
+            } else {
+                return !localDate1.isBefore(localDate2) ? -1 : 1;
+            }
         }).collect(Collectors.toList());
 
         return stockList;
