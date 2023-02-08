@@ -1,6 +1,5 @@
 package polygon;
 
-import barchart.StockHistory;
 import bean.TickerDetailV3;
 import bean.TickerDetailV3Resp;
 import com.alibaba.fastjson.JSON;

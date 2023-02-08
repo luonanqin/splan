@@ -26,9 +26,9 @@ public class SeleniumTest {
         ChromeOptions chromeOptions = new ChromeOptions();
         ChromeDriver driver = new ChromeDriver(chromeOptions);
 
+        setDateRange(driver);
         //        getDataFromCanvas(driver);
         //        groupOpenDataByYear();
-        setDateRange(driver);
     }
 
     private static void setDateRange(ChromeDriver driver) throws Exception {

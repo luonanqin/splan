@@ -35,7 +35,7 @@ public class OptionChain implements FTSPI_Qot, FTSPI_Conn {
     }
 
     public void start() {
-        qot.initConnect("127.0.0.1", (short) 11111, false);
+        qot.initConnect("127.0.0.1", (short) 11112, false);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class OptionChain implements FTSPI_Qot, FTSPI_Conn {
 
         TimeUnit.SECONDS.sleep(5);
 
-        List<String> marketList = Lists.newArrayList("XNAS","XNYS");
+        List<String> marketList = Lists.newArrayList("XNAS-ADRC","XNYS-ADRC");
         for (String market : marketList) {
             List<String> codeList = qot.getCodeList(market);
             qot.fw = new FileWriter(market + "_x");
@@ -126,8 +126,8 @@ public class OptionChain implements FTSPI_Qot, FTSPI_Conn {
                   .build();
                 QotGetOptionChain.C2S c2s = QotGetOptionChain.C2S.newBuilder()
                   .setOwner(sec)
-                  .setBeginTime("2023-01-17")
-                  .setEndTime("2023-02-01")
+                  .setBeginTime("2023-02-06")
+                  .setEndTime("2023-02-10")
                   .build();
                 QotGetOptionChain.Request req = QotGetOptionChain.Request.newBuilder().setC2S(c2s).build();
                 qot.qot.getOptionChain(req);

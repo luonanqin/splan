@@ -25,7 +25,7 @@ public class StockHistory {
         BaseUtils.loginBarchart(driver);
 
         // has option stock
-        String market = "XNAS";
+        String market = "XNYS";
         List<String> stockList = BaseUtils.getFiltedStockList(market);
 
         /** download historical stock data */
