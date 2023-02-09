@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class StockHistory {
+public class DownloadStockHistory {
 
     public static void main(String[] args) throws Exception {
 

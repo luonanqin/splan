@@ -1,4 +1,4 @@
-package test;
+package barchart;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
@@ -27,7 +27,7 @@ import static util.Constants.FORMATTER;
 /**
  * Created by Luonanqin on 2023/2/5.
  */
-public class SeleniumTest {
+public class GrabStockHistory {
 
     public static void main(String[] args) throws Exception {
         String market = "XNYS";
@@ -45,7 +45,7 @@ public class SeleniumTest {
         List<String> stockList = BaseUtils.getStockListOrderByOpenDesc(market);
         stockList.remove("STR");
         stockList.clear();
-        stockList.add("AAPL");
+        stockList.add("STR");
 
         for (String stock : stockList) {
             WebElement canvas = loadStockCanvas(driver, stock);

@@ -1,6 +1,6 @@
 package util;
 
-import barchart.StockHistory;
+import barchart.DownloadStockHistory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +69,7 @@ public class BaseUtils {
 
     public static List<String> getHasOptionStockList(String market) throws IOException {
         List<String> stockList = Lists.newArrayList();
-        BufferedReader br = new BufferedReader(new InputStreamReader(StockHistory.class.getResourceAsStream("/historicalData/code/hasOption/" + market)));
+        BufferedReader br = new BufferedReader(new InputStreamReader(DownloadStockHistory.class.getResourceAsStream("/historicalData/code/hasOption/" + market)));
         String hasOption;
         while (StringUtils.isNotBlank(hasOption = br.readLine())) {
             stockList.add(hasOption);
