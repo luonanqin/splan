@@ -3,6 +3,7 @@ package barchart;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,60 +17,174 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import util.BaseUtils;
 
-import java.math.BigDecimal;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static util.Constants.FORMATTER;
+import static util.Constants.*;
 
 /**
  * Created by Luonanqin on 2023/2/5.
  */
-public class GrabStockHistory {
+public class GrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
-        String market = "XNYS";
+        String market = "XNAS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
         ChromeDriver driver = new ChromeDriver(chromeOptions);
         driver.manage().window().setSize(new Dimension(1280, 1027));
 
         BaseUtils.loginBarchart(driver);
-        //        setDateRange(driver, null, null);
-        //        getDataFromCanvas(driver);
-        //        groupOpenDataByYear();
+        //                ChromeDriver driver = null;
+
         // 从昨天开始每365天查询一次并抓取
         // 默认step=3，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
-        List<String> stockList = BaseUtils.getStockListOrderByOpenDesc(market);
-        stockList.remove("STR");
-        stockList.clear();
-        stockList.add("AAPL");
+        List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
+        //        stockList.remove("STR");
+        //        stockList.clear();
+        //        stockList.add("PEP");
 
+        // 已经抓取过的
+        Set<String> hasGrab = hasGrab();
+
+        String initDay = "01/03/2000";
+        LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
         for (String stock : stockList) {
+            if (hasGrab.contains(stock)) {
+                System.out.println("has grab: " + stock);
+                continue;
+            }
+
+            String downloadLatestDay = getDownloadLatestDay(stock);
+            if (StringUtils.isBlank(downloadLatestDay)) {
+                System.out.println("has not download: " + stock);
+                continue;
+            }
+            // 如果已经下载的daily最新日期大于01/01/2000，则不需要抓取这个日期之前的时间
+            LocalDate downloadLDParse = LocalDate.parse(downloadLatestDay, FORMATTER);
+            if (downloadLDParse.isAfter(initDayParse)) {
+                continue;
+            }
+
             WebElement canvas = loadStockCanvas(driver, stock);
+            //                        WebElement canvas = null;
 
-            LocalDate endParse = LocalDate.now().minusDays(1);
+            // 断点续抓需要获取已经抓过的最新日期
+            String latestDay = getLatestDay(stock);
+            String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
+            int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
             while (true) {
-                LocalDate beginParse = endParse.minusDays(365);
-
-                String beginDate = beginParse.format(FORMATTER);
-                String endDate = endParse.format(FORMATTER);
+                String beginDate;
+                if (!endDate.startsWith("01/01")) {
+                    beginDate = "01/01/" + year;
+                } else {
+                    beginDate = "01/01/" + (--year);
+                }
 
                 setDateRange(driver, beginDate, endDate);
                 List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
 
-                // write data
+                appendTradeDay(stock, Lists.reverse(dataList));
+                System.out.println("write finish: " + beginDate + " - " + endDate);
 
+                //                List<Integer> dataList = Lists.newArrayList(1);
                 if (CollectionUtils.isEmpty(dataList)) {
-                    System.out.println("finish " + stock);
+                    renameFile(stock);
                     break;
                 } else {
-                    endParse = beginParse;
+                    endDate = beginDate;
                 }
             }
         }
+    }
+
+    public static Set<String> hasGrab() {
+        File file = new File(TRADE_DAY_PATH);
+        Set<String> hasGrab = Sets.newHashSet();
+        for (String fileName : file.list()) {
+            if (!fileName.endsWith("_day")) {
+                continue;
+            }
+            hasGrab.add(fileName.substring(0, fileName.indexOf("_")));
+        }
+        return hasGrab;
+    }
+
+    public static void renameFile(String stock) {
+        String fileName = TRADE_DAY_PATH + stock;
+        File file = new File(fileName);
+        if (file.exists()) {
+            file.renameTo(new File(fileName + "_day"));
+            System.out.println("rename " + stock + " finish");
+            return;
+        }
+        System.out.println("rename " + stock + " is not exist");
+    }
+
+    public static String getLatestDay(String stock) throws Exception {
+        File file = new File(TRADE_DAY_PATH + stock);
+        if (!file.exists()) {
+            file.createNewFile();
+            return null;
+        } else {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String latest = null, str;
+            while (StringUtils.isNotBlank(str = br.readLine())) {
+                latest = str;
+            }
+            return latest;
+        }
+    }
+
+    public static String getDownloadLatestDay(String stock) throws Exception {
+        File file = new File(DAILY_PATH);
+        for (File stockFile : file.listFiles()) {
+            if (!stockFile.getName().startsWith(stock.toLowerCase() + "_")) {
+                continue;
+            }
+            BufferedReader br = new BufferedReader(new FileReader(stockFile));
+            String latest = null, str;
+            while (StringUtils.isNotBlank(str = br.readLine())) {
+                if (str.startsWith("\"")) {
+                    continue;
+                }
+                latest = str;
+            }
+            return latest.split(",")[0];
+        }
+        return null;
+    }
+
+    public static void appendTradeDay(String stock, List<StockKLine> dataList) throws Exception {
+        File file = new File(TRADE_DAY_PATH + stock);
+
+        FileOutputStream fos = new FileOutputStream(file, true);
+        OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
+
+        Set<String> daySet = Sets.newHashSet();
+        for (StockKLine stockKLine : dataList) {
+            String day = stockKLine.getDate();
+            // 为空或者包含则跳过不写入
+            if (StringUtils.isBlank(day) || daySet.contains(day)) {
+                continue;
+            }
+            // 写入内容
+            osw.write(day);
+            // 换行
+            osw.write("\n");
+            daySet.add(day);
+        }
+        osw.flush();
+        osw.close();
+        fos.close();
     }
 
 
@@ -96,18 +211,12 @@ public class GrabStockHistory {
         while (retryTimes > 0) {
             try {
                 System.out.println("set new date range: " + beginDate + " - " + endDate);
-                //        driver.findElement(By.xpath("//span[@data-ng-show='label' and text()='Date']")).click();
                 driver.findElement(By.xpath("//div[@data-dropdown-id='bc-interactive-chart-dropdown-period']//i[@class='bc-glyph-chevron-down bc-dropdown-flexible-arrow']")).click();
-                //        System.out.println("click period finish");
                 driver.findElement(By.xpath("//li[@data-ng-click='changePeriod(item.period)' and contains(text(),'Date Range')]")).click();
-                //        System.out.println("click Date Range");
                 driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.from']")).sendKeys(Keys.chord(Keys.COMMAND, "a"), Keys.DELETE, beginDate);
-                //        System.out.println("input begin date finish");
                 driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.to']")).sendKeys(endDate);
-                //        System.out.println("input end date finish");
                 new Actions(driver).sendKeys(Keys.ENTER).perform();
                 driver.findElement(By.xpath("//button[@data-ng-click='modalConfirm()']")).click();
-                //        driver.findElement(By.xpath("//button[text()='Apply']")).click();
                 System.out.println("confirm new date range: " + beginDate + " - " + endDate);
                 break;
             } catch (Exception e) {
@@ -169,50 +278,24 @@ public class GrabStockHistory {
                     break;
                 }
             } else {
-                // 获取O H L C delta volume
-                //            List<WebElement> elements = driver.findElements(By.xpath("//span[@style='color: #ef4226']"));
-                //            String open = elements.get(0).getText();
-                //            String high = elements.get(1).getText();
-                //            String low = elements.get(2).getText();
-                //            String close = elements.get(3).getText();
-                //            String change = elements.get(4).getText();
-                //            String ma5 = driver.findElement(By.xpath("//span[@style='color: #808080']")).getText();
-                //            String ma10 = driver.findElement(By.xpath("//span[@style='color: #f75f60']")).getText();
-                //            String ma20 = driver.findElement(By.xpath("//span[@style='color: #f58620']")).getText();
-                //            String ma30 = driver.findElement(By.xpath("//span[@style='color: #ff53d6]")).getText();
-                //            String ma60 = driver.findElement(By.xpath("//span[@style='color: #a288d2]")).getText();
-                //            String bollUpper = driver.findElement(By.xpath("//span[@style='color: #9075d6']")).getText();
-                //            String bollMiddle = driver.findElement(By.xpath("//span[@style='color: #89211e']")).getText();
-                //            String bollLower = driver.findElement(By.xpath("//span[@style='color: #00aaab']")).getText();
-
-                List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
-                String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");
-                String high = StringUtils.defaultIfBlank(elements.get(1).getText(), "0");
-                String low = StringUtils.defaultIfBlank(elements.get(2).getText(), "0");
-                String close = StringUtils.defaultIfBlank(elements.get(3).getText(), "0");
-                String change = StringUtils.defaultIfBlank(elements.get(4).getText(), "0");
-                String volume = StringUtils.defaultIfBlank(elements.get(5).getText(), "0");
-                //                String ma5 = StringUtils.defaultIfBlank(elements.get(5).getText(), "0");
-                //                String ma10 = StringUtils.defaultIfBlank(elements.get(6).getText(), "0");
-                //                String ma20 = StringUtils.defaultIfBlank(elements.get(7).getText(), "0");
-                //                String ma30 = StringUtils.defaultIfBlank(elements.get(8).getText(), "0");
-                //                String ma60 = StringUtils.defaultIfBlank(elements.get(9).getText(), "0");
-                //                String bollUpper = StringUtils.defaultIfBlank(elements.get(10).getText(), "0");
-                //                String bollMiddle = StringUtils.defaultIfBlank(elements.get(11).getText(), "0");
-                //                String bollLower = StringUtils.defaultIfBlank(elements.get(12).getText(), "0");
-                //                System.out.println("left move date:" + date);
-                //                System.out.println(String.format("date:%s open:%s close:%s high:%s low:%s change:%s volume:%s ma5:%s ma10:%S ma20:%s ma30:%s ma60:%S bollUpper:%s bollMiddle:%s bollLower:%s", date, open, close, high, low, change, volume, ma5, ma10, ma20, ma30, ma60, bollUpper, bollMiddle, bollLower));
+                //                List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
+                //                String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");
+                //                String high = StringUtils.defaultIfBlank(elements.get(1).getText(), "0");
+                //                String low = StringUtils.defaultIfBlank(elements.get(2).getText(), "0");
+                //                String close = StringUtils.defaultIfBlank(elements.get(3).getText(), "0");
+                //                String change = StringUtils.defaultIfBlank(elements.get(4).getText(), "0");
+                //                String volume = StringUtils.defaultIfBlank(elements.get(5).getText(), "0");
                 StockKLine kLine = StockKLine.builder()
                   .date(date)
-                  .open(Double.valueOf(open))
-                  .high(Double.valueOf(high))
-                  .low(Double.valueOf(low))
-                  .close(Double.valueOf(close))
-                  .change(Double.valueOf(change))
-                  .volume(BigDecimal.valueOf(Double.valueOf(volume.replace(",", ""))))
+                  //                  .open(Double.valueOf(open))
+                  //                  .high(Double.valueOf(high))
+                  //                  .low(Double.valueOf(low))
+                  //                  .close(Double.valueOf(close))
+                  //                  .change(Double.valueOf(change))
+                  //                  .volume(BigDecimal.valueOf(Double.valueOf(volume.replace(",", ""))))
                   .build();
                 dataList.add(kLine);
-                System.out.println(kLine);
+                //                System.out.println(kLine);
 
                 lastDate = date;
             }
