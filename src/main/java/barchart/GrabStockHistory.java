@@ -45,7 +45,7 @@ public class GrabStockHistory {
         List<String> stockList = BaseUtils.getStockListOrderByOpenDesc(market);
         stockList.remove("STR");
         stockList.clear();
-        stockList.add("STR");
+        stockList.add("AAPL");
 
         for (String stock : stockList) {
             WebElement canvas = loadStockCanvas(driver, stock);
