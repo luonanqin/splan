@@ -6,11 +6,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import util.BaseUtils;
 
@@ -19,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +33,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static util.Constants.*;
 
@@ -38,15 +46,15 @@ public class GrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
         String market = "XNAS";
-//        System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
-//        ChromeOptions chromeOptions = new ChromeOptions();
-//        ChromeDriver driver = new ChromeDriver(chromeOptions);
-//        driver.manage().window().setSize(new Dimension(1280, 1027));
-//        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-//        driver.switchTo().newWindow(WindowType.TAB);
-//
-//        BaseUtils.loginBarchart(driver);
-                        ChromeDriver driver = null;
+        //        System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
+        ChromeOptions chromeOptions = new ChromeOptions();
+        //        ChromeDriver driver = new ChromeDriver(chromeOptions);
+        //        driver.manage().window().setSize(new Dimension(1280, 1027));
+        //        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+        //        driver.switchTo().newWindow(WindowType.TAB);
+
+        //        BaseUtils.loginBarchart(driver);
+        //        ChromeDriver driver = null;
 
         // 从昨天开始每365天查询一次并抓取
         // 默认step=3，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
@@ -60,11 +68,14 @@ public class GrabStockDateHistory {
 
         String initDay = "01/03/2000";
         LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
-        int corePoolSize = 2;
-        int maximumPoolSize = 2;
+        int corePoolSize = 1;
+        int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
+        AtomicInteger thread = new AtomicInteger(corePoolSize);
+        Lock lock = new ReentrantLock();
+        Condition cond = lock.newCondition();
         for (String stock : stockList) {
             if (hasGrab.contains(stock)) {
                 System.out.println("has grab: " + stock);
@@ -81,69 +92,101 @@ public class GrabStockDateHistory {
             if (downloadLDParse.isAfter(initDayParse)) {
                 continue;
             }
-            AtomicInteger i = new AtomicInteger(1);
-            cachedThread.execute(() -> {
-//                try {
-//                    WebElement canvas = loadStockCanvas(driver, stock);
-//
-//                    // 断点续抓需要获取已经抓过的最新日期
-//                    String latestDay = getLatestDay(stock);
-//                    String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
-//                    int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
-//                    endDate = "01/01/" + year;
-//                    while (true) {
-//                        String beginDate = "01/01/" + (--year);
-//
-//                        setDateRange(driver, beginDate, endDate);
-//                        List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
-//
-//                        appendTradeDay(stock, Lists.reverse(dataList));
-//                        System.out.println("write finish: " + beginDate + " - " + endDate);
-//
-//                        //                List<Integer> dataList = Lists.newArrayList(1);
-//                        if (CollectionUtils.isEmpty(dataList)) {
-//                            renameFile(stock);
-//                            break;
-//                        } else {
-//                            endDate = beginDate;
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-                System.out.println(i.getAndIncrement());
-                try {
-                    TimeUnit.SECONDS.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                while (true) {
+                    lock.lock();
+                    if (thread.get() < 0) {
+                        cond.await();
+                        System.out.println("begin grab new stock: " + stock);
+                    } else {
+                        thread.addAndGet(-1);
+                        break;
+                    }
                 }
+            } finally {
+                cond.signalAll();
+                lock.unlock();
+            }
+            cachedThread.execute(() -> {
+                try {
+                    ChromeDriver driverx = new ChromeDriver(chromeOptions);
+                    driverx.manage().window().setSize(new Dimension(1280, 1027));
+                    driverx.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+                    BaseUtils.loginBarchart(driverx);
+
+                    //                    driverx.switchTo().newWindow(WindowType.WINDOW);
+                    WebElement canvas = loadStockCanvas(driverx, stock);
+
+                    // 断点续抓需要获取已经抓过的最新日期
+                    String latestDay = getLatestDay(stock);
+                    String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
+                    int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
+                    endDate = "01/01/" + year;
+                    while (true) {
+                        String beginDate = "01/01/" + (--year);
+
+                        setDateRange(driverx, beginDate, endDate);
+                        List<StockKLine> dataList = getDataFromCanvas(driverx, canvas);
+
+                        appendTradeDay(stock, Lists.reverse(dataList));
+                        System.out.println("write finish: " + beginDate + " - " + endDate);
+
+                        //                List<Integer> dataList = Lists.newArrayList(1);
+                        if (CollectionUtils.isEmpty(dataList)) {
+                            renameFile(stock);
+                            break;
+                        } else {
+                            endDate = beginDate;
+                        }
+                    }
+                    driverx.quit();
+                    lock.lock();
+                    thread.getAndIncrement();
+                } catch (Exception e) {
+                    System.out.println("grab " + stock + " error " + e.getMessage());
+                } finally {
+                    cond.signalAll();
+                    lock.unlock();
+                }
+
+                //                System.out.println(thread.get());
+                //                try {
+                //                    TimeUnit.SECONDS.sleep(2);
+                //                    lock.lock();
+                //                    thread.getAndIncrement();
+                //                } catch (InterruptedException e) {
+                //                    e.printStackTrace();
+                //                } finally {
+                //                    cond.signalAll();
+                //                    lock.unlock();
+                //                }
             });
 
-//            WebElement canvas = loadStockCanvas(driver, stock);
-//            //                        WebElement canvas = null;
-//
-//            // 断点续抓需要获取已经抓过的最新日期
-//            String latestDay = getLatestDay(stock);
-//            String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
-//            int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
-//            endDate = "01/01/" + year;
-//            while (true) {
-//                String beginDate = "01/01/" + (--year);
-//
-//                setDateRange(driver, beginDate, endDate);
-//                List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
-//
-//                appendTradeDay(stock, Lists.reverse(dataList));
-//                System.out.println("write finish: " + beginDate + " - " + endDate);
-//
-//                //                List<Integer> dataList = Lists.newArrayList(1);
-//                if (CollectionUtils.isEmpty(dataList)) {
-//                    renameFile(stock);
-//                    break;
-//                } else {
-//                    endDate = beginDate;
-//                }
-//            }
+            //            WebElement canvas = loadStockCanvas(driver, stock);
+            //            //                        WebElement canvas = null;
+            //
+            //            // 断点续抓需要获取已经抓过的最新日期
+            //            String latestDay = getLatestDay(stock);
+            //            String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
+            //            int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
+            //            endDate = "01/01/" + year;
+            //            while (true) {
+            //                String beginDate = "01/01/" + (--year);
+            //
+            //                setDateRange(driver, beginDate, endDate);
+            //                List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
+            //
+            //                appendTradeDay(stock, Lists.reverse(dataList));
+            //                System.out.println("write finish: " + beginDate + " - " + endDate);
+            //
+            //                //                List<Integer> dataList = Lists.newArrayList(1);
+            //                if (CollectionUtils.isEmpty(dataList)) {
+            //                    renameFile(stock);
+            //                    break;
+            //                } else {
+            //                    endDate = beginDate;
+            //                }
+            //            }
         }
     }
 
@@ -179,7 +222,7 @@ public class GrabStockDateHistory {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String latest = null, str;
             while (StringUtils.isNotBlank(str = br.readLine())) {
-                latest = str;
+                latest = str.split(",")[0];
             }
             return latest;
         }
@@ -218,7 +261,7 @@ public class GrabStockDateHistory {
                 continue;
             }
             // 写入内容
-            osw.write(day);
+            osw.write(stockKLine.toString());
             // 换行
             osw.write("\n");
             daySet.add(day);
@@ -230,21 +273,23 @@ public class GrabStockDateHistory {
 
 
     public static WebElement loadStockCanvas(ChromeDriver driver, String stock) throws Exception {
-        try {
-            driver.get("https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart");
-        } catch (Exception e) {
-            System.out.println("load timeout");
-        }
-
-        while (true) {
-            try {
-                WebElement element = driver.findElement(By.className("chart-canvas-container"));
-                return element;
-            } catch (Exception e) {
-                System.out.println("canvas not find");
-            }
-            TimeUnit.SECONDS.sleep(1);
-        }
+        BaseUtils.viewloadPage(driver, "https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart", By.className("chart-canvas-container"));
+        return driver.findElement(By.className("chart-canvas-container"));
+//        try {
+//            driver.get("https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart");
+//        } catch (Exception e) {
+//            System.out.println("load timeout");
+//        }
+//
+//        while (true) {
+//            try {
+//                WebElement element = driver.findElement(By.className("chart-canvas-container"));
+//                return element;
+//            } catch (Exception e) {
+//                System.out.println("canvas not find");
+//            }
+//            TimeUnit.SECONDS.sleep(1);
+//        }
     }
 
     public static void setDateRange(ChromeDriver driver, String beginDate, String endDate) throws Exception {
@@ -269,7 +314,7 @@ public class GrabStockDateHistory {
     private static List<StockKLine> getDataFromCanvas(ChromeDriver driver, WebElement canvas) throws InterruptedException {
         Actions actions = new Actions(driver);
         actions.moveToElement(canvas, 0, 0).perform();
-        TimeUnit.SECONDS.sleep(2);
+//        TimeUnit.SECONDS.sleep(2);
 
         //        MoveInfo moveInfo = getMoveInfo(driver, actions);
         //        int xOffset = moveInfo.getXOffset();
@@ -319,21 +364,21 @@ public class GrabStockDateHistory {
                     break;
                 }
             } else {
-                //                List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
-                //                String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");
-                //                String high = StringUtils.defaultIfBlank(elements.get(1).getText(), "0");
-                //                String low = StringUtils.defaultIfBlank(elements.get(2).getText(), "0");
-                //                String close = StringUtils.defaultIfBlank(elements.get(3).getText(), "0");
-                //                String change = StringUtils.defaultIfBlank(elements.get(4).getText(), "0");
-                //                String volume = StringUtils.defaultIfBlank(elements.get(5).getText(), "0");
+                List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
+                String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");
+                String high = StringUtils.defaultIfBlank(elements.get(1).getText(), "0");
+                String low = StringUtils.defaultIfBlank(elements.get(2).getText(), "0");
+                String close = StringUtils.defaultIfBlank(elements.get(3).getText(), "0");
+                String change = StringUtils.defaultIfBlank(elements.get(4).getText(), "0");
+                String volume = StringUtils.defaultIfBlank(elements.get(5).getText(), "0");
                 StockKLine kLine = StockKLine.builder()
                   .date(date)
-                  //                  .open(Double.valueOf(open))
-                  //                  .high(Double.valueOf(high))
-                  //                  .low(Double.valueOf(low))
-                  //                  .close(Double.valueOf(close))
-                  //                  .change(Double.valueOf(change))
-                  //                  .volume(BigDecimal.valueOf(Double.valueOf(volume.replace(",", ""))))
+                  .open(Double.valueOf(open))
+                  .high(Double.valueOf(high))
+                  .low(Double.valueOf(low))
+                  .close(Double.valueOf(close))
+                  .change(Double.valueOf(change))
+                  .volume(BigDecimal.valueOf(Double.valueOf(volume.replace(",", ""))))
                   .build();
                 dataList.add(kLine);
                 //                System.out.println(kLine);

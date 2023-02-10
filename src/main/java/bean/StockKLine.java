@@ -1,6 +1,5 @@
 package bean;
 
-import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +28,6 @@ public class StockKLine {
 
     @Override
     public String toString() {
-        return JSON.toJSONString(this);
+        return date + "," + open + "," + high + "," + low + "," + close + "," + change + "," + volume;
     }
 }

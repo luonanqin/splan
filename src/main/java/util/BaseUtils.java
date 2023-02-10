@@ -6,11 +6,13 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,8 @@ public class BaseUtils {
         while (true) {
             try {
                 driver.get(url);
-                driver.findElement(checkBy);
+//                driver.findElement(checkBy);
+                new WebDriverWait(driver, Duration.ofSeconds(5)).until(d -> driver.findElement(checkBy));
                 return;
             } catch (Exception e) {
                 try {
