@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -22,32 +21,75 @@ import java.util.stream.Collectors;
  */
 public class BaseUtils {
 
+    public static void viewloadPage(ChromeDriver driver, String url, By checkBy) {
+        while (true) {
+            try {
+                driver.get(url);
+                driver.findElement(checkBy);
+                return;
+            } catch (Exception e) {
+                try {
+                    driver.findElement(checkBy);
+                    return;
+                } catch (Exception ex) {
+                    System.out.println("retry load " + url);
+                }
+            }
+        }
+    }
+
+    public static void clickLoadPage(ChromeDriver driver, By clickBy, By checkBy) {
+        try {
+            driver.findElement(clickBy).click();
+        } catch (Exception e) {
+            while (true) {
+                try {
+                    driver.findElement(checkBy);
+                    return;
+                } catch (Exception exception) {
+                   refresh(driver);
+                }
+            }
+        }
+    }
+
+    public static void refresh(ChromeDriver driver) {
+        try {
+            driver.navigate().refresh();
+        } finally {
+            System.out.println("refresh current page!");
+            return;
+        }
+    }
+
     public static void loginBarchart(ChromeDriver driver) throws InterruptedException {
         System.out.println("loading login page");
-        driver.get("https://www.barchart.com/login");
-        System.out.println("finish loding");
-        TimeUnit.SECONDS.sleep(5);
+        viewloadPage(driver, "https://www.barchart.com/login", By.xpath("//h1[@class='sign-in-block_header']"));
+        //        driver.get("https://www.barchart.com/login");
+        System.out.println("finish loading");
+//        TimeUnit.SECONDS.sleep(5);
 
         // login
         System.out.println("input email and pwd");
         driver.findElement(By.cssSelector("[name='email']")).sendKeys("qinnanluo@sina.com");
         driver.findElement(By.cssSelector("[name='password']")).sendKeys("luonq134931");
-        driver.findElement(By.className("login-button")).click();
         System.out.println("start login");
+        //        driver.findElement(By.className("login-button")).click();
+        clickLoadPage(driver, By.className("login-button"), By.tagName("span"));
         // 登录后需要休眠一会儿确定已经登录
-        while (true) {
-            String MyAccount;
-            try {
-                MyAccount = driver.findElement(By.tagName("span")).getText();
-                if ("My Account".equals(MyAccount)) {
-                    System.out.println("finish login");
-                    break;
-                }
-            } catch (Exception e) {
-                System.out.println("wait login");
-                TimeUnit.SECONDS.sleep(1);
-            }
-        }
+//        while (true) {
+//            String MyAccount;
+//            try {
+//                MyAccount = driver.findElement(By.tagName("span")).getText();
+//                if ("My Account".equals(MyAccount)) {
+//                    System.out.println("finish login");
+//                    break;
+//                }
+//            } catch (Exception e) {
+//                System.out.println("wait login");
+//                TimeUnit.SECONDS.sleep(1);
+//            }
+//        }
     }
 
     public static Map<String, String> getOpenData(String market) throws IOException {
