@@ -44,16 +44,10 @@ public class GrabStockDateHistory {
     public static void main(String[] args) throws Exception {
         String market = "XNAS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
-        //        ChromeOptions chromeOptions = new ChromeOptions();
-        //                ChromeDriver driver = new ChromeDriver(chromeOptions);
-        //        driver.manage().window().setSize(new Dimension(1280, 1027));
-        //        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-        //        driver.switchTo().newWindow(WindowType.TAB);
 
-        //        BaseUtils.loginBarchart(driver);
-        //        ChromeDriver driver = null;
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
-        for (int i = 0; i < 2; i++) {
+        int threadCount = 3;
+        for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriver driver = new ChromeDriver(chromeOptions);
             driver.manage().window().setSize(new Dimension(1280, 1027));
@@ -63,7 +57,7 @@ public class GrabStockDateHistory {
         }
 
         // 从昨天开始每365天查询一次并抓取
-        // 默认step=3，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
+        // 默认step=2，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
         List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
         //        stockList.remove("STR");
         //        stockList.clear();
@@ -74,7 +68,7 @@ public class GrabStockDateHistory {
 
         String initDay = "01/03/2000";
         LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
-        int corePoolSize = 2;
+        int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
@@ -221,21 +215,6 @@ public class GrabStockDateHistory {
     public static WebElement loadStockCanvas(ChromeDriver driver, String stock) throws Exception {
         BaseUtils.viewloadPage(driver, "https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart", By.className("chart-canvas-container"));
         return driver.findElement(By.className("chart-canvas-container"));
-        //        try {
-        //            driver.get("https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart");
-        //        } catch (Exception e) {
-        //            System.out.println("load timeout");
-        //        }
-        //
-        //        while (true) {
-        //            try {
-        //                WebElement element = driver.findElement(By.className("chart-canvas-container"));
-        //                return element;
-        //            } catch (Exception e) {
-        //                System.out.println("canvas not find");
-        //            }
-        //            TimeUnit.SECONDS.sleep(1);
-        //        }
     }
 
     public static void setDateRange(ChromeDriver driver, String beginDate, String endDate) throws Exception {
@@ -267,16 +246,6 @@ public class GrabStockDateHistory {
         //        int avgStep = moveInfo.getAvgStep();
         //        getMoveData(driver, actions, xOffset, avgStep);
         return getMoveData(driver, actions, -514, 2);
-        //        actions.moveByOffset(1, 0).perform();
-
-        //        for (int i = 0; i < 10; i++) {
-        //            actions.moveByOffset(10, 0).perform();
-        //            String date = driver.findElement(By.xpath("//span[@class='field-name']")).getText();
-        //            System.out.println(date);
-        //            //            String text = driver.findElement(By.cssSelector("[style='color: #808080']")).getText();
-        //            //            System.out.println(text);
-        //            TimeUnit.MILLISECONDS.sleep(500);
-        //        }
     }
 
     private static List<StockKLine> getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
