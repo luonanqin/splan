@@ -68,7 +68,7 @@ public class GrabStockDateHistory {
 
         String initDay = "01/03/2000";
         LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
-        int corePoolSize = 1;
+        int corePoolSize = 5;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
