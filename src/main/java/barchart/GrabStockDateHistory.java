@@ -68,7 +68,7 @@ public class GrabStockDateHistory {
 
         String initDay = "01/03/2000";
         LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
-        int corePoolSize = 5;
+        int corePoolSize = 2;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
@@ -126,10 +126,11 @@ public class GrabStockDateHistory {
                         String beginDate = "01/01/" + (--year);
 
                         setDateRange(driverx, beginDate, endDate);
+                        System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
                         List<StockKLine> dataList = getDataFromCanvas(driverx, canvas);
 
                         appendTradeDay(stock, Lists.reverse(dataList));
-                        System.out.println("write finish: " + beginDate + " - " + endDate);
+                        System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
 
                         //                List<Integer> dataList = Lists.newArrayList(1);
                         if (CollectionUtils.isEmpty(dataList)) {
@@ -143,6 +144,7 @@ public class GrabStockDateHistory {
                     lock.lock();
                     thread.getAndIncrement();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("grab " + stock + " error " + e.getMessage());
                 } finally {
                     cond.signalAll();
@@ -275,35 +277,35 @@ public class GrabStockDateHistory {
     public static WebElement loadStockCanvas(ChromeDriver driver, String stock) throws Exception {
         BaseUtils.viewloadPage(driver, "https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart", By.className("chart-canvas-container"));
         return driver.findElement(By.className("chart-canvas-container"));
-//        try {
-//            driver.get("https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart");
-//        } catch (Exception e) {
-//            System.out.println("load timeout");
-//        }
-//
-//        while (true) {
-//            try {
-//                WebElement element = driver.findElement(By.className("chart-canvas-container"));
-//                return element;
-//            } catch (Exception e) {
-//                System.out.println("canvas not find");
-//            }
-//            TimeUnit.SECONDS.sleep(1);
-//        }
+        //        try {
+        //            driver.get("https://www.barchart.com/stocks/quotes/" + stock + "/interactive-chart");
+        //        } catch (Exception e) {
+        //            System.out.println("load timeout");
+        //        }
+        //
+        //        while (true) {
+        //            try {
+        //                WebElement element = driver.findElement(By.className("chart-canvas-container"));
+        //                return element;
+        //            } catch (Exception e) {
+        //                System.out.println("canvas not find");
+        //            }
+        //            TimeUnit.SECONDS.sleep(1);
+        //        }
     }
 
     public static void setDateRange(ChromeDriver driver, String beginDate, String endDate) throws Exception {
         int retryTimes = 10;
         while (retryTimes > 0) {
             try {
-                System.out.println("set new date range: " + beginDate + " - " + endDate);
+//                System.out.println("set new date range: " + beginDate + " - " + endDate);
                 driver.findElement(By.xpath("//div[@data-dropdown-id='bc-interactive-chart-dropdown-period']//i[@class='bc-glyph-chevron-down bc-dropdown-flexible-arrow']")).click();
                 driver.findElement(By.xpath("//li[@data-ng-click='changePeriod(item.period)' and contains(text(),'Date Range')]")).click();
                 driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.from']")).sendKeys(Keys.chord(Keys.COMMAND, "a"), Keys.DELETE, beginDate);
                 driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.to']")).sendKeys(endDate);
                 new Actions(driver).sendKeys(Keys.ENTER).perform();
                 driver.findElement(By.xpath("//button[@data-ng-click='modalConfirm()']")).click();
-                System.out.println("confirm new date range: " + beginDate + " - " + endDate);
+//                System.out.println("confirm new date range: " + beginDate + " - " + endDate);
                 break;
             } catch (Exception e) {
                 retryTimes--;
@@ -314,7 +316,7 @@ public class GrabStockDateHistory {
     private static List<StockKLine> getDataFromCanvas(ChromeDriver driver, WebElement canvas) throws InterruptedException {
         Actions actions = new Actions(driver);
         actions.moveToElement(canvas, 0, 0).perform();
-//        TimeUnit.SECONDS.sleep(2);
+        //        TimeUnit.SECONDS.sleep(2);
 
         //        MoveInfo moveInfo = getMoveInfo(driver, actions);
         //        int xOffset = moveInfo.getXOffset();
