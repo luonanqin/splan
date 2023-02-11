@@ -28,14 +28,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static util.Constants.*;
 
@@ -46,15 +43,24 @@ public class GrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
         String market = "XNAS";
-        //        System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
-        ChromeOptions chromeOptions = new ChromeOptions();
-        //        ChromeDriver driver = new ChromeDriver(chromeOptions);
+        System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
+        //        ChromeOptions chromeOptions = new ChromeOptions();
+        //                ChromeDriver driver = new ChromeDriver(chromeOptions);
         //        driver.manage().window().setSize(new Dimension(1280, 1027));
         //        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
         //        driver.switchTo().newWindow(WindowType.TAB);
 
         //        BaseUtils.loginBarchart(driver);
         //        ChromeDriver driver = null;
+        BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
+        for (int i = 0; i < 2; i++) {
+            ChromeOptions chromeOptions = new ChromeOptions();
+            ChromeDriver driver = new ChromeDriver(chromeOptions);
+            driver.manage().window().setSize(new Dimension(1280, 1027));
+            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+            BaseUtils.loginBarchart(driver);
+            driverQueue.offer(driver);
+        }
 
         // 从昨天开始每365天查询一次并抓取
         // 默认step=3，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
@@ -73,9 +79,6 @@ public class GrabStockDateHistory {
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
-        AtomicInteger thread = new AtomicInteger(corePoolSize);
-        Lock lock = new ReentrantLock();
-        Condition cond = lock.newCondition();
         for (String stock : stockList) {
             if (hasGrab.contains(stock)) {
                 System.out.println("has grab: " + stock);
@@ -92,103 +95,44 @@ public class GrabStockDateHistory {
             if (downloadLDParse.isAfter(initDayParse)) {
                 continue;
             }
-            try {
-                while (true) {
-                    lock.lock();
-                    if (thread.get() < 0) {
-                        cond.await();
-                        System.out.println("begin grab new stock: " + stock);
-                    } else {
-                        thread.addAndGet(-1);
-                        break;
-                    }
+
+            ChromeDriver driver = driverQueue.take();
+            cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock));
+        }
+    }
+
+    public static void asyncProcess(BlockingQueue<ChromeDriver> driverQueue, ChromeDriver driver, String stock) {
+        try {
+            WebElement canvas = loadStockCanvas(driver, stock);
+
+            // 断点续抓需要获取已经抓过的最新日期
+            String latestDay = getLatestDay(stock);
+            String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
+            int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
+            endDate = "01/01/" + year;
+            while (true) {
+                String beginDate = "01/01/" + (--year);
+
+                setDateRange(driver, beginDate, endDate);
+                System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
+                List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
+
+                appendTradeDay(stock, Lists.reverse(dataList));
+                System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
+
+                //                List<Integer> dataList = Lists.newArrayList(1);
+                if (CollectionUtils.isEmpty(dataList)) {
+                    renameFile(stock);
+                    break;
+                } else {
+                    endDate = beginDate;
                 }
-            } finally {
-                cond.signalAll();
-                lock.unlock();
             }
-            cachedThread.execute(() -> {
-                try {
-                    ChromeDriver driverx = new ChromeDriver(chromeOptions);
-                    driverx.manage().window().setSize(new Dimension(1280, 1027));
-                    driverx.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-                    BaseUtils.loginBarchart(driverx);
-
-                    //                    driverx.switchTo().newWindow(WindowType.WINDOW);
-                    WebElement canvas = loadStockCanvas(driverx, stock);
-
-                    // 断点续抓需要获取已经抓过的最新日期
-                    String latestDay = getLatestDay(stock);
-                    String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
-                    int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
-                    endDate = "01/01/" + year;
-                    while (true) {
-                        String beginDate = "01/01/" + (--year);
-
-                        setDateRange(driverx, beginDate, endDate);
-                        System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
-                        List<StockKLine> dataList = getDataFromCanvas(driverx, canvas);
-
-                        appendTradeDay(stock, Lists.reverse(dataList));
-                        System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
-
-                        //                List<Integer> dataList = Lists.newArrayList(1);
-                        if (CollectionUtils.isEmpty(dataList)) {
-                            renameFile(stock);
-                            break;
-                        } else {
-                            endDate = beginDate;
-                        }
-                    }
-                    driverx.quit();
-                    lock.lock();
-                    thread.getAndIncrement();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("grab " + stock + " error " + e.getMessage());
-                } finally {
-                    cond.signalAll();
-                    lock.unlock();
-                }
-
-                //                System.out.println(thread.get());
-                //                try {
-                //                    TimeUnit.SECONDS.sleep(2);
-                //                    lock.lock();
-                //                    thread.getAndIncrement();
-                //                } catch (InterruptedException e) {
-                //                    e.printStackTrace();
-                //                } finally {
-                //                    cond.signalAll();
-                //                    lock.unlock();
-                //                }
-            });
-
-            //            WebElement canvas = loadStockCanvas(driver, stock);
-            //            //                        WebElement canvas = null;
-            //
-            //            // 断点续抓需要获取已经抓过的最新日期
-            //            String latestDay = getLatestDay(stock);
-            //            String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
-            //            int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
-            //            endDate = "01/01/" + year;
-            //            while (true) {
-            //                String beginDate = "01/01/" + (--year);
-            //
-            //                setDateRange(driver, beginDate, endDate);
-            //                List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
-            //
-            //                appendTradeDay(stock, Lists.reverse(dataList));
-            //                System.out.println("write finish: " + beginDate + " - " + endDate);
-            //
-            //                //                List<Integer> dataList = Lists.newArrayList(1);
-            //                if (CollectionUtils.isEmpty(dataList)) {
-            //                    renameFile(stock);
-            //                    break;
-            //                } else {
-            //                    endDate = beginDate;
-            //                }
-            //            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        } finally {
+            driverQueue.offer(driver);
         }
     }
 
@@ -298,14 +242,14 @@ public class GrabStockDateHistory {
         int retryTimes = 10;
         while (retryTimes > 0) {
             try {
-//                System.out.println("set new date range: " + beginDate + " - " + endDate);
+                //                System.out.println("set new date range: " + beginDate + " - " + endDate);
                 driver.findElement(By.xpath("//div[@data-dropdown-id='bc-interactive-chart-dropdown-period']//i[@class='bc-glyph-chevron-down bc-dropdown-flexible-arrow']")).click();
                 driver.findElement(By.xpath("//li[@data-ng-click='changePeriod(item.period)' and contains(text(),'Date Range')]")).click();
                 driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.from']")).sendKeys(Keys.chord(Keys.COMMAND, "a"), Keys.DELETE, beginDate);
                 driver.findElement(By.xpath("//div[@class='show-for-medium-up for-tablet-and-desktop ng-scope']//input[@data-ng-model='selectedAggregation.range.to']")).sendKeys(endDate);
                 new Actions(driver).sendKeys(Keys.ENTER).perform();
                 driver.findElement(By.xpath("//button[@data-ng-click='modalConfirm()']")).click();
-//                System.out.println("confirm new date range: " + beginDate + " - " + endDate);
+                //                System.out.println("confirm new date range: " + beginDate + " - " + endDate);
                 break;
             } catch (Exception e) {
                 retryTimes--;
