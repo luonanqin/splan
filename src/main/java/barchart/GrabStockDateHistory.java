@@ -2,7 +2,6 @@ package barchart;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.ToString;
@@ -26,7 +25,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -63,6 +61,7 @@ public class GrabStockDateHistory {
         //        stockList.clear();
         //        stockList.add("PEP");
 
+        // todo 过滤掉成交不活跃股票，这部分不抓取
         // 已经抓取过的
         Set<String> hasGrab = hasGrab();
 
