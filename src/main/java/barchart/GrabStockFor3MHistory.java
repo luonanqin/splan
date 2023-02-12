@@ -148,7 +148,7 @@ public class GrabStockForOneYearHistory {
     }
 
     public static void appendTradeDay(String stock, List<StockKLine> dataList) throws Exception {
-        File file = new File(GRAB_PATH + stock);
+        File file = new File(GRAB_ONE_YEAR_PATH + stock);
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -204,11 +204,11 @@ public class GrabStockForOneYearHistory {
         actions.moveToElement(canvas, 0, 0).perform();
                 TimeUnit.SECONDS.sleep(2);
 
-        MoveInfo moveInfo = getMoveInfo(driver, actions);
+//        MoveInfo moveInfo = getMoveInfo(driver, actions);
 //        int xOffset = moveInfo.getXOffset();
-        int avgStep = moveInfo.getAvgStep();
+//        int avgStep = moveInfo.getAvgStep();
 //        getMoveData(driver, actions, xOffset, avgStep);
-        return getMoveData(driver, actions, -514, avgStep);
+        return getMoveData(driver, actions, -514, 14);
     }
 
     private static List<StockKLine> getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
