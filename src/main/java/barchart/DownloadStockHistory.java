@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import stock.FilterStock;
 import util.BaseUtils;
 
 import java.io.File;
@@ -31,10 +32,10 @@ public class DownloadStockHistory {
         /** download historical stock data */
 
         // for daily
-                downloadHistoricalStock(driver, stockList, "daily", 100);
+//                downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-        //        downloadHistoricalStock(driver, stockList, "weekly", 30);
+                downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
         //        downloadHistoricalStock(driver, stockList, "monthly", 30);
@@ -45,7 +46,7 @@ public class DownloadStockHistory {
         driver.quit();
     }
 
-    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, String frequency, int count) throws InterruptedException {
+    private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, String frequency, int count) throws Exception {
         String hasDownloadPath = "src/main/resources/historicalData/" + frequency;
         File hasDownloadFile = new File(hasDownloadPath);
         if (!hasDownloadFile.exists()) {
@@ -56,8 +57,13 @@ public class DownloadStockHistory {
         String searchKey = "_" + frequency + "_historical-data";
         Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
 
+        List<String> flatTradeStockList = FilterStock.tradeFlat();
         File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
+            if (flatTradeStockList.contains(stock)) {
+                System.out.println("flat trade: " + stock);
+                continue;
+            }
             if (hasDownload.contains(stock.toLowerCase())) {
                 System.out.println("has downloaded: " + stock);
                 continue;
