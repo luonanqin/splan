@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 public final class Constants {
     public static final String DAY_FORMATTER = "MM/dd/yyyy";
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(Constants.DAY_FORMATTER);
-    public static final String TRADE_DAY_PATH = "src/main/resources/historicalData/tradeDay/";
+    public static final String GRAB_PATH = "src/main/resources/historicalData/grab/";
+    public static final String GRAB_ONE_YEAR_PATH = "src/main/resources/historicalData/graboneyear/";
     public static final String DAILY_PATH = "src/main/resources/historicalData/daily/";
 }

@@ -14,7 +14,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import stock.FilterStock;
 import util.BaseUtils;
 
 import java.io.BufferedReader;
@@ -38,10 +37,10 @@ import static util.Constants.*;
 /**
  * Created by Luonanqin on 2023/2/5.
  */
-public class GrabStockDateHistory {
+public class GrabStockForOneYearHistory {
 
     public static void main(String[] args) throws Exception {
-        String market = "XNAS";
+        String market = "XNYS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
@@ -62,12 +61,10 @@ public class GrabStockDateHistory {
         //        stockList.clear();
         //        stockList.add("PEP");
 
-        // 交易不活跃的
-        List<String> flatTradeStockList = FilterStock.tradeFlat();
         // 已经抓取过的
         Set<String> hasGrab = hasGrab();
 
-        String initDay = "01/03/2000";
+        String initDay = "01/03/2022";
         LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
@@ -75,10 +72,6 @@ public class GrabStockDateHistory {
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
         for (String stock : stockList) {
-            if (flatTradeStockList.contains(stock)) {
-                System.out.println("flat trade: " + stock);
-                continue;
-            }
             if (hasGrab.contains(stock)) {
                 System.out.println("has grab: " + stock);
                 continue;
@@ -87,11 +80,6 @@ public class GrabStockDateHistory {
             String downloadLatestDay = getDownloadLatestDay(stock);
             if (StringUtils.isBlank(downloadLatestDay)) {
                 System.out.println("has not download: " + stock);
-                continue;
-            }
-            // 如果已经下载的daily最新日期大于01/01/2000，则不需要抓取这个日期之前的时间
-            LocalDate downloadLDParse = LocalDate.parse(downloadLatestDay, FORMATTER);
-            if (downloadLDParse.isAfter(initDayParse)) {
                 continue;
             }
 
@@ -136,7 +124,7 @@ public class GrabStockDateHistory {
     }
 
     public static Set<String> hasGrab() {
-        File file = new File(GRAB_PATH);
+        File file = new File(GRAB_ONE_YEAR_PATH);
         Set<String> hasGrab = Sets.newHashSet();
         for (String fileName : file.list()) {
             if (!fileName.endsWith("_day")) {
@@ -148,7 +136,7 @@ public class GrabStockDateHistory {
     }
 
     public static void renameFile(String stock) {
-        String fileName = GRAB_PATH + stock;
+        String fileName = GRAB_ONE_YEAR_PATH + stock;
         File file = new File(fileName);
         if (file.exists()) {
             file.renameTo(new File(fileName + "_day"));
