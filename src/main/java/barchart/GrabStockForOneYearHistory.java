@@ -202,13 +202,13 @@ public class GrabStockForOneYearHistory {
     private static List<StockKLine> getDataFromCanvas(ChromeDriver driver, WebElement canvas) throws InterruptedException {
         Actions actions = new Actions(driver);
         actions.moveToElement(canvas, 0, 0).perform();
-        //        TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(2);
 
         MoveInfo moveInfo = getMoveInfo(driver, actions);
 //        int xOffset = moveInfo.getXOffset();
-//        int avgStep = moveInfo.getAvgStep();
+        int avgStep = moveInfo.getAvgStep();
 //        getMoveData(driver, actions, xOffset, avgStep);
-        return getMoveData(driver, actions, -514, 2);
+        return getMoveData(driver, actions, -514, avgStep);
     }
 
     private static List<StockKLine> getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
