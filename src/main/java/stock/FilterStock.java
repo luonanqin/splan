@@ -18,6 +18,11 @@ import static util.Constants.FORMATTER;
  */
 public class FilterStock {
 
+    public static void main(String[] args) throws Exception {
+        List<String> list = tradeFlat();
+        System.out.println(list);
+    }
+
     public static List<String> tradeFlat() throws Exception {
         File stockFile = new File("src/main/resources/historicalData/daily");
         File[] files = stockFile.listFiles();
@@ -32,22 +37,22 @@ public class FilterStock {
 
             //            System.out.println(code);
 
-            List<StockKLine> dataList = getTwoMonthStockDaily(file);
+            List<StockKLine> dataList = getStockDailyForDays(file, 60);
             //            double avgChangePnt = calAvgChangePnt(dataList);
             double avgVolumn = calAvgVolumn(dataList);
 
             //            if (avgChangePnt < 0.6) {
             //                System.out.println("avgChangePnt: " + code);
             //            }
-            if (avgVolumn < 100000) {
-//                System.out.println("avgVolumn: " + code);
+            if (avgVolumn < 1000000) {
+                //                System.out.println("avgVolumn: " + code);
                 filted.add(code.toUpperCase());
             }
         }
         return filted;
     }
 
-    public static List<StockKLine> getTwoMonthStockDaily(File file) throws Exception {
+    public static List<StockKLine> getStockDailyForDays(File file, int days) throws Exception {
         //        System.out.println(file.getName());
         BufferedReader br = new BufferedReader(new FileReader(file));
         String data;
@@ -77,7 +82,7 @@ public class FilterStock {
                 count++;
             }
 
-            if (count > 40) {
+            if (count > days) {
                 break;
             }
         }
@@ -100,7 +105,7 @@ public class FilterStock {
         for (StockKLine data : dataList) {
             sum = sum.add(data.getVolume());
         }
-//        System.out.println(sum.toString()+" "+ dataList.size());
+        //        System.out.println(sum.toString()+" "+ dataList.size());
         return sum.divide(BigDecimal.valueOf(dataList.size()), BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

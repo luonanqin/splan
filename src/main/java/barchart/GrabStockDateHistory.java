@@ -8,9 +8,11 @@ import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import stock.FilterStock;
 import util.BaseUtils;
@@ -21,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -43,14 +46,14 @@ public class GrabStockDateHistory {
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
         int threadCount = 3;
-//        for (int i = 0; i < threadCount; i++) {
-//            ChromeOptions chromeOptions = new ChromeOptions();
-//            ChromeDriver driver = new ChromeDriver(chromeOptions);
-//            driver.manage().window().setSize(new Dimension(1280, 1027));
-//            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-//            BaseUtils.loginBarchart(driver);
-//            driverQueue.offer(driver);
-//        }
+        for (int i = 0; i < threadCount; i++) {
+            ChromeOptions chromeOptions = new ChromeOptions();
+            ChromeDriver driver = new ChromeDriver(chromeOptions);
+            driver.manage().window().setSize(new Dimension(1280, 1027));
+            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+            BaseUtils.loginBarchart(driver);
+            driverQueue.offer(driver);
+        }
 
         // 从昨天开始每365天查询一次并抓取
         // 默认step=2，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
@@ -72,12 +75,12 @@ public class GrabStockDateHistory {
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
         for (String stock : stockList) {
-            if (hasGrab.contains(stock)) {
-                System.out.println("has grab: " + stock);
-                continue;
-            }
             if (flatTradeStockList.contains(stock)) {
                 System.out.println("flat trade: " + stock);
+                continue;
+            }
+            if (hasGrab.contains(stock)) {
+                System.out.println("has grab: " + stock);
                 continue;
             }
 
