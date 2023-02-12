@@ -35,14 +35,14 @@ import static util.Constants.*;
 /**
  * Created by Luonanqin on 2023/2/5.
  */
-public class GrabStockForOneYearHistory {
+public class GrabStockFor3MHistory {
 
     public static void main(String[] args) throws Exception {
         String market = "XNYS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
-        int threadCount = 1;
+        int threadCount = 3;
         for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriver driver = new ChromeDriver(chromeOptions);
