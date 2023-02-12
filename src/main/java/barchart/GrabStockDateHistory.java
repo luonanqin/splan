@@ -148,7 +148,7 @@ public class GrabStockDateHistory {
     }
 
     public static void renameFile(String stock) {
-        String fileName = TRADE_DAY_PATH + stock;
+        String fileName = (TRADE_DAY_PATH + stock;
         File file = new File(fileName);
         if (file.exists()) {
             file.renameTo(new File(fileName + "_day"));
@@ -159,7 +159,7 @@ public class GrabStockDateHistory {
     }
 
     public static String getLatestDay(String stock) throws Exception {
-        File file = new File(TRADE_DAY_PATH + stock);
+        File file = new File((TRADE_DAY_PATH + stock);
         if (!file.exists()) {
             file.createNewFile();
             return null;
@@ -193,7 +193,7 @@ public class GrabStockDateHistory {
     }
 
     public static void appendTradeDay(String stock, List<StockKLine> dataList) throws Exception {
-        File file = new File(TRADE_DAY_PATH + stock);
+        File file = new File((TRADE_DAY_PATH + stock);
 
         FileOutputStream fos = new FileOutputStream(file, true);
         OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
