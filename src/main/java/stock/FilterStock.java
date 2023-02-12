@@ -16,7 +16,7 @@ import java.util.List;
 public class FilterStock {
 
     public static void main(String[] args) throws Exception {
-        File stockFile = new File("src/main/resources/historicalData/stock");
+        File stockFile = new File("src/main/resources/historicalData/daily");
         File[] files = stockFile.listFiles();
 
         for (int i = 0; i < files.length; i++) {
@@ -29,12 +29,13 @@ public class FilterStock {
             //            System.out.println(code);
 
             List<StockKLine> dataList = getTwoMonthStockDaily(file);
-            double avgChangePnt = calAvgChangePnt(dataList);
+//            double avgChangePnt = calAvgChangePnt(dataList);
+            System.out.println(fileName);
             double avgVolumn = calAvgVolumn(dataList);
 
-            if (avgChangePnt < 0.6) {
-                System.out.println("avgChangePnt: " + code);
-            }
+//            if (avgChangePnt < 0.6) {
+//                System.out.println("avgChangePnt: " + code);
+//            }
             if (avgVolumn < 100000) {
                 System.out.println("avgVolumn: " + code);
             }
