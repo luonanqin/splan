@@ -8,7 +8,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+
+import static util.Constants.FORMATTER;
 
 /**
  * Created by Luonanqin on 2023/1/31.
@@ -29,13 +32,13 @@ public class FilterStock {
             //            System.out.println(code);
 
             List<StockKLine> dataList = getTwoMonthStockDaily(file);
-//            double avgChangePnt = calAvgChangePnt(dataList);
-            System.out.println(fileName);
+            //            double avgChangePnt = calAvgChangePnt(dataList);
+            System.out.println(fileName + " " + dataList.size());
             double avgVolumn = calAvgVolumn(dataList);
 
-//            if (avgChangePnt < 0.6) {
-//                System.out.println("avgChangePnt: " + code);
-//            }
+            //            if (avgChangePnt < 0.6) {
+            //                System.out.println("avgChangePnt: " + code);
+            //            }
             if (avgVolumn < 100000) {
                 System.out.println("avgVolumn: " + code);
             }
@@ -51,14 +54,16 @@ public class FilterStock {
 
         List<StockKLine> dataList = Lists.newArrayList();
         int count = 0;
+        LocalDate init = LocalDate.parse("12/30/2022", FORMATTER);
         while (StringUtils.isNotBlank(data = br.readLine())) {
             String[] split = data.split(",");
             String date = split[0];
-            if ("12/30/2022".equals(date)) {
-                count = 1;
-            }
-
-            if (count > 0 && split.length == 8) {
+            if (count == 0) {
+                LocalDate cur = LocalDate.parse(date, FORMATTER);
+                if (cur.isBefore(init)) {
+                    count = 1;
+                }
+            } else if (count > 0 && split.length >= 8) {
                 String changePnt = split[6];
                 String volumn = split[7];
 
