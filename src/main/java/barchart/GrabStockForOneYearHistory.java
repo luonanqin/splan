@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.ToString;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -23,7 +22,6 @@ import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -44,7 +42,7 @@ public class GrabStockForOneYearHistory {
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
-        int threadCount = 3;
+        int threadCount = 1;
         for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriver driver = new ChromeDriver(chromeOptions);
@@ -64,8 +62,8 @@ public class GrabStockForOneYearHistory {
         // 已经抓取过的
         Set<String> hasGrab = hasGrab();
 
-        String initDay = "01/03/2022";
-        LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
+        //        String initDay = "01/03/2022";
+        //        LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
@@ -74,12 +72,6 @@ public class GrabStockForOneYearHistory {
         for (String stock : stockList) {
             if (hasGrab.contains(stock)) {
                 System.out.println("has grab: " + stock);
-                continue;
-            }
-
-            String downloadLatestDay = getDownloadLatestDay(stock);
-            if (StringUtils.isBlank(downloadLatestDay)) {
-                System.out.println("has not download: " + stock);
                 continue;
             }
 
@@ -93,28 +85,18 @@ public class GrabStockForOneYearHistory {
             WebElement canvas = loadStockCanvas(driver, stock);
 
             // 断点续抓需要获取已经抓过的最新日期
-            String latestDay = getLatestDay(stock);
-            String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
-            int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
-            endDate = "01/01/" + year;
-            while (true) {
-                String beginDate = "01/01/" + (--year);
+            //            String latestDay = getLatestDay(stock);
+            String beginDate = "10/01/2022";
+            String endDate = "12/31/2022";
 
-                setDateRange(driver, beginDate, endDate);
-                System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
-                List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
+            setDateRange(driver, beginDate, endDate);
+            System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
+            List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
 
-                appendTradeDay(stock, Lists.reverse(dataList));
-                System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
+            appendTradeDay(stock, Lists.reverse(dataList));
+            System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
 
-                //                List<Integer> dataList = Lists.newArrayList(1);
-                if (CollectionUtils.isEmpty(dataList)) {
-                    renameFile(stock);
-                    break;
-                } else {
-                    endDate = beginDate;
-                }
-            }
+            renameFile(stock);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -146,21 +128,6 @@ public class GrabStockForOneYearHistory {
         System.out.println("rename " + stock + " is not exist");
     }
 
-    public static String getLatestDay(String stock) throws Exception {
-        File file = new File(GRAB_PATH + stock);
-        if (!file.exists()) {
-            file.createNewFile();
-            return null;
-        } else {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String latest = null, str;
-            while (StringUtils.isNotBlank(str = br.readLine())) {
-                latest = str.split(",")[0];
-            }
-            return latest;
-        }
-    }
-
     public static String getDownloadLatestDay(String stock) throws Exception {
         File file = new File(DAILY_PATH);
         for (File stockFile : file.listFiles()) {
@@ -182,6 +149,9 @@ public class GrabStockForOneYearHistory {
 
     public static void appendTradeDay(String stock, List<StockKLine> dataList) throws Exception {
         File file = new File(GRAB_PATH + stock);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
 
         FileOutputStream fos = new FileOutputStream(file, true);
         OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
@@ -234,10 +204,10 @@ public class GrabStockForOneYearHistory {
         actions.moveToElement(canvas, 0, 0).perform();
         //        TimeUnit.SECONDS.sleep(2);
 
-        //        MoveInfo moveInfo = getMoveInfo(driver, actions);
-        //        int xOffset = moveInfo.getXOffset();
-        //        int avgStep = moveInfo.getAvgStep();
-        //        getMoveData(driver, actions, xOffset, avgStep);
+        MoveInfo moveInfo = getMoveInfo(driver, actions);
+//        int xOffset = moveInfo.getXOffset();
+//        int avgStep = moveInfo.getAvgStep();
+//        getMoveData(driver, actions, xOffset, avgStep);
         return getMoveData(driver, actions, -514, 2);
     }
 
