@@ -287,11 +287,11 @@ public class GrabStockDateHistory {
                 String volume = StringUtils.defaultIfBlank(elements.get(5).getText(), "0");
                 StockKLine kLine = StockKLine.builder()
                   .date(date)
-                  .open(Double.valueOf(open))
-                  .high(Double.valueOf(high))
-                  .low(Double.valueOf(low))
-                  .close(Double.valueOf(close))
-                  .change(Double.valueOf(change))
+                  .open(Double.valueOf(open.replace(",", "")))
+                  .high(Double.valueOf(high.replace(",", "")))
+                  .low(Double.valueOf(low.replace(",", "")))
+                  .close(Double.valueOf(close.replace(",", "")))
+                  .change(Double.valueOf(change.replace(",", "")))
                   .volume(BigDecimal.valueOf(Double.valueOf(volume.replace(",", ""))))
                   .build();
                 dataList.add(kLine);
