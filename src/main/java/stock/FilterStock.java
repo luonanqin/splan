@@ -18,11 +18,11 @@ import static util.Constants.FORMATTER;
  */
 public class FilterStock {
 
-    public static void main(String[] args) throws Exception {
+    public static List<String> tradeFlat() throws Exception {
         File stockFile = new File("src/main/resources/historicalData/daily");
         File[] files = stockFile.listFiles();
 
-        List<String> 
+        List<String> filted = Lists.newArrayList();
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
             String fileName = file.getName();
@@ -40,9 +40,11 @@ public class FilterStock {
             //                System.out.println("avgChangePnt: " + code);
             //            }
             if (avgVolumn < 100000) {
-                System.out.println("avgVolumn: " + code);
+//                System.out.println("avgVolumn: " + code);
+                filted.add(code.toUpperCase());
             }
         }
+        return filted;
     }
 
     public static List<StockKLine> getTwoMonthStockDaily(File file) throws Exception {
