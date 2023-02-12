@@ -1,6 +1,7 @@
 package test;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import util.BaseUtils;
 
 import java.text.SimpleDateFormat;
@@ -46,5 +47,46 @@ public class Test {
             }
             System.out.println(market + " " + sum);
         }
+    }
+
+    private static void groupOpenDataByYear() throws Exception {
+        Map<String, String> xnasOpenMap = BaseUtils.getOpenData("XNAS");
+
+        Map<String/*year*/, Integer/*count*/> countMap = Maps.newHashMap();
+        for (String code : xnasOpenMap.keySet()) {
+            String open = xnasOpenMap.get(code);
+            if (open.length() != 10) {
+                continue;
+            }
+            String year = open.substring(0, 4);
+            if (!countMap.containsKey(year)) {
+                countMap.put(year, 0);
+            }
+            int count = countMap.get(year) + 1;
+            countMap.put(year, count);
+        }
+
+        System.out.println(countMap);
+    }
+
+    private static void getOpenData() throws Exception {
+        Map<String, String> xnasOpenMap = BaseUtils.getOpenData("XNAS");
+
+        List<String> stockList=Lists.newArrayList();
+        Map<String/*year*/, Integer/*count*/> countMap = Maps.newHashMap();
+        for (String code : xnasOpenMap.keySet()) {
+            String open = xnasOpenMap.get(code);
+            if (open.length() != 10) {
+                continue;
+            }
+            String year = open.substring(0, 4);
+            if (!countMap.containsKey(year)) {
+                countMap.put(year, 0);
+            }
+            int count = countMap.get(year) + 1;
+            countMap.put(year, count);
+        }
+
+        System.out.println(countMap);
     }
 }

@@ -33,7 +33,6 @@ public class FilterStock {
 
             List<StockKLine> dataList = getTwoMonthStockDaily(file);
             //            double avgChangePnt = calAvgChangePnt(dataList);
-            System.out.println(fileName + " " + dataList.size());
             double avgVolumn = calAvgVolumn(dataList);
 
             //            if (avgChangePnt < 0.6) {
@@ -97,9 +96,9 @@ public class FilterStock {
     public static double calAvgVolumn(List<StockKLine> dataList) {
         BigDecimal sum = BigDecimal.ZERO;
         for (StockKLine data : dataList) {
-            sum.add(data.getVolume());
+            sum = sum.add(data.getVolume());
         }
-
-        return sum.divide(BigDecimal.valueOf(dataList.size())).doubleValue();
+//        System.out.println(sum.toString()+" "+ dataList.size());
+        return sum.divide(BigDecimal.valueOf(dataList.size()), BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }
