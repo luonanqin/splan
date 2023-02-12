@@ -22,6 +22,7 @@ public class FilterStock {
         File stockFile = new File("src/main/resources/historicalData/daily");
         File[] files = stockFile.listFiles();
 
+        List<String> 
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
             String fileName = file.getName();
@@ -42,7 +43,6 @@ public class FilterStock {
                 System.out.println("avgVolumn: " + code);
             }
         }
-
     }
 
     public static List<StockKLine> getTwoMonthStockDaily(File file) throws Exception {
