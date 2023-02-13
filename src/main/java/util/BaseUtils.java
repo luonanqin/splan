@@ -34,7 +34,7 @@ public class BaseUtils {
         while (true) {
             try {
                 driver.get(url);
-//                driver.findElement(checkBy);
+                //                driver.findElement(checkBy);
                 new WebDriverWait(driver, Duration.ofSeconds(5)).until(d -> driver.findElement(checkBy));
                 return;
             } catch (Exception e) {
@@ -57,7 +57,7 @@ public class BaseUtils {
                     driver.findElement(checkBy);
                     return;
                 } catch (Exception exception) {
-                   refresh(driver);
+                    refresh(driver);
                 }
             }
         }
@@ -77,7 +77,7 @@ public class BaseUtils {
         viewloadPage(driver, "https://www.barchart.com/login", By.xpath("//h1[@class='sign-in-block_header']"));
         //        driver.get("https://www.barchart.com/login");
         System.out.println("finish loading");
-//        TimeUnit.SECONDS.sleep(5);
+        //        TimeUnit.SECONDS.sleep(5);
 
         // login
         System.out.println("input email and pwd");
@@ -87,19 +87,19 @@ public class BaseUtils {
         //        driver.findElement(By.className("login-button")).click();
         clickLoadPage(driver, By.className("login-button"), By.tagName("span"));
         // 登录后需要休眠一会儿确定已经登录
-//        while (true) {
-//            String MyAccount;
-//            try {
-//                MyAccount = driver.findElement(By.tagName("span")).getText();
-//                if ("My Account".equals(MyAccount)) {
-//                    System.out.println("finish login");
-//                    break;
-//                }
-//            } catch (Exception e) {
-//                System.out.println("wait login");
-//                TimeUnit.SECONDS.sleep(1);
-//            }
-//        }
+        //        while (true) {
+        //            String MyAccount;
+        //            try {
+        //                MyAccount = driver.findElement(By.tagName("span")).getText();
+        //                if ("My Account".equals(MyAccount)) {
+        //                    System.out.println("finish login");
+        //                    break;
+        //                }
+        //            } catch (Exception e) {
+        //                System.out.println("wait login");
+        //                TimeUnit.SECONDS.sleep(1);
+        //            }
+        //        }
     }
 
     public static Map<String, String> getOpenData(String market) throws IOException {
@@ -159,7 +159,7 @@ public class BaseUtils {
         return stockList;
     }
 
-    public static void writeStockKLine(String filePath, List<StockKLine> list) throws Exception{
+    public static void writeStockKLine(String filePath, List<StockKLine> list) throws Exception {
         BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
         for (StockKLine l : list) {
             bw.write(l.toString());
@@ -191,8 +191,26 @@ public class BaseUtils {
 
         String line;
         while (StringUtils.isNotBlank(line = br.readLine())) {
+            // 修正数字中带逗号
             if (line.contains("\"")) {
-                
+                StringBuilder sb = new StringBuilder();
+                boolean open = false;
+                for (int i = 0; i < line.length(); i++) {
+                    char c = line.charAt(i);
+                    if (c == '\"') {
+                        if (!open) {
+                            open = true;
+                        } else if (open) {
+                            open = false;
+                        }
+                    } else {
+                        if (open && c == ',') {
+                            continue;
+                        }
+                        sb.append(c);
+                    }
+                }
+                line = sb.toString();
             }
             String[] split = line.split(",");
             if (split.length < 8) {

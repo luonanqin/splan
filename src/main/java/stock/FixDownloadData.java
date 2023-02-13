@@ -52,9 +52,7 @@ public class FixDownloadData {
                 LocalDate dayDate = LocalDate.parse(dayK.getDate(), FORMATTER);
 
                 while (!weekDate.isBefore(dayDate)) {
-                    if (firstTime) {
-                        firstTime = false;
-                    } else {
+                    if (!firstTime) {
                         StockKLine newWeek = StockKLine.builder()
                           .open(weekK.getOpen())
                           .close(weekK.getClose())
@@ -71,6 +69,9 @@ public class FixDownloadData {
                     weekK = originWeeklyData.get(weekIdx);
                     weekDate = LocalDate.parse(weekK.getDate(), FORMATTER);
                     weekIdx++;
+                }
+                if (firstTime) {
+                    firstTime = false;
                 }
 
                 sum = sum.add(dayK.getVolume());
