@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static util.Constants.FORMATTER;
+import static util.Constants.GRAB_ONE_YEAR_PATH;
 
 /**
  * Created by Luonanqin on 2023/1/31.
@@ -24,7 +25,7 @@ public class FilterStock {
     }
 
     public static List<String> tradeFlat() throws Exception {
-        File stockFile = new File("src/main/resources/historicalData/daily");
+        File stockFile = new File(GRAB_ONE_YEAR_PATH);
         File[] files = stockFile.listFiles();
 
         List<String> filted = Lists.newArrayList();
@@ -44,7 +45,7 @@ public class FilterStock {
             //            if (avgChangePnt < 0.6) {
             //                System.out.println("avgChangePnt: " + code);
             //            }
-            if (avgVolumn < 1000000) {
+            if (avgVolumn > 1000000) {
                 //                System.out.println("avgVolumn: " + code);
                 filted.add(code.toUpperCase());
             }
@@ -56,7 +57,7 @@ public class FilterStock {
         //        System.out.println(file.getName());
         BufferedReader br = new BufferedReader(new FileReader(file));
         String data;
-        br.readLine(); // table head
+//        br.readLine(); // table head
 
         List<StockKLine> dataList = Lists.newArrayList();
         int count = 0;
@@ -69,12 +70,12 @@ public class FilterStock {
                 if (cur.isBefore(init)) {
                     count = 1;
                 }
-            } else if (count > 0 && split.length >= 8) {
-                String changePnt = split[6];
-                String volumn = split[7];
+            } else if (count > 0 && split.length >= 6) {
+//                String changePnt = split[6];
+                String volumn = split[6];
 
                 StockKLine stockDaily = new StockKLine();
-                stockDaily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
+//                stockDaily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
                 stockDaily.setVolume(BigDecimal.valueOf(Double.valueOf(volumn)));
 
                 dataList.add(stockDaily);
@@ -104,6 +105,9 @@ public class FilterStock {
         BigDecimal sum = BigDecimal.ZERO;
         for (StockKLine data : dataList) {
             sum = sum.add(data.getVolume());
+        }
+        if (sum.equals(BigDecimal.ZERO)) {
+            return 0;
         }
         //        System.out.println(sum.toString()+" "+ dataList.size());
         return sum.divide(BigDecimal.valueOf(dataList.size()), BigDecimal.ROUND_HALF_UP).doubleValue();
