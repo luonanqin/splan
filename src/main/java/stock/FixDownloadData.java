@@ -54,11 +54,13 @@ public class FixDownloadData {
                 while (!weekDate.isBefore(dayDate)) {
                     if (!firstTime) {
                         StockKLine newWeek = StockKLine.builder()
+                          .date(weekK.getDate())
                           .open(weekK.getOpen())
                           .close(weekK.getClose())
                           .high(weekK.getHigh())
                           .low(weekK.getLow())
-                          .change(weekK.getChangePnt())
+                          .change(weekK.getChange())
+                          .changePnt(weekK.getChangePnt())
                           .volume(sum)
                           .build();
                         newWeekList.add(newWeek);
@@ -69,6 +71,12 @@ public class FixDownloadData {
                     weekK = originWeeklyData.get(weekIdx);
                     weekDate = LocalDate.parse(weekK.getDate(), FORMATTER);
                     weekIdx++;
+                    if (weekIdx >= originWeeklyData.size()) {
+                        break;
+                    }
+                }
+                if (weekIdx >= originWeeklyData.size()) {
+                    break;
                 }
                 if (firstTime) {
                     firstTime = false;
@@ -77,7 +85,8 @@ public class FixDownloadData {
                 sum = sum.add(dayK.getVolume());
                 dayCount++;
             }
-            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + "stock", newWeekList);
+            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
+            System.out.println("fix finish: " + stock);
         }
         // 当daily某天小于weekly的某天时，开始累加周成交量x，
         // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量
