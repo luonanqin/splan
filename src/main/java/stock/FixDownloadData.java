@@ -2,12 +2,18 @@ package stock;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import util.BaseUtils;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static util.Constants.BASE_PATH;
 import static util.Constants.FIX_WEEKLY_PATH;
+import static util.Constants.FORMATTER;
 
 /**
  * Created by Luonanqin on 2023/2/13.
@@ -16,41 +22,78 @@ public class FixDownloadData {
 
     public static void main(String[] args) throws Exception {
         // 加载weekly下的文件列表，转换成stock列表大写
+        Map<String, String> weeklyMap = BaseUtils.originStockFileMap("weekly");
+        Map<String, String> dailyMap = BaseUtils.originStockFileMap("daily");
         // 加载fixWeekly下的文件列表，转换成stock列表大写
+        Set<String> fixedWeeklySet = fixedWeeklyList();
         // 只有weekly中有且fixWeekly没有的数据才需要fix
-        // 加载daily数据
-        // 加载weekly数据
+        for (String stock : weeklyMap.keySet()) {
+            if (fixedWeeklySet.contains(stock)) {
+                System.out.println("has fixed: " + stock);
+                continue;
+            }
+
+            // 加载weekly数据
+            String weeklyFile = weeklyMap.get(stock);
+            List<StockKLine> originWeeklyData = BaseUtils.loadOriginalData(weeklyFile);
+
+            // 加载daily数据
+            String dailyFile = dailyMap.get(stock);
+            List<StockKLine> originDailyData = BaseUtils.loadOriginalData(dailyFile);
+
+            int weekIdx = 0;
+            LocalDate weekDate = LocalDate.now();
+            BigDecimal sum = BigDecimal.ZERO;
+            boolean firstTime = true;
+            StockKLine weekK = null;
+            List<StockKLine> newWeekList = Lists.newArrayList();
+            int dayCount = 0;
+            for (StockKLine dayK : originDailyData) {
+                LocalDate dayDate = LocalDate.parse(dayK.getDate(), FORMATTER);
+
+                while (!weekDate.isBefore(dayDate)) {
+                    if (firstTime) {
+                        firstTime = false;
+                    } else {
+                        StockKLine newWeek = StockKLine.builder()
+                          .open(weekK.getOpen())
+                          .close(weekK.getClose())
+                          .high(weekK.getHigh())
+                          .low(weekK.getLow())
+                          .change(weekK.getChangePnt())
+                          .volume(sum)
+                          .build();
+                        newWeekList.add(newWeek);
+
+                        sum = BigDecimal.ZERO;
+                        dayCount = 0;
+                    }
+                    weekK = originWeeklyData.get(weekIdx);
+                    weekDate = LocalDate.parse(weekK.getDate(), FORMATTER);
+                    weekIdx++;
+                }
+
+                sum = sum.add(dayK.getVolume());
+                dayCount++;
+            }
+            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + "stock", newWeekList);
+        }
         // 当daily某天小于weekly的某天时，开始累加周成交量x，
-        // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，写入fixWeekly，并清零x，接着继续累加新的成交量
+        // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量
         // 结束
 
     }
 
-    public List<String> fixedWeeklyList() throws Exception {
-        List<String> list = Lists.newArrayList();
+    public static Set<String> fixedWeeklyList() throws Exception {
+        Set<String> set = Sets.newHashSet();
 
         File dir = new File(FIX_WEEKLY_PATH);
         for (String file : dir.list()) {
-            String stock = file.substring(0, file.indexOf("_weekly"));
-            list.add(stock.toUpperCase());
+            set.add(file.toUpperCase());
         }
 
-        return list;
+        return set;
     }
 
-    public List<String> downloadDataList(String period) throws Exception {
-        List<String> list = Lists.newArrayList();
 
-        File dir = new File(BASE_PATH + period + "/");
-        for (String file : dir.list()) {
-            String stock = file.substring(0, file.indexOf("_" + period));
-            list.add(stock.toUpperCase());
-        }
-
-        return list;
-    }
-
-    public List<StockKLine> loadOriginalData(String period, String stock){
-        
-    }
 }

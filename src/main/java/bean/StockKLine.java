@@ -28,6 +28,6 @@ public class StockKLine {
 
     @Override
     public String toString() {
-        return date + "," + open + "," + high + "," + low + "," + close + "," + change + "," + volume;
+        return date + "," + open + "," + high + "," + low + "," + close + "," + change + "," + changePnt + "," + volume.toString();
     }
 }

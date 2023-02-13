@@ -1,6 +1,7 @@
 package util;
 
 import barchart.DownloadStockHistory;
+import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -9,14 +10,20 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static util.Constants.BASE_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -151,4 +158,68 @@ public class BaseUtils {
 
         return stockList;
     }
+
+    public static void writeStockKLine(String filePath, List<StockKLine> list) throws Exception{
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+        for (StockKLine l : list) {
+            bw.write(l.toString());
+            bw.write("\n");
+        }
+        bw.close();
+    }
+
+    public static Map<String, String> originStockFileMap(String period) throws Exception {
+        Map<String, String> stockFileMap = Maps.newHashMap();
+        File dir = new File(BASE_PATH + period + "/");
+        for (File file : dir.listFiles()) {
+            String fileName = file.getName();
+            if (!fileName.endsWith(".csv")) {
+                continue;
+            }
+            String stock = fileName.substring(0, fileName.indexOf("_" + period));
+            stockFileMap.put(stock, file.getAbsolutePath());
+        }
+
+        return stockFileMap;
+    }
+
+    public static List<StockKLine> loadOriginalData(String filePath) throws Exception {
+        List<StockKLine> list = Lists.newArrayList();
+
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        br.readLine();
+
+        String line;
+        while (StringUtils.isNotBlank(line = br.readLine())) {
+            String[] split = line.split(",");
+            if (split.length < 8) {
+                continue;
+            }
+
+            String date = split[0];
+            double open = Double.valueOf(split[1]);
+            double high = Double.valueOf(split[2]);
+            double low = Double.valueOf(split[3]);
+            double close = Double.valueOf(split[4]);
+            double change = Double.valueOf(split[5]);
+            String changePnt = split[6];
+            double volume = Double.valueOf(split[7]);
+
+            StockKLine daily = new StockKLine();
+            daily.setDate(date);
+            daily.setOpen(open);
+            daily.setClose(close);
+            daily.setHigh(high);
+            daily.setLow(low);
+            daily.setChange(change);
+            daily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
+            daily.setVolume(BigDecimal.valueOf(volume));
+
+            list.add(daily);
+        }
+        br.close();
+
+        return list;
+    }
+
 }
