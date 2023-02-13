@@ -45,7 +45,7 @@ public class FilterStock {
             //            if (avgChangePnt < 0.6) {
             //                System.out.println("avgChangePnt: " + code);
             //            }
-            if (avgVolumn > 1000000) {
+            if (avgVolumn < 1000000) {
                 //                System.out.println("avgVolumn: " + code);
                 filted.add(code.toUpperCase());
             }
