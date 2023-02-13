@@ -191,6 +191,9 @@ public class BaseUtils {
 
         String line;
         while (StringUtils.isNotBlank(line = br.readLine())) {
+            if (line.contains("\"")) {
+                
+            }
             String[] split = line.split(",");
             if (split.length < 8) {
                 continue;
