@@ -42,7 +42,7 @@ public class GrabStockFor3MHistory {
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
-        int threadCount = 3;
+        int threadCount = 2;
         for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriver driver = new ChromeDriver(chromeOptions);
