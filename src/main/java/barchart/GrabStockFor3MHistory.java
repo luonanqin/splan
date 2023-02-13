@@ -89,7 +89,7 @@ public class GrabStockFor3MHistory {
             String beginDate = "10/01/2022";
             String endDate = "12/31/2022";
 
-            setDateRange(driver, beginDate, endDate);
+//            setDateRange(driver, beginDate, endDate);
             System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
             List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
 
