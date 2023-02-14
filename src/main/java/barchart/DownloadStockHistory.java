@@ -32,10 +32,10 @@ public class DownloadStockHistory {
         /** download historical stock data */
 
         // for daily
-                downloadHistoricalStock(driver, stockList, "daily", 100);
+        downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-//                downloadHistoricalStock(driver, stockList, "weekly", 100);
+        //                downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
         //        downloadHistoricalStock(driver, stockList, "monthly", 30);
@@ -68,7 +68,8 @@ public class DownloadStockHistory {
                 System.out.println("has downloaded: " + stock);
                 continue;
             }
-            driver.get("https://www.barchart.com/my/price-history/download/" + stock);
+//            driver.get("https://www.barchart.com/my/price-history/download/" + stock);
+            BaseUtils.viewloadPage(driver, "https://www.barchart.com/my/price-history/download/" + stock, By.xpath("//select[@data-ng-model='frequency']"));
             driver.findElement(By.xpath("//select[@data-ng-model='frequency']")).click();
             driver.findElement(By.xpath("//option[@value='string:" + frequency + "']")).click();
             driver.findElement(By.xpath("//a[@data-historical='historical']")).click();
