@@ -64,6 +64,9 @@ public class FixDownloadData {
                           .volume(sum)
                           .build();
                         newWeekList.add(newWeek);
+                        if (!weekK.getVolume().multiply(BigDecimal.valueOf(dayCount)).equals(sum)) {
+                            System.out.println(weekK);
+                        }
 
                         sum = BigDecimal.ZERO;
                         dayCount = 0;
