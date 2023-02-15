@@ -177,7 +177,7 @@ public class BaseUtils {
                 continue;
             }
             String stock = fileName.substring(0, fileName.indexOf("_" + period));
-            stockFileMap.put(stock, file.getAbsolutePath());
+            stockFileMap.put(stock.toUpperCase(), file.getAbsolutePath());
         }
 
         return stockFileMap;
