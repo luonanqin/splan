@@ -19,3 +19,6 @@ XNYS-ADRC 179728
 XNAS
 随机100只股票 453539/365*145/3600/24 约2天
 全部2242只股票 10058321/365*145/3600/24 约46天
+
+查询拆股接口
+https://api.polygon.io/v3/reference/splits?ticker=PCAR&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
