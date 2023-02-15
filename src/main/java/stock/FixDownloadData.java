@@ -51,7 +51,7 @@ public class FixDownloadData {
             for (StockKLine dayK : originDailyData) {
                 LocalDate dayDate = LocalDate.parse(dayK.getDate(), FORMATTER);
 
-                while (weekDate.isAfter(dayDate)|| weekDate.isEqual(dayDate)) {
+                while (weekDate.isAfter(dayDate)) {
                     if (!firstTime) {
                         StockKLine newWeek = StockKLine.builder()
                           .date(weekK.getDate())
