@@ -28,10 +28,10 @@ public class FixDownloadData {
         Set<String> fixedWeeklySet = fixedWeeklyList();
         // 只有weekly中有且fixWeekly没有的数据才需要fix
         for (String stock : weeklyMap.keySet()) {
-            if (fixedWeeklySet.contains(stock)) {
-                System.out.println("has fixed: " + stock);
-                continue;
-            }
+//            if (fixedWeeklySet.contains(stock)) {
+//                System.out.println("has fixed: " + stock);
+//                continue;
+//            }
 
             // 加载weekly数据
             String weeklyFile = weeklyMap.get(stock);
@@ -65,7 +65,7 @@ public class FixDownloadData {
                           .build();
                         newWeekList.add(newWeek);
 
-                        checkSum(sum, weekK, dayCount);
+                        checkSum(stock, sum, weekK, dayCount);
 
                         sum = BigDecimal.ZERO;
                         dayCount = 0;
@@ -96,13 +96,13 @@ public class FixDownloadData {
 
     }
 
-    private static void checkSum(BigDecimal sum, StockKLine weekK, int dayCount) {
+    private static void checkSum(String stock, BigDecimal sum, StockKLine weekK, int dayCount) {
         BigDecimal count = BigDecimal.valueOf(dayCount);
         BigDecimal multiply = weekK.getVolume().multiply(count).setScale(0);
         sum = sum.setScale(0);
         BigDecimal divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-            System.out.println(weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
         }
     }
 
