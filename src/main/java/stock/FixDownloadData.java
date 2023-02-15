@@ -64,11 +64,8 @@ public class FixDownloadData {
                           .volume(sum)
                           .build();
                         newWeekList.add(newWeek);
-                        BigDecimal multiply = weekK.getVolume().multiply(BigDecimal.valueOf(dayCount)).setScale(0);
-                        sum = sum.setScale(0);
-                        if (!multiply.equals(sum)) {
-                            System.out.println(weekK.getDate() + " week multi: " + multiply + " sum: " + sum + " dayCount: " + dayCount);
-                        }
+
+                        checkSum(sum, weekK, dayCount);
 
                         sum = BigDecimal.ZERO;
                         dayCount = 0;
@@ -90,13 +87,23 @@ public class FixDownloadData {
                 sum = sum.add(dayK.getVolume());
                 dayCount++;
             }
-//            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
+            //            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
             System.out.println("fix finish: " + stock);
         }
         // 当daily某天小于weekly的某天时，开始累加周成交量x，
         // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量
         // 结束
 
+    }
+
+    private static void checkSum(BigDecimal sum, StockKLine weekK, int dayCount) {
+        BigDecimal count = BigDecimal.valueOf(dayCount);
+        BigDecimal multiply = weekK.getVolume().multiply(count).setScale(0);
+        sum = sum.setScale(0);
+        BigDecimal divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
+        if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
+            System.out.println(weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+        }
     }
 
     public static Set<String> fixedWeeklyList() throws Exception {
