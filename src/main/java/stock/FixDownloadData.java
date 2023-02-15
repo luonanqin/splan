@@ -88,7 +88,7 @@ public class FixDownloadData {
                 dayCount++;
             }
             //            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
-            System.out.println("fix finish: " + stock);
+//            System.out.println("fix finish: " + stock);
         }
         // 当daily某天小于weekly的某天时，开始累加周成交量x，
         // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量

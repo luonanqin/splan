@@ -218,6 +218,10 @@ public class BaseUtils {
             }
 
             String date = split[0];
+            String year = date.substring(date.lastIndexOf("/") + 1);
+            if (Integer.valueOf(year) > 2022) {
+                continue;
+            }
             double open = Double.valueOf(split[1]);
             double high = Double.valueOf(split[2]);
             double low = Double.valueOf(split[3]);
