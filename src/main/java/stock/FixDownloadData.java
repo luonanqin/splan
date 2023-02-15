@@ -64,8 +64,10 @@ public class FixDownloadData {
                           .volume(sum)
                           .build();
                         newWeekList.add(newWeek);
-                        if (!weekK.getVolume().multiply(BigDecimal.valueOf(dayCount)).equals(sum)) {
-                            System.out.println(weekK);
+                        BigDecimal multiply = weekK.getVolume().multiply(BigDecimal.valueOf(dayCount)).setScale(0);
+                        sum = sum.setScale(0);
+                        if (!multiply.equals(sum)) {
+                            System.out.println(weekK.getDate() + " week multi: " + multiply + " sum: " + sum + " dayCount: " + dayCount);
                         }
 
                         sum = BigDecimal.ZERO;
@@ -88,7 +90,7 @@ public class FixDownloadData {
                 sum = sum.add(dayK.getVolume());
                 dayCount++;
             }
-            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
+//            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
             System.out.println("fix finish: " + stock);
         }
         // 当daily某天小于weekly的某天时，开始累加周成交量x，
