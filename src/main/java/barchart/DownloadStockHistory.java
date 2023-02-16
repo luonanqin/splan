@@ -69,7 +69,7 @@ public class DownloadStockHistory {
                 continue;
             }
 //            driver.get("https://www.barchart.com/my/price-history/download/" + stock);
-            BaseUtils.viewloadPage(driver, "https://www.barchart.com/my/price-history/download/" + stock, By.xpath("//select[@data-ng-model='frequency']"));
+            BaseUtils.viewloadPage(driver, "https://www.barchart.com/stocks/quotes/" + stock + "/historical-download", By.xpath("//h1/span[text()='(" + stock + ")']"));
             driver.findElement(By.xpath("//select[@data-ng-model='frequency']")).click();
             driver.findElement(By.xpath("//option[@value='string:" + frequency + "']")).click();
             driver.findElement(By.xpath("//a[@data-historical='historical']")).click();
