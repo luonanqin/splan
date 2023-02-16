@@ -48,10 +48,11 @@ public class FixDownloadData {
             StockKLine weekK = null;
             List<StockKLine> newWeekList = Lists.newArrayList();
             int dayCount = 0;
+            boolean checkSumSuccess = true;
             for (StockKLine dayK : originDailyData) {
                 LocalDate dayDate = LocalDate.parse(dayK.getDate(), FORMATTER);
 
-                while (!weekDate.isBefore(dayDate)) {
+                while (weekDate.isAfter(dayDate)) {
                     if (!firstTime) {
                         StockKLine newWeek = StockKLine.builder()
                           .date(weekK.getDate())
@@ -65,6 +66,8 @@ public class FixDownloadData {
                           .build();
                         newWeekList.add(newWeek);
 
+                        checkSumSuccess = checkSum(stock, sum, weekK, dayCount);
+
                         sum = BigDecimal.ZERO;
                         dayCount = 0;
                     }
@@ -74,6 +77,9 @@ public class FixDownloadData {
                     if (weekIdx >= originWeeklyData.size()) {
                         break;
                     }
+                }
+                if (!checkSumSuccess) {
+                    break;
                 }
                 if (weekIdx >= originWeeklyData.size()) {
                     break;
@@ -85,6 +91,10 @@ public class FixDownloadData {
                 sum = sum.add(dayK.getVolume());
                 dayCount++;
             }
+            if (!checkSumSuccess) {
+                System.out.println("check sum failed: " + stock);
+                continue;
+            }
             BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
             System.out.println("fix finish: " + stock);
         }
@@ -92,6 +102,18 @@ public class FixDownloadData {
         // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量
         // 结束
 
+    }
+
+    private static boolean checkSum(String stock, BigDecimal sum, StockKLine weekK, int dayCount) {
+        BigDecimal count = BigDecimal.valueOf(dayCount);
+        BigDecimal multiply = weekK.getVolume().multiply(count).setScale(0);
+        sum = sum.setScale(0);
+        BigDecimal divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
+        if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
+            //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            return false;
+        }
+        return true;
     }
 
     public static Set<String> fixedWeeklyList() throws Exception {

@@ -177,7 +177,7 @@ public class BaseUtils {
                 continue;
             }
             String stock = fileName.substring(0, fileName.indexOf("_" + period));
-            stockFileMap.put(stock, file.getAbsolutePath());
+            stockFileMap.put(stock.toUpperCase(), file.getAbsolutePath());
         }
 
         return stockFileMap;
@@ -218,6 +218,10 @@ public class BaseUtils {
             }
 
             String date = split[0];
+            String year = date.substring(date.lastIndexOf("/") + 1);
+            if (Integer.valueOf(year) > 2022) {
+                continue;
+            }
             double open = Double.valueOf(split[1]);
             double high = Double.valueOf(split[2]);
             double low = Double.valueOf(split[3]);
