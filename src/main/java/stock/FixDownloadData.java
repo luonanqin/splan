@@ -23,10 +23,15 @@ public class FixDownloadData {
     public static void main(String[] args) throws Exception {
         // 加载weekly下的文件列表，转换成stock列表大写
         Map<String, String> weeklyMap = BaseUtils.originStockFileMap("weekly");
-        Map<String, String> dailyMap = BaseUtils.originStockFileMap("daily");
+        Map<String, String> dailyMap = BaseUtils.grabStockFileMap();
         // 加载fixWeekly下的文件列表，转换成stock列表大写
-        Set<String> fixedWeeklySet = fixedWeeklyList();
+//        Set<String> fixedWeeklySet = fixedWeeklyList();
+        Set<String> fixedWeeklySet = Sets.newHashSet();
         // 只有weekly中有且fixWeekly没有的数据才需要fix
+        fixData(weeklyMap, dailyMap, fixedWeeklySet);
+    }
+
+    private static void fixData(Map<String, String> weeklyMap, Map<String, String> dailyMap, Set<String> fixedWeeklySet) throws Exception {
         for (String stock : weeklyMap.keySet()) {
             if (fixedWeeklySet.contains(stock)) {
                 System.out.println("has fixed: " + stock);
@@ -54,6 +59,7 @@ public class FixDownloadData {
 
                 while (weekDate.isAfter(dayDate)) {
                     if (!firstTime) {
+                        // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量
                         StockKLine newWeek = StockKLine.builder()
                           .date(weekK.getDate())
                           .open(weekK.getOpen())
@@ -88,6 +94,7 @@ public class FixDownloadData {
                     firstTime = false;
                 }
 
+                // 当daily某天小于weekly的某天时，开始累加周成交量x，
                 sum = sum.add(dayK.getVolume());
                 dayCount++;
             }
@@ -95,13 +102,9 @@ public class FixDownloadData {
                 System.out.println("check sum failed: " + stock);
                 continue;
             }
-            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
+//            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
             System.out.println("fix finish: " + stock);
         }
-        // 当daily某天小于weekly的某天时，开始累加周成交量x，
-        // 当daily某天小于下一个weekly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量
-        // 结束
-
     }
 
     private static boolean checkSum(String stock, BigDecimal sum, StockKLine weekK, int dayCount) {

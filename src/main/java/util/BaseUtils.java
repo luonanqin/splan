@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static util.Constants.BASE_PATH;
+import static util.Constants.GRAB_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -183,6 +184,21 @@ public class BaseUtils {
         return stockFileMap;
     }
 
+    public static Map<String, String> grabStockFileMap() throws Exception {
+        Map<String, String> stockFileMap = Maps.newHashMap();
+        File dir = new File(GRAB_PATH);
+        for (File file : dir.listFiles()) {
+            String fileName = file.getName();
+            if (!fileName.endsWith("_day")) {
+                continue;
+            }
+            String stock = fileName.substring(0, fileName.indexOf("_day"));
+            stockFileMap.put(stock.toUpperCase(), file.getAbsolutePath());
+        }
+
+        return stockFileMap;
+    }
+
     public static List<StockKLine> loadOriginalData(String filePath) throws Exception {
         List<StockKLine> list = Lists.newArrayList();
 
@@ -213,7 +229,7 @@ public class BaseUtils {
                 line = sb.toString();
             }
             String[] split = line.split(",");
-            if (split.length < 8) {
+            if (split.length < 7) {
                 continue;
             }
 
@@ -227,8 +243,14 @@ public class BaseUtils {
             double low = Double.valueOf(split[3]);
             double close = Double.valueOf(split[4]);
             double change = Double.valueOf(split[5]);
-            String changePnt = split[6];
-            double volume = Double.valueOf(split[7]);
+            String changePnt = "";
+            double volume = 0;
+            if (split.length == 8) {
+                changePnt = split[6];
+                volume = Double.valueOf(split[7]);
+            } else if (split.length == 7) {
+                volume = Double.valueOf(split[6]);
+            }
 
             StockKLine daily = new StockKLine();
             daily.setDate(date);
