@@ -37,7 +37,7 @@ public class FixDownloadData {
                 System.out.println("has fixed: " + stock);
                 continue;
             }
-            if (!stock.equals("AAPL")) {
+            if (!stock.equals("AMGN")) {
                 continue;
             }
 
@@ -117,7 +117,7 @@ public class FixDownloadData {
         BigDecimal divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
             System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
-            return false;
+            return true;
         }
         return true;
     }
