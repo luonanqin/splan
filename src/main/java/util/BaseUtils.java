@@ -245,7 +245,7 @@ public class BaseUtils {
             double change = Double.valueOf(split[5]);
             String changePnt = "";
             double volume = 0;
-            if (split.length == 8) {
+            if (split.length >= 8) {
                 changePnt = split[6];
                 volume = Double.valueOf(split[7]);
             } else if (split.length == 7) {
@@ -259,7 +259,9 @@ public class BaseUtils {
             daily.setHigh(high);
             daily.setLow(low);
             daily.setChange(change);
-            daily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
+            if (StringUtils.isNotBlank(changePnt)) {
+                daily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
+            }
             daily.setVolume(BigDecimal.valueOf(volume));
 
             list.add(daily);
