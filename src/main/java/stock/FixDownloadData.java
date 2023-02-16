@@ -37,6 +37,9 @@ public class FixDownloadData {
                 System.out.println("has fixed: " + stock);
                 continue;
             }
+            if (!stock.equals("AAPL")) {
+                continue;
+            }
 
             // 加载weekly数据
             String weeklyFile = weeklyMap.get(stock);

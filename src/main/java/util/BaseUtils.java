@@ -203,7 +203,9 @@ public class BaseUtils {
         List<StockKLine> list = Lists.newArrayList();
 
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        br.readLine();
+        if (filePath.contains("historical")) {
+            br.readLine();
+        }
 
         String line;
         while (StringUtils.isNotBlank(line = br.readLine())) {
