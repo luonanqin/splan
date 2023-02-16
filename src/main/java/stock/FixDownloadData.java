@@ -25,7 +25,7 @@ public class FixDownloadData {
         Map<String, String> weeklyMap = BaseUtils.originStockFileMap("weekly");
         Map<String, String> dailyMap = BaseUtils.grabStockFileMap();
         // 加载fixWeekly下的文件列表，转换成stock列表大写
-//        Set<String> fixedWeeklySet = fixedWeeklyList();
+        //        Set<String> fixedWeeklySet = fixedWeeklyList();
         Set<String> fixedWeeklySet = Sets.newHashSet();
         // 只有weekly中有且fixWeekly没有的数据才需要fix
         fixData(weeklyMap, dailyMap, fixedWeeklySet);
@@ -105,7 +105,7 @@ public class FixDownloadData {
                 System.out.println("check sum failed: " + stock);
                 continue;
             }
-//            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
+            //            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
             System.out.println("fix finish: " + stock);
         }
     }
@@ -116,7 +116,7 @@ public class FixDownloadData {
         sum = sum.setScale(0);
         BigDecimal divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-            //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
             return false;
         }
         return true;
