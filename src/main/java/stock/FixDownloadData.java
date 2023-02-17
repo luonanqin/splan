@@ -3,6 +3,7 @@ package stock;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
 
 import java.io.File;
@@ -38,7 +39,7 @@ public class FixDownloadData {
                 continue;
             }
             if (!stock.equals("AMGN")) {
-                continue;
+                //                continue;
             }
 
             // 加载weekly数据
@@ -47,6 +48,10 @@ public class FixDownloadData {
 
             // 加载daily数据
             String dailyFile = dailyMap.get(stock);
+            if (StringUtils.isBlank(dailyFile)) {
+                System.out.println("grab file isn't exist: " + stock);
+                continue;
+            }
             List<StockKLine> originDailyData = BaseUtils.loadOriginalData(dailyFile);
 
             int weekIdx = 0;
@@ -106,7 +111,7 @@ public class FixDownloadData {
                 continue;
             }
             //            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
-            System.out.println("fix finish: " + stock);
+            //            System.out.println("fix finish: " + stock);
         }
     }
 
@@ -114,7 +119,13 @@ public class FixDownloadData {
         BigDecimal count = BigDecimal.valueOf(dayCount);
         BigDecimal multiply = weekK.getVolume().multiply(count).setScale(0);
         sum = sum.setScale(0);
-        BigDecimal divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
+        BigDecimal divide = null;
+        try {
+            divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
+        } catch (Exception e) {
+            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            return true;
+        }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
             System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
             return true;

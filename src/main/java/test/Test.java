@@ -2,20 +2,50 @@ package test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import util.BaseUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Luonanqin on 2023/2/9.
  */
 public class Test {
 
-    public static void main(String[] args) throws Exception{
-        getOpenData();
+    public static void main(String[] args) throws Exception {
+        List<String> lineList = BaseUtils.readFile("src/main/resources/testData/test");
+        Map<String, Set<String>> grabYearMap = Maps.newHashMap();
+        for (String line : lineList) {
+            String[] split = line.split(" ");
+            String stock = split[0];
+            String year = split[1];
+            int yearInt = Integer.valueOf(year);
+
+            if (!grabYearMap.containsKey(stock)) {
+                grabYearMap.put(stock, Sets.newHashSet());
+            }
+            grabYearMap.get(stock).add(year);
+            //            grabYearMap.get(stock).add(String.valueOf(yearInt - 1));
+            //            grabYearMap.get(stock).add(String.valueOf(yearInt + 1));
+        }
+
+        //        Map<String, Set<String>> grabRangeMap = Maps.newHashMap();
+        for (String stock : grabYearMap.keySet()) {
+            Set<String> grabYearSet = grabYearMap.get(stock);
+            Set<String> grabRangeSet = Sets.newHashSet();
+            for (String year : grabYearSet) {
+                int yearInt = Integer.valueOf(year);
+                grabRangeSet.add("01/01/" + (yearInt - 1) + "~" + "01/01/" + year);
+                grabRangeSet.add("01/01/" + year + "~" + "01/01/" + (yearInt + 1));
+            }
+            //            grabRangeMap.put(stock, grabRangeSet);
+            String setStr = grabRangeSet.toString();
+            System.out.println(stock + "\t" + setStr.substring(1, setStr.length() - 1));
+        }
     }
 
     public static void computeGrabTimes() throws Exception {

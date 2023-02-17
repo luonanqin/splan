@@ -273,4 +273,16 @@ public class BaseUtils {
         return list;
     }
 
+    public static List<String> readFile(String filePath) throws Exception {
+        List<String> lineList = Lists.newArrayList();
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+
+        String line;
+        while (StringUtils.isNotBlank(line = br.readLine())) {
+            lineList.add(line);
+        }
+        br.close();
+
+        return lineList;
+    }
 }

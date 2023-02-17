@@ -38,7 +38,7 @@ import static util.Constants.*;
 /**
  * Created by Luonanqin on 2023/2/5.
  */
-public class GrabStockDateHistory {
+public class FixGrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
         String market = "XNAS";
@@ -65,7 +65,7 @@ public class GrabStockDateHistory {
         // 交易不活跃的
         List<String> flatTradeStockList = FilterStock.tradeFlat();
         // 已经抓取过的
-        Set<String> hasGrab = hasGrab();
+        Set<String> hasGrab = hasGrabFix();
 
         String initDay = "01/03/2000";
         LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
@@ -99,35 +99,27 @@ public class GrabStockDateHistory {
             }
 
             ChromeDriver driver = driverQueue.take();
-            cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock));
+//            cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock));
         }
     }
 
-    public static void asyncProcess(BlockingQueue<ChromeDriver> driverQueue, ChromeDriver driver, String stock) {
+    public static void asyncProcess(BlockingQueue<ChromeDriver> driverQueue, ChromeDriver driver, String stock, String range, Set<String> hasFixGrab) {
         try {
             WebElement canvas = loadStockCanvas(driver, stock);
 
-            // 断点续抓需要获取已经抓过的最新日期
-            String latestDay = getLatestDay(stock);
-            String endDate = StringUtils.defaultString(latestDay, "01/01/2000");
-            int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
-            endDate = "01/01/" + year;
-            while (true) {
-                String beginDate = "01/01/" + (--year);
+            String[] split = range.split(", ");
+            for (String rangeStr : split) {
+                String file;
+                String beginDate = rangeStr.substring(0, 10);
+                String endDate = rangeStr.substring(10);
 
                 setDateRange(driver, beginDate, endDate);
                 System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
                 List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
 
-                appendTradeDay(stock, Lists.reverse(dataList));
-                System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
-
-                //                List<Integer> dataList = Lists.newArrayList(1);
                 if (CollectionUtils.isEmpty(dataList)) {
-                    renameFile(stock);
-                    break;
-                } else {
-                    endDate = beginDate;
+                    writeFixDay(stock, rangeStr, Lists.reverse(dataList));
+                    System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
                 }
             }
         } catch (Exception e) {
@@ -138,20 +130,20 @@ public class GrabStockDateHistory {
         }
     }
 
-    public static Set<String> hasGrab() {
-        File file = new File(GRAB_PATH);
-        Set<String> hasGrab = Sets.newHashSet();
+    public static Set<String> hasGrabFix() {
+        File file = new File(BASE_PATH + "/grabFix");
+        Set<String> hasGrabFix = Sets.newHashSet();
         for (String fileName : file.list()) {
             if (!fileName.endsWith("_day")) {
                 continue;
             }
-            hasGrab.add(fileName.substring(0, fileName.indexOf("_")));
+            hasGrabFix.add(fileName);
         }
-        return hasGrab;
+        return hasGrabFix;
     }
 
     public static void renameFile(String stock) {
-        String fileName = GRAB_PATH + stock;
+        String fileName = BASE_PATH + "/grabFix" + stock;
         File file = new File(fileName);
         if (file.exists()) {
             file.renameTo(new File(fileName + "_day"));
@@ -195,8 +187,10 @@ public class GrabStockDateHistory {
         return null;
     }
 
-    public static void appendTradeDay(String stock, List<StockKLine> dataList) throws Exception {
-        File file = new File(GRAB_PATH + stock);
+    public static void writeFixDay(String stock, String fileName, List<StockKLine> dataList) throws Exception {
+        String range = "";
+        range = range.replaceAll("/", "");
+        File file = new File(GRAB_PATH + stock + "_" + range + "_day");
 
         FileOutputStream fos = new FileOutputStream(file, true);
         OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
