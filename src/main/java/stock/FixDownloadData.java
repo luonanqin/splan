@@ -49,7 +49,7 @@ public class FixDownloadData {
             // 加载daily数据
             String dailyFile = dailyMap.get(stock);
             if (StringUtils.isBlank(dailyFile)) {
-                System.out.println("grab file isn't exist: " + stock);
+//                System.out.println("grab file isn't exist: " + stock);
                 continue;
             }
             List<StockKLine> originDailyData = BaseUtils.loadOriginalData(dailyFile);

@@ -2,6 +2,7 @@ package barchart;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.ToString;
@@ -14,7 +15,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import stock.FilterStock;
 import util.BaseUtils;
 
 import java.io.BufferedReader;
@@ -24,14 +24,16 @@ import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static util.Constants.*;
 
@@ -46,79 +48,112 @@ public class FixGrabStockDateHistory {
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
         int threadCount = 1;
-        for (int i = 0; i < threadCount; i++) {
+//        for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriver driver = new ChromeDriver(chromeOptions);
             driver.manage().window().setSize(new Dimension(1280, 1027));
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
             BaseUtils.loginBarchart(driver);
-            driverQueue.offer(driver);
-        }
+//            driverQueue.offer(driver);
+//        }
 
         // 从昨天开始每365天查询一次并抓取
         // 默认step=2，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
-        List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
+//        List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
         //        stockList.remove("STR");
         //        stockList.clear();
         //        stockList.add("PEP");
 
         // 交易不活跃的
-        List<String> flatTradeStockList = FilterStock.tradeFlat();
-        // 已经抓取过的
-        Set<String> hasGrab = hasGrabFix();
+//        List<String> flatTradeStockList = FilterStock.tradeFlat();
+        // 等待抓取修复的
+        Map<String, String> waitFixGrabMap = waitFixGrab();
 
-        String initDay = "01/03/2000";
-        LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
+//        String initDay = "01/03/2000";
+//        LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
-        for (String stock : stockList) {
-            if (!stock.equals("AMGN")) {
-                continue;
-            }
-            if (flatTradeStockList.contains(stock)) {
-                System.out.println("flat trade: " + stock);
-                continue;
-            }
-            if (hasGrab.contains(stock)) {
-                System.out.println("has grab: " + stock);
-                continue;
-            }
+        for (String stock : waitFixGrabMap.keySet()) {
+//            if (!stock.equals("AMGN")) {
+//                continue;
+//            }
+//            if (flatTradeStockList.contains(stock)) {
+//                System.out.println("flat trade: " + stock);
+//                continue;
+//            }
+//            if (hasGrab.contains(stock)) {
+//                System.out.println("has grab: " + stock);
+//                continue;
+//            }
 
-            String downloadLatestDay = getDownloadLatestDay(stock);
-            if (StringUtils.isBlank(downloadLatestDay)) {
-                System.out.println("has not download: " + stock);
-                continue;
-            }
+//            String downloadLatestDay = getDownloadLatestDay(stock);
+//            if (StringUtils.isBlank(downloadLatestDay)) {
+//                System.out.println("has not download: " + stock);
+//                continue;
+//            }
             // 如果已经下载的daily最新日期大于01/01/2000，则不需要抓取这个日期之前的时间
-            LocalDate downloadLDParse = LocalDate.parse(downloadLatestDay, FORMATTER);
-            if (downloadLDParse.isAfter(initDayParse)) {
-                continue;
-            }
+//            LocalDate downloadLDParse = LocalDate.parse(downloadLatestDay, FORMATTER);
+//            if (downloadLDParse.isAfter(initDayParse)) {
+//                continue;
+//            }
 
-            ChromeDriver driver = driverQueue.take();
-//            cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock));
+//            ChromeDriver driver = driverQueue.take();
+            //            cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock));
+            asyncProcess(driverQueue, driver, stock, waitFixGrabMap);
         }
     }
 
-    public static void asyncProcess(BlockingQueue<ChromeDriver> driverQueue, ChromeDriver driver, String stock, String range, Set<String> hasFixGrab) {
+    public static void asyncProcess(BlockingQueue<ChromeDriver> driverQueue, ChromeDriver driver, String stock, Map<String, String> waitFixGrabMap) {
         try {
-            WebElement canvas = loadStockCanvas(driver, stock);
+            String range = waitFixGrabMap.get(stock);
 
             String[] split = range.split(", ");
-            for (String rangeStr : split) {
-                String file;
-                String beginDate = rangeStr.substring(0, 10);
-                String endDate = rangeStr.substring(10);
+            List<String> rangeList = Lists.newArrayList();
 
+            String hasFixFileDir = BASE_PATH + "fixGrab/"+stock + "/";
+            File dir = new File(hasFixFileDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String[] fileList = dir.list();
+            Set<String> fileSet = Arrays.stream(fileList).collect(Collectors.toSet());
+            for (String rangeStr : split) {
+                String[] rangeDate = rangeStr.split("~");
+
+                String beginDate = rangeDate[0];
+                String endDate = rangeDate[1];
+
+                String hasFixFile = beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
+                if (fileSet.contains(hasFixFile)) {
+                    continue;
+                }else{
+                    rangeList.add(rangeStr);
+                }
+            }
+
+            if (CollectionUtils.isEmpty(rangeList)) {
+                return;
+            }
+
+            WebElement canvas = loadStockCanvas(driver, stock);
+
+            for (String rangeStr : rangeList) {
+                String[] rangeDate = rangeStr.split("~");
+
+                String beginDate = rangeDate[0];
+                String endDate = rangeDate[1];
+
+                String hasFixFile = BASE_PATH + "fixGrab/" + stock + "/" + beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
                 setDateRange(driver, beginDate, endDate);
                 System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
                 List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
 
-                if (CollectionUtils.isEmpty(dataList)) {
-                    writeFixDay(stock, rangeStr, Lists.reverse(dataList));
+                if (CollectionUtils.isNotEmpty(dataList)) {
+                    writeFixDay(hasFixFile, Lists.reverse(dataList));
                     System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
                 }
             }
@@ -126,7 +161,7 @@ public class FixGrabStockDateHistory {
             e.printStackTrace();
             System.out.println(e.getMessage());
         } finally {
-            driverQueue.offer(driver);
+//            driverQueue.offer(driver);
         }
     }
 
@@ -140,6 +175,17 @@ public class FixGrabStockDateHistory {
             hasGrabFix.add(fileName);
         }
         return hasGrabFix;
+    }
+
+    public static Map<String, String> waitFixGrab() throws Exception{
+        String filePath = "src/main/resources/testData/waitFixGrab";
+        List<String> lineList = BaseUtils.readFile(filePath);
+        Map<String, String> map = Maps.newHashMap();
+        for (String line : lineList) {
+            String[] split = line.split("\t");
+            map.put(split[0], split[1]);
+        }
+        return map;
     }
 
     public static void renameFile(String stock) {
@@ -187,10 +233,11 @@ public class FixGrabStockDateHistory {
         return null;
     }
 
-    public static void writeFixDay(String stock, String fileName, List<StockKLine> dataList) throws Exception {
-        String range = "";
-        range = range.replaceAll("/", "");
-        File file = new File(GRAB_PATH + stock + "_" + range + "_day");
+    public static void writeFixDay(String fileName, List<StockKLine> dataList) throws Exception {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
 
         FileOutputStream fos = new FileOutputStream(file, true);
         OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
