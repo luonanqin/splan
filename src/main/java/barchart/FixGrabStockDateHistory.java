@@ -17,10 +17,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import util.BaseUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -35,7 +33,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static util.Constants.*;
+import static util.Constants.BASE_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -43,66 +41,31 @@ import static util.Constants.*;
 public class FixGrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
-        String market = "XNAS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
-        int threadCount = 1;
-//        for (int i = 0; i < threadCount; i++) {
+        int threadCount = 2;
+        for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriver driver = new ChromeDriver(chromeOptions);
             driver.manage().window().setSize(new Dimension(1280, 1027));
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
             BaseUtils.loginBarchart(driver);
-//            driverQueue.offer(driver);
-//        }
+            driverQueue.offer(driver);
+        }
 
-        // 从昨天开始每365天查询一次并抓取
-        // 默认step=2，每次从最左边开始抓取时，如果获取不到field-value，则表示改股票所有数据均已抓去完成，开始下一个股票
-//        List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
-        //        stockList.remove("STR");
-        //        stockList.clear();
-        //        stockList.add("PEP");
-
-        // 交易不活跃的
-//        List<String> flatTradeStockList = FilterStock.tradeFlat();
         // 等待抓取修复的
         Map<String, String> waitFixGrabMap = waitFixGrab();
 
-//        String initDay = "01/03/2000";
-//        LocalDate initDayParse = LocalDate.parse(initDay, FORMATTER);
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
         for (String stock : waitFixGrabMap.keySet()) {
-//            if (!stock.equals("AMGN")) {
-//                continue;
-//            }
-//            if (flatTradeStockList.contains(stock)) {
-//                System.out.println("flat trade: " + stock);
-//                continue;
-//            }
-//            if (hasGrab.contains(stock)) {
-//                System.out.println("has grab: " + stock);
-//                continue;
-//            }
-
-//            String downloadLatestDay = getDownloadLatestDay(stock);
-//            if (StringUtils.isBlank(downloadLatestDay)) {
-//                System.out.println("has not download: " + stock);
-//                continue;
-//            }
-            // 如果已经下载的daily最新日期大于01/01/2000，则不需要抓取这个日期之前的时间
-//            LocalDate downloadLDParse = LocalDate.parse(downloadLatestDay, FORMATTER);
-//            if (downloadLDParse.isAfter(initDayParse)) {
-//                continue;
-//            }
-
-//            ChromeDriver driver = driverQueue.take();
-            //            cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock));
-            asyncProcess(driverQueue, driver, stock, waitFixGrabMap);
+            ChromeDriver driver = driverQueue.take();
+            cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock, waitFixGrabMap));
+            //            asyncProcess(driverQueue, driver, stock, waitFixGrabMap);
         }
     }
 
@@ -113,7 +76,7 @@ public class FixGrabStockDateHistory {
             String[] split = range.split(", ");
             List<String> rangeList = Lists.newArrayList();
 
-            String hasFixFileDir = BASE_PATH + "fixGrab/"+stock + "/";
+            String hasFixFileDir = BASE_PATH + "fixGrab/" + stock + "/";
             File dir = new File(hasFixFileDir);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -130,7 +93,7 @@ public class FixGrabStockDateHistory {
                 String hasFixFile = beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
                 if (fileSet.contains(hasFixFile)) {
                     continue;
-                }else{
+                } else {
                     rangeList.add(rangeStr);
                 }
             }
@@ -161,23 +124,11 @@ public class FixGrabStockDateHistory {
             e.printStackTrace();
             System.out.println(e.getMessage());
         } finally {
-//            driverQueue.offer(driver);
+            driverQueue.offer(driver);
         }
     }
 
-    public static Set<String> hasGrabFix() {
-        File file = new File(BASE_PATH + "/grabFix");
-        Set<String> hasGrabFix = Sets.newHashSet();
-        for (String fileName : file.list()) {
-            if (!fileName.endsWith("_day")) {
-                continue;
-            }
-            hasGrabFix.add(fileName);
-        }
-        return hasGrabFix;
-    }
-
-    public static Map<String, String> waitFixGrab() throws Exception{
+    public static Map<String, String> waitFixGrab() throws Exception {
         String filePath = "src/main/resources/testData/waitFixGrab";
         List<String> lineList = BaseUtils.readFile(filePath);
         Map<String, String> map = Maps.newHashMap();
@@ -197,40 +148,6 @@ public class FixGrabStockDateHistory {
             return;
         }
         System.out.println("rename " + stock + " is not exist");
-    }
-
-    public static String getLatestDay(String stock) throws Exception {
-        File file = new File(GRAB_PATH + stock);
-        if (!file.exists()) {
-            file.createNewFile();
-            return null;
-        } else {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String latest = null, str;
-            while (StringUtils.isNotBlank(str = br.readLine())) {
-                latest = str.split(",")[0];
-            }
-            return latest;
-        }
-    }
-
-    public static String getDownloadLatestDay(String stock) throws Exception {
-        File file = new File(DAILY_PATH);
-        for (File stockFile : file.listFiles()) {
-            if (!stockFile.getName().startsWith(stock.toLowerCase() + "_")) {
-                continue;
-            }
-            BufferedReader br = new BufferedReader(new FileReader(stockFile));
-            String latest = null, str;
-            while (StringUtils.isNotBlank(str = br.readLine())) {
-                if (str.startsWith("\"")) {
-                    continue;
-                }
-                latest = str;
-            }
-            return latest.split(",")[0];
-        }
-        return null;
     }
 
     public static void writeFixDay(String fileName, List<StockKLine> dataList) throws Exception {
