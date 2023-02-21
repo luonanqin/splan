@@ -39,7 +39,7 @@ public class Test {
             Set<String> grabRangeSet = Sets.newHashSet();
             for (String year : grabYearSet) {
                 int yearInt = Integer.valueOf(year);
-                grabRangeSet.add("01/01/" + (yearInt - 1) + "~" + "01/01/" + year);
+                grabRangeSet.add("01/01/" + (yearInt + 1) + "~" + "01/01/" + (yearInt + 2));
                 grabRangeSet.add("01/01/" + year + "~" + "01/01/" + (yearInt + 1));
             }
             //            grabRangeMap.put(stock, grabRangeSet);

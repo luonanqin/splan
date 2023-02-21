@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -275,7 +276,13 @@ public class BaseUtils {
 
     public static List<String> readFile(String filePath) throws Exception {
         List<String> lineList = Lists.newArrayList();
-        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            System.out.println("can not find file: " + filePath);
+            return Lists.newArrayList();
+        }
 
         String line;
         while (StringUtils.isNotBlank(line = br.readLine())) {
@@ -285,4 +292,14 @@ public class BaseUtils {
 
         return lineList;
     }
+
+    public static void writeFile(String filePath, List<String> list) throws Exception {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+        for (String l : list) {
+            bw.write(l);
+            bw.write("\n");
+        }
+        bw.close();
+    }
+
 }

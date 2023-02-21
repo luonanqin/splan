@@ -38,8 +38,8 @@ public class FixDownloadData {
                 System.out.println("has fixed: " + stock);
                 continue;
             }
-            if (!stock.equals("AMGN")) {
-                //                continue;
+            if (!stock.equals("AAPL")) {
+                                continue;
             }
 
             // 加载weekly数据
