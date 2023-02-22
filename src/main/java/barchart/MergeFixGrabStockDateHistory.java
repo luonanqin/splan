@@ -70,7 +70,7 @@ public class MergeFixGrabStockDateHistory {
 
             System.out.println(stock + " " + merge.size());
 
-            String grabFix = BASE_PATH + "grabFix/" + stock + "_day";
+            String grabFix = BASE_PATH + "mergeGrab/" + stock + "_day";
             BaseUtils.writeFile(grabFix, merge);
         }
 
