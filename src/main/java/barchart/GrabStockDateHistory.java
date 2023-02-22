@@ -63,7 +63,7 @@ public class GrabStockDateHistory {
         //        stockList.add("PEP");
 
         // 交易不活跃的
-        List<String> flatTradeStockList = FilterStock.tradeFlat();
+        List<String> flatTradeStockList = FilterStock.tradeFlat(DAILY_PATH);
         // 已经抓取过的
         Set<String> hasGrab = hasGrab();
 

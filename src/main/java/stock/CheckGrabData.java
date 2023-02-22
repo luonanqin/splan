@@ -39,7 +39,7 @@ public class FixDownloadData {
                 continue;
             }
             if (!stock.equals("AAPL")) {
-                                continue;
+//                                continue;
             }
 
             // 加载weekly数据

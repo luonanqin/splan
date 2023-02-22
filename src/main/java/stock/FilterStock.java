@@ -20,12 +20,12 @@ import static util.Constants.FORMATTER;
 public class FilterStock {
 
     public static void main(String[] args) throws Exception {
-        List<String> list = tradeFlat();
+        List<String> list = tradeFlat(DAILY_PATH);
         System.out.println(list);
     }
 
-    public static List<String> tradeFlat() throws Exception {
-        File stockFile = new File(DAILY_PATH);
+    public static List<String> tradeFlat(String path) throws Exception {
+        File stockFile = new File(path);
         File[] files = stockFile.listFiles();
 
         List<String> filted = Lists.newArrayList();
@@ -73,7 +73,12 @@ public class FilterStock {
             } else if (count > 0 && split.length >= 6) {
                 //                String changePnt = split[6];
                 //                String volumn = split[6];
-                String volumn = split[7];
+                String volumn = "0";
+                if (split.length == 7) {
+                    volumn = split[6];
+                } else if (split.length == 8) {
+                    volumn = split[7];
+                }
 
                 StockKLine stockDaily = new StockKLine();
                 //                stockDaily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
