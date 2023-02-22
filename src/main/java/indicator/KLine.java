@@ -17,8 +17,8 @@ import static util.Constants.DAY_FORMATTER;
  */
 public class KLine {
 
-    // 历史周k线
-    public List<StockKLine> historicalWeekKLine(List<StockKLine> dailyList) {
+    // 历史月k线
+    public List<StockKLine> historicalMonthKLine(List<StockKLine> weekList) {
         List<StockKLine> week = Lists.newArrayList();
 
         //        boolean startNewWeek = false;
@@ -26,8 +26,8 @@ public class KLine {
         double weekOpen = 0, weekClose = 0, weekHigh = 0, weekLow = 1000000;
         BigDecimal weekVolumn = BigDecimal.ZERO;
 
-        for (int i = dailyList.size() - 1; i >= 0; i--) {
-            StockKLine daily = dailyList.get(i);
+        for (int i = weekList.size() - 1; i >= 0; i--) {
+            StockKLine daily = weekList.get(i);
             String date = daily.getDate();
             double open = daily.getOpen();
             double close = daily.getClose();

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static barchart.FixGrabStockDateHistory.waitFixGrab;
-import static util.Constants.BASE_PATH;
+import static util.Constants.HIS_BASE_PATH;
 import static util.Constants.GRAB_PATH;
 
 /**
@@ -26,7 +26,7 @@ public class MergeFixGrabStockDateHistory {
             String range = waitFixGrabMap.get(stock);
             String[] split = range.split(", ");
 
-            String hasFixFileDir = BASE_PATH + "fixGrab/" + stock + "/";
+            String hasFixFileDir = HIS_BASE_PATH + "fixGrab/" + stock + "/";
 
             Map<String, List<String>> yearToList = Maps.newHashMap();
             for (String rangeStr : split) {
@@ -70,7 +70,7 @@ public class MergeFixGrabStockDateHistory {
 
             System.out.println(stock + " " + merge.size());
 
-            String grabFix = BASE_PATH + "mergeGrab/" + stock + "_day";
+            String grabFix = HIS_BASE_PATH + "mergeGrab/" + stock + "_day";
             BaseUtils.writeFile(grabFix, merge);
         }
 

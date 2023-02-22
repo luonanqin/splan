@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static util.Constants.BASE_PATH;
 import static util.Constants.GRAB_PATH;
+import static util.Constants.HIS_BASE_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -172,7 +172,7 @@ public class BaseUtils {
 
     public static Map<String, String> originStockFileMap(String period) throws Exception {
         Map<String, String> stockFileMap = Maps.newHashMap();
-        File dir = new File(BASE_PATH + period + "/");
+        File dir = new File(HIS_BASE_PATH + period + "/");
         for (File file : dir.listFiles()) {
             String fileName = file.getName();
             if (!fileName.endsWith(".csv")) {
@@ -200,16 +200,40 @@ public class BaseUtils {
         return stockFileMap;
     }
 
-    public static List<StockKLine> loadOriginalData(String filePath) throws Exception {
-        List<StockKLine> list = Lists.newArrayList();
+    public static Map<String, String> getFileMap(String dirPath) throws Exception {
+        Map<String, String> stockFileMap = Maps.newHashMap();
+        File dir = new File(dirPath);
+        for (File file : dir.listFiles()) {
+            String fileName = file.getName();
+            if (fileName.endsWith(".DS_Store")) {
+                continue;
+            }
+            String stock = fileName;
+            stockFileMap.put(stock.toUpperCase(), file.getAbsolutePath());
+        }
 
+        return stockFileMap;
+    }
+
+    public static List<StockKLine> loadOriginalData(String filePath) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         if (filePath.contains("_historical")) {
             br.readLine();
         }
 
+        List<String> list = Lists.newArrayList();
         String line;
         while (StringUtils.isNotBlank(line = br.readLine())) {
+            list.add(line);
+        }
+        br.close();
+
+        return convertToKLine(list);
+    }
+
+    public static List<StockKLine> convertToKLine(List<String> lineList) {
+        List<StockKLine> list = Lists.newArrayList();
+        for (String line : lineList) {
             // 修正数字中带逗号
             if (line.contains("\"")) {
                 StringBuilder sb = new StringBuilder();
@@ -269,8 +293,6 @@ public class BaseUtils {
 
             list.add(daily);
         }
-        br.close();
-
         return list;
     }
 

@@ -19,7 +19,7 @@ import static util.Constants.FORMATTER;
 /**
  * Created by Luonanqin on 2023/2/13.
  */
-public class FixDownloadData {
+public class CheckGrabData {
 
     public static void main(String[] args) throws Exception {
         // 加载weekly下的文件列表，转换成stock列表大写

@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static util.Constants.BASE_PATH;
+import static util.Constants.HIS_BASE_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -76,7 +76,7 @@ public class FixGrabStockDateHistory {
             String[] split = range.split(", ");
             List<String> rangeList = Lists.newArrayList();
 
-            String hasFixFileDir = BASE_PATH + "fixGrab/" + stock + "/";
+            String hasFixFileDir = HIS_BASE_PATH + "fixGrab/" + stock + "/";
             File dir = new File(hasFixFileDir);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -92,7 +92,7 @@ public class FixGrabStockDateHistory {
 
                 String hasFixFile = beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
                 if (fileSet.contains(hasFixFile)) {
-                    continue;
+//                    continue;
                 } else {
                     rangeList.add(rangeStr);
                 }
@@ -110,7 +110,7 @@ public class FixGrabStockDateHistory {
                 String beginDate = rangeDate[0];
                 String endDate = rangeDate[1];
 
-                String hasFixFile = BASE_PATH + "fixGrab/" + stock + "/" + beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
+                String hasFixFile = HIS_BASE_PATH + "fixGrab/" + stock + "/" + beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
                 setDateRange(driver, beginDate, endDate);
                 System.out.println("confirm new date range: " + stock + " " + beginDate + " - " + endDate);
                 List<StockKLine> dataList = getDataFromCanvas(driver, canvas);
@@ -140,7 +140,7 @@ public class FixGrabStockDateHistory {
     }
 
     public static void renameFile(String stock) {
-        String fileName = BASE_PATH + "/grabFix" + stock;
+        String fileName = HIS_BASE_PATH + "/grabFix" + stock;
         File file = new File(fileName);
         if (file.exists()) {
             file.renameTo(new File(fileName + "_day"));
