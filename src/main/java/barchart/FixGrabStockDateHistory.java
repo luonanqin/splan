@@ -43,6 +43,10 @@ public class FixGrabStockDateHistory {
     public static void main(String[] args) throws Exception {
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
+        // 等待抓取修复的
+        Map<String, String> waitFixGrabMap = waitFixGrab();
+        deleteFile(waitFixGrabMap);
+
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
         int threadCount = 2;
         for (int i = 0; i < threadCount; i++) {
@@ -53,9 +57,6 @@ public class FixGrabStockDateHistory {
             BaseUtils.loginBarchart(driver);
             driverQueue.offer(driver);
         }
-
-        // 等待抓取修复的
-        Map<String, String> waitFixGrabMap = waitFixGrab();
 
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
@@ -156,7 +157,7 @@ public class FixGrabStockDateHistory {
             file.createNewFile();
         }
 
-        FileOutputStream fos = new FileOutputStream(file, true);
+        FileOutputStream fos = new FileOutputStream(file);
         OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
 
         Set<String> daySet = Sets.newHashSet();
@@ -269,6 +270,21 @@ public class FixGrabStockDateHistory {
         }
         System.out.println("cost " + ((System.currentTimeMillis() - begin) / 1000) + "s");
         return dataList;
+    }
+
+    private static void deleteFile(Map<String, String> waitForGrab) {
+        String path = HIS_BASE_PATH + "fixGrab/";
+        for (String stock : waitForGrab.keySet()) {
+            String rangeStr = waitForGrab.get(stock);
+            String[] rangeList = rangeStr.split(", ");
+            for (String range : rangeList) {
+                range = range.replaceAll("/", "").replaceAll("~", "_");
+                File file = new File(path + stock + "/" + range + "_day");
+                if (file.exists()) {
+                    file.delete();
+                }
+            }
+        }
     }
 
     private static MoveInfo getMoveInfo(ChromeDriver driver, Actions actions) {
