@@ -2,15 +2,17 @@ package barchart;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import static barchart.FixGrabStockDateHistory.waitFixGrab;
-import static util.Constants.HIS_BASE_PATH;
 import static util.Constants.GRAB_PATH;
+import static util.Constants.HIS_BASE_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -22,22 +24,18 @@ public class MergeFixGrabStockDateHistory {
         Map<String, String> waitFixGrabMap = waitFixGrab();
 
         for (String stock : waitFixGrabMap.keySet()) {
+            if (!StringUtils.equals(stock, "COST")) {
+//                continue;
+            }
             String grabFile = GRAB_PATH + stock + "_day";
-            String range = waitFixGrabMap.get(stock);
-            String[] split = range.split(", ");
 
             String hasFixFileDir = HIS_BASE_PATH + "fixGrab/" + stock + "/";
-
             Map<String, List<String>> yearToList = Maps.newHashMap();
-            for (String rangeStr : split) {
-                String[] rangeDate = rangeStr.split("~");
-
-                String beginDate = rangeDate[0];
-                String endDate = rangeDate[1];
-                String year = beginDate.substring(6);
-
-                String hasFixFile = beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
-                List<String> dayList = BaseUtils.readFile(hasFixFileDir + hasFixFile);
+            File fixDir = new File(hasFixFileDir);
+            for (File file : fixDir.listFiles()) {
+                String name = file.getName();
+                String year = name.substring(4, 8);
+                List<String> dayList = BaseUtils.readFile(file.getAbsolutePath());
                 if (CollectionUtils.isEmpty(dayList)) {
                     continue;
                 }

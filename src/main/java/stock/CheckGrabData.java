@@ -38,7 +38,7 @@ public class CheckGrabData {
                 System.out.println("has fixed: " + stock);
                 continue;
             }
-            if (!stock.equals("AAPL")) {
+            if (!stock.equals("COST")) {
 //                                continue;
             }
 
@@ -123,11 +123,13 @@ public class CheckGrabData {
         try {
             divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
         } catch (Exception e) {
-            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+//            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            System.out.println(stock + " " + weekK.getDate());
             return true;
         }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+//            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            System.out.println(stock + " " + weekK.getDate());
             return true;
         }
         return true;

@@ -93,7 +93,7 @@ public class FixGrabStockDateHistory {
 
                 String hasFixFile = beginDate.replaceAll("/", "") + "_" + endDate.replaceAll("/", "") + "_day";
                 if (fileSet.contains(hasFixFile)) {
-//                    continue;
+                    //                    continue;
                 } else {
                     rangeList.add(rangeStr);
                 }
@@ -273,12 +273,16 @@ public class FixGrabStockDateHistory {
     }
 
     private static void deleteFile(Map<String, String> waitForGrab) {
+        Set<String> set = Sets.newHashSet();
         String path = HIS_BASE_PATH + "fixGrab/";
         for (String stock : waitForGrab.keySet()) {
             String rangeStr = waitForGrab.get(stock);
             String[] rangeList = rangeStr.split(", ");
             for (String range : rangeList) {
                 range = range.replaceAll("/", "").replaceAll("~", "_");
+                if (set.contains(stock + range + "_day")) {
+                    continue;
+                }
                 File file = new File(path + stock + "/" + range + "_day");
                 if (file.exists()) {
                     file.delete();
