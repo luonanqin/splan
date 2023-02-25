@@ -27,16 +27,16 @@ public class DownloadStockHistory {
         BaseUtils.loginBarchart(driver);
 
         // has option stock
-        String market = "XNYS";
+        String market = "XNAS";
         List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
 
         /** download historical stock data */
 
         // for daily
-        downloadHistoricalStock(driver, stockList, "daily", 100);
+//        downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-        //                downloadHistoricalStock(driver, stockList, "weekly", 100);
+                        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
         //        downloadHistoricalStock(driver, stockList, "monthly", 30);
@@ -58,7 +58,7 @@ public class DownloadStockHistory {
         String searchKey = "_" + frequency + "_historical-data";
         Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
 
-        List<String> flatTradeStockList = FilterStock.tradeFlat(Constants.GRAB_ONE_YEAR_PATH);
+        List<String> flatTradeStockList = FilterStock.tradeFlat(Constants.DAILY_PATH);
         File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
             if (flatTradeStockList.contains(stock)) {
