@@ -212,7 +212,7 @@ public class FixGrabStockDateHistory {
         //        int xOffset = moveInfo.getXOffset();
         //        int avgStep = moveInfo.getAvgStep();
         //        getMoveData(driver, actions, xOffset, avgStep);
-        return getMoveData(driver, actions, -514, 2);
+        return getMoveData(driver, actions, -528, 2);
     }
 
     private static List<StockKLine> getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
