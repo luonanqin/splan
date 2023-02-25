@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static barchart.FixGrabStockDateHistory.waitFixGrab;
 import static util.Constants.GRAB_PATH;
 import static util.Constants.HIS_BASE_PATH;
 
@@ -21,9 +20,11 @@ public class MergeFixGrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
         // 等待抓取修复的
-        Map<String, String> waitFixGrabMap = waitFixGrab();
+//        Map<String, String> waitFixGrabMap = waitFixGrab();
+        File f = new File(HIS_BASE_PATH + "fixGrab/");
+        String[] stockList = f.list();
 
-        for (String stock : waitFixGrabMap.keySet()) {
+        for (String stock : stockList) {
             if (!StringUtils.equals(stock, "COST")) {
 //                continue;
             }
