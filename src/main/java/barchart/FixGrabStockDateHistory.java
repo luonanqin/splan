@@ -242,9 +242,7 @@ public class FixGrabStockDateHistory {
                 moveAdd += step;
                 actions.moveByOffset(step, 0).perform();
 
-                if (lastDate != null && moveAdd > totalWidth) {
-                    break;
-                }
+                moveTimes++;
             } else {
                 List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
                 String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");
@@ -270,6 +268,7 @@ public class FixGrabStockDateHistory {
                 //                System.out.println(kLine);
 
                 lastDate = date;
+                moveTimes=0;
             }
             if (dataList.size() > 1) {
                 step = 2;

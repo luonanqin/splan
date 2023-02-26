@@ -41,7 +41,7 @@ import static util.Constants.*;
 public class GrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
-        String market = "XNYS";
+        String market = "XNAS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
@@ -76,8 +76,8 @@ public class GrabStockDateHistory {
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
         for (String stock : stockList) {
             if (flatTradeStockList.contains(stock)) {
-                System.out.println("flat trade: " + stock);
-                continue;
+                //                System.out.println("flat trade: " + stock);
+                //                continue;
             }
             if (hasGrab.contains(stock)) {
                 System.out.println("has grab: " + stock);
@@ -250,7 +250,7 @@ public class GrabStockDateHistory {
         //        int xOffset = moveInfo.getXOffset();
         //        int avgStep = moveInfo.getAvgStep();
         //        getMoveData(driver, actions, xOffset, avgStep);
-        return getMoveData(driver, actions, -514, 2);
+        return getMoveData(driver, actions, -520, 1);
     }
 
     private static List<StockKLine> getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
@@ -260,7 +260,7 @@ public class GrabStockDateHistory {
 
         long begin = System.currentTimeMillis();
         String lastDate = null;
-        int moveAdd = 0, moveMaxTimes = 15, moveTimes = 0, totalWidth = 980;
+        int moveAdd = 0, moveMaxTimes = 15, moveTimes = 0;
         List<StockKLine> dataList = Lists.newArrayList();
         while (moveTimes < moveMaxTimes) {
             String date = null;
@@ -276,13 +276,9 @@ public class GrabStockDateHistory {
             }
 
             if (lastDate != null && StringUtils.equals(lastDate, date)) {
-                //                System.out.println("retry");
                 moveAdd += step;
                 actions.moveByOffset(step, 0).perform();
-
-                if (lastDate != null && moveAdd > totalWidth) {
-                    break;
-                }
+                moveTimes++;
             } else {
                 List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
                 String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");
@@ -291,6 +287,10 @@ public class GrabStockDateHistory {
                 String close = StringUtils.defaultIfBlank(elements.get(3).getText(), "0");
                 String change = StringUtils.defaultIfBlank(elements.get(4).getText(), "0");
                 String volume = StringUtils.defaultIfBlank(elements.get(5).getText(), "0");
+                if (open.equals("0")) {
+                    lastDate = date;
+                    continue;
+                }
                 StockKLine kLine = StockKLine.builder()
                   .date(date)
                   .open(Double.valueOf(open.replace(",", "")))
@@ -304,6 +304,13 @@ public class GrabStockDateHistory {
                 //                System.out.println(kLine);
 
                 lastDate = date;
+                moveTimes = 0;
+            }
+            if (dataList.size() > 1) {
+                step = 2;
+            }
+            if (dataList.size() > 250) {
+                step = 1;
             }
         }
         System.out.println("cost " + ((System.currentTimeMillis() - begin) / 1000) + "s");
