@@ -2,6 +2,7 @@ package stock;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
@@ -12,47 +13,72 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static util.Constants.FIX_WEEKLY_PATH;
-import static util.Constants.FORMATTER;
+import static util.Constants.*;
 
 /**
  * Created by Luonanqin on 2023/2/13.
  */
 public class CheckGrabData {
 
+
+    private static Set<String> hasMergeStock = Sets.newHashSet();
+    private static Map<String, String> originWeeklyMap = Maps.newHashMap();
+    private static Map<String, String> originDailyMap = Maps.newHashMap();
+    private static Map<String, String> originMonthlyMap = Maps.newHashMap();
+    private static Map<String, String> grabDailyMap = Maps.newHashMap();
+
     public static void main(String[] args) throws Exception {
-        // 加载weekly下的文件列表，转换成stock列表大写
-        Map<String, String> weeklyMap = BaseUtils.originStockFileMap("weekly");
-        Map<String, String> dailyMap = BaseUtils.grabStockFileMap();
+        // 加载标准数据目录下的stock列表
+        hasMergeStock = BaseUtils.getFileMap(STD_DAILY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
+
+        // 加载原始数据文件列表，转换成stock列表大写
+        originWeeklyMap = BaseUtils.originStockFileMap("weekly");
+        originDailyMap = BaseUtils.originStockFileMap("daily");
+        originMonthlyMap = BaseUtils.originStockFileMap("monthly");
+
+        // 加载抓取数据文件列表，转换成stock列表大写
+        grabDailyMap = BaseUtils.grabStockFileMap();
         // 加载fixWeekly下的文件列表，转换成stock列表大写
         //        Set<String> fixedWeeklySet = fixedWeeklyList();
         Set<String> fixedWeeklySet = Sets.newHashSet();
         // 只有weekly中有且fixWeekly没有的数据才需要fix
-        fixData(weeklyMap, dailyMap, fixedWeeklySet);
+        fixData(fixedWeeklySet);
     }
 
-    private static void fixData(Map<String, String> weeklyMap, Map<String, String> dailyMap, Set<String> fixedWeeklySet) throws Exception {
-        for (String stock : weeklyMap.keySet()) {
+    private static void fixData(Set<String> fixedWeeklySet) throws Exception {
+        for (String stock : originWeeklyMap.keySet()) {
             if (fixedWeeklySet.contains(stock)) {
                 System.out.println("has fixed: " + stock);
                 continue;
             }
-            if (!stock.equals("BKR")) {
-                                continue;
+            if (hasMergeStock.contains(stock)) {
+                continue;
+            }
+            if (!stock.equals("AAPL")) {
+//                continue;
             }
 
             // 加载weekly数据
-            String weeklyFile = weeklyMap.get(stock);
+            String weeklyFile = originWeeklyMap.get(stock);
             List<StockKLine> originWeeklyData = BaseUtils.loadOriginalData(weeklyFile);
 
-            // 加载daily数据
-            String dailyFile = dailyMap.get(stock);
+            // 加载grab daily数据
+            String dailyFile = grabDailyMap.get(stock);
             if (StringUtils.isBlank(dailyFile)) {
-//                System.out.println("grab file isn't exist: " + stock);
+                //                System.out.println("grab file isn't exist: " + stock);
                 continue;
             }
-            List<StockKLine> originDailyData = BaseUtils.loadOriginalData(dailyFile);
+            List<StockKLine> grabDailyData = BaseUtils.loadOriginalData(dailyFile);
+
+            // 加载origin daily数据
+            String originDailyFile = originDailyMap.get(stock);
+            List<StockKLine> originDailyData = BaseUtils.loadOriginalData(originDailyFile);
+
+            List<StockKLine> dailyData = Lists.newArrayList();
+            dailyData.addAll(originDailyData);
+            dailyData.addAll(grabDailyData);
 
             int weekIdx = 0;
             LocalDate weekDate = LocalDate.now();
@@ -62,7 +88,7 @@ public class CheckGrabData {
             List<StockKLine> newWeekList = Lists.newArrayList();
             int dayCount = 0;
             boolean checkSumSuccess = true;
-            for (StockKLine dayK : originDailyData) {
+            for (StockKLine dayK : dailyData) {
                 LocalDate dayDate = LocalDate.parse(dayK.getDate(), FORMATTER);
 
                 while (weekDate.isAfter(dayDate)) {
@@ -110,8 +136,9 @@ public class CheckGrabData {
                 System.out.println("check sum failed: " + stock);
                 continue;
             }
-            //            BaseUtils.writeStockKLine(FIX_WEEKLY_PATH + stock, newWeekList);
-            //            System.out.println("fix finish: " + stock);
+            BaseUtils.writeStockKLine(STD_WEEKLY_PATH + stock, newWeekList);
+            BaseUtils.writeStockKLine(STD_DAILY_PATH + stock, dailyData);
+            System.out.println("fix finish: " + stock);
         }
     }
 
@@ -123,12 +150,12 @@ public class CheckGrabData {
         try {
             divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
         } catch (Exception e) {
-//            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
             System.out.println(stock + " " + weekK.getDate());
             return true;
         }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-//            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
             System.out.println(stock + " " + weekK.getDate());
             return true;
         }
