@@ -38,8 +38,8 @@ public class CheckGrabData {
                 System.out.println("has fixed: " + stock);
                 continue;
             }
-            if (!stock.equals("COST")) {
-//                                continue;
+            if (!stock.equals("BKR")) {
+                                continue;
             }
 
             // 加载weekly数据

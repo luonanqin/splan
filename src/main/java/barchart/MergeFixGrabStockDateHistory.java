@@ -25,8 +25,8 @@ public class MergeFixGrabStockDateHistory {
         String[] stockList = f.list();
 
         for (String stock : stockList) {
-            if (!StringUtils.equals(stock, "COST")) {
-//                continue;
+            if (!StringUtils.equals(stock, "BKR")) {
+                continue;
             }
             String grabFile = GRAB_PATH + stock + "_day";
 
