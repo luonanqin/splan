@@ -276,9 +276,13 @@ public class GrabStockDateHistory {
             }
 
             if (lastDate != null && StringUtils.equals(lastDate, date)) {
-                moveAdd += step;
-                actions.moveByOffset(step, 0).perform();
-                moveTimes++;
+                try {
+                    moveAdd += step;
+                    actions.moveByOffset(step, 0).perform();
+                    moveTimes++;
+                } catch (Exception e) {
+                    break;
+                }
             } else {
                 List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
                 String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");

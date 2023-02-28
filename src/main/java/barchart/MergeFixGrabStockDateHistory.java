@@ -9,9 +9,12 @@ import util.BaseUtils;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static util.Constants.GRAB_PATH;
 import static util.Constants.HIS_BASE_PATH;
+import static util.Constants.STD_DAILY_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -19,13 +22,16 @@ import static util.Constants.HIS_BASE_PATH;
 public class MergeFixGrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
-        // 等待抓取修复的
-//        Map<String, String> waitFixGrabMap = waitFixGrab();
+        // 已经合并没问题的
+        Set<String> hasMergeStock = BaseUtils.getFileMap(STD_DAILY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
         File f = new File(HIS_BASE_PATH + "fixGrab/");
         String[] stockList = f.list();
 
         for (String stock : stockList) {
             if (!StringUtils.equals(stock, "BKR")) {
+//                continue;
+            }
+            if (hasMergeStock.contains(stock)) {
                 continue;
             }
             String grabFile = GRAB_PATH + stock + "_day";

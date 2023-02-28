@@ -57,7 +57,7 @@ public class CheckGrabData {
                 continue;
             }
             if (!stock.equals("AAPL")) {
-//                continue;
+                //                continue;
             }
 
             // 加载weekly数据
@@ -133,7 +133,7 @@ public class CheckGrabData {
                 dayCount++;
             }
             if (!checkSumSuccess) {
-                System.out.println("check sum failed: " + stock);
+                //                System.out.println("check sum failed: " + stock);
                 continue;
             }
             BaseUtils.writeStockKLine(STD_WEEKLY_PATH + stock, newWeekList);
@@ -152,12 +152,12 @@ public class CheckGrabData {
         } catch (Exception e) {
             //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
             System.out.println(stock + " " + weekK.getDate());
-            return true;
+            return false;
         }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
             //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
             System.out.println(stock + " " + weekK.getDate());
-            return true;
+            return false;
         }
         return true;
     }
