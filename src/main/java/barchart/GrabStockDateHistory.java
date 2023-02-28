@@ -41,7 +41,7 @@ import static util.Constants.*;
 public class GrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
-        String market = "XNAS";
+        String market = "XNYS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
