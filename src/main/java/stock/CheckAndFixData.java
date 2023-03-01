@@ -143,7 +143,7 @@ public class CheckAndFixData {
         Map<String, String> originMonthlyMap = BaseUtils.originStockFileMap("monthly");
         for (String stock : originMonthlyMap.keySet()) {
             if (hasMergeStock.contains(stock)) {
-//                continue;
+                continue;
             }
             if (!stock.equals("AAPL")) {
                 //                                continue;
