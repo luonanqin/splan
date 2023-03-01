@@ -36,9 +36,10 @@ public class CheckAndFixData {
         // 加载抓取数据文件列表，转换成stock列表大写
         grabDailyMap = BaseUtils.grabStockFileMap();
 
-        //        fixDailyAndWeekly();
+        fixDailyAndWeekly();
         fixMonthly();
-                computeQuarterly();
+        computeQuarterly();
+        computeYearly();
     }
 
     private static void fixDailyAndWeekly() throws Exception {
@@ -257,7 +258,7 @@ public class CheckAndFixData {
                 continue;
             }
             if (!stock.equals("AAPL")) {
-//                continue;
+                //                continue;
             }
 
             // 加载monthly数据
@@ -306,6 +307,67 @@ public class CheckAndFixData {
 
             BaseUtils.writeStockKLine(STD_QUARTERLY_PATH + stock, quarterList);
             System.out.println("fix quarter finish: " + stock);
+        }
+    }
+
+    public static void computeYearly() throws Exception {
+        Set<String> hasMergeStock = BaseUtils.getFileMap(STD_YEARLY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
+
+        Map<String, String> stdMonthlyMap = BaseUtils.getFileMap(STD_MONTHLY_PATH);
+        for (String stock : stdMonthlyMap.keySet()) {
+            if (hasMergeStock.contains(stock)) {
+                continue;
+            }
+            if (!stock.equals("AAPL")) {
+                //                continue;
+            }
+
+            // 加载monthly数据
+            String monthlyFile = stdMonthlyMap.get(stock);
+            List<StockKLine> stdMonthlyData = BaseUtils.loadDataToKline(monthlyFile);
+
+            List<StockKLine> yearList = Lists.newArrayList();
+            double low = Double.MAX_VALUE, high = Double.MIN_VALUE, open, close = 0;
+            BigDecimal volumn = BigDecimal.ZERO;
+            for (int i = 0; i < stdMonthlyData.size(); i++) {
+                StockKLine monthK = stdMonthlyData.get(i);
+
+                if ((i + 12) % 12 == 0) {
+                    close = monthK.getClose();
+                }
+                if (monthK.getLow() < low) {
+                    low = monthK.getLow();
+                }
+                if (monthK.getHigh() > high) {
+                    high = monthK.getHigh();
+                }
+                volumn = volumn.add(monthK.getVolume());
+
+                if ((i + 1) % 12 == 0 || i == stdMonthlyData.size() - 1) {
+                    open = monthK.getOpen();
+
+                    StockKLine year = StockKLine.builder()
+                      .date(monthK.getDate())
+                      .open(open)
+                      .close(close)
+                      .high(high)
+                      .low(low)
+                      .change(0)
+                      .changePnt(0)
+                      .volume(volumn)
+                      .build();
+
+                    yearList.add(year);
+
+                    low = Double.MAX_VALUE;
+                    high = Double.MIN_VALUE;
+                    close = 0;
+                    volumn = BigDecimal.ZERO;
+                }
+            }
+
+            BaseUtils.writeStockKLine(STD_YEARLY_PATH + stock, yearList);
+            System.out.println("fix year finish: " + stock);
         }
     }
 
