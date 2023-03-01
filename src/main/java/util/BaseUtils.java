@@ -215,7 +215,7 @@ public class BaseUtils {
         return stockFileMap;
     }
 
-    public static List<StockKLine> loadOriginalData(String filePath) throws Exception {
+    public static List<StockKLine> loadDataToKline(String filePath) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         if (filePath.contains("_historical")) {
             br.readLine();
