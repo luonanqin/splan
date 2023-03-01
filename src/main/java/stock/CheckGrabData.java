@@ -64,21 +64,24 @@ public class CheckGrabData {
             String weeklyFile = originWeeklyMap.get(stock);
             List<StockKLine> originWeeklyData = BaseUtils.loadOriginalData(weeklyFile);
 
-            // 加载grab daily数据
-            String dailyFile = grabDailyMap.get(stock);
-            if (StringUtils.isBlank(dailyFile)) {
-                //                System.out.println("grab file isn't exist: " + stock);
-                continue;
-            }
-            List<StockKLine> grabDailyData = BaseUtils.loadOriginalData(dailyFile);
+            // 合并原始和补抓daily数据
+            List<StockKLine> dailyData = Lists.newArrayList();
 
             // 加载origin daily数据
             String originDailyFile = originDailyMap.get(stock);
+            if (StringUtils.isBlank(originDailyFile)) {
+                System.out.println("empty origin file: " + stock);
+                continue;
+            }
             List<StockKLine> originDailyData = BaseUtils.loadOriginalData(originDailyFile);
-
-            List<StockKLine> dailyData = Lists.newArrayList();
             dailyData.addAll(originDailyData);
-            dailyData.addAll(grabDailyData);
+
+            // 加载grab daily数据
+            String dailyFile = grabDailyMap.get(stock);
+            if (StringUtils.isNotBlank(dailyFile)) {
+                List<StockKLine> grabDailyData = BaseUtils.loadOriginalData(dailyFile);
+                dailyData.addAll(grabDailyData);
+            }
 
             int weekIdx = 0;
             LocalDate weekDate = LocalDate.now();
