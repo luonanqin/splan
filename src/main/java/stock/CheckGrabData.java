@@ -26,7 +26,6 @@ public class CheckGrabData {
     private static Set<String> hasMergeStock = Sets.newHashSet();
     private static Map<String, String> originWeeklyMap = Maps.newHashMap();
     private static Map<String, String> originDailyMap = Maps.newHashMap();
-    private static Map<String, String> originMonthlyMap = Maps.newHashMap();
     private static Map<String, String> grabDailyMap = Maps.newHashMap();
 
     public static void main(String[] args) throws Exception {
@@ -36,23 +35,112 @@ public class CheckGrabData {
         // 加载原始数据文件列表，转换成stock列表大写
         originWeeklyMap = BaseUtils.originStockFileMap("weekly");
         originDailyMap = BaseUtils.originStockFileMap("daily");
-        originMonthlyMap = BaseUtils.originStockFileMap("monthly");
 
         // 加载抓取数据文件列表，转换成stock列表大写
         grabDailyMap = BaseUtils.grabStockFileMap();
-        // 加载fixWeekly下的文件列表，转换成stock列表大写
-        //        Set<String> fixedWeeklySet = fixedWeeklyList();
-        Set<String> fixedWeeklySet = Sets.newHashSet();
-        // 只有weekly中有且fixWeekly没有的数据才需要fix
-        fixData(fixedWeeklySet);
+
+        fixDailyAndWeekly();
+        fixMonthly();
     }
 
-    private static void fixData(Set<String> fixedWeeklySet) throws Exception {
-        for (String stock : originWeeklyMap.keySet()) {
-            if (fixedWeeklySet.contains(stock)) {
-                System.out.println("has fixed: " + stock);
+    private static void fixMonthly() throws Exception {
+        hasMergeStock = BaseUtils.getFileMap(STD_MONTHLY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
+
+        Map<String, String> originMonthlyMap = BaseUtils.originStockFileMap("monthly");
+        for (String stock : originMonthlyMap.keySet()) {
+            if (hasMergeStock.contains(stock)) {
                 continue;
             }
+            if (!stock.equals("AAPL")) {
+//                                continue;
+            }
+
+            // 加载monthly数据
+            String monthlyFile = originMonthlyMap.get(stock);
+            List<StockKLine> originMonthlyData = BaseUtils.loadOriginalData(monthlyFile);
+
+            // 合并原始和补抓daily数据
+            List<StockKLine> dailyData = Lists.newArrayList();
+
+            // 加载origin daily数据
+            String originDailyFile = originDailyMap.get(stock);
+            if (StringUtils.isBlank(originDailyFile)) {
+//                System.out.println("empty origin file: " + stock);
+                continue;
+            }
+            List<StockKLine> originDailyData = BaseUtils.loadOriginalData(originDailyFile);
+            dailyData.addAll(originDailyData);
+
+            // 加载grab daily数据
+            String dailyFile = grabDailyMap.get(stock);
+            if (StringUtils.isNotBlank(dailyFile)) {
+                List<StockKLine> grabDailyData = BaseUtils.loadOriginalData(dailyFile);
+                dailyData.addAll(grabDailyData);
+            }
+
+            int monthIdx = 0;
+            LocalDate monthDate = LocalDate.now();
+            BigDecimal sum = BigDecimal.ZERO;
+            boolean firstTime = true;
+            StockKLine monthK = null;
+            List<StockKLine> newMonthList = Lists.newArrayList();
+            int dayCount = 0;
+            boolean checkSumSuccess = true;
+            for (StockKLine dayK : dailyData) {
+                LocalDate dayDate = LocalDate.parse(dayK.getDate(), FORMATTER);
+
+                while (monthDate.isAfter(dayDate)) {
+                    if (!firstTime) {
+                        // 当daily某天小于下一个monthly的某天时，最新一周成交量累加结束，结果加入集合，并清零x，接着继续累加新的成交量
+                        StockKLine newMonth = StockKLine.builder()
+                          .date(monthK.getDate())
+                          .open(monthK.getOpen())
+                          .close(monthK.getClose())
+                          .high(monthK.getHigh())
+                          .low(monthK.getLow())
+                          .change(monthK.getChange())
+                          .changePnt(monthK.getChangePnt())
+                          .volume(sum)
+                          .build();
+                        newMonthList.add(newMonth);
+
+                        checkSumSuccess = checkSum(stock, sum, monthK, dayCount);
+
+                        sum = BigDecimal.ZERO;
+                        dayCount = 0;
+                    }
+                    monthK = originMonthlyData.get(monthIdx);
+                    monthDate = LocalDate.parse(monthK.getDate(), FORMATTER);
+                    monthIdx++;
+                    if (monthIdx >= originMonthlyData.size()) {
+                        break;
+                    }
+                }
+                if (!checkSumSuccess) {
+                    break;
+                }
+                if (monthIdx >= originMonthlyData.size()) {
+                    break;
+                }
+                if (firstTime) {
+                    firstTime = false;
+                }
+
+                // 当daily某天小于monthly的某天时，开始累加周成交量x，
+                sum = sum.add(dayK.getVolume());
+                dayCount++;
+            }
+            if (!checkSumSuccess) {
+                //                System.out.println("check sum failed: " + stock);
+                continue;
+            }
+            BaseUtils.writeStockKLine(STD_MONTHLY_PATH + stock, newMonthList);
+            System.out.println("fix month finish: " + stock);
+        }
+    }
+
+    private static void fixDailyAndWeekly() throws Exception {
+        for (String stock : originWeeklyMap.keySet()) {
             if (hasMergeStock.contains(stock)) {
                 continue;
             }
@@ -70,7 +158,7 @@ public class CheckGrabData {
             // 加载origin daily数据
             String originDailyFile = originDailyMap.get(stock);
             if (StringUtils.isBlank(originDailyFile)) {
-                System.out.println("empty origin file: " + stock);
+//                System.out.println("empty origin file: " + stock);
                 continue;
             }
             List<StockKLine> originDailyData = BaseUtils.loadOriginalData(originDailyFile);
@@ -141,7 +229,7 @@ public class CheckGrabData {
             }
             BaseUtils.writeStockKLine(STD_WEEKLY_PATH + stock, newWeekList);
             BaseUtils.writeStockKLine(STD_DAILY_PATH + stock, dailyData);
-            System.out.println("fix finish: " + stock);
+            System.out.println("fix week finish: " + stock);
         }
     }
 
