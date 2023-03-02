@@ -28,7 +28,7 @@ public class DownloadStockHistory {
         BaseUtils.loginBarchart(driver);
 
         // has option stock
-        String market = "XNYS";
+        String market = "XNAS";
         List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
 
         /** download historical stock data */
@@ -37,10 +37,10 @@ public class DownloadStockHistory {
         //        downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-        downloadHistoricalStock(driver, stockList, "weekly", 100);
+//        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
-        //        downloadHistoricalStock(driver, stockList, "monthly", 30);
+                downloadHistoricalStock(driver, stockList, "monthly", 100);
 
         // for quarterly
         //        downloadHistoricalStock(driver, stockList, "quarterly", 30);
