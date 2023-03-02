@@ -23,4 +23,7 @@ public final class Constants {
     public static final String STD_QUARTERLY_PATH = STD_BASE_PATH + "quarterly/";
     public static final String STD_YEARLY_PATH = STD_BASE_PATH + "yearly/";
 
+    public static final String INDICATOR_BASE_PATH = "src/main/resources/indicatorData/";
+    public static final String INDICATOR_MA_PATH = INDICATOR_BASE_PATH + "MA/";
+    public static final String INDICATOR_BOLL_PATH = INDICATOR_BASE_PATH + "BOLL/";
 }
