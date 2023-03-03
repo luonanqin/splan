@@ -1,0 +1,152 @@
+package strategy;
+
+import bean.MA;
+import bean.StockKLine;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
+import util.BaseUtils;
+import util.Constants;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Created by Luonanqin on 2023/3/3.
+ */
+public class LongStepBack {
+
+    public static void main(String[] args) throws Exception {
+        String kLingPath = Constants.STD_DAILY_PATH;
+        Map<String, String> fileMap = BaseUtils.getFileMap(kLingPath);
+
+        String stock = "AAPL";
+        for (String s : fileMap.keySet()) {
+            stock = s;
+            int longCount = 5;
+            String period = "daily";
+
+            // 强多头ma 持续五天以上
+//            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
+
+            // 弱多头ma 持续五天以上
+            Map<String, MA> weekLong = longPermute(stock, period, longCount, 30);
+
+            // 第二天开盘大于前一天收盘
+            Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
+
+            // 日最低要低于ma5
+            Map<String, StockKLine> lowLessMA5 = lowLessMA5(stock, period);
+
+            List<String> dateList = Lists.newArrayList();
+            for (String date : weekLong.keySet()) {
+                if (openGreatPrevClose.containsKey(date) && lowLessMA5.containsKey(date)) {
+                    dateList.add(date);
+                }
+            }
+
+            Collection<String> intersection = CollectionUtils.intersection(weekLong.keySet(), lowLessMA5.keySet());
+            int weekLongAndlowLessMA5Size = intersection.size();
+
+            List<String> diff = CollectionUtils.disjunction(intersection, dateList).stream().collect(Collectors.toList());
+            Collections.sort(diff, Comparator.comparingInt(BaseUtils::dateToInt).reversed());
+
+            double rate = (double) dateList.size() / (double) weekLongAndlowLessMA5Size * 100;
+            System.out.println(stock
+              + " weekLong: " + weekLong.size()
+              + " openGreatPrevClose: " + openGreatPrevClose.size()
+              + " lowLessMA5: " + lowLessMA5.size()
+              + " weekLongAndlowLessMA5: " + weekLongAndlowLessMA5Size
+              + " result: " + dateList.size()
+              + " rate: " + rate);
+
+            //        System.out.println(diff);
+        }
+    }
+
+    private static Map<String, MA> longPermute(String stock, String period, int longCount, int maDayCount) throws Exception {
+        String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
+        List<String> lineList = BaseUtils.readFile(maPath);
+        List<MA> maList = lineList.stream().map(MA::convert).collect(Collectors.toList());
+
+        Map<String, MA> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
+        int temp = longCount;
+        for (MA ma : maList) {
+            String date = ma.getDate();
+            double ma5 = ma.getMa5();
+            double ma10 = ma.getMa10();
+            double ma20 = ma.getMa20();
+            double ma30 = ma.getMa30();
+            double ma60 = ma.getMa60();
+
+            boolean ma30Greatma60 = true;
+            if (maDayCount == 60) {
+                ma30Greatma60 = ma30 > ma60;
+            }
+
+            boolean ma20Greatma30 = true;
+            if (maDayCount == 30) {
+                ma20Greatma30 = ma20 > ma30;
+            }
+
+            if (ma5 > ma10 && ma10 > ma20 && ma20Greatma30 && ma30Greatma60) {
+                temp--;
+                if (temp == 0) {
+                    map.put(date, ma);
+                    temp++;
+                }
+            } else {
+                temp = longCount;
+            }
+        }
+
+        return map;
+    }
+
+    private static Map<String, StockKLine> openGreatPrevClose(String stock, String period) throws Exception {
+        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
+        List<String> lineList = BaseUtils.readFile(kLingPath);
+        List<StockKLine> kLineList = BaseUtils.convertToKLine(lineList);
+
+        Map<String, StockKLine> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
+        for (int i = 0; i < kLineList.size() - 1; i++) {
+            StockKLine current = kLineList.get(i);
+            StockKLine prev = kLineList.get(i + 1);
+            String date = prev.getDate();
+
+            if (current.getOpen() > prev.getClose()) {
+                map.put(date, prev);
+            }
+        }
+
+        return map;
+    }
+
+    private static Map<String, StockKLine> lowLessMA5(String stock, String period) throws Exception {
+        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
+        List<String> kLines = BaseUtils.readFile(kLingPath);
+        List<StockKLine> kLineList = BaseUtils.convertToKLine(kLines);
+        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k));
+
+        String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
+        List<String> mas = BaseUtils.readFile(maPath);
+        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m));
+
+        Map<String, StockKLine> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
+        for (String date : dateToMaMap.keySet()) {
+            if (dateToKlineMap.containsKey(date)) {
+                MA ma = dateToMaMap.get(date);
+                StockKLine kLine = dateToKlineMap.get(date);
+                if (kLine.getLow() < ma.getMa5()) {
+                    map.put(date, kLine);
+                }
+            }
+        }
+
+        return map;
+    }
+}

@@ -324,4 +324,9 @@ public class BaseUtils {
         bw.close();
     }
 
+    public static int dateToInt(String date) {
+        String year = date.substring(6);
+        String newDate = year + date.substring(0, 5);
+        return Integer.parseInt(newDate.replace("/", ""));
+    }
 }
