@@ -8,6 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 import util.Constants;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,21 +21,31 @@ import java.util.stream.Collectors;
  */
 public class LongStepBack {
 
+    private static List<StockKLine> kLineList;
+
+    public static void init(String stock, String period) throws Exception {
+        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
+        List<String> kLines = BaseUtils.readFile(kLingPath);
+        kLineList = BaseUtils.convertToKLine(kLines);
+    }
+
     public static void main(String[] args) throws Exception {
         String kLingPath = Constants.STD_DAILY_PATH;
         Map<String, String> fileMap = BaseUtils.getFileMap(kLingPath);
 
-        String stock = "AAPL";
-        for (String s : fileMap.keySet()) {
-            stock = s;
+        for (String stock : fileMap.keySet()) {
+            if (!stock.equals("AAPL")) {
+                continue;
+            }
             int longCount = 5;
             String period = "daily";
+            init(stock, period);
 
             // 强多头ma 持续五天以上
-//            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
+            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
 
             // 弱多头ma 持续五天以上
-            Map<String, MA> weekLong = longPermute(stock, period, longCount, 30);
+            Map<String, MA> weakLong = longPermute(stock, period, longCount, 30);
 
             // 第二天开盘大于前一天收盘
             Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
@@ -42,29 +53,35 @@ public class LongStepBack {
             // 日最低要低于ma5
             Map<String, StockKLine> lowLessMA5 = lowLessMA5(stock, period);
 
+            // 回踩差值占比
+            Map<String, Double> stepBackRateMap = stepBackRate();
+
             List<String> dateList = Lists.newArrayList();
-            for (String date : weekLong.keySet()) {
+            for (String date : weakLong.keySet()) {
                 if (openGreatPrevClose.containsKey(date) && lowLessMA5.containsKey(date)) {
                     dateList.add(date);
                 }
             }
 
-            Collection<String> intersection = CollectionUtils.intersection(weekLong.keySet(), lowLessMA5.keySet());
+            Collection<String> intersection = CollectionUtils.intersection(weakLong.keySet(), lowLessMA5.keySet());
             int weekLongAndlowLessMA5Size = intersection.size();
 
             List<String> diff = CollectionUtils.disjunction(intersection, dateList).stream().collect(Collectors.toList());
             Collections.sort(diff, Comparator.comparingInt(BaseUtils::dateToInt).reversed());
 
-            double rate = (double) dateList.size() / (double) weekLongAndlowLessMA5Size * 100;
-            System.out.println(stock
-              + " weekLong: " + weekLong.size()
-              + " openGreatPrevClose: " + openGreatPrevClose.size()
-              + " lowLessMA5: " + lowLessMA5.size()
-              + " weekLongAndlowLessMA5: " + weekLongAndlowLessMA5Size
-              + " result: " + dateList.size()
-              + " rate: " + rate);
+            //            double rate = (double) dateList.size() / (double) weekLongAndlowLessMA5Size * 100;
+            //            System.out.println(stock
+            //              + " weakLong: " + weakLong.size()
+            //              + " openGreatPrevClose: " + openGreatPrevClose.size()
+            //              + " lowLessMA5: " + lowLessMA5.size()
+            //              + " weekLongAndlowLessMA5: " + weekLongAndlowLessMA5Size
+            //              + " result: " + dateList.size()
+            //              + " rate: " + rate);
 
-            //        System.out.println(diff);
+            for (String d : diff) {
+                System.out.println(d + " " + stepBackRateMap.get(d));
+            }
+            //            System.out.println(diff);
         }
     }
 
@@ -108,9 +125,9 @@ public class LongStepBack {
     }
 
     private static Map<String, StockKLine> openGreatPrevClose(String stock, String period) throws Exception {
-        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
-        List<String> lineList = BaseUtils.readFile(kLingPath);
-        List<StockKLine> kLineList = BaseUtils.convertToKLine(lineList);
+        //        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
+        //        List<String> lineList = BaseUtils.readFile(kLingPath);
+        //        List<StockKLine> kLineList = BaseUtils.convertToKLine(lineList);
 
         Map<String, StockKLine> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         for (int i = 0; i < kLineList.size() - 1; i++) {
@@ -127,9 +144,9 @@ public class LongStepBack {
     }
 
     private static Map<String, StockKLine> lowLessMA5(String stock, String period) throws Exception {
-        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
-        List<String> kLines = BaseUtils.readFile(kLingPath);
-        List<StockKLine> kLineList = BaseUtils.convertToKLine(kLines);
+        //        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
+        //        List<String> kLines = BaseUtils.readFile(kLingPath);
+        //        List<StockKLine> kLineList = BaseUtils.convertToKLine(kLines);
         Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k));
 
         String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
@@ -145,6 +162,33 @@ public class LongStepBack {
                     map.put(date, kLine);
                 }
             }
+        }
+
+        return map;
+    }
+
+    private static Map<String, Double> stepBackRate() throws Exception {
+        Map<String, Double> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
+
+        for (int i = 0; i < kLineList.size(); i++) {
+            StockKLine kLine = kLineList.get(i);
+            String date = kLine.getDate();
+            double open = kLine.getOpen();
+            double close = kLine.getClose();
+            double low = kLine.getLow();
+            double high = kLine.getHigh();
+
+            double ocDiff = Math.abs(open - low);
+            double lcDiff = Math.abs(close - low);
+            double hlDiff = high - low;
+            if (hlDiff == 0) {
+                continue;
+            }
+            if (date.equals("08/03/2022")) {
+                System.out.println();
+            }
+            double rate = Math.min(ocDiff, lcDiff) / Math.abs(hlDiff);
+            map.put(date, BigDecimal.valueOf(rate).setScale(4, BigDecimal.ROUND_DOWN).doubleValue());
         }
 
         return map;
