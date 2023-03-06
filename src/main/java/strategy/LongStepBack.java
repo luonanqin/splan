@@ -50,26 +50,30 @@ public class LongStepBack {
             // 第二天开盘大于前一天收盘
             Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
 
-            // 日最低要低于ma5
+            // 日最低低于ma5
 //            Map<String, StockKLine> lowLessMA5 = lowLessMA5(stock, period);
 
-            // 日最低要低于ma10
+            // 日最低低于ma10
             Map<String, StockKLine> lowLessMA10 = lowLessMA10(stock, period);
+
+            // 日最低高于ma20
+            Map<String, StockKLine> lowGreatMA20 = lowGreatMA20(stock, period);
 
             // 回踩差值占比
             Map<String, Double> stepBackRateMap = stepBackRate();
 
             List<String> dateList = Lists.newArrayList();
             for (String date : weakLong.keySet()) {
-                if (openGreatPrevClose.containsKey(date) && lowLessMA10.containsKey(date)) {
+                if (openGreatPrevClose.containsKey(date) && lowLessMA10.containsKey(date) && lowGreatMA20.containsKey(date)) {
                     dateList.add(date);
                 }
             }
 
             Collection<String> intersection = CollectionUtils.intersection(weakLong.keySet(), lowLessMA10.keySet());
+            intersection = CollectionUtils.intersection(intersection, lowGreatMA20.keySet());
             List<String> insecList = Lists.newArrayList(intersection);
             Collections.sort(insecList, Comparator.comparingInt(BaseUtils::dateToInt).reversed());
-            int weekLongAndlowLessMASize = intersection.size();
+            int denominator = intersection.size();
 
             List<String> diff = CollectionUtils.disjunction(intersection, dateList).stream().collect(Collectors.toList());
             Collections.sort(diff, Comparator.comparingInt(BaseUtils::dateToInt).reversed());
@@ -157,9 +161,6 @@ public class LongStepBack {
     }
 
     private static Map<String, StockKLine> lowLessMA(String stock, String period, int man) throws Exception {
-        //        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
-        //        List<String> kLines = BaseUtils.readFile(kLingPath);
-        //        List<StockKLine> kLineList = BaseUtils.convertToKLine(kLines);
         Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k));
 
         String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
@@ -171,15 +172,50 @@ public class LongStepBack {
             if (dateToKlineMap.containsKey(date)) {
                 MA ma = dateToMaMap.get(date);
                 StockKLine kLine = dateToKlineMap.get(date);
-                if (man == 5 && kLine.getLow() < ma.getMa5()) {
+                double low = kLine.getLow();
+                if (man == 5 && low < ma.getMa5()) {
                     map.put(date, kLine);
-                } else if (man == 10 && kLine.getLow() < ma.getMa10()) {
+                } else if (man == 10 && low < ma.getMa10()) {
                     map.put(date, kLine);
-                } else if (man == 20 && kLine.getLow() < ma.getMa20()) {
+                } else if (man == 20 && low < ma.getMa20()) {
                     map.put(date, kLine);
-                } else if (man == 30 && kLine.getLow() < ma.getMa30()) {
+                } else if (man == 30 && low < ma.getMa30()) {
                     map.put(date, kLine);
-                } else if (man == 60 && kLine.getLow() < ma.getMa60()) {
+                } else if (man == 60 && low < ma.getMa60()) {
+                    map.put(date, kLine);
+                }
+            }
+        }
+
+        return map;
+    }
+
+    private static Map<String, StockKLine> lowGreatMA20(String stock, String period) throws Exception {
+        return lowGreatMA(stock, period, 20);
+    }
+
+    private static Map<String, StockKLine> lowGreatMA(String stock, String period, int man) throws Exception {
+        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k));
+
+        String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
+        List<String> mas = BaseUtils.readFile(maPath);
+        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m));
+
+        Map<String, StockKLine> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
+        for (String date : dateToMaMap.keySet()) {
+            if (dateToKlineMap.containsKey(date)) {
+                MA ma = dateToMaMap.get(date);
+                StockKLine kLine = dateToKlineMap.get(date);
+                double low = kLine.getLow();
+                if (man == 5 && low > ma.getMa5()) {
+                    map.put(date, kLine);
+                } else if (man == 10 && low > ma.getMa10()) {
+                    map.put(date, kLine);
+                } else if (man == 20 && low > ma.getMa20()) {
+                    map.put(date, kLine);
+                } else if (man == 30 && low > ma.getMa30()) {
+                    map.put(date, kLine);
+                } else if (man == 60 && low > ma.getMa60()) {
                     map.put(date, kLine);
                 }
             }

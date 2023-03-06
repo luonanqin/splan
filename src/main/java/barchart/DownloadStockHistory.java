@@ -3,6 +3,7 @@ package barchart;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
@@ -19,15 +20,15 @@ public class DownloadStockHistory {
     public static void main(String[] args) throws Exception {
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
-//        ChromeOptions chromeOptions = new ChromeOptions();
-//        ChromeDriver driver = new ChromeDriver(chromeOptions);
-        ChromeDriver driver = null;
+        ChromeOptions chromeOptions = new ChromeOptions();
+        ChromeDriver driver = new ChromeDriver(chromeOptions);
+//        ChromeDriver driver = null;
 
         // login
-//        BaseUtils.loginBarchart(driver);
+        BaseUtils.loginBarchart(driver);
 
         // has option stock
-        String market = "XNAS-ADRC";
+        String market = "XNYS-ADRC";
         List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
 
         /** download historical stock data */
@@ -36,10 +37,10 @@ public class DownloadStockHistory {
                 downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-        downloadHistoricalStock(driver, stockList, "weekly", 100);
+//        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
-                downloadHistoricalStock(driver, stockList, "monthly", 100);
+//                downloadHistoricalStock(driver, stockList, "monthly", 100);
 
         // for quarterly
         //        downloadHistoricalStock(driver, stockList, "quarterly", 30);
