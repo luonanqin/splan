@@ -11,8 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static util.Constants.DAILY_PATH;
-import static util.Constants.FORMATTER;
+import static util.Constants.*;
 
 /**
  * Created by Luonanqin on 2023/1/31.
@@ -20,7 +19,7 @@ import static util.Constants.FORMATTER;
 public class FilterStock {
 
     public static void main(String[] args) throws Exception {
-        List<String> list = tradeFlat(DAILY_PATH);
+        List<String> list = tradeFlat(GRAB_ONE_YEAR_PATH);
         System.out.println(list);
     }
 

@@ -3,7 +3,6 @@ package barchart;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
@@ -11,7 +10,6 @@ import util.Constants;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -21,23 +19,24 @@ public class DownloadStockHistory {
     public static void main(String[] args) throws Exception {
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
-        ChromeOptions chromeOptions = new ChromeOptions();
-        ChromeDriver driver = new ChromeDriver(chromeOptions);
+//        ChromeOptions chromeOptions = new ChromeOptions();
+//        ChromeDriver driver = new ChromeDriver(chromeOptions);
+        ChromeDriver driver = null;
 
         // login
-        BaseUtils.loginBarchart(driver);
+//        BaseUtils.loginBarchart(driver);
 
         // has option stock
-        String market = "XNAS";
+        String market = "XNAS-ADRC";
         List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
 
         /** download historical stock data */
 
         // for daily
-        //        downloadHistoricalStock(driver, stockList, "daily", 100);
+                downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-//        downloadHistoricalStock(driver, stockList, "weekly", 100);
+        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
                 downloadHistoricalStock(driver, stockList, "monthly", 100);
@@ -59,20 +58,21 @@ public class DownloadStockHistory {
         String searchKey = "_" + frequency + "_historical-data";
         Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
 
-        Map<String, String> dailyFileMap = BaseUtils.originStockFileMap("daily");
-        Set<String> hasDaily = dailyFileMap.keySet();
-
+//        Map<String, String> dailyFileMap = BaseUtils.originStockFileMap("daily");
+//        Set<String> hasDaily = dailyFileMap.keySet();
+//n.
         List<String> flatTradeStockList = FilterStock.tradeFlat(Constants.DAILY_PATH);
+        flatTradeStockList.addAll(FilterStock.tradeFlat(Constants.GRAB_ONE_YEAR_PATH));
         File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
             if (flatTradeStockList.contains(stock)) {
                 System.out.println("flat trade: " + stock);
                 continue;
             }
-            if (!hasDaily.contains(stock)) {
-                System.out.println("has been download daily: " + stock);
-                continue;
-            }
+//            if (hasDaily.contains(stock)) {
+//                System.out.println("has been download daily: " + stock);
+//                continue;
+//            }
             if (hasDownload.contains(stock.toLowerCase())) {
                 System.out.println("has downloaded: " + stock);
                 continue;
