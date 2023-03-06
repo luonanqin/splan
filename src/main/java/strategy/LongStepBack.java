@@ -51,20 +51,25 @@ public class LongStepBack {
             Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
 
             // 日最低要低于ma5
-            Map<String, StockKLine> lowLessMA5 = lowLessMA5(stock, period);
+//            Map<String, StockKLine> lowLessMA5 = lowLessMA5(stock, period);
+
+            // 日最低要低于ma10
+            Map<String, StockKLine> lowLessMA10 = lowLessMA10(stock, period);
 
             // 回踩差值占比
             Map<String, Double> stepBackRateMap = stepBackRate();
 
             List<String> dateList = Lists.newArrayList();
             for (String date : weakLong.keySet()) {
-                if (openGreatPrevClose.containsKey(date) && lowLessMA5.containsKey(date)) {
+                if (openGreatPrevClose.containsKey(date) && lowLessMA10.containsKey(date)) {
                     dateList.add(date);
                 }
             }
 
-            Collection<String> intersection = CollectionUtils.intersection(weakLong.keySet(), lowLessMA5.keySet());
-            int weekLongAndlowLessMA5Size = intersection.size();
+            Collection<String> intersection = CollectionUtils.intersection(weakLong.keySet(), lowLessMA10.keySet());
+            List<String> insecList = Lists.newArrayList(intersection);
+            Collections.sort(insecList, Comparator.comparingInt(BaseUtils::dateToInt).reversed());
+            int weekLongAndlowLessMASize = intersection.size();
 
             List<String> diff = CollectionUtils.disjunction(intersection, dateList).stream().collect(Collectors.toList());
             Collections.sort(diff, Comparator.comparingInt(BaseUtils::dateToInt).reversed());
@@ -78,8 +83,8 @@ public class LongStepBack {
             //              + " result: " + dateList.size()
             //              + " rate: " + rate);
 
-            for (String d : diff) {
-                System.out.println(d + " " + stepBackRateMap.get(d));
+            for (String d : insecList) {
+                System.out.println(d + " " + stepBackRateMap.get(d) + " " + dateList.contains(d));
             }
             //            System.out.println(diff);
         }
@@ -144,6 +149,14 @@ public class LongStepBack {
     }
 
     private static Map<String, StockKLine> lowLessMA5(String stock, String period) throws Exception {
+        return lowLessMA(stock, period, 5);
+    }
+
+    private static Map<String, StockKLine> lowLessMA10(String stock, String period) throws Exception {
+        return lowLessMA(stock, period, 10);
+    }
+
+    private static Map<String, StockKLine> lowLessMA(String stock, String period, int man) throws Exception {
         //        String kLingPath = Constants.STD_BASE_PATH + period + "/" + stock;
         //        List<String> kLines = BaseUtils.readFile(kLingPath);
         //        List<StockKLine> kLineList = BaseUtils.convertToKLine(kLines);
@@ -158,7 +171,15 @@ public class LongStepBack {
             if (dateToKlineMap.containsKey(date)) {
                 MA ma = dateToMaMap.get(date);
                 StockKLine kLine = dateToKlineMap.get(date);
-                if (kLine.getLow() < ma.getMa5()) {
+                if (man == 5 && kLine.getLow() < ma.getMa5()) {
+                    map.put(date, kLine);
+                } else if (man == 10 && kLine.getLow() < ma.getMa10()) {
+                    map.put(date, kLine);
+                } else if (man == 20 && kLine.getLow() < ma.getMa20()) {
+                    map.put(date, kLine);
+                } else if (man == 30 && kLine.getLow() < ma.getMa30()) {
+                    map.put(date, kLine);
+                } else if (man == 60 && kLine.getLow() < ma.getMa60()) {
                     map.put(date, kLine);
                 }
             }
@@ -167,7 +188,8 @@ public class LongStepBack {
         return map;
     }
 
-    private static Map<String, Double> stepBackRate() throws Exception {
+    // min(开盘与最低之差,收盘与最低之差)/绝对值(最高与最低之差)
+    private static Map<String, Double> stepBackRate() {
         Map<String, Double> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
 
         for (int i = 0; i < kLineList.size(); i++) {
