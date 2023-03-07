@@ -1,5 +1,6 @@
 package barchart;
 
+import bean.StockKLine;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,13 +10,17 @@ import util.BaseUtils;
 import util.Constants;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class DownloadStockHistory {
+
+    private static LocalDate _2000 = LocalDate.parse("01/03/2000", Constants.FORMATTER);
 
     public static void main(String[] args) throws Exception {
 
@@ -28,19 +33,19 @@ public class DownloadStockHistory {
         BaseUtils.loginBarchart(driver);
 
         // has option stock
-        String market = "XNYS-ADRC";
+        String market = "XNYS";
         List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
 
         /** download historical stock data */
 
         // for daily
-                downloadHistoricalStock(driver, stockList, "daily", 100);
+        //                downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-//        downloadHistoricalStock(driver, stockList, "weekly", 100);
+        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
-//                downloadHistoricalStock(driver, stockList, "monthly", 100);
+        //                downloadHistoricalStock(driver, stockList, "monthly", 100);
 
         // for quarterly
         //        downloadHistoricalStock(driver, stockList, "quarterly", 30);
@@ -59,23 +64,26 @@ public class DownloadStockHistory {
         String searchKey = "_" + frequency + "_historical-data";
         Set<String> hasDownload = Arrays.stream(existList).filter(s -> s.contains(searchKey)).map(s -> s.substring(0, s.indexOf(searchKey))).collect(Collectors.toSet());
 
-//        Map<String, String> dailyFileMap = BaseUtils.originStockFileMap("daily");
-//        Set<String> hasDaily = dailyFileMap.keySet();
-//n.
+        Map<String, String> dailyFileMap = BaseUtils.originStockFileMap("daily");
+
         List<String> flatTradeStockList = FilterStock.tradeFlat(Constants.DAILY_PATH);
         flatTradeStockList.addAll(FilterStock.tradeFlat(Constants.GRAB_ONE_YEAR_PATH));
         File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
             if (flatTradeStockList.contains(stock)) {
-                System.out.println("flat trade: " + stock);
+                //                System.out.println("flat trade: " + stock);
                 continue;
             }
-//            if (hasDaily.contains(stock)) {
-//                System.out.println("has been download daily: " + stock);
-//                continue;
-//            }
+            //            if (hasDaily.contains(stock)) {
+            //                System.out.println("has been download daily: " + stock);
+            //                continue;
+            //            }
             if (hasDownload.contains(stock.toLowerCase())) {
-                System.out.println("has downloaded: " + stock);
+                //                System.out.println("has downloaded: " + stock);
+                continue;
+            }
+            if (after_2000(dailyFileMap.get(stock))) {
+                //                System.out.println("after 2000 year: " + stock);
                 continue;
             }
             //            driver.get("https://www.barchart.com/my/price-history/download/" + stock);
@@ -88,7 +96,16 @@ public class DownloadStockHistory {
                 return;
             }
             count--;
+            System.out.println(stock);
         }
+    }
+
+    private static boolean after_2000(String dailyFile) throws Exception {
+        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(dailyFile);
+        StockKLine earliest = stockKLines.get(stockKLines.size() - 1);
+        String date = earliest.getDate();
+        LocalDate parse = LocalDate.parse(date, Constants.FORMATTER);
+        return parse.isAfter(_2000);
     }
 
     private static boolean downloadStockData(File downloadDir, String stock) throws InterruptedException {

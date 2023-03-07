@@ -33,9 +33,12 @@ public class FilterStock {
             String fileName = file.getName();
 
             int _index = fileName.indexOf("_");
-            String code = fileName.substring(0, _index);
+            String code = fileName.substring(0, _index).toUpperCase();
 
             //            System.out.println(code);
+            if (code.equals("BABA")) {
+                System.out.println();
+            }
 
             List<StockKLine> dataList = getStockDailyForDays(file, 60);
             //            double avgChangePnt = calAvgChangePnt(dataList);
@@ -76,6 +79,8 @@ public class FilterStock {
                 if (split.length == 7) {
                     volumn = split[6];
                 } else if (split.length == 8) {
+                    volumn = split[7];
+                } else if (split.length == 9) {
                     volumn = split[7];
                 }
 
