@@ -22,3 +22,8 @@ XNAS
 
 查询拆股接口
 https://api.polygon.io/v3/reference/splits?ticker=PCAR&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
+
+截止2023-03-08
+daily 活跃交易均已下载完
+weekly XNYS还剩319个 XNAS还剩1个 其他活跃交易均已下载完
+monthly XNYS还剩323个 XNAS还剩1个 其他活跃交易均已下载完
