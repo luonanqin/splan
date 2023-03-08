@@ -37,9 +37,9 @@ public class CheckAndFixData {
         grabDailyMap = BaseUtils.grabStockFileMap();
 
         fixDailyAndWeekly();
-        //        fixMonthly();
-        //        computeQuarterly();
-        //        computeYearly();
+        fixMonthly();
+        computeQuarterly();
+        computeYearly();
     }
 
     private static void fixDailyAndWeekly() throws Exception {
