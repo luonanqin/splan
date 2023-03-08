@@ -329,4 +329,14 @@ public class BaseUtils {
         String newDate = year + date.substring(0, 5);
         return Integer.parseInt(newDate.replace("/", ""));
     }
+
+    private static LocalDate _2000 = LocalDate.parse("01/03/2000", Constants.FORMATTER);
+
+    public static boolean after_2000(String dailyFile) throws Exception {
+        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(dailyFile);
+        StockKLine earliest = stockKLines.get(stockKLines.size() - 1);
+        String date = earliest.getDate();
+        LocalDate parse = LocalDate.parse(date, Constants.FORMATTER);
+        return parse.isAfter(_2000);
+    }
 }

@@ -37,9 +37,9 @@ public class CheckAndFixData {
         grabDailyMap = BaseUtils.grabStockFileMap();
 
         fixDailyAndWeekly();
-        fixMonthly();
-        computeQuarterly();
-        computeYearly();
+        //        fixMonthly();
+        //        computeQuarterly();
+        //        computeYearly();
     }
 
     private static void fixDailyAndWeekly() throws Exception {
@@ -69,9 +69,13 @@ public class CheckAndFixData {
             List<StockKLine> originDailyData = BaseUtils.loadDataToKline(originDailyFile);
             dailyData.addAll(originDailyData);
 
-            // 加载grab daily数据
-            String dailyFile = grabDailyMap.get(stock);
-            if (StringUtils.isNotBlank(dailyFile)) {
+            if (!BaseUtils.after_2000(originDailyFile)) {
+                // 加载grab daily数据
+                String dailyFile = grabDailyMap.get(stock);
+                if (StringUtils.isBlank(dailyFile)) {
+                    System.out.println("has not grab: " + stock);
+                    continue;
+                }
                 List<StockKLine> grabDailyData = BaseUtils.loadDataToKline(dailyFile);
                 dailyData.addAll(grabDailyData);
             }
@@ -166,9 +170,12 @@ public class CheckAndFixData {
             List<StockKLine> originDailyData = BaseUtils.loadDataToKline(originDailyFile);
             dailyData.addAll(originDailyData);
 
-            // 加载grab daily数据
-            String dailyFile = grabDailyMap.get(stock);
-            if (StringUtils.isNotBlank(dailyFile)) {
+            if (!BaseUtils.after_2000(originDailyFile)) {
+                // 加载grab daily数据
+                String dailyFile = grabDailyMap.get(stock);
+                if (StringUtils.isBlank(dailyFile)) {
+                    continue;
+                }
                 List<StockKLine> grabDailyData = BaseUtils.loadDataToKline(dailyFile);
                 dailyData.addAll(grabDailyData);
             }

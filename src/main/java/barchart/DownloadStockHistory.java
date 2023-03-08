@@ -1,6 +1,5 @@
 package barchart;
 
-import bean.StockKLine;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -10,7 +9,6 @@ import util.BaseUtils;
 import util.Constants;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +18,12 @@ import java.util.stream.Collectors;
 
 public class DownloadStockHistory {
 
-    private static LocalDate _2000 = LocalDate.parse("01/03/2000", Constants.FORMATTER);
-
     public static void main(String[] args) throws Exception {
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
         ChromeDriver driver = new ChromeDriver(chromeOptions);
-//        ChromeDriver driver = null;
+        //        ChromeDriver driver = null;
 
         // login
         BaseUtils.loginBarchart(driver);
@@ -45,7 +41,7 @@ public class DownloadStockHistory {
         downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
-        //                downloadHistoricalStock(driver, stockList, "monthly", 100);
+        downloadHistoricalStock(driver, stockList, "monthly", 100);
 
         // for quarterly
         //        downloadHistoricalStock(driver, stockList, "quarterly", 30);
@@ -82,11 +78,10 @@ public class DownloadStockHistory {
                 //                System.out.println("has downloaded: " + stock);
                 continue;
             }
-            if (after_2000(dailyFileMap.get(stock))) {
+            if (BaseUtils.after_2000(dailyFileMap.get(stock))) {
                 //                System.out.println("after 2000 year: " + stock);
                 continue;
             }
-            //            driver.get("https://www.barchart.com/my/price-history/download/" + stock);
             BaseUtils.viewloadPage(driver, "https://www.barchart.com/stocks/quotes/" + stock + "/historical-download", By.xpath("//div/span[text()='(" + stock + ")']"));
             driver.findElement(By.xpath("//select[@data-ng-model='frequency']")).click();
             driver.findElement(By.xpath("//option[@value='string:" + frequency + "']")).click();
@@ -98,14 +93,6 @@ public class DownloadStockHistory {
             count--;
             System.out.println(stock);
         }
-    }
-
-    private static boolean after_2000(String dailyFile) throws Exception {
-        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(dailyFile);
-        StockKLine earliest = stockKLines.get(stockKLines.size() - 1);
-        String date = earliest.getDate();
-        LocalDate parse = LocalDate.parse(date, Constants.FORMATTER);
-        return parse.isAfter(_2000);
     }
 
     private static boolean downloadStockData(File downloadDir, String stock) throws InterruptedException {
