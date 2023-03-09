@@ -41,8 +41,8 @@ public class CheckAndFixData {
                 fixDailyAndWeekly();
 //                fixMonthly();
 //        computeWeek();
-        //        computeQuarterly();
-        //        computeYearly();
+//                computeQuarterly();
+//                computeYearly();
     }
 
     // 只计算2000年后的daily
@@ -66,6 +66,7 @@ public class CheckAndFixData {
 
     }
 
+    // 每次只能检查出一个错误，重抓并且merge之后再运行检查还有没有错误
     private static void fixDailyAndWeekly() throws Exception {
         Set<String> hasMergeStock = BaseUtils.getFileMap(STD_DAILY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
 
@@ -73,8 +74,8 @@ public class CheckAndFixData {
             if (hasMergeStock.contains(stock)) {
                 continue;
             }
-            if (!stock.equals("AAPL")) {
-                //                continue;
+            if (!stock.equals("IPG")) {
+                                continue;
             }
 
             // 加载weekly数据
@@ -497,8 +498,8 @@ public class CheckAndFixData {
             return false;
         }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-            //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
-            System.out.println(stock + " " + weekK.getDate());
+                        System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+//            System.out.println(stock + " " + weekK.getDate());
             return false;
         }
         return true;

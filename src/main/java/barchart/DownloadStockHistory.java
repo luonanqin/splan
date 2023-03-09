@@ -22,6 +22,7 @@ public class DownloadStockHistory {
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--remote-allow-origins=*");
         ChromeDriver driver = new ChromeDriver(chromeOptions);
         //        ChromeDriver driver = null;
 
