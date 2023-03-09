@@ -37,10 +37,10 @@ public class CheckAndFixData {
         // 加载抓取数据文件列表，转换成stock列表大写
         grabDailyMap = BaseUtils.grabStockFileMap();
 
-        //        computeDaily();
-        //        fixDailyAndWeekly();
-        //        fixMonthly();
-        computeWeek();
+//                computeDaily();
+                fixDailyAndWeekly();
+//                fixMonthly();
+//        computeWeek();
         //        computeQuarterly();
         //        computeYearly();
     }
