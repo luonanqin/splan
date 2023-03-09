@@ -51,6 +51,7 @@ public class FixGrabStockDateHistory {
         int threadCount = 2;
         for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--remote-allow-origins=*");
             ChromeDriver driver = new ChromeDriver(chromeOptions);
             driver.manage().window().setSize(new Dimension(1280, 1027));
             driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
