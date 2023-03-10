@@ -75,7 +75,7 @@ public class CheckAndFixData {
                 continue;
             }
             if (!stock.equals("IPG")) {
-                                continue;
+//                                continue;
             }
 
             // 加载weekly数据
@@ -498,8 +498,8 @@ public class CheckAndFixData {
             return false;
         }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-                        System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
-//            System.out.println(stock + " " + weekK.getDate());
+//                        System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            System.out.println(stock + " " + weekK.getDate());
             return false;
         }
         return true;
