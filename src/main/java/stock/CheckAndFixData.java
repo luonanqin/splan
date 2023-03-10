@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
 import static util.Constants.*;
 
 /**
@@ -37,12 +36,13 @@ public class CheckAndFixData {
         // 加载抓取数据文件列表，转换成stock列表大写
         grabDailyMap = BaseUtils.grabStockFileMap();
 
-//                computeDaily();
-                fixDailyAndWeekly();
-                fixMonthly();
-//        computeWeek();
-                computeQuarterly();
-                computeYearly();
+        //                        computeDaily();
+        //                fixDailyAndWeekly();
+        //                fixMonthly();
+        computeWeekly();
+        computeMonthly();
+        computeQuarterly();
+        computeYearly();
     }
 
     // 只计算2000年后的daily
@@ -75,7 +75,7 @@ public class CheckAndFixData {
                 continue;
             }
             if (!stock.equals("IPG")) {
-//                                continue;
+                //                                continue;
             }
 
             // 加载weekly数据
@@ -281,8 +281,7 @@ public class CheckAndFixData {
         }
     }
 
-    public static void computeWeek() throws Exception {
-        //        Set<String> hasStdStock = BaseUtils.getFileMap(STD_DAILY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
+    public static void computeWeekly() throws Exception {
         Set<String> hasMergeWeek = BaseUtils.getFileMap(STD_WEEKLY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
 
         for (String stock : originDailyMap.keySet()) {
@@ -296,28 +295,63 @@ public class CheckAndFixData {
             }
 
             if (!stock.equals("AWK")) {
-                continue;
+                //                continue;
             }
 
             List<StockKLine> dailyData = BaseUtils.loadDataToKline(dailyFile);
 
             List<StockKLine> weeekList = Lists.newArrayList();
-            double low = Double.MAX_VALUE, high = Double.MIN_VALUE, open, close = 0;
+            double low = Double.MAX_VALUE, high = Double.MIN_VALUE, open = 0, close = 0;
             BigDecimal volumn = BigDecimal.ZERO;
             boolean first = true;
-            int lastWeekOfYear = 0;
+            String firstWeekDay = null;
             int size = dailyData.size();
-            for (int i = 0; i < size; i++) {
+            int i = 0;
+            LocalDate init = LocalDate.parse("12/30/2022", FORMATTER);
+            while (i < size) {
                 StockKLine dailyK = dailyData.get(i);
                 String date = dailyK.getDate();
-                LocalDate parse = LocalDate.parse(date, FORMATTER);
-                int dayOfWeek = parse.getDayOfWeek().getValue();
-                int weekOfYear = parse.get(ALIGNED_WEEK_OF_YEAR);
+                String initDate = init.format(FORMATTER);
+                int dayOfWeek = init.getDayOfWeek().getValue();
 
-                if (lastWeekOfYear != weekOfYear) {
-                    lastWeekOfYear = weekOfYear;
-                    close = dailyK.getClose();
+                if (dayOfWeek == 1) {
+                    firstWeekDay = initDate;
                 }
+
+                init = init.minusDays(1);
+                if (date.equals(initDate)) {
+                    i++;
+                } else {
+                    if (dayOfWeek == 7) {
+                        StockKLine week = StockKLine.builder()
+                          .date(firstWeekDay)
+                          .open(open)
+                          .close(close)
+                          .high(high)
+                          .low(low)
+                          .change(0)
+                          .changePnt(0)
+                          .volume(volumn)
+                          .build();
+
+                        weeekList.add(week);
+
+                        low = Double.MAX_VALUE;
+                        high = Double.MIN_VALUE;
+                        close = 0;
+                        volumn = BigDecimal.ZERO;
+
+                        first = true;
+                    }
+                    continue;
+                }
+
+                if (first) {
+                    close = dailyK.getClose();
+                    first = false;
+                }
+
+                open = dailyK.getOpen();
                 if (dailyK.getLow() < low) {
                     low = dailyK.getLow();
                 }
@@ -325,21 +359,74 @@ public class CheckAndFixData {
                     high = dailyK.getHigh();
                 }
                 volumn = volumn.add(dailyK.getVolume());
+            }
+            BaseUtils.writeStockKLine(STD_WEEKLY_PATH + stock, weeekList);
+            System.out.println("compute week finish: " + stock);
+        }
 
-                int nextDayIndex = i + 1 >= size ? size - 1 : i + 1;
-                StockKLine nextDailyK = dailyData.get(nextDayIndex);
-                LocalDate nextParse = LocalDate.parse(nextDailyK.getDate(), FORMATTER);
-                int nextWeekOfYear = nextParse.get(ALIGNED_WEEK_OF_YEAR);
+    }
 
-                if (nextWeekOfYear != weekOfYear) {
-                    open = dailyK.getOpen();
-                    if (dayOfWeek != 1) {
-                        parse = parse.minusDays(dayOfWeek - 1);
-                        date = parse.format(FORMATTER);
+    public static void computeMonthly() throws Exception {
+        Set<String> hasMergeMonth = BaseUtils.getFileMap(STD_MONTHLY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
+
+        for (String stock : originDailyMap.keySet()) {
+            if (hasMergeMonth.contains(stock)) {
+                continue;
+            }
+
+            String dailyFile = originDailyMap.get(stock);
+            if (!BaseUtils.after_2000(dailyFile)) {
+                continue;
+            }
+
+            if (!stock.equals("AWK")) {
+                //                continue;
+            }
+
+            List<StockKLine> dailyData = BaseUtils.loadDataToKline(dailyFile);
+
+            List<StockKLine> monthList = Lists.newArrayList();
+            double low = Double.MAX_VALUE, high = Double.MIN_VALUE, open = 0, close = 0;
+            BigDecimal volumn = BigDecimal.ZERO;
+            boolean first = true;
+            String firstMonthDay = null;
+            int size = dailyData.size();
+            int i = 0;
+            LocalDate init = LocalDate.parse("12/30/2022", FORMATTER);
+            while (i < size) {
+                StockKLine dailyK = dailyData.get(i);
+                String date = dailyK.getDate();
+                String initDate = init.format(FORMATTER);
+                int dayOfMonth = init.getDayOfMonth();
+                int monthValue = init.getMonthValue();
+
+                if (dayOfMonth == 1) {
+                    firstMonthDay = initDate;
+                }
+
+                init = init.minusDays(1);
+                if (date.equals(initDate)) {
+                    i++;
+
+                    if (first) {
+                        close = dailyK.getClose();
+                        first = false;
                     }
 
-                    StockKLine quarter = StockKLine.builder()
-                      .date(date)
+                    open = dailyK.getOpen();
+                    if (dailyK.getLow() < low) {
+                        low = dailyK.getLow();
+                    }
+                    if (dailyK.getHigh() > high) {
+                        high = dailyK.getHigh();
+                    }
+                    volumn = volumn.add(dailyK.getVolume());
+                }
+
+                int nextMonthValue = init.getMonthValue();
+                if (nextMonthValue != monthValue) {
+                    StockKLine month = StockKLine.builder()
+                      .date(initDate)
                       .open(open)
                       .close(close)
                       .high(high)
@@ -349,19 +436,21 @@ public class CheckAndFixData {
                       .volume(volumn)
                       .build();
 
-                    weeekList.add(quarter);
+                    monthList.add(month);
 
                     low = Double.MAX_VALUE;
                     high = Double.MIN_VALUE;
                     close = 0;
                     volumn = BigDecimal.ZERO;
+
+                    first = true;
                 }
             }
-            BaseUtils.writeStockKLine(STD_WEEKLY_PATH + stock, weeekList);
-            System.out.println("compute week finish: " + stock);
+            BaseUtils.writeStockKLine(STD_MONTHLY_PATH + stock, monthList);
+            System.out.println("compute month finish: " + stock);
         }
-
     }
+
 
     public static void computeQuarterly() throws Exception {
         Set<String> hasMergeStock = BaseUtils.getFileMap(STD_QUARTERLY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
@@ -498,7 +587,7 @@ public class CheckAndFixData {
             return false;
         }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-//                        System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+            //                        System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
             System.out.println(stock + " " + weekK.getDate());
             return false;
         }
