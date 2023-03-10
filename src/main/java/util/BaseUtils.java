@@ -287,7 +287,11 @@ public class BaseUtils {
             daily.setLow(low);
             daily.setChange(change);
             if (StringUtils.isNotBlank(changePnt)) {
-                daily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
+                if (changePnt.contains("%")) {
+                    daily.setChangePnt(Double.valueOf(changePnt.substring(0, changePnt.length() - 1)));
+                } else {
+                    daily.setChangePnt(Double.valueOf(changePnt));
+                }
             }
             daily.setVolume(BigDecimal.valueOf(volume));
 
