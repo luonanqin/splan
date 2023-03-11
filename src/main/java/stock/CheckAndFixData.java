@@ -37,12 +37,12 @@ public class CheckAndFixData {
         grabDailyMap = BaseUtils.grabStockFileMap();
 
         //                        computeDaily();
-        //                fixDailyAndWeekly();
+                        fixDailyAndWeekly();
         //                fixMonthly();
-        computeWeekly();
-        computeMonthly();
-        computeQuarterly();
-        computeYearly();
+//        computeWeekly();
+//        computeMonthly();
+//        computeQuarterly();
+//        computeYearly();
     }
 
     // 只计算2000年后的daily
@@ -577,7 +577,7 @@ public class CheckAndFixData {
     private static boolean checkSum(String stock, BigDecimal sum, StockKLine weekK, int dayCount) {
         BigDecimal count = BigDecimal.valueOf(dayCount);
         BigDecimal multiply = weekK.getVolume().multiply(count).setScale(0);
-        sum = sum.setScale(0);
+        sum = sum.setScale(0, BigDecimal.ROUND_DOWN);
         BigDecimal divide = null;
         try {
             divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
