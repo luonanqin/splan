@@ -38,11 +38,11 @@ public class CheckAndFixData {
 
         //                        computeDaily();
                         fixDailyAndWeekly();
-        //                fixMonthly();
-//        computeWeekly();
-//        computeMonthly();
-//        computeQuarterly();
-//        computeYearly();
+                        fixMonthly();
+        computeWeekly();
+        computeMonthly();
+        computeQuarterly();
+        computeYearly();
     }
 
     // 只计算2000年后的daily
