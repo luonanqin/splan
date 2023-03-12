@@ -39,7 +39,7 @@ public class DownloadStockHistory {
         //                downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-        downloadHistoricalStock(driver, stockList, "weekly", 100);
+//        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
         downloadHistoricalStock(driver, stockList, "monthly", 100);
