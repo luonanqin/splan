@@ -69,6 +69,7 @@ public class FixGrabStockDateHistory {
             cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock, waitFixGrabMap));
             //            asyncProcess(driverQueue, driver, stock, waitFixGrabMap);
         }
+        System.out.println("end");
     }
 
     public static void asyncProcess(BlockingQueue<ChromeDriver> driverQueue, ChromeDriver driver, String stock, Map<String, String> waitFixGrabMap) {
