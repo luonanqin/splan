@@ -45,7 +45,7 @@ public class FixGrabStockDateHistory {
 
         // 等待抓取修复的
         Map<String, String> waitFixGrabMap = waitFixGrab();
-//        deleteFile(waitFixGrabMap);
+        deleteFile(waitFixGrabMap);
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
         int threadCount = 2;
@@ -240,11 +240,13 @@ public class FixGrabStockDateHistory {
             }
 
             if (lastDate != null && StringUtils.equals(lastDate, date)) {
-                //                System.out.println("retry");
-                moveAdd += step;
-                actions.moveByOffset(step, 0).perform();
-
-                moveTimes++;
+                try {
+                    moveAdd += step;
+                    actions.moveByOffset(step, 0).perform();
+                    moveTimes++;
+                } catch (Exception e) {
+                    break;
+                }
             } else {
                 List<WebElement> elements = driver.findElements(By.xpath("//span[@class='field-value']"));
                 String open = StringUtils.defaultIfBlank(elements.get(0).getText(), "0");
