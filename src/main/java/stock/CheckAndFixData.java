@@ -36,13 +36,13 @@ public class CheckAndFixData {
         // 加载抓取数据文件列表，转换成stock列表大写
         grabDailyMap = BaseUtils.grabStockFileMap();
 
-        //                        computeDaily();
+                                computeDaily();
                         fixDailyAndWeekly();
-//                        fixMonthly();
-//        computeWeekly();
-//        computeMonthly();
-//        computeQuarterly();
-//        computeYearly();
+                        fixMonthly();
+        computeWeekly();
+        computeMonthly();
+        computeQuarterly();
+        computeYearly();
     }
 
     // 只计算2000年后的daily
