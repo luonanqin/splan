@@ -3,7 +3,6 @@ package barchart;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
@@ -21,13 +20,13 @@ public class DownloadStockHistory {
     public static void main(String[] args) throws Exception {
 
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--remote-allow-origins=*");
-        ChromeDriver driver = new ChromeDriver(chromeOptions);
-        //        ChromeDriver driver = null;
+//        ChromeOptions chromeOptions = new ChromeOptions();
+//        chromeOptions.addArguments("--remote-allow-origins=*");
+//        ChromeDriver driver = new ChromeDriver(chromeOptions);
+                ChromeDriver driver = null;
 
         // login
-        BaseUtils.loginBarchart(driver);
+//        BaseUtils.loginBarchart(driver);
 
         // has option stock
         String market = "XNYS";
