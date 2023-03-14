@@ -45,7 +45,7 @@ public class FixGrabStockDateHistory {
 
         // 等待抓取修复的
         Map<String, String> waitFixGrabMap = waitFixGrab();
-        deleteFile(waitFixGrabMap);
+//        deleteFile(waitFixGrabMap);
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
         int threadCount = 2;
