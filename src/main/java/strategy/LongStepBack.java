@@ -36,7 +36,7 @@ public class LongStepBack {
 
         for (String stock : fileMap.keySet()) {
             if (!stock.equals("AMZN")) {
-                continue;
+//                continue;
             }
             int longCount = 5;
             String period = "daily";
@@ -46,13 +46,13 @@ public class LongStepBack {
             Map<String, StockKLine> all = all();
 
             // 强多头ma 持续五天以上
-            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
+//            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
 
             // 弱多头ma 持续五天以上
             Map<String, MA> weakLong = longPermute(stock, period, longCount, 30);
 
             // 第二天开盘大于前一天收盘
-            Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
+//            Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
 
             // 第二天开盘大于前一天收盘
             Map<String, StockKLine> closeGreatPrevClose = closeGreatPrevClose(stock, period);
@@ -67,7 +67,7 @@ public class LongStepBack {
             Map<String, StockKLine> lowGreatMA20 = lowGreatMA20(stock, period);
 
             // 回踩差值占比
-            Map<String, Double> stepBackRateMap = stepBackRate();
+//            Map<String, Double> stepBackRateMap = stepBackRate();
 
             // 收盘大于十日线
             Map<String, StockKLine> closeGreatMA10 = closeGreatMA10(stock, period);
@@ -91,18 +91,24 @@ public class LongStepBack {
             //              + " result: " + stdList.size()
             //              + " rate: " + rate);
 
-            for (String d : denominator) {
-
+            double trueCount = 0, sum = 0;
+            if (show.isEmpty()) {
+                continue;
             }
-
             for (int i = 0; i < show.size(); i++) {
                 String d = show.get(i);
                 double changePnt = all.get(d).getChangePnt();
-                if (changePnt<0) {
+                if (changePnt < 0) {
                     continue;
                 }
-                System.out.println(i + 1 + "\t" + d + "\t" + stepBackRateMap.get(d) + "\t" + numerator.contains(d) + "\t" + changePnt);
+                sum++;
+                boolean contains = numerator.contains(d);
+                if (contains) {
+                    trueCount++;
+                }
+//                System.out.println(i + 1 + "\t" + d + "\t" + stepBackRateMap.get(d) + "\t" + contains + "\t" + changePnt);
             }
+            System.out.println(stock + "\t" + trueCount / sum * 100);
             //            System.out.println(diff);
         }
     }
