@@ -35,7 +35,7 @@ public class LongStepBack {
         Map<String, String> fileMap = BaseUtils.getFileMap(kLingPath);
 
         for (String stock : fileMap.keySet()) {
-            if (!stock.equals("AAPL")) {
+            if (!stock.equals("AMZN")) {
                 continue;
             }
             int longCount = 5;
@@ -55,7 +55,7 @@ public class LongStepBack {
             Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
 
             // 第二天开盘大于前一天收盘
-            Map<String, StockKLine> closeGreatPrevClose = openGreatPrevClose(stock, period);
+            Map<String, StockKLine> closeGreatPrevClose = closeGreatPrevClose(stock, period);
 
             // 日最低低于ma5
             //            Map<String, StockKLine> lowLessMA5 = lowLessMA5(stock, period);
@@ -75,7 +75,7 @@ public class LongStepBack {
             // 分母
             Set<String> denominator = StrategyUtils.computerIntersection(weakLong.keySet(), lowLessMA10.keySet(), lowGreatMA20.keySet(), closeGreatMA10.keySet());
             // 分子
-            Set<String> numerator = SetUtils.intersection(denominator, openGreatPrevClose.keySet());
+            Set<String> numerator = SetUtils.intersection(denominator, closeGreatPrevClose.keySet());
 
             List<String> show = Lists.newArrayList(denominator);
             Collections.sort(show, Comparator.comparingInt(BaseUtils::dateToInt).reversed());
@@ -97,7 +97,11 @@ public class LongStepBack {
 
             for (int i = 0; i < show.size(); i++) {
                 String d = show.get(i);
-                System.out.println(i + 1 + "\t" + d + " " + stepBackRateMap.get(d) + " " + numerator.contains(d) + " " + all.get(d).getChangePnt());
+                double changePnt = all.get(d).getChangePnt();
+                if (changePnt<0) {
+                    continue;
+                }
+                System.out.println(i + 1 + "\t" + d + "\t" + stepBackRateMap.get(d) + "\t" + numerator.contains(d) + "\t" + changePnt);
             }
             //            System.out.println(diff);
         }
@@ -179,7 +183,7 @@ public class LongStepBack {
             StockKLine prev = kLineList.get(i + 1);
             String date = prev.getDate();
 
-            if (current.getOpen() > prev.getClose()) {
+            if (current.getClose() > prev.getClose()) {
                 map.put(date, prev);
             }
         }
