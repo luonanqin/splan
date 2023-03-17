@@ -33,10 +33,11 @@ public class LongStepBack {
     public static void main(String[] args) throws Exception {
         String kLingPath = Constants.STD_DAILY_PATH;
         Map<String, String> fileMap = BaseUtils.getFileMap(kLingPath);
+        Map<String, Integer> yearToCountMap = Maps.newHashMap();
 
         for (String stock : fileMap.keySet()) {
             if (!stock.equals("AMZN")) {
-//                continue;
+                //                continue;
             }
             int longCount = 5;
             String period = "daily";
@@ -46,13 +47,13 @@ public class LongStepBack {
             Map<String, StockKLine> all = all();
 
             // 强多头ma 持续五天以上
-//            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
+            //            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
 
             // 弱多头ma 持续五天以上
             Map<String, MA> weakLong = longPermute(stock, period, longCount, 30);
 
             // 第二天开盘大于前一天收盘
-//            Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
+            //            Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose(stock, period);
 
             // 第二天开盘大于前一天收盘
             Map<String, StockKLine> closeGreatPrevClose = closeGreatPrevClose(stock, period);
@@ -67,7 +68,7 @@ public class LongStepBack {
             Map<String, StockKLine> lowGreatMA20 = lowGreatMA20(stock, period);
 
             // 回踩差值占比
-//            Map<String, Double> stepBackRateMap = stepBackRate();
+            //            Map<String, Double> stepBackRateMap = stepBackRate();
 
             // 收盘大于十日线
             Map<String, StockKLine> closeGreatMA10 = closeGreatMA10(stock, period);
@@ -92,9 +93,6 @@ public class LongStepBack {
             //              + " rate: " + rate);
 
             double trueCount = 0, sum = 0;
-            if (show.isEmpty()) {
-                continue;
-            }
             for (int i = 0; i < show.size(); i++) {
                 String d = show.get(i);
                 double changePnt = all.get(d).getChangePnt();
@@ -105,12 +103,20 @@ public class LongStepBack {
                 boolean contains = numerator.contains(d);
                 if (contains) {
                     trueCount++;
+                    if (!yearToCountMap.containsKey(d)) {
+                        yearToCountMap.put(d, 0);
+                    }
+                    yearToCountMap.put(d, yearToCountMap.get(d) + 1);
                 }
-//                System.out.println(i + 1 + "\t" + d + "\t" + stepBackRateMap.get(d) + "\t" + contains + "\t" + changePnt);
+                //                System.out.println(i + 1 + "\t" + d + "\t" + stepBackRateMap.get(d) + "\t" + contains + "\t" + changePnt);
+            }
+            if (sum == 0) {
+                continue;
             }
             System.out.println(stock + "\t" + trueCount / sum * 100);
             //            System.out.println(diff);
         }
+        System.out.println(yearToCountMap);
     }
 
     private static Map<String, MA> longPermute(String stock, String period, int longCount, int maDayCount) throws Exception {
@@ -158,6 +164,9 @@ public class LongStepBack {
             StockKLine current = kLineList.get(i);
             StockKLine prev = kLineList.get(i + 1);
             String date = prev.getDate();
+            if (prev.getClose() == 0) {
+                continue;
+            }
             double changePnt = BigDecimal.valueOf((current.getClose() - prev.getClose()) / prev.getClose() * 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             current.setChangePnt(changePnt);
 
