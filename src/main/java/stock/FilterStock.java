@@ -33,12 +33,15 @@ public class FilterStock {
             String fileName = file.getName();
 
             int _index = fileName.indexOf("_");
-            String code = fileName.substring(0, _index).toUpperCase();
+            String code = fileName;
+            if (_index>-1) {
+                code = fileName.substring(0, _index).toUpperCase();
+            }
 
             //            System.out.println(code);
-            if (code.equals("BABA")) {
-                System.out.println();
-            }
+//            if (code.equals("BABA")) {
+//                System.out.println();
+//            }
 
             List<StockKLine> dataList = getStockDailyForDays(file, 60);
             //            double avgChangePnt = calAvgChangePnt(dataList);

@@ -5,6 +5,7 @@ import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.SetUtils;
+import stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
 import util.StrategyUtils;
@@ -31,11 +32,18 @@ public class LongStepBack {
     }
 
     public static void main(String[] args) throws Exception {
-        String kLingPath = Constants.STD_DAILY_PATH;
-        Map<String, String> fileMap = BaseUtils.getFileMap(kLingPath);
+        String kLinePath = Constants.STD_DAILY_PATH;
+        Map<String, String> fileMap = BaseUtils.getFileMap(kLinePath);
         Map<String, Integer> yearToCountMap = Maps.newHashMap();
 
+        List<String> flatTradeStockList = FilterStock.tradeFlat(kLinePath);
         for (String stock : fileMap.keySet()) {
+            if (flatTradeStockList.contains(stock)) {
+                continue;
+            }
+//            if (BaseUtils.after_2000(kLinePath + stock)) {
+//                continue;
+//            }
             if (!stock.equals("AMZN")) {
                 //                continue;
             }
@@ -220,11 +228,11 @@ public class LongStepBack {
     }
 
     private static Map<String, StockKLine> lowLessMA(String stock, String period, int man) throws Exception {
-        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k));
+        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
         String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
         List<String> mas = BaseUtils.readFile(maPath);
-        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m));
+        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m, (m1, m2) -> m1));
 
         Map<String, StockKLine> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         for (String date : dateToMaMap.keySet()) {
@@ -254,11 +262,11 @@ public class LongStepBack {
     }
 
     private static Map<String, StockKLine> closeGreatMA(String stock, String period, int man) throws Exception {
-        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k));
+        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
         String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
         List<String> mas = BaseUtils.readFile(maPath);
-        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m));
+        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m, (m1, m2) -> m1));
 
         Map<String, StockKLine> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         for (String date : dateToMaMap.keySet()) {
@@ -284,11 +292,11 @@ public class LongStepBack {
     }
 
     private static Map<String, StockKLine> lowGreatMA(String stock, String period, int man) throws Exception {
-        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k));
+        Map<String, StockKLine> dateToKlineMap = kLineList.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
         String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
         List<String> mas = BaseUtils.readFile(maPath);
-        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m));
+        Map<String, MA> dateToMaMap = mas.stream().map(MA::convert).collect(Collectors.toMap(MA::getDate, m -> m, (m1, m2) -> m1));
 
         Map<String, StockKLine> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         for (String date : dateToMaMap.keySet()) {
