@@ -2,7 +2,6 @@ package strategy;
 
 import bean.MA;
 import bean.StockKLine;
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.SetUtils;
@@ -17,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +45,8 @@ public class LongStepBack {
             //            if (BaseUtils.after_2000(kLinePath + stock)) {
             //                continue;
             //            }
-            if (!stock.equals("AMZN")) {
-                                continue;
+            if (!stock.equals("AAPL")) {
+                continue;
             }
             int longCount = 5;
             String period = "daily";
@@ -56,6 +54,8 @@ public class LongStepBack {
 
             // all
             Map<String, StockKLine> all = all();
+
+            Map<String, String> nextDay = nextDay(stock, period);
 
             // 强多头ma 持续五天以上
             //            Map<String, MA> strongLong = longPermute(stock, period, longCount, 60);
@@ -66,7 +66,7 @@ public class LongStepBack {
             // 第二天开盘大于前一天收盘
             //            Map<String, StockKLine> openGreatPrevClose = openGreatPrevClose();
 
-            // 第二天开盘大于前一天收盘
+            // 第二天收盘大于前一天收盘
             Map<String, StockKLine> nextCloseGreatCurrClose = nextCloseGreatCurrClose();
 
             // 日最低低于ma5
@@ -79,7 +79,7 @@ public class LongStepBack {
             Map<String, StockKLine> lowGreatMA20 = lowGreatMA20(stock, period);
 
             // 回踩差值占比
-                        Map<String, Double> stepBackRateMap = stepBackRate();
+            Map<String, Double> stepBackRateMap = stepBackRate();
 
             // 收盘大于十日线
             Map<String, StockKLine> closeGreatMA10 = closeGreatMA10(stock, period);
@@ -106,7 +106,18 @@ public class LongStepBack {
             double trueCount = 0, sum = 0;
             for (int i = 0; i < show.size(); i++) {
                 String day = show.get(i);
-                double changePnt = all.get(day).getChangePnt();
+                String nextDate = nextDay.get(day);
+
+                StockKLine dayK = all.get(day);
+                StockKLine nextDayK = all.get(nextDate);
+
+                double changePnt = dayK.getChangePnt();
+                double nextChangePnt = nextDayK.getChangePnt();
+
+                double close = dayK.getClose();
+                double nextHigh = nextDayK.getHigh();
+                double diff = nextHigh - close;
+
 //                if (changePnt < 0) {
 //                    continue;
 //                }
@@ -124,7 +135,7 @@ public class LongStepBack {
                     }
                     dayToChangePntMap.get(day).add(changePnt);
                 }
-                                System.out.println(i + 1 + "\t" + day + "\t" + stepBackRateMap.get(day) + "\t" + contains + "\t" + changePnt);
+                System.out.println(i + 1 + "\t" + day + "\t" + stepBackRateMap.get(day) + "\t" + contains + "\t" + changePnt + "\t" + nextChangePnt + "\t" + diff);
             }
             if (sum == 0) {
                 continue;
@@ -132,19 +143,30 @@ public class LongStepBack {
             //            System.out.println(stock + "\t" + trueCount / sum * 100);
             //            System.out.println(diff);
         }
-        System.out.println(dayToCountMap);
-        for (String day : dayToCountMap.keySet()) {
-            Integer count = dayToCountMap.get(day);
-            List<Double> changePntList = dayToChangePntMap.get(day);
-            Map<String, Long> changePntCountMap = changePntList.stream().map(c -> String.valueOf(c)).map(c -> c.substring(0, c.indexOf("."))).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-            System.out.println(day + "\t" + count + "\t" + JSON.toJSONString(changePntCountMap));
+//        System.out.println(dayToCountMap);
+//        for (String day : dayToCountMap.keySet()) {
+//            Integer count = dayToCountMap.get(day);
+//            List<Double> changePntList = dayToChangePntMap.get(day);
+//            Map<String, Long> changePntCountMap = changePntList.stream().map(c -> String.valueOf(c)).map(c -> c.substring(0, c.indexOf("."))).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+//            System.out.println(day + "\t" + count + "\t" + JSON.toJSONString(changePntCountMap));
+//        }
+    }
+
+    private static Map<String, String> nextDay(String stock, String period) {
+        Map<String, String> map = Maps.newHashMap();
+        for (int i = 0; i < kLineList.size() - 1; i++) {
+            StockKLine next = kLineList.get(i);
+            StockKLine current = kLineList.get(i + 1);
+            map.put(current.getDate(), next.getDate());
         }
+        return map;
     }
 
     private static Map<String, MA> longPermute(String stock, String period, int longCount, int maDayCount) throws Exception {
         String maPath = Constants.INDICATOR_MA_PATH + period + "/" + stock;
         List<String> lineList = BaseUtils.readFile(maPath);
         List<MA> maList = lineList.stream().map(MA::convert).collect(Collectors.toList());
+        Collections.reverse(maList);
 
         Map<String, MA> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         int temp = longCount;
