@@ -30,9 +30,10 @@ public class OverBollinger {
         private double low;
         private double changePnt;
         private double highUpDiffPnt;
+        private double highCloseDiffPnt;
 
         public String toString() {
-            return String.format("%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.1f\t%.4f", date, open, close, high, low, changePnt, highUpDiffPnt);
+            return String.format("%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.4f\t%.4f", date, open, close, high, low, highUpDiffPnt, highCloseDiffPnt);
         }
     }
 
@@ -72,23 +73,30 @@ public class OverBollinger {
 
                 StockKLine kLine = dateToKLineMap.get(date);
                 double high = kLine.getHigh();
-                if (up < high) {
+                double close = kLine.getClose();
+                double open = kLine.getOpen();
+                double low = kLine.getLow();
+                if (up < high && up < open && up < close) {
                     Bean bean = new Bean();
                     bean.setDate(date);
-                    bean.setOpen(kLine.getOpen());
-                    bean.setClose(kLine.getClose());
+                    bean.setOpen(open);
+                    bean.setClose(close);
                     bean.setHigh(high);
                     bean.setLow(kLine.getLow());
 
                     double highUpDiffPnt = BigDecimal.valueOf((high - up) / up).setScale(4, BigDecimal.ROUND_DOWN).doubleValue();
                     bean.setHighUpDiffPnt(highUpDiffPnt);
+
+                    double highCloseDiffPnt = BigDecimal.valueOf((high - close) / (high - low)).setScale(4, BigDecimal.ROUND_DOWN).doubleValue();
+                    bean.setHighCloseDiffPnt(highCloseDiffPnt);
+
                     result.add(bean);
                 }
             }
             Collections.sort(result, ((Comparator<Bean>) (o1, o2) -> BaseUtils.dateToInt(o1.getDate()) - BaseUtils.dateToInt(o2.getDate())).reversed());
 
             for (Bean bean : result) {
-                System.out.println(bean + "\t" + nextCloseLessCurrClose.containsKey(bean.getDate()));
+                System.out.println(nextCloseLessCurrClose.containsKey(bean.getDate()) + "\t" + bean);
             }
         }
     }
