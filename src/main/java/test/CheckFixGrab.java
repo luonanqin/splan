@@ -24,7 +24,7 @@ public class CheckFixGrab {
                 }
                 if (lineList.size() == 1) {
                     System.out.println(stockDir.getName() + " one line file :" + f.getPath());
-                    f.delete();
+//                    f.delete();
                 }
             }
         }
