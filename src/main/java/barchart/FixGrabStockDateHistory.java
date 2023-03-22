@@ -64,7 +64,12 @@ public class FixGrabStockDateHistory {
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
+        Set<String> tempStock = Sets.newHashSet("QUMU", "GEOS", "PFE", "REG", "NOTV", "HIBB", "CPSS", "CBAN", "BK", "HWKN", "FWRD", "VECO", "RNST", "PDCO", "ERIE", "RICK", "OSIS", "HAL", "UFPI", "BUSE", "NWPX", "POWI", "OSBC", "BOKF", "SMSI", "IVAC", "BJRI", "AEIS", "TSM", "SEAC", "SCHN", "CWST", "FFIC", "NTWK", "QCRH", "CALM", "STGW", "DINO", "CECO", "MDU", "IDA", "MYGN", "ITRI", "LGND", "CAC", "VOD", "RVSB", "RVSB", "FORR", "SIEB", "SIEB", "SELF", "SGC", "CWCO", "GSK", "BCOR", "ROCK", "AA", "BSRR", "TEVA", "DE", "MTB", "DXPE", "ES", "CIVB", "AXGN", "BANR", "SHOO", "TSEM", "POOL", "NYMX", "VSAT", "RAD", "NWBI", "HDSN", "SSYS", "FFIN", "PLUS", "VBIV", "AZPN");
         for (String stock : waitFixGrabMap.keySet()) {
+            if (!tempStock.contains(stock)) {
+                continue;
+            }
+            System.out.println(stock);
             ChromeDriver driver = driverQueue.take();
             cachedThread.execute(() -> asyncProcess(driverQueue, driver, stock, waitFixGrabMap));
             //            asyncProcess(driverQueue, driver, stock, waitFixGrabMap);
@@ -214,7 +219,7 @@ public class FixGrabStockDateHistory {
         //        int xOffset = moveInfo.getXOffset();
         //        int avgStep = moveInfo.getAvgStep();
         //        getMoveData(driver, actions, xOffset, avgStep);
-        return getMoveData(driver, actions, -520, 1);
+        return getMoveData(driver, actions, -520, 3);
     }
 
     private static List<StockKLine> getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
@@ -224,7 +229,7 @@ public class FixGrabStockDateHistory {
 
         long begin = System.currentTimeMillis();
         String lastDate = null;
-        int moveAdd = 0, moveMaxTimes = 15, moveTimes = 0, totalWidth = 990;
+        int moveAdd = 0, moveMaxTimes = 25, moveTimes = 0, totalWidth = 990;
         List<StockKLine> dataList = Lists.newArrayList();
         while (moveTimes < moveMaxTimes) {
             String date = null;
@@ -274,12 +279,12 @@ public class FixGrabStockDateHistory {
                 lastDate = date;
                 moveTimes=0;
             }
-            if (dataList.size() > 1) {
-                step = 2;
-            }
-            if (dataList.size() > 250) {
-                step = 1;
-            }
+//            if (dataList.size() > 1) {
+//                step = 2;
+//            }
+//            if (dataList.size() > 250) {
+//                step = 1;
+//            }
         }
         System.out.println("cost " + ((System.currentTimeMillis() - begin) / 1000) + "s");
         return dataList;

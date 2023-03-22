@@ -319,6 +319,25 @@ public class BaseUtils {
         return lineList;
     }
 
+    public static List<String> readFile(File file) throws Exception {
+        List<String> lineList = Lists.newArrayList();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            System.out.println("can not find file: " + file.getPath());
+            return Lists.newArrayList();
+        }
+
+        String line;
+        while (StringUtils.isNotBlank(line = br.readLine())) {
+            lineList.add(line);
+        }
+        br.close();
+
+        return lineList;
+    }
+
     public static void writeFile(String filePath, List<String> list) throws Exception {
         BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
         for (String l : list) {
