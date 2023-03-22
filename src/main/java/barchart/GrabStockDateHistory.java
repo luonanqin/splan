@@ -42,7 +42,7 @@ import static util.Constants.*;
 public class GrabStockDateHistory {
 
     public static void main(String[] args) throws Exception {
-        String market = "XNYS-ADRC";
+        String market = "XNAS";
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
@@ -78,10 +78,10 @@ public class GrabStockDateHistory {
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
         for (String stock : stockList) {
-            if (flatTradeStockList.contains(stock)) {
-                System.out.println("flat trade: " + stock);
-                continue;
-            }
+//            if (flatTradeStockList.contains(stock)) {
+//                System.out.println("flat trade: " + stock);
+//                continue;
+//            }
             if (hasGrab.contains(stock)) {
                 System.out.println("has grab: " + stock);
                 continue;

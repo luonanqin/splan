@@ -333,6 +333,9 @@ public class BaseUtils {
         String newDate = year + date.substring(0, 5);
         return Integer.parseInt(newDate.replace("/", ""));
     }
+    public static int kLineDateToInt(StockKLine kLine) {
+        return dateToInt(kLine.getDate());
+    }
 
     private static LocalDate _2000 = LocalDate.parse("01/03/2000", Constants.FORMATTER);
 
