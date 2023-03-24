@@ -45,7 +45,7 @@ public class FixGrabStockDateHistory {
 
         // 等待抓取修复的
         Map<String, String> waitFixGrabMap = waitFixGrab();
-//        deleteFile(waitFixGrabMap);
+        //        deleteFile(waitFixGrabMap);
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
         int threadCount = 2;
@@ -67,7 +67,7 @@ public class FixGrabStockDateHistory {
         Set<String> tempStock = Sets.newHashSet("QUMU", "GEOS", "PFE", "REG", "NOTV", "HIBB", "CPSS", "CBAN", "BK", "HWKN", "FWRD", "VECO", "RNST", "PDCO", "ERIE", "RICK", "OSIS", "HAL", "UFPI", "BUSE", "NWPX", "POWI", "OSBC", "BOKF", "SMSI", "IVAC", "BJRI", "AEIS", "TSM", "SEAC", "SCHN", "CWST", "FFIC", "NTWK", "QCRH", "CALM", "STGW", "DINO", "CECO", "MDU", "IDA", "MYGN", "ITRI", "LGND", "CAC", "VOD", "RVSB", "RVSB", "FORR", "SIEB", "SIEB", "SELF", "SGC", "CWCO", "GSK", "BCOR", "ROCK", "AA", "BSRR", "TEVA", "DE", "MTB", "DXPE", "ES", "CIVB", "AXGN", "BANR", "SHOO", "TSEM", "POOL", "NYMX", "VSAT", "RAD", "NWBI", "HDSN", "SSYS", "FFIN", "PLUS", "VBIV", "AZPN");
         for (String stock : waitFixGrabMap.keySet()) {
             if (!tempStock.contains(stock)) {
-//                continue;
+                //                continue;
             }
             System.out.println(stock);
             ChromeDriver driver = driverQueue.take();
@@ -125,8 +125,10 @@ public class FixGrabStockDateHistory {
 
                 if (CollectionUtils.isNotEmpty(dataList)) {
                     writeFixDay(hasFixFile, Lists.reverse(dataList));
-                    System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
+                } else {
+                    writeFixDay(hasFixFile, Lists.newArrayList());
                 }
+                System.out.println("write finish: " + stock + " " + beginDate + " - " + endDate);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -277,7 +279,7 @@ public class FixGrabStockDateHistory {
                 //                System.out.println(kLine);
 
                 lastDate = date;
-                moveTimes=0;
+                moveTimes = 0;
             }
             if (dataList.size() > 1) {
                 step = 2;
