@@ -365,4 +365,20 @@ public class BaseUtils {
         LocalDate parse = LocalDate.parse(date, Constants.FORMATTER);
         return parse.isAfter(_2000);
     }
+
+    public static StockKLine getFirstKLine(String filePath) throws Exception{
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        if (filePath.contains("_historical")) {
+            br.readLine();
+        }
+
+        String line;
+        String first = "";
+        while (StringUtils.isNotBlank(line = br.readLine())) {
+            first = line;
+        }
+        br.close();
+
+        return convertToKLine(Lists.newArrayList(first)).get(0);
+    }
 }

@@ -368,19 +368,25 @@ public class CheckAndFixData {
 
     public static void computeMonthly() throws Exception {
         Set<String> hasMergeMonth = BaseUtils.getFileMap(STD_MONTHLY_PATH).keySet().stream().map(f -> f.toUpperCase()).collect(Collectors.toSet());
+        Map<String, String> stdDailyMap = BaseUtils.getFileMap(STD_DAILY_PATH);
 
-        for (String stock : originDailyMap.keySet()) {
+        for (String stock : stdDailyMap.keySet()) {
             if (hasMergeMonth.contains(stock)) {
                 continue;
             }
 
-            String dailyFile = originDailyMap.get(stock);
-            if (!BaseUtils.after_2000(dailyFile)) {
+            String dailyFile = stdDailyMap.get(stock);
+//            if (!BaseUtils.after_2000(dailyFile)) {
+//                continue;
+//            }
+            StockKLine firstKLine = BaseUtils.getFirstKLine(dailyFile);
+            if (firstKLine.getOpen()<1) {
+                System.out.println(stock);
                 continue;
             }
 
-            if (!stock.equals("AWK")) {
-                //                continue;
+            if (!stock.equals("UBA")) {
+//                                continue;
             }
 
             List<StockKLine> dailyData = BaseUtils.loadDataToKline(dailyFile);
