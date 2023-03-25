@@ -221,7 +221,7 @@ public class FixGrabStockDateHistory {
         //        int xOffset = moveInfo.getXOffset();
         //        int avgStep = moveInfo.getAvgStep();
         //        getMoveData(driver, actions, xOffset, avgStep);
-        return getMoveData(driver, actions, -520, 1);
+        return getMoveData(driver, actions, -520, 5);
     }
 
     private static List<StockKLine> getMoveData(ChromeDriver driver, Actions actions, int xOffset, int step) {
@@ -231,7 +231,7 @@ public class FixGrabStockDateHistory {
 
         long begin = System.currentTimeMillis();
         String lastDate = null;
-        int moveAdd = 0, moveMaxTimes = 15, moveTimes = 0, totalWidth = 990;
+        int moveAdd = 0, moveMaxTimes = 25, moveTimes = 0, totalWidth = 990;
         List<StockKLine> dataList = Lists.newArrayList();
         while (moveTimes < moveMaxTimes) {
             String date = null;
@@ -281,12 +281,12 @@ public class FixGrabStockDateHistory {
                 lastDate = date;
                 moveTimes = 0;
             }
-            if (dataList.size() > 1) {
-                step = 2;
-            }
-            if (dataList.size() > 250) {
-                step = 1;
-            }
+//            if (dataList.size() > 1) {
+//                step = 2;
+//            }
+//            if (dataList.size() > 250) {
+//                step = 1;
+//            }
         }
         System.out.println("cost " + ((System.currentTimeMillis() - begin) / 1000) + "s");
         return dataList;

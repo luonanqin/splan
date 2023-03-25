@@ -20,7 +20,7 @@ public class CheckFixGrab {
             for (File f : fileList) {
                 List<String> lineList = BaseUtils.readFile(f);
                 if (lineList.isEmpty()) {
-                    System.out.println(stockDir.getName() + " empty file :" + f.getPath());
+//                    System.out.println(stockDir.getName() + " empty file :" + f.getPath());
                 }
                 if (lineList.size() == 1) {
                     System.out.println(stockDir.getName() + " one line file :" + f.getPath());
