@@ -1,6 +1,5 @@
 package barchart;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -43,7 +42,6 @@ public class DownloadStockHistory {
 //        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
-        stockList = Lists.newArrayList("HTLD");
         downloadHistoricalStock(driver, stockList, "monthly", 100);
 
         // for quarterly
@@ -80,11 +78,11 @@ public class DownloadStockHistory {
             //            }
             if (hasDownload.contains(stock.toLowerCase())) {
                 //                System.out.println("has downloaded: " + stock);
-//                continue;
+                continue;
             }
             if (BaseUtils.after_2000(dailyFileMap.get(stock))) {
                 //                System.out.println("after 2000 year: " + stock);
-//                continue;
+                continue;
             }
             BaseUtils.viewloadPage(driver, "https://www.barchart.com/stocks/quotes/" + stock + "/historical-download", By.xpath("//div/span[text()='(" + stock + ")']"));
             driver.findElement(By.xpath("//select[@data-ng-model='frequency']")).click();

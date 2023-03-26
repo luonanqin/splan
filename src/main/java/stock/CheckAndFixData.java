@@ -74,8 +74,8 @@ public class CheckAndFixData {
             if (hasMergeStock.contains(stock)) {
                 continue;
             }
-            if (!stock.equals("IPG")) {
-                //                                continue;
+            if (!stock.equals("DINO")) {
+//                                                continue;
             }
 
             // 加载weekly数据
@@ -371,6 +371,10 @@ public class CheckAndFixData {
         Map<String, String> stdDailyMap = BaseUtils.getFileMap(STD_DAILY_PATH);
 
         for (String stock : stdDailyMap.keySet()) {
+            if (!stock.equals("SO")) {
+//                continue;
+            }
+
             if (hasMergeMonth.contains(stock)) {
                 continue;
             }
@@ -383,10 +387,6 @@ public class CheckAndFixData {
             if (firstKLine.getOpen()<1) {
                 System.out.println(stock);
                 continue;
-            }
-
-            if (!stock.equals("UBA")) {
-//                                continue;
             }
 
             List<StockKLine> dailyData = BaseUtils.loadDataToKline(dailyFile);
@@ -588,13 +588,13 @@ public class CheckAndFixData {
         try {
             divide = sum.divide(count, 0, BigDecimal.ROUND_DOWN).setScale(0);
         } catch (Exception e) {
-            //            System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
-            System.out.println(stock + " " + weekK.getDate());
+                        System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+//            System.out.println(stock + " " + weekK.getDate());
             return false;
         }
         if (!(multiply.equals(sum) || divide.equals(weekK.getVolume().setScale(0)))) {
-            //                        System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
-            System.out.println(stock + " " + weekK.getDate());
+                                    System.out.println(stock + " " + weekK.getDate() + " week multi: " + multiply + " week: " + weekK.getVolume() + " sum: " + sum + " dayCount: " + dayCount);
+//            System.out.println(stock + " " + weekK.getDate());
             return false;
         }
         return true;
