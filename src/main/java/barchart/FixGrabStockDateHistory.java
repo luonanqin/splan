@@ -48,7 +48,7 @@ public class FixGrabStockDateHistory {
         //        deleteFile(waitFixGrabMap);
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
-        int threadCount = 1;
+        int threadCount = 2;
         for (int i = 0; i < threadCount; i++) {
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.addArguments("--remote-allow-origins=*");
@@ -64,7 +64,7 @@ public class FixGrabStockDateHistory {
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
-        Set<String> tempStock = Sets.newHashSet("QUMU", "GEOS", "PFE", "REG", "NOTV", "HIBB", "CPSS", "CBAN", "BK", "HWKN", "FWRD", "VECO", "RNST", "PDCO", "ERIE", "RICK", "OSIS", "HAL", "UFPI", "BUSE", "NWPX", "POWI", "OSBC", "BOKF", "SMSI", "IVAC", "BJRI", "AEIS", "TSM", "SEAC", "SCHN", "CWST", "FFIC", "NTWK", "QCRH", "CALM", "STGW", "DINO", "CECO", "MDU", "IDA", "MYGN", "ITRI", "LGND", "CAC", "VOD", "RVSB", "RVSB", "FORR", "SIEB", "SIEB", "SELF", "SGC", "CWCO", "GSK", "BCOR", "ROCK", "AA", "BSRR", "TEVA", "DE", "MTB", "DXPE", "ES", "CIVB", "AXGN", "BANR", "SHOO", "TSEM", "POOL", "NYMX", "VSAT", "RAD", "NWBI", "HDSN", "SSYS", "FFIN", "PLUS", "VBIV", "AZPN");
+        Set<String> tempStock = Sets.newHashSet("DRQ", "AMG", "CHH", "PB", "GPI", "LAD", "INGR", "KEX", "PDS", "OCN", "SRI", "GIB", "TGI", "SPIR", "UNFI", "EPR", "SAH", "MTD", "FDP", "URI", "GEL", "TR", "PAG", "TDW", "NUS");
         for (String stock : waitFixGrabMap.keySet()) {
             if (!tempStock.contains(stock)) {
                 //                continue;
