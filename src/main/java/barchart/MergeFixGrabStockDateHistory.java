@@ -39,6 +39,9 @@ public class MergeFixGrabStockDateHistory {
             String hasFixFileDir = HIS_BASE_PATH + "fixGrab/" + stock + "/";
             Map<String, List<String>> yearToList = Maps.newHashMap();
             File fixDir = new File(hasFixFileDir);
+            if (fixDir.listFiles() == null) {
+                continue;
+            }
             for (File file : fixDir.listFiles()) {
                 String name = file.getName();
                 String year = name.substring(4, 8);

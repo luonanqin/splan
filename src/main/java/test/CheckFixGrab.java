@@ -16,6 +16,9 @@ public class CheckFixGrab {
         File file = new File(basePath);
         for (File stockDir : file.listFiles()) {
             File[] fileList = stockDir.listFiles();
+            if (fileList == null) {
+                continue;
+            }
 
             for (File f : fileList) {
                 List<String> lineList = BaseUtils.readFile(f);
@@ -24,7 +27,7 @@ public class CheckFixGrab {
                 }
                 if (lineList.size() == 1) {
                     System.out.println(stockDir.getName() + " one line file :" + f.getPath());
-//                    f.delete();
+                    f.delete();
                 }
             }
         }
