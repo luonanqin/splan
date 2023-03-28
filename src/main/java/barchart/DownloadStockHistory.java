@@ -24,25 +24,26 @@ public class DownloadStockHistory {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--remote-allow-origins=*");
         ChromeDriver driver = new ChromeDriver(chromeOptions);
-//                ChromeDriver driver = null;
+        //                ChromeDriver driver = null;
 
         // login
         BaseUtils.loginBarchart(driver);
 
         // has option stock
         String market = "XNYS-ADRC";
-        List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
+        //        List<String> stockList = BaseUtils.getStockListOrderByOpenAsc(market);
+        List<String> stockList = BaseUtils.readFile(Constants.HIS_BASE_PATH + "code/list/other");
 
         /** download historical stock data */
 
         // for daily
-//                        downloadHistoricalStock(driver, stockList, "daily", 100);
+        downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
-//        downloadHistoricalStock(driver, stockList, "weekly", 100);
+        //        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
-        downloadHistoricalStock(driver, stockList, "monthly", 100);
+        //        downloadHistoricalStock(driver, stockList, "monthly", 100);
 
         // for quarterly
         //        downloadHistoricalStock(driver, stockList, "quarterly", 30);
@@ -68,10 +69,10 @@ public class DownloadStockHistory {
         flatTradeStockList.addAll(FilterStock.tradeFlat(Constants.GRAB_ONE_YEAR_PATH));
         File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
-//            if (flatTradeStockList.contains(stock)) {
-                //                System.out.println("flat trade: " + stock);
-//                continue;
-//            }
+            //            if (flatTradeStockList.contains(stock)) {
+            //                System.out.println("flat trade: " + stock);
+            //                continue;
+            //            }
             //            if (hasDaily.contains(stock)) {
             //                System.out.println("has been download daily: " + stock);
             //                continue;
@@ -80,10 +81,10 @@ public class DownloadStockHistory {
                 //                System.out.println("has downloaded: " + stock);
                 continue;
             }
-            if (BaseUtils.after_2000(dailyFileMap.get(stock))) {
+//            if (BaseUtils.after_2000(dailyFileMap.get(stock))) {
                 //                System.out.println("after 2000 year: " + stock);
-                continue;
-            }
+//                continue;
+//            }
             BaseUtils.viewloadPage(driver, "https://www.barchart.com/stocks/quotes/" + stock + "/historical-download", By.xpath("//div/span[text()='(" + stock + ")']"));
             driver.findElement(By.xpath("//select[@data-ng-model='frequency']")).click();
             driver.findElement(By.xpath("//option[@value='string:" + frequency + "']")).click();
