@@ -4,7 +4,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
 
@@ -65,8 +64,8 @@ public class DownloadStockHistory {
 
         Map<String, String> dailyFileMap = BaseUtils.originStockFileMap("daily");
 
-        List<String> flatTradeStockList = FilterStock.tradeFlat(Constants.DAILY_PATH);
-        flatTradeStockList.addAll(FilterStock.tradeFlat(Constants.GRAB_ONE_YEAR_PATH));
+//        List<String> flatTradeStockList = FilterStock.tradeFlat(Constants.DAILY_PATH);
+//        flatTradeStockList.addAll(FilterStock.tradeFlat(Constants.GRAB_ONE_YEAR_PATH));
         File downloadDir = new File("/Users/luonanqin/Downloads"); // 公司和家里通用
         for (String stock : stockList) {
             //            if (flatTradeStockList.contains(stock)) {
