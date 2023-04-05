@@ -4,6 +4,7 @@ import barchart.DownloadStockHistory;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -360,6 +361,9 @@ public class BaseUtils {
 
     public static boolean after_2000(String dailyFile) throws Exception {
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(dailyFile);
+        if (CollectionUtils.isEmpty(stockKLines)) {
+            return false;
+        }
         StockKLine earliest = stockKLines.get(stockKLines.size() - 1);
         String date = earliest.getDate();
         LocalDate parse = LocalDate.parse(date, Constants.FORMATTER);

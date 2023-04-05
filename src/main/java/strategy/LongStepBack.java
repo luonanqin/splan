@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * 胜率太低50%，暂停
  * Created by Luonanqin on 2023/3/3.
  */
 public class LongStepBack {
