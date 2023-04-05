@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
+import stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
 
@@ -32,6 +33,9 @@ public class OverBollinger {
         private double changePnt;
         private double highUpDiffPnt;
         private double highCloseDiffPnt;
+        private double openUpDiffPnt;
+        private double closeUpDiffPnt;
+        private int closeLessOpen; // true=1 false=0
 
         public String toString() {
             return String.format("%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", date, open, close, high, low, up, highUpDiffPnt, highCloseDiffPnt);
@@ -41,8 +45,12 @@ public class OverBollinger {
     public static void main(String[] args) throws Exception {
         // 最高超过布林线上轨
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
+        List<String> filterStock = FilterStock.tradeFlat(Constants.STD_DAILY_PATH);
         for (String stock : dailyFileMap.keySet()) {
             if (!stock.equals("TSLA")) {
+//                continue;
+            }
+            if (filterStock.contains(stock)) {
                 continue;
             }
 
@@ -58,14 +66,39 @@ public class OverBollinger {
             Map<String, BOLL> dateToBollMap = lineList.stream().map(BOLL::convert).collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
 
             // 第二天收盘小于前一天收盘
-            Map<String, StockKLine> nextCloseLessCurrClose = nextCloseLessCurrClose(kLines);
+            //            Map<String, StockKLine> nextCloseLessCurrClose = nextCloseLessCurrClose(kLines);
 
             List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 
-            for (Bean bean : result) {
-//                System.out.println(nextCloseLessCurrClose.containsKey(bean.getDate()) + "\t" + bean);
-                System.out.println(bean);
+            System.out.println(stock);
+            int begin = 1, end = 6;
+            while (true) {
+                int i = begin;
+                List<Bean> collect;
+                if (begin < end) {
+                    collect = result.stream().filter(r -> r.getOpenUpDiffPnt() > i && r.getOpenUpDiffPnt() < i + 1).collect(Collectors.toList());
+                } else {
+                    collect = result.stream().filter(r -> r.getOpenUpDiffPnt() > i).collect(Collectors.toList());
+                }
+                long trueCount = collect.stream().filter(c -> c.getCloseLessOpen() == 1).count();
+                long falseCount = collect.stream().filter(c -> c.getCloseLessOpen() == 0).count();
+
+                double ratio = (double) trueCount / (trueCount + falseCount);
+                if (ratio > 0.8) {
+                    System.out.println("openUpDiff great " + begin + ": count=" + collect.size() + ", true=" + trueCount + ", false=" + falseCount + ", rate=" + ratio);
+                }
+
+                if (begin == end) {
+                    break;
+                } else {
+                    begin++;
+                }
             }
+
+            //            for (Bean bean : result) {
+            //                System.out.println(nextCloseLessCurrClose.containsKey(bean.getDate()) + "\t" + bean);
+            //                System.out.println(bean);
+            //            }
         }
     }
 
@@ -87,7 +120,7 @@ public class OverBollinger {
             double close = kLine.getClose();
             double open = kLine.getOpen();
             double low = kLine.getLow();
-            if (up < high && up < open && close > open) {
+            if (up < high && up < open) {
                 Bean bean = new Bean();
                 bean.setDate(date);
                 bean.setOpen(open);
@@ -101,6 +134,14 @@ public class OverBollinger {
 
                 double highCloseDiffPnt = BigDecimal.valueOf((high - close) / close).setScale(4, BigDecimal.ROUND_DOWN).multiply(BigDecimal.valueOf(100)).doubleValue();
                 bean.setHighCloseDiffPnt(highCloseDiffPnt);
+
+                double closeUpDiffPnt = BigDecimal.valueOf((close - up) / up).setScale(4, BigDecimal.ROUND_DOWN).multiply(BigDecimal.valueOf(100)).doubleValue();
+                bean.setCloseUpDiffPnt(closeUpDiffPnt);
+
+                double openUpDiffPnt = BigDecimal.valueOf((open - up) / up).setScale(4, BigDecimal.ROUND_DOWN).multiply(BigDecimal.valueOf(100)).doubleValue();
+                bean.setOpenUpDiffPnt(openUpDiffPnt);
+
+                bean.setCloseLessOpen(close < open ? 1 : 0);
 
                 result.add(bean);
             }
