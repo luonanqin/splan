@@ -46,9 +46,11 @@ public class OverBollinger {
         // 最高超过布林线上轨
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         List<String> filterStock = FilterStock.tradeFlat(Constants.STD_DAILY_PATH);
+
+        Map<String, Integer> dateToCountMap = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         for (String stock : dailyFileMap.keySet()) {
             if (!stock.equals("TSLA")) {
-//                continue;
+                //                continue;
             }
             if (filterStock.contains(stock)) {
                 continue;
@@ -70,8 +72,9 @@ public class OverBollinger {
 
             List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 
-            System.out.println(stock);
             int begin = 1, end = 6;
+            boolean first = true;
+            Map<Integer, List<Bean>> tempMap = Maps.newMap();
             while (true) {
                 int i = begin;
                 List<Bean> collect;
@@ -83,9 +86,21 @@ public class OverBollinger {
                 long trueCount = collect.stream().filter(c -> c.getCloseLessOpen() == 1).count();
                 long falseCount = collect.stream().filter(c -> c.getCloseLessOpen() == 0).count();
 
+                int count = collect.size();
                 double ratio = (double) trueCount / (trueCount + falseCount);
-                if (ratio > 0.8) {
-                    System.out.println("openUpDiff great " + begin + ": count=" + collect.size() + ", true=" + trueCount + ", false=" + falseCount + ", rate=" + ratio);
+                if (ratio > 0.9) {
+                    if (first) {
+//                        System.out.println(stock);
+                        first = false;
+                    }
+                    collect.forEach(c -> {
+                        String date = c.getDate();
+                        if (!dateToCountMap.containsKey(date)) {
+                            dateToCountMap.put(date, 0);
+                        }
+                        dateToCountMap.put(date, dateToCountMap.get(date) + 1);
+                    });
+//                    System.out.println("openUpDiff great " + begin + ": count=" + count + ", true=" + trueCount + ", false=" + falseCount + ", rate=" + ratio);
                 }
 
                 if (begin == end) {
@@ -99,6 +114,10 @@ public class OverBollinger {
             //                System.out.println(nextCloseLessCurrClose.containsKey(bean.getDate()) + "\t" + bean);
             //                System.out.println(bean);
             //            }
+        }
+
+        for (String date : dateToCountMap.keySet()) {
+            System.out.println(date+": "+dateToCountMap.get(date));
         }
     }
 
