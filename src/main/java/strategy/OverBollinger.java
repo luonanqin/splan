@@ -11,6 +11,7 @@ import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -50,7 +51,7 @@ public class OverBollinger {
         Map<String, Integer> dateToCountMap = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         for (String stock : dailyFileMap.keySet()) {
             if (!stock.equals("TSLA")) {
-                //                continue;
+                continue;
             }
             if (filterStock.contains(stock)) {
                 continue;
@@ -74,7 +75,7 @@ public class OverBollinger {
 
             int begin = 1, end = 6;
             boolean first = true;
-            Map<Integer, List<Bean>> tempMap = Maps.newMap();
+            Map<Integer, List<Bean>> tempMap = Maps.newHashMap();
             while (true) {
                 int i = begin;
                 List<Bean> collect;
@@ -83,25 +84,26 @@ public class OverBollinger {
                 } else {
                     collect = result.stream().filter(r -> r.getOpenUpDiffPnt() > i).collect(Collectors.toList());
                 }
-                long trueCount = collect.stream().filter(c -> c.getCloseLessOpen() == 1).count();
-                long falseCount = collect.stream().filter(c -> c.getCloseLessOpen() == 0).count();
-
-                int count = collect.size();
-                double ratio = (double) trueCount / (trueCount + falseCount);
-                if (ratio > 0.9) {
-                    if (first) {
-//                        System.out.println(stock);
-                        first = false;
-                    }
-                    collect.forEach(c -> {
-                        String date = c.getDate();
-                        if (!dateToCountMap.containsKey(date)) {
-                            dateToCountMap.put(date, 0);
-                        }
-                        dateToCountMap.put(date, dateToCountMap.get(date) + 1);
-                    });
-//                    System.out.println("openUpDiff great " + begin + ": count=" + count + ", true=" + trueCount + ", false=" + falseCount + ", rate=" + ratio);
-                }
+                tempMap.put(i, collect);
+                //                long trueCount = collect.stream().filter(c -> c.getCloseLessOpen() == 1).count();
+                //                long falseCount = collect.stream().filter(c -> c.getCloseLessOpen() == 0).count();
+                //
+                //                int count = collect.size();
+                //                double ratio = (double) trueCount / count;
+                //                if (ratio > 0.9) {
+                //                    if (first) {
+                //                        //                        System.out.println(stock);
+                //                        first = false;
+                //                    }
+                //                    collect.forEach(c -> {
+                //                        String date = c.getDate();
+                //                        if (!dateToCountMap.containsKey(date)) {
+                //                            dateToCountMap.put(date, 0);
+                //                        }
+                //                        dateToCountMap.put(date, dateToCountMap.get(date) + 1);
+                //                    });
+                //                    //                    System.out.println("openUpDiff great " + begin + ": count=" + count + ", true=" + trueCount + ", false=" + falseCount + ", rate=" + ratio);
+                //                }
 
                 if (begin == end) {
                     break;
@@ -110,6 +112,50 @@ public class OverBollinger {
                 }
             }
 
+            List<Bean>[] mergeArray = new ArrayList[7];
+            Map<Integer, List<Bean>> hitMap = Maps.newHashMap();
+            for (int i = 1; i < 7; i++) {
+                List<Bean> beans = tempMap.get(i);
+                long trueCount = beans.stream().filter(c -> c.getCloseLessOpen() == 1).count();
+                if ((double) trueCount / beans.size() < 0.8) {
+                    continue;
+                }
+                boolean hasMerge = false;
+                if (trueCount == beans.size()) {
+                    for (int j = i - 1; j >= 0; j--) {
+                        List<Bean> merge = mergeArray[j];
+
+                        if (merge != null) {
+                            long mergeTrueCount = merge.stream().filter(c -> c.getCloseLessOpen() == 1).count();
+                            if (mergeTrueCount != merge.size()) {
+                                break;
+                            }
+                            merge.addAll(beans);
+                            mergeArray[j] = merge;
+                            hasMerge = true;
+                        } else {
+                            j--;
+                        }
+                    }
+                    if (!hasMerge) {
+                        mergeArray[i] = beans;
+                    }
+                } else if ((double) trueCount / beans.size() > 0.8) {
+                    mergeArray[i] = beans;
+                }
+            }
+
+            for (int i = 0; i < 7; i++) {
+                List<Bean> beans = mergeArray[i];
+                if (beans != null) {
+                    long trueCount = beans.stream().filter(c -> c.getCloseLessOpen() == 1).count();
+                    long falseCount = beans.stream().filter(c -> c.getCloseLessOpen() == 0).count();
+                    int count = beans.size();
+                    double ratio = (double) trueCount / count;
+
+                    System.out.println("openUpDiff great " + i + ": count=" + count + ", true=" + trueCount + ", false=" + falseCount + ", rate=" + ratio);
+                }
+            }
             //            for (Bean bean : result) {
             //                System.out.println(nextCloseLessCurrClose.containsKey(bean.getDate()) + "\t" + bean);
             //                System.out.println(bean);
@@ -117,7 +163,7 @@ public class OverBollinger {
         }
 
         for (String date : dateToCountMap.keySet()) {
-            System.out.println(date+": "+dateToCountMap.get(date));
+            System.out.println(date + ": " + dateToCountMap.get(date));
         }
     }
 
