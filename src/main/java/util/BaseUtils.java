@@ -217,6 +217,10 @@ public class BaseUtils {
     }
 
     public static List<StockKLine> loadDataToKline(String filePath) throws Exception {
+        return loadDataToKline(filePath, null);
+    }
+
+    public static List<StockKLine> loadDataToKline(String filePath, Integer beforYear) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         if (filePath.contains("_historical")) {
             br.readLine();
@@ -229,10 +233,17 @@ public class BaseUtils {
         }
         br.close();
 
-        return convertToKLine(list);
+        return convertToKLine(list, beforYear);
     }
 
     public static List<StockKLine> convertToKLine(List<String> lineList) {
+        return convertToKLine(lineList, 2022);
+    }
+
+    public static List<StockKLine> convertToKLine(List<String> lineList, Integer beforeYear) {
+        if (beforeYear == null) {
+            beforeYear = 2022;
+        }
         List<StockKLine> list = Lists.newArrayList();
         for (String line : lineList) {
             // 修正数字中带逗号
@@ -263,7 +274,7 @@ public class BaseUtils {
 
             String date = split[0];
             String year = date.substring(date.lastIndexOf("/") + 1);
-            if (Integer.valueOf(year) > 2022) {
+            if (beforeYear < Integer.valueOf(year)) {
                 continue;
             }
             double open = Double.valueOf(split[1]);
@@ -353,6 +364,7 @@ public class BaseUtils {
         String newDate = year + date.substring(0, 5);
         return Integer.parseInt(newDate.replace("/", ""));
     }
+
     public static int kLineDateToInt(StockKLine kLine) {
         return dateToInt(kLine.getDate());
     }
@@ -370,7 +382,7 @@ public class BaseUtils {
         return parse.isAfter(_2000);
     }
 
-    public static StockKLine getFirstKLine(String filePath) throws Exception{
+    public static StockKLine getFirstKLine(String filePath) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         if (filePath.contains("_historical")) {
             br.readLine();
