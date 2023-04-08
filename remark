@@ -67,3 +67,27 @@ SMSI	01/01/1995~01/01/1996
 
 
 VIA重抓
+
+hit=0.8, loss=0.07, end=881979
+hit=0.9, loss=0.07, end=379781
+hit=1.0, loss=0.07, end=365706
+
+hit=0.8, loss=0.08, end=4488414
+hit=0.9, loss=0.08, end=451851
+hit=1.0, loss=0.08, end=372926
+
+hit=0.8, loss=0.09, end=3094837
+hit=0.9, loss=0.09, end=1018029
+hit=1.0, loss=0.09, end=338501
+
+hit=0.8, loss=0.1, end=3699601
+hit=0.9, loss=0.1, end=3254272
+hit=1.0, loss=0.1, end=366756
+
+hit=0.8, loss=0.12, end=4083080
+hit=0.9, loss=0.12, end=3589175
+hit=1.0, loss=0.12, end=356216
+
+hit=0.8, loss=0.15, end=6151105
+hit=0.9, loss=0.15, end=3277736
+hit=1.0, loss=0.15, end=413154
