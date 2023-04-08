@@ -1,6 +1,7 @@
 package util;
 
 import barchart.DownloadStockHistory;
+import bean.BOLL;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -217,10 +218,14 @@ public class BaseUtils {
     }
 
     public static List<StockKLine> loadDataToKline(String filePath) throws Exception {
-        return loadDataToKline(filePath, null);
+        return loadDataToKline(filePath, null, null);
     }
 
-    public static List<StockKLine> loadDataToKline(String filePath, Integer beforYear) throws Exception {
+    public static List<StockKLine> loadDataToKline(String filePath, Integer beforeYear) throws Exception {
+        return loadDataToKline(filePath, beforeYear, null);
+    }
+
+    public static List<StockKLine> loadDataToKline(String filePath, Integer beforeYear, Integer afterYear) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         if (filePath.contains("_historical")) {
             br.readLine();
@@ -233,16 +238,19 @@ public class BaseUtils {
         }
         br.close();
 
-        return convertToKLine(list, beforYear);
+        return convertToKLine(list, beforeYear, afterYear);
     }
 
     public static List<StockKLine> convertToKLine(List<String> lineList) {
-        return convertToKLine(lineList, 2022);
+        return convertToKLine(lineList, 2022, null);
     }
 
-    public static List<StockKLine> convertToKLine(List<String> lineList, Integer beforeYear) {
+    public static List<StockKLine> convertToKLine(List<String> lineList, Integer beforeYear, Integer afterYear) {
         if (beforeYear == null) {
             beforeYear = 2022;
+        }
+        if (afterYear == null) {
+            afterYear = 1900;
         }
         List<StockKLine> list = Lists.newArrayList();
         for (String line : lineList) {
@@ -274,7 +282,8 @@ public class BaseUtils {
 
             String date = split[0];
             String year = date.substring(date.lastIndexOf("/") + 1);
-            if (beforeYear < Integer.valueOf(year)) {
+            Integer yearInt = Integer.valueOf(year);
+            if (beforeYear < yearInt || afterYear >= yearInt) {
                 continue;
             }
             double open = Double.valueOf(split[1]);
@@ -310,6 +319,42 @@ public class BaseUtils {
             list.add(daily);
         }
         return list;
+    }
+
+    public static List<BOLL> readBollFile(String filePath, Integer beforeYear, Integer afterYear) throws Exception {
+        if (beforeYear == null) {
+            beforeYear = 2022;
+        }
+        if (afterYear == null) {
+            afterYear = 1900;
+        }
+
+        List<BOLL> lineList = Lists.newArrayList();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            System.out.println("can not find file: " + filePath);
+            return Lists.newArrayList();
+        }
+
+        String line;
+        while (StringUtils.isNotBlank(line = br.readLine())) {
+            BOLL convert = BOLL.convert(line);
+            String date = convert.getDate();
+            String year = date.substring(date.lastIndexOf("/") + 1);
+            int yearInt = Integer.valueOf(year);
+            if (afterYear >= yearInt) {
+                break;
+            }
+            if (beforeYear < yearInt) {
+                continue;
+            }
+            lineList.add(convert);
+        }
+        br.close();
+
+        return lineList;
     }
 
     public static List<String> readFile(String filePath) throws Exception {
