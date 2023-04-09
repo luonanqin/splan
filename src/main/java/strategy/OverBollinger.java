@@ -7,14 +7,17 @@ import com.google.common.collect.Maps;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,7 +33,7 @@ public class OverBollinger {
     public static final String TEST_STOCK = "";
 
     @Data
-    public static class Bean {
+    public static class Bean implements Serializable{
         String date;
         private double open;
         private double close;
@@ -50,7 +53,7 @@ public class OverBollinger {
     }
 
     @Data
-    public static class RatioBean {
+    public static class RatioBean implements Serializable{
         List<Bean> beanList = Lists.newArrayList();
         double ratio;
 
@@ -63,7 +66,7 @@ public class OverBollinger {
     }
 
     @Data
-    public static class StockRatio {
+    public static class StockRatio implements Serializable{
         Map<Integer, RatioBean> ratioMap = Maps.newHashMap();
 
         public void addBean(Bean bean) {
@@ -105,13 +108,13 @@ public class OverBollinger {
 
     public static void main(String[] args) throws Exception {
         double capital = 10000;
-        Map<String, StockRatio> ratioMap = computeHistoricalOverBollingerRatio();
+        Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio();
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
 
         // 构建2022年各股票k线
         Map<String, Map<String, StockKLine>> dateToStockLineMap = Maps.newHashMap();
-        for (String stock : ratioMap.keySet()) {
+        for (String stock : originRatioMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
@@ -129,7 +132,7 @@ public class OverBollinger {
 
         // 构建2022年各股票bolling线
         Map<String, Map<String, BOLL>> dateToStockBollMap = Maps.newHashMap();
-        for (String stock : ratioMap.keySet()) {
+        for (String stock : originRatioMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
@@ -167,9 +170,12 @@ public class OverBollinger {
         Collections.reverse(dateList);
 
         List<Double> hitRatio = Lists.newArrayList(0.8d, 0.9d, 1d);
-        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d);
+        List<Double> lossRatioRange = Lists.newArrayList(0.04d, 0.05d, 0.06d, 0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d);
         for (Double lossRange : lossRatioRange) {
             for (Double hit : hitRatio) {
+                Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>)originRatioMap);
+
+                int gainCount = 0, lossCount = 0;
                 for (String date : dateList) {
                     Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                     Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
@@ -242,20 +248,29 @@ public class OverBollinger {
                         if (lossRatio > v) {
                             double loss = count * (open - open * (1 + v));
                             capital += loss;
-//                            System.out.println(stock + ": loss = " + (int) loss);
+                            //                            System.out.println("date=" + date + ", stock=" + stock + ", loss = " + (int) loss);
                             stockRatio.addBean(buildBean(kLine, boll));
+                            lossCount++;
                         } else {
                             double gain = count * (open - close);
                             capital += gain;
-//                            System.out.println(stock + ": gain = " + (int) gain);
+                            //                            System.out.println("date=" + date + ", stock=" + stock + ", gain = " + (int) gain);
                             stockRatio.addBean(buildBean(kLine, boll));
+
+                            if (gain >= 0) {
+                                gainCount++;
+                            } else {
+                                lossCount++;
+                            }
                             break;
                         }
                     }
                 }
-                System.out.println("hit=" + hit + ", loss=" + lossRange + ", end=" + (int) capital);
+                double successRatio = (double) gainCount / (gainCount + lossCount);
+                System.out.println("hit=" + hit + ", loss=" + lossRange + ", sum=" + (int) capital + ", gainCount=" + gainCount + ", lossCount=" + lossCount + ", successRatio=" + successRatio);
                 capital = 10000;
             }
+            System.out.println();
         }
     }
 
