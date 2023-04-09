@@ -106,7 +106,7 @@ hit=0.8, loss=0.15, sum=1200248, gainCount=132, lossCount=60, successRatio=0.687
 hit=0.9, loss=0.15, sum=160517, gainCount=87, lossCount=35, successRatio=0.7131147540983607
 hit=1.0, loss=0.15, sum=161457, gainCount=83, lossCount=33, successRatio=0.7155172413793104
 
-加最新交易，但仅限交易的股票，未交易的不计入历史命中率计算（每次计算都会重置数据）
+加最新交易，但仅限交易的股票，未交易的不计入历史命中率（历史命中率每次计算都会重置数据）
 hit=0.8, loss=0.04, sum=187165, gainCount=137, lossCount=100, successRatio=0.5780590717299579
 hit=0.9, loss=0.04, sum=271441, gainCount=95, lossCount=58, successRatio=0.6209150326797386
 hit=1.0, loss=0.04, sum=141399, gainCount=88, lossCount=53, successRatio=0.624113475177305
