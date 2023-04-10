@@ -33,7 +33,7 @@ public class OverBollinger {
     public static final String TEST_STOCK = "";
 
     @Data
-    public static class Bean implements Serializable{
+    public static class Bean implements Serializable {
         String date;
         private double open;
         private double close;
@@ -53,7 +53,7 @@ public class OverBollinger {
     }
 
     @Data
-    public static class RatioBean implements Serializable{
+    public static class RatioBean implements Serializable {
         List<Bean> beanList = Lists.newArrayList();
         double ratio;
 
@@ -66,7 +66,7 @@ public class OverBollinger {
     }
 
     @Data
-    public static class StockRatio implements Serializable{
+    public static class StockRatio implements Serializable {
         Map<Integer, RatioBean> ratioMap = Maps.newHashMap();
 
         public void addBean(Bean bean) {
@@ -173,13 +173,17 @@ public class OverBollinger {
         List<Double> lossRatioRange = Lists.newArrayList(0.04d, 0.05d, 0.06d, 0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d);
         for (Double lossRange : lossRatioRange) {
             for (Double hit : hitRatio) {
-                Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>)originRatioMap);
+                if (hit != 0.8d || lossRange != 0.1d) {
+                    //                    continue;
+                }
+                Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
                 int gainCount = 0, lossCount = 0;
                 for (String date : dateList) {
                     Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                     Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
 
+                    boolean hasCompute = false;
                     for (String stock : stockKLineMap.keySet()) {
                         StockKLine kLine = stockKLineMap.get(stock);
                         BOLL boll = stockBollMap.get(stock);
@@ -187,6 +191,7 @@ public class OverBollinger {
                         double open = kLine.getOpen();
                         double close = kLine.getClose();
                         double high = kLine.getHigh();
+                        double low = kLine.getLow();
                         double currMb = boll.getMb();
 
                         if (open < currMb) {
@@ -242,28 +247,40 @@ public class OverBollinger {
                             continue;
                         }
 
+                        if (hasCompute) {
+                            stockRatio.addBean(buildBean(kLine, boll));
+                            continue;
+                        }
+
                         int count = (int) (capital / open);
                         double lossRatio = (high - open) / open;
                         double v = lossRange;
+                        int openLowDiff = (int) ((open - low) / open * 100);
                         if (lossRatio > v) {
                             double loss = count * (open - open * (1 + v));
                             capital += loss;
                             //                            System.out.println("date=" + date + ", stock=" + stock + ", loss = " + (int) loss);
-                            stockRatio.addBean(buildBean(kLine, boll));
+                            //                            System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
+                            //                            stockRatio.addBean(buildBean(kLine, boll));
                             lossCount++;
+                            //                            break;
                         } else {
                             double gain = count * (open - close);
                             capital += gain;
                             //                            System.out.println("date=" + date + ", stock=" + stock + ", gain = " + (int) gain);
-                            stockRatio.addBean(buildBean(kLine, boll));
+                            //                            stockRatio.addBean(buildBean(kLine, boll));
 
                             if (gain >= 0) {
+                                //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
                                 gainCount++;
                             } else {
                                 lossCount++;
+                                //                                System.out.println(String.format("loss openLowDiff=%d, closeOpenDiff=%d", openLowDiff, (int) ((close - open) / open * 100)));
                             }
-                            break;
+                            //                            break;
                         }
+                        stockRatio.addBean(buildBean(kLine, boll));
+                        hasCompute = true;
                     }
                 }
                 double successRatio = (double) gainCount / (gainCount + lossCount);
