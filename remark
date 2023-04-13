@@ -179,3 +179,151 @@ hit=1.0, loss=0.12, sum=112253, gainCount=77, lossCount=35, successRatio=0.6875
 hit=0.8, loss=0.15, sum=1203895, gainCount=132, lossCount=52, successRatio=0.717391304347826
 hit=0.9, loss=0.15, sum=178480, gainCount=89, lossCount=37, successRatio=0.7063492063492064
 hit=1.0, loss=0.15, sum=101151, gainCount=77, lossCount=35, successRatio=0.6875
+
+加最新交易，包含所有open>up的股票（历史命中率每次计算都会重置数据），严格去掉非活跃交易股票（某些股票某天的成交量非常大，会拉高平均值）
+hit=0.8, loss=0.04, sum=190359, gainCount=106, lossCount=61, successRatio=0.6347305389221557
+hit=0.9, loss=0.04, sum=73399, gainCount=67, lossCount=40, successRatio=0.6261682242990654
+hit=1.0, loss=0.04, sum=59914, gainCount=66, lossCount=36, successRatio=0.6470588235294118
+
+hit=0.8, loss=0.05, sum=170420, gainCount=108, lossCount=59, successRatio=0.6467065868263473
+hit=0.9, loss=0.05, sum=67579, gainCount=69, lossCount=38, successRatio=0.6448598130841121
+hit=1.0, loss=0.05, sum=53279, gainCount=67, lossCount=35, successRatio=0.6568627450980392
+
+hit=0.8, loss=0.06, sum=178718, gainCount=110, lossCount=57, successRatio=0.6586826347305389
+hit=0.9, loss=0.06, sum=82856, gainCount=72, lossCount=35, successRatio=0.6728971962616822
+hit=1.0, loss=0.06, sum=55639, gainCount=68, lossCount=34, successRatio=0.6666666666666666
+
+hit=0.8, loss=0.07, sum=246874, gainCount=113, lossCount=54, successRatio=0.6766467065868264
+hit=0.9, loss=0.07, sum=119093, gainCount=75, lossCount=32, successRatio=0.7009345794392523
+hit=1.0, loss=0.07, sum=80004, gainCount=71, lossCount=31, successRatio=0.696078431372549
+
+hit=0.8, loss=0.08, sum=330229, gainCount=116, lossCount=51, successRatio=0.6946107784431138
+hit=0.9, loss=0.08, sum=146420, gainCount=76, lossCount=31, successRatio=0.7102803738317757
+hit=1.0, loss=0.08, sum=98334, gainCount=72, lossCount=30, successRatio=0.7058823529411765
+
+hit=0.8, loss=0.09, sum=310549, gainCount=116, lossCount=51, successRatio=0.6946107784431138
+hit=0.9, loss=0.09, sum=148683, gainCount=76, lossCount=31, successRatio=0.7102803738317757
+hit=1.0, loss=0.09, sum=99869, gainCount=72, lossCount=30, successRatio=0.7058823529411765
+
+hit=0.8, loss=0.1, sum=326496, gainCount=117, lossCount=50, successRatio=0.7005988023952096
+hit=0.9, loss=0.1, sum=162928, gainCount=77, lossCount=30, successRatio=0.719626168224299
+hit=1.0, loss=0.1, sum=109405, gainCount=73, lossCount=29, successRatio=0.7156862745098039
+
+hit=0.8, loss=0.12, sum=425959, gainCount=119, lossCount=48, successRatio=0.7125748502994012
+hit=0.9, loss=0.12, sum=169248, gainCount=77, lossCount=30, successRatio=0.719626168224299
+hit=1.0, loss=0.12, sum=113690, gainCount=73, lossCount=29, successRatio=0.7156862745098039
+
+hit=0.8, loss=0.15, sum=345853, gainCount=119, lossCount=48, successRatio=0.7125748502994012
+hit=0.9, loss=0.15, sum=163476, gainCount=77, lossCount=30, successRatio=0.719626168224299
+hit=1.0, loss=0.15, sum=109816, gainCount=73, lossCount=29, successRatio=0.7156862745098039
+
+加最新交易，包含所有open>up的股票（历史命中率每次计算都会重置数据），严格去掉活跃交易股票，并且历史命中率要大于一次
+hit=0.8, loss=0.04, sum=396961, gainCount=166, lossCount=83, successRatio=0.6666666666666666
+hit=0.9, loss=0.04, sum=319196, gainCount=143, lossCount=77, successRatio=0.65
+hit=1.0, loss=0.04, sum=275110, gainCount=134, lossCount=78, successRatio=0.6320754716981132
+
+hit=0.8, loss=0.05, sum=379613, gainCount=170, lossCount=79, successRatio=0.6827309236947792
+hit=0.9, loss=0.05, sum=998839, gainCount=154, lossCount=66, successRatio=0.7
+hit=1.0, loss=0.05, sum=827587, gainCount=144, lossCount=68, successRatio=0.6792452830188679
+
+hit=0.8, loss=0.06, sum=422604, gainCount=175, lossCount=74, successRatio=0.7028112449799196
+hit=0.9, loss=0.06, sum=1488697, gainCount=159, lossCount=61, successRatio=0.7227272727272728
+hit=1.0, loss=0.06, sum=807274, gainCount=147, lossCount=65, successRatio=0.6933962264150944
+
+hit=0.8, loss=0.07, sum=331018, gainCount=176, lossCount=73, successRatio=0.7068273092369478
+hit=0.9, loss=0.07, sum=1194015, gainCount=160, lossCount=60, successRatio=0.7272727272727273
+hit=1.0, loss=0.07, sum=684402, gainCount=149, lossCount=63, successRatio=0.7028301886792453
+
+hit=0.8, loss=0.08, sum=442757, gainCount=179, lossCount=70, successRatio=0.7188755020080321
+hit=0.9, loss=0.08, sum=1977457, gainCount=165, lossCount=55, successRatio=0.75
+hit=1.0, loss=0.08, sum=982114, gainCount=153, lossCount=59, successRatio=0.7216981132075472
+
+hit=0.8, loss=0.09, sum=1321411, gainCount=185, lossCount=64, successRatio=0.7429718875502008
+hit=0.9, loss=0.09, sum=4041306, gainCount=170, lossCount=50, successRatio=0.7727272727272727
+hit=1.0, loss=0.09, sum=1941657, gainCount=158, lossCount=54, successRatio=0.7452830188679245
+
+hit=0.8, loss=0.1, sum=1345983, gainCount=186, lossCount=63, successRatio=0.7469879518072289
+hit=0.9, loss=0.1, sum=4806422, gainCount=171, lossCount=49, successRatio=0.7772727272727272
+hit=1.0, loss=0.1, sum=2234568, gainCount=159, lossCount=53, successRatio=0.75
+
+hit=0.8, loss=0.12, sum=1962062, gainCount=188, lossCount=61, successRatio=0.7550200803212851
+hit=0.9, loss=0.12, sum=3813961, gainCount=171, lossCount=49, successRatio=0.7772727272727272
+hit=1.0, loss=0.12, sum=1709352, gainCount=159, lossCount=53, successRatio=0.75
+
+hit=0.8, loss=0.15, sum=2417217, gainCount=189, lossCount=60, successRatio=0.7590361445783133
+hit=0.9, loss=0.15, sum=7480801, gainCount=173, lossCount=47, successRatio=0.7863636363636364
+hit=1.0, loss=0.15, sum=4066820, gainCount=162, lossCount=50, successRatio=0.7641509433962265
+
+加最新交易，包含所有open>up的股票（历史命中率每次计算都会重置数据），严格去掉活跃交易股票
+hit=0.8, loss=0.04, sum=200703, gainCount=159, lossCount=90, successRatio=0.6385542168674698
+hit=0.9, loss=0.04, sum=443713, gainCount=146, lossCount=87, successRatio=0.6266094420600858
+hit=1.0, loss=0.04, sum=431875, gainCount=139, lossCount=90, successRatio=0.6069868995633187
+
+hit=0.8, loss=0.05, sum=176532, gainCount=163, lossCount=86, successRatio=0.6546184738955824
+hit=0.9, loss=0.05, sum=1252828, gainCount=157, lossCount=76, successRatio=0.6738197424892703
+hit=1.0, loss=0.05, sum=1058404, gainCount=148, lossCount=81, successRatio=0.6462882096069869
+
+hit=0.8, loss=0.06, sum=235948, gainCount=170, lossCount=79, successRatio=0.6827309236947792
+hit=0.9, loss=0.06, sum=1755392, gainCount=163, lossCount=70, successRatio=0.6995708154506438
+hit=1.0, loss=0.06, sum=1270899, gainCount=153, lossCount=76, successRatio=0.6681222707423581
+
+hit=0.8, loss=0.07, sum=287351, gainCount=173, lossCount=76, successRatio=0.6947791164658634
+hit=0.9, loss=0.07, sum=1951581, gainCount=165, lossCount=68, successRatio=0.7081545064377682
+hit=1.0, loss=0.07, sum=1476659, gainCount=156, lossCount=73, successRatio=0.6812227074235808
+
+hit=0.8, loss=0.08, sum=366871, gainCount=176, lossCount=73, successRatio=0.7068273092369478
+hit=0.9, loss=0.08, sum=2537032, gainCount=169, lossCount=64, successRatio=0.7253218884120172
+hit=1.0, loss=0.08, sum=1644917, gainCount=159, lossCount=70, successRatio=0.6943231441048034
+
+hit=0.8, loss=0.09, sum=1060047, gainCount=182, lossCount=67, successRatio=0.7309236947791165
+hit=0.9, loss=0.09, sum=4908449, gainCount=174, lossCount=59, successRatio=0.7467811158798283
+hit=1.0, loss=0.09, sum=3046967, gainCount=164, lossCount=65, successRatio=0.7161572052401747
+
+hit=0.8, loss=0.1, sum=1356437, gainCount=184, lossCount=65, successRatio=0.7389558232931727
+hit=0.9, loss=0.1, sum=7173077, gainCount=176, lossCount=57, successRatio=0.7553648068669528
+hit=1.0, loss=0.1, sum=4259804, gainCount=166, lossCount=63, successRatio=0.7248908296943232
+
+hit=0.8, loss=0.12, sum=2929092, gainCount=187, lossCount=62, successRatio=0.751004016064257
+hit=0.9, loss=0.12, sum=10090005, gainCount=178, lossCount=55, successRatio=0.7639484978540773
+hit=1.0, loss=0.12, sum=6502208, gainCount=169, lossCount=60, successRatio=0.7379912663755459
+
+hit=0.8, loss=0.15, sum=3588271, gainCount=188, lossCount=61, successRatio=0.7550200803212851
+hit=0.9, loss=0.15, sum=21330434, gainCount=180, lossCount=53, successRatio=0.7725321888412017
+hit=1.0, loss=0.15, sum=16110937, gainCount=172, lossCount=57, successRatio=0.7510917030567685
+
+开盘价大于5
+hit=0.8, loss=0.04, sum=49502, gainCount=156, lossCount=89, successRatio=0.636734693877551
+hit=0.9, loss=0.04, sum=87385, gainCount=139, lossCount=79, successRatio=0.6376146788990825
+hit=1.0, loss=0.04, sum=94665, gainCount=127, lossCount=81, successRatio=0.6105769230769231
+
+hit=0.8, loss=0.05, sum=68487, gainCount=163, lossCount=82, successRatio=0.6653061224489796
+hit=0.9, loss=0.05, sum=267567, gainCount=148, lossCount=70, successRatio=0.6788990825688074
+hit=1.0, loss=0.05, sum=293987, gainCount=137, lossCount=71, successRatio=0.6586538461538461
+
+hit=0.8, loss=0.06, sum=110451, gainCount=171, lossCount=74, successRatio=0.6979591836734694
+hit=0.9, loss=0.06, sum=392473, gainCount=154, lossCount=64, successRatio=0.7064220183486238
+hit=1.0, loss=0.06, sum=492072, gainCount=144, lossCount=64, successRatio=0.6923076923076923
+
+hit=0.8, loss=0.07, sum=109761, gainCount=173, lossCount=72, successRatio=0.7061224489795919
+hit=0.9, loss=0.07, sum=411301, gainCount=156, lossCount=62, successRatio=0.7155963302752294
+hit=1.0, loss=0.07, sum=521059, gainCount=146, lossCount=62, successRatio=0.7019230769230769
+
+hit=0.8, loss=0.08, sum=110497, gainCount=174, lossCount=71, successRatio=0.710204081632653
+hit=0.9, loss=0.08, sum=429505, gainCount=158, lossCount=60, successRatio=0.7247706422018348
+hit=1.0, loss=0.08, sum=501234, gainCount=147, lossCount=61, successRatio=0.7067307692307693
+
+hit=0.8, loss=0.09, sum=396393, gainCount=180, lossCount=65, successRatio=0.7346938775510204
+hit=0.9, loss=0.09, sum=957578, gainCount=163, lossCount=55, successRatio=0.7477064220183486
+hit=1.0, loss=0.09, sum=1129828, gainCount=152, lossCount=56, successRatio=0.7307692307692307
+
+hit=0.8, loss=0.1, sum=536073, gainCount=182, lossCount=63, successRatio=0.7428571428571429
+hit=0.9, loss=0.1, sum=1647411, gainCount=165, lossCount=53, successRatio=0.7568807339449541
+hit=1.0, loss=0.1, sum=1965673, gainCount=154, lossCount=54, successRatio=0.7403846153846154
+
+hit=0.8, loss=0.12, sum=609686, gainCount=184, lossCount=61, successRatio=0.7510204081632653
+hit=0.9, loss=0.12, sum=1547358, gainCount=166, lossCount=52, successRatio=0.7614678899082569
+hit=1.0, loss=0.12, sum=1888394, gainCount=155, lossCount=53, successRatio=0.7451923076923077
+
+hit=0.8, loss=0.15, sum=718521, gainCount=185, lossCount=60, successRatio=0.7551020408163265
+hit=0.9, loss=0.15, sum=2205049, gainCount=167, lossCount=51, successRatio=0.7660550458715596
+hit=1.0, loss=0.15, sum=2592213, gainCount=156, lossCount=52, successRatio=0.75

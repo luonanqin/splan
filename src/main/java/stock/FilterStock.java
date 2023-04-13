@@ -11,7 +11,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static util.Constants.*;
+import static util.Constants.FORMATTER;
+import static util.Constants.GRAB_ONE_YEAR_PATH;
 
 /**
  * Created by Luonanqin on 2023/1/31.
@@ -22,6 +23,8 @@ public class FilterStock {
         List<String> list = tradeFlat(GRAB_ONE_YEAR_PATH);
         System.out.println(list);
     }
+
+    public static boolean strongFilter = true;
 
     public static List<String> tradeFlat(String path) throws Exception {
         File stockFile = new File(path);
@@ -34,14 +37,14 @@ public class FilterStock {
 
             int _index = fileName.indexOf("_");
             String code = fileName;
-            if (_index>-1) {
+            if (_index > -1) {
                 code = fileName.substring(0, _index).toUpperCase();
             }
 
             //            System.out.println(code);
-//            if (code.equals("BABA")) {
-//                System.out.println();
-//            }
+            //            if (code.equals("BABA")) {
+            //                System.out.println();
+            //            }
 
             List<StockKLine> dataList = getStockDailyForDays(file, 60);
             //            double avgChangePnt = calAvgChangePnt(dataList);
@@ -116,13 +119,27 @@ public class FilterStock {
 
     public static double calAvgVolumn(List<StockKLine> dataList) {
         BigDecimal sum = BigDecimal.ZERO;
+        double max = Double.MIN_VALUE;
         for (StockKLine data : dataList) {
             sum = sum.add(data.getVolume());
+            double v = data.getVolume().doubleValue();
+            if (v > max) {
+                max = v;
+            }
         }
         if (sum.equals(BigDecimal.ZERO)) {
             return 0;
         }
+
         //        System.out.println(sum.toString()+" "+ dataList.size());
-        return sum.divide(BigDecimal.valueOf(dataList.size()), BigDecimal.ROUND_HALF_UP).doubleValue();
+        int size = dataList.size();
+        if (strongFilter) {
+            sum = sum.subtract(BigDecimal.valueOf(max));
+            size--;
+            if (size == 0) {
+                return 0;
+            }
+        }
+        return sum.divide(BigDecimal.valueOf(size), BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

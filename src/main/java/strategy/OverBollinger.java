@@ -169,12 +169,20 @@ public class OverBollinger {
         }
         Collections.reverse(dateList);
 
+        // todo 根据open实时计算出超过up比例最高的前十股票，然后再遍历计算收益
+
         List<Double> hitRatio = Lists.newArrayList(0.8d, 0.9d, 1d);
         List<Double> lossRatioRange = Lists.newArrayList(0.04d, 0.05d, 0.06d, 0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d);
         for (Double lossRange : lossRatioRange) {
-            for (Double hit : hitRatio) {
-                if (hit != 0.8d || lossRange != 0.1d) {
-                    //                    continue;
+            for (int i = 0; i < hitRatio.size(); i++) {
+                double hit = hitRatio.get(i);
+
+                Double nextHit = 2d;
+                if (i + 1 < hitRatio.size()) {
+                    nextHit = hitRatio.get(i + 1);
+                }
+                if (hit != 0.9d || lossRange != 0.15d) {
+//                    continue;
                 }
                 Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -259,15 +267,15 @@ public class OverBollinger {
                         if (lossRatio > v) {
                             double loss = count * (open - open * (1 + v));
                             capital += loss;
-                            //                            System.out.println("date=" + date + ", stock=" + stock + ", loss = " + (int) loss);
-                            //                            System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
+//                                                        System.out.println("date=" + date + ", stock=" + stock + ", loss = " + (int) loss);
+//                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                             //                            stockRatio.addBean(buildBean(kLine, boll));
                             lossCount++;
                             //                            break;
                         } else {
                             double gain = count * (open - close);
                             capital += gain;
-                            //                            System.out.println("date=" + date + ", stock=" + stock + ", gain = " + (int) gain);
+//                                                        System.out.println("date=" + date + ", stock=" + stock + ", gain = " + (int) gain);
                             //                            stockRatio.addBean(buildBean(kLine, boll));
 
                             if (gain >= 0) {
@@ -309,6 +317,7 @@ public class OverBollinger {
         // 最高超过布林线上轨
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         List<String> filterStock = FilterStock.tradeFlat(Constants.STD_DAILY_PATH);
+        List<String> canShortStock = BaseUtils.readFile(Constants.TEST_PATH + "canShort");
 
         Map<String, Integer> dateToCountMap = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::dateToInt).reversed());
         Map<String, StockRatio> stockRatioMap = Maps.newHashMap();
@@ -316,7 +325,10 @@ public class OverBollinger {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            if (filterStock.contains(stock)) {
+            if (!filterStock.contains(stock)) {
+//                continue;
+            }
+            if (!canShortStock.contains(stock)) {
                 continue;
             }
 
