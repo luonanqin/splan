@@ -36,13 +36,13 @@ public class DownloadStockHistory {
         /** download historical stock data */
 
         // for daily
-        downloadHistoricalStock(driver, stockList, "daily", 100);
+//        downloadHistoricalStock(driver, stockList, "daily", 100);
 
         // for weekly
         //        downloadHistoricalStock(driver, stockList, "weekly", 100);
 
         // for monthly
-        //        downloadHistoricalStock(driver, stockList, "monthly", 100);
+                downloadHistoricalStock(driver, stockList, "monthly", 100);
 
         // for quarterly
         //        downloadHistoricalStock(driver, stockList, "quarterly", 30);
