@@ -169,7 +169,30 @@ public class OverBollinger {
         }
         Collections.reverse(dateList);
 
-        // todo 根据open实时计算出超过up比例最高的前十股票，然后再遍历计算收益
+        // 根据open实时计算出超过up比例最高的前十股票，然后再遍历计算收益
+        Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
+        for (String date : dateToStockBollMap.keySet()) {
+            Map<String, StockKLine> stockToKlineMap = dateToStockLineMap.get(date);
+            Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
+            Map<String, Double> stockToRatioMap = Maps.newHashMap();
+            for (String stock : stockToKlineMap.keySet()) {
+                StockKLine kline = stockToKlineMap.get(stock);
+                BOLL boll = stockToBollMap.get(stock);
+                if (boll != null) {
+                    double up = boll.getUp();
+                    double open = kline.getOpen();
+                    double ratio = (open - up) / up;
+                    stockToRatioMap.put(stock, ratio);
+                }
+            }
+            List<String> stocks = stockToRatioMap.entrySet().stream().sorted((o1, o2) -> {
+                if (o1.getValue() < o2.getValue()) {
+                    return 1;
+                }
+                return -1;
+            }).map(o -> o.getKey()).collect(Collectors.toList());
+            dateToStocksMap.put(date, stocks);
+        }
 
         List<Double> hitRatio = Lists.newArrayList(0.8d, 0.9d, 1d);
         List<Double> lossRatioRange = Lists.newArrayList(0.04d, 0.05d, 0.06d, 0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d);
@@ -181,8 +204,8 @@ public class OverBollinger {
                 if (i + 1 < hitRatio.size()) {
                     nextHit = hitRatio.get(i + 1);
                 }
-                if (hit != 0.9d || lossRange != 0.15d) {
-//                    continue;
+                if (hit != 0.8d || lossRange != 0.15d) {
+                    continue;
                 }
                 Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -190,9 +213,10 @@ public class OverBollinger {
                 for (String date : dateList) {
                     Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                     Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
+                    List<String> stocks = dateToStocksMap.get(date);
 
                     boolean hasCompute = false;
-                    for (String stock : stockKLineMap.keySet()) {
+                    for (String stock : stocks) {
                         StockKLine kLine = stockKLineMap.get(stock);
                         BOLL boll = stockBollMap.get(stock);
 
@@ -241,6 +265,7 @@ public class OverBollinger {
                         // 根据开盘价算openUpDiffRatio
                         double openUpDiffPnt = (open - up) / up;
                         int openUpDiffInt = (int) openUpDiffPnt;
+                        BigDecimal volume = kLine.getVolume();
 
                         StockRatio stockRatio = ratioMap.get(stock);
                         Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
@@ -267,15 +292,15 @@ public class OverBollinger {
                         if (lossRatio > v) {
                             double loss = count * (open - open * (1 + v));
                             capital += loss;
-//                                                        System.out.println("date=" + date + ", stock=" + stock + ", loss = " + (int) loss);
-//                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
+                            System.out.println("date=" + date + ", stock=" + stock + ", volumn=" + volume + ", loss = " + (int) loss);
+                            //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                             //                            stockRatio.addBean(buildBean(kLine, boll));
                             lossCount++;
                             //                            break;
                         } else {
                             double gain = count * (open - close);
                             capital += gain;
-//                                                        System.out.println("date=" + date + ", stock=" + stock + ", gain = " + (int) gain);
+                            System.out.println("date=" + date + ", stock=" + stock + ", volumn=" + volume + ", gain = " + (int) gain);
                             //                            stockRatio.addBean(buildBean(kLine, boll));
 
                             if (gain >= 0) {
@@ -326,7 +351,7 @@ public class OverBollinger {
                 continue;
             }
             if (!filterStock.contains(stock)) {
-//                continue;
+                //                continue;
             }
             if (!canShortStock.contains(stock)) {
                 continue;
