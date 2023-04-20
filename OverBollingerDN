@@ -1,0 +1,387 @@
+参数：成功率0.5~1，止损线0.07~0.4，价格线（开盘价）5~7以上
+回测数据：2022年之前所有股票计算成功率，以2022年数据进行回测
+策略：加最新交易，但仅限交易的股票，未交易的不计入成功率，按照openDnDiff倒排来选择交易股票
+初始成本：1w
+
+openRange=5, hit=0.5, loss=0.07, sum=3019908, gainCount=1136, lossCount=521, successRatio=0.6855763427881714
+openRange=5, hit=0.6, loss=0.07, sum=1969645, gainCount=934, lossCount=426, successRatio=0.6867647058823529
+openRange=5, hit=0.7, loss=0.07, sum=745066, gainCount=827, lossCount=351, successRatio=0.702037351443124
+openRange=5, hit=0.8, loss=0.07, sum=128953, gainCount=475, lossCount=215, successRatio=0.6884057971014492
+openRange=5, hit=0.9, loss=0.07, sum=107779, gainCount=353, lossCount=185, successRatio=0.6561338289962825
+openRange=5, hit=1.0, loss=0.07, sum=79044, gainCount=323, lossCount=174, successRatio=0.6498993963782697
+
+openRange=5, hit=0.5, loss=0.08, sum=2664974, gainCount=1055, lossCount=466, successRatio=0.6936226166995397
+openRange=5, hit=0.6, loss=0.08, sum=1808376, gainCount=863, lossCount=397, successRatio=0.6849206349206349
+openRange=5, hit=0.7, loss=0.08, sum=728392, gainCount=833, lossCount=342, successRatio=0.708936170212766
+openRange=5, hit=0.8, loss=0.08, sum=131046, gainCount=489, lossCount=224, successRatio=0.6858345021037868
+openRange=5, hit=0.9, loss=0.08, sum=88186, gainCount=354, lossCount=192, successRatio=0.6483516483516484
+openRange=5, hit=1.0, loss=0.08, sum=92229, gainCount=329, lossCount=171, successRatio=0.658
+
+openRange=5, hit=0.5, loss=0.09, sum=2889789, gainCount=1119, lossCount=481, successRatio=0.699375
+openRange=5, hit=0.6, loss=0.09, sum=1903280, gainCount=920, lossCount=401, successRatio=0.6964420893262679
+openRange=5, hit=0.7, loss=0.09, sum=741800, gainCount=839, lossCount=333, successRatio=0.7158703071672355
+openRange=5, hit=0.8, loss=0.09, sum=119647, gainCount=476, lossCount=213, successRatio=0.690856313497823
+openRange=5, hit=0.9, loss=0.09, sum=82763, gainCount=356, lossCount=191, successRatio=0.6508226691042047
+openRange=5, hit=1.0, loss=0.09, sum=95690, gainCount=341, lossCount=173, successRatio=0.6634241245136187
+
+openRange=5, hit=0.5, loss=0.1, sum=3234139, gainCount=1223, lossCount=528, successRatio=0.6984580239862935
+openRange=5, hit=0.6, loss=0.1, sum=1877942, gainCount=943, lossCount=398, successRatio=0.703206562266965
+openRange=5, hit=0.7, loss=0.1, sum=733715, gainCount=885, lossCount=357, successRatio=0.7125603864734299
+openRange=5, hit=0.8, loss=0.1, sum=115424, gainCount=492, lossCount=214, successRatio=0.6968838526912181
+openRange=5, hit=0.9, loss=0.1, sum=80905, gainCount=363, lossCount=180, successRatio=0.6685082872928176
+openRange=5, hit=1.0, loss=0.1, sum=92496, gainCount=346, lossCount=169, successRatio=0.6718446601941748
+
+openRange=5, hit=0.5, loss=0.12, sum=3122507, gainCount=1202, lossCount=499, successRatio=0.7066431510875956
+openRange=5, hit=0.6, loss=0.12, sum=1954600, gainCount=964, lossCount=401, successRatio=0.7062271062271063
+openRange=5, hit=0.7, loss=0.12, sum=867359, gainCount=929, lossCount=363, successRatio=0.7190402476780186
+openRange=5, hit=0.8, loss=0.12, sum=156615, gainCount=539, lossCount=226, successRatio=0.7045751633986929
+openRange=5, hit=0.9, loss=0.12, sum=133526, gainCount=404, lossCount=184, successRatio=0.6870748299319728
+openRange=5, hit=1.0, loss=0.12, sum=123270, gainCount=383, lossCount=176, successRatio=0.6851520572450805
+
+openRange=5, hit=0.5, loss=0.15, sum=4129899, gainCount=1405, lossCount=561, successRatio=0.714649033570702
+openRange=5, hit=0.6, loss=0.15, sum=2371414, gainCount=1046, lossCount=418, successRatio=0.7144808743169399
+openRange=5, hit=0.7, loss=0.15, sum=1017634, gainCount=980, lossCount=360, successRatio=0.7313432835820896
+openRange=5, hit=0.8, loss=0.15, sum=191755, gainCount=559, lossCount=225, successRatio=0.7130102040816326
+openRange=5, hit=0.9, loss=0.15, sum=159654, gainCount=413, lossCount=186, successRatio=0.6894824707846411
+openRange=5, hit=1.0, loss=0.15, sum=136943, gainCount=387, lossCount=178, successRatio=0.6849557522123894
+
+openRange=5, hit=0.5, loss=0.2, sum=4527548, gainCount=1457, lossCount=580, successRatio=0.7152675503190967
+openRange=5, hit=0.6, loss=0.2, sum=2917448, gainCount=1171, lossCount=453, successRatio=0.7210591133004927
+openRange=5, hit=0.7, loss=0.2, sum=1053339, gainCount=990, lossCount=353, successRatio=0.7371556217423678
+openRange=5, hit=0.8, loss=0.2, sum=264353, gainCount=581, lossCount=245, successRatio=0.7033898305084746
+openRange=5, hit=0.9, loss=0.2, sum=205591, gainCount=429, lossCount=183, successRatio=0.7009803921568627
+openRange=5, hit=1.0, loss=0.2, sum=156882, gainCount=386, lossCount=175, successRatio=0.6880570409982175
+
+openRange=5, hit=0.5, loss=0.3, sum=5648600, gainCount=1736, lossCount=662, successRatio=0.7239366138448707
+openRange=5, hit=0.6, loss=0.3, sum=2876844, gainCount=1170, lossCount=450, successRatio=0.7222222222222222
+openRange=5, hit=0.7, loss=0.3, sum=997651, gainCount=971, lossCount=343, successRatio=0.73896499238965
+openRange=5, hit=0.8, loss=0.3, sum=271331, gainCount=583, lossCount=236, successRatio=0.7118437118437119
+openRange=5, hit=0.9, loss=0.3, sum=187276, gainCount=419, lossCount=186, successRatio=0.6925619834710743
+openRange=5, hit=1.0, loss=0.3, sum=162993, gainCount=384, lossCount=177, successRatio=0.6844919786096256
+
+openRange=5, hit=0.5, loss=0.4, sum=5711814, gainCount=1733, lossCount=662, successRatio=0.7235908141962422
+openRange=5, hit=0.6, loss=0.4, sum=2965298, gainCount=1193, lossCount=456, successRatio=0.7234687689508793
+openRange=5, hit=0.7, loss=0.4, sum=1037372, gainCount=992, lossCount=349, successRatio=0.7397464578672632
+openRange=5, hit=0.8, loss=0.4, sum=256098, gainCount=579, lossCount=235, successRatio=0.7113022113022113
+openRange=5, hit=0.9, loss=0.4, sum=211250, gainCount=425, lossCount=180, successRatio=0.7024793388429752
+openRange=5, hit=1.0, loss=0.4, sum=161077, gainCount=382, lossCount=177, successRatio=0.6833631484794276
+
+openRange=6, hit=0.5, loss=0.07, sum=3013179, gainCount=1014, lossCount=464, successRatio=0.6860622462787551
+openRange=6, hit=0.6, loss=0.07, sum=1973584, gainCount=856, lossCount=387, successRatio=0.6886564762670957
+openRange=6, hit=0.7, loss=0.07, sum=673816, gainCount=666, lossCount=286, successRatio=0.6995798319327731
+openRange=6, hit=0.8, loss=0.07, sum=87157, gainCount=410, lossCount=179, successRatio=0.6960950764006791
+openRange=6, hit=0.9, loss=0.07, sum=63832, gainCount=319, lossCount=161, successRatio=0.6645833333333333
+openRange=6, hit=1.0, loss=0.07, sum=55832, gainCount=294, lossCount=157, successRatio=0.6518847006651884
+
+openRange=6, hit=0.5, loss=0.08, sum=2677472, gainCount=961, lossCount=422, successRatio=0.6948662328271873
+openRange=6, hit=0.6, loss=0.08, sum=1822315, gainCount=783, lossCount=359, successRatio=0.6856392294220666
+openRange=6, hit=0.7, loss=0.08, sum=694384, gainCount=699, lossCount=288, successRatio=0.7082066869300911
+openRange=6, hit=0.8, loss=0.08, sum=98033, gainCount=425, lossCount=184, successRatio=0.6978653530377669
+openRange=6, hit=0.9, loss=0.08, sum=65619, gainCount=325, lossCount=158, successRatio=0.6728778467908902
+openRange=6, hit=1.0, loss=0.08, sum=57528, gainCount=303, lossCount=151, successRatio=0.6674008810572687
+
+openRange=6, hit=0.5, loss=0.09, sum=2980265, gainCount=1031, lossCount=439, successRatio=0.7013605442176871
+openRange=6, hit=0.6, loss=0.09, sum=1941762, gainCount=846, lossCount=371, successRatio=0.695152013147083
+openRange=6, hit=0.7, loss=0.09, sum=688066, gainCount=679, lossCount=286, successRatio=0.7036269430051814
+openRange=6, hit=0.8, loss=0.09, sum=94028, gainCount=426, lossCount=175, successRatio=0.7088186356073212
+openRange=6, hit=0.9, loss=0.09, sum=63359, gainCount=319, lossCount=153, successRatio=0.6758474576271186
+openRange=6, hit=1.0, loss=0.09, sum=55584, gainCount=298, lossCount=146, successRatio=0.6711711711711712
+
+openRange=6, hit=0.5, loss=0.1, sum=3264296, gainCount=1130, lossCount=471, successRatio=0.7058088694565896
+openRange=6, hit=0.6, loss=0.1, sum=1922563, gainCount=866, lossCount=369, successRatio=0.7012145748987855
+openRange=6, hit=0.7, loss=0.1, sum=639893, gainCount=743, lossCount=294, successRatio=0.71648987463838
+openRange=6, hit=0.8, loss=0.1, sum=90839, gainCount=433, lossCount=184, successRatio=0.7017828200972447
+openRange=6, hit=0.9, loss=0.1, sum=64441, gainCount=331, lossCount=153, successRatio=0.6838842975206612
+openRange=6, hit=1.0, loss=0.1, sum=57886, gainCount=309, lossCount=147, successRatio=0.6776315789473685
+
+openRange=6, hit=0.5, loss=0.12, sum=3202257, gainCount=1121, lossCount=455, successRatio=0.7112944162436549
+openRange=6, hit=0.6, loss=0.12, sum=2154438, gainCount=921, lossCount=381, successRatio=0.7073732718894009
+openRange=6, hit=0.7, loss=0.12, sum=787922, gainCount=802, lossCount=313, successRatio=0.7192825112107624
+openRange=6, hit=0.8, loss=0.12, sum=138711, gainCount=469, lossCount=193, successRatio=0.7084592145015106
+openRange=6, hit=0.9, loss=0.12, sum=83172, gainCount=348, lossCount=158, successRatio=0.6877470355731226
+openRange=6, hit=1.0, loss=0.12, sum=70869, gainCount=320, lossCount=149, successRatio=0.6823027718550106
+
+openRange=6, hit=0.5, loss=0.15, sum=4269889, gainCount=1303, lossCount=524, successRatio=0.7131910235358512
+openRange=6, hit=0.6, loss=0.15, sum=2570481, gainCount=996, lossCount=400, successRatio=0.7134670487106017
+openRange=6, hit=0.7, loss=0.15, sum=853259, gainCount=816, lossCount=307, successRatio=0.7266251113089938
+openRange=6, hit=0.8, loss=0.15, sum=163925, gainCount=482, lossCount=186, successRatio=0.7215568862275449
+openRange=6, hit=0.9, loss=0.15, sum=110632, gainCount=359, lossCount=157, successRatio=0.6957364341085271
+openRange=6, hit=1.0, loss=0.15, sum=102056, gainCount=335, lossCount=154, successRatio=0.6850715746421268
+
+openRange=6, hit=0.5, loss=0.2, sum=4688184, gainCount=1401, lossCount=546, successRatio=0.7195685670261941
+openRange=6, hit=0.6, loss=0.2, sum=3149541, gainCount=1149, lossCount=449, successRatio=0.7190237797246558
+openRange=6, hit=0.7, loss=0.2, sum=945369, gainCount=837, lossCount=312, successRatio=0.7284595300261096
+openRange=6, hit=0.8, loss=0.2, sum=235118, gainCount=504, lossCount=195, successRatio=0.721030042918455
+openRange=6, hit=0.9, loss=0.2, sum=108356, gainCount=362, lossCount=157, successRatio=0.697495183044316
+openRange=6, hit=1.0, loss=0.2, sum=115773, gainCount=345, lossCount=151, successRatio=0.6955645161290323
+
+openRange=6, hit=0.5, loss=0.3, sum=5997115, gainCount=1644, lossCount=621, successRatio=0.7258278145695364
+openRange=6, hit=0.6, loss=0.3, sum=3061186, gainCount=1121, lossCount=444, successRatio=0.7162939297124601
+openRange=6, hit=0.7, loss=0.3, sum=871689, gainCount=819, lossCount=299, successRatio=0.7325581395348837
+openRange=6, hit=0.8, loss=0.3, sum=215269, gainCount=502, lossCount=199, successRatio=0.7161198288159771
+openRange=6, hit=0.9, loss=0.3, sum=120210, gainCount=366, lossCount=157, successRatio=0.6998087954110899
+openRange=6, hit=1.0, loss=0.3, sum=117473, gainCount=349, lossCount=145, successRatio=0.7064777327935222
+
+openRange=6, hit=0.5, loss=0.4, sum=6058313, gainCount=1642, lossCount=624, successRatio=0.7246248896734334
+openRange=6, hit=0.6, loss=0.4, sum=3158504, gainCount=1145, lossCount=442, successRatio=0.7214870825456837
+openRange=6, hit=0.7, loss=0.4, sum=940536, gainCount=838, lossCount=303, successRatio=0.7344434706397897
+openRange=6, hit=0.8, loss=0.4, sum=205189, gainCount=501, lossCount=194, successRatio=0.720863309352518
+openRange=6, hit=0.9, loss=0.4, sum=119018, gainCount=365, lossCount=157, successRatio=0.6992337164750958
+openRange=6, hit=1.0, loss=0.4, sum=98266, gainCount=328, lossCount=145, successRatio=0.693446088794926
+
+openRange=7, hit=0.5, loss=0.07, sum=3324183, gainCount=1008, lossCount=447, successRatio=0.6927835051546392
+openRange=7, hit=0.6, loss=0.07, sum=2228422, gainCount=854, lossCount=376, successRatio=0.6943089430894309
+openRange=7, hit=0.7, loss=0.07, sum=593889, gainCount=625, lossCount=267, successRatio=0.7006726457399103
+openRange=7, hit=0.8, loss=0.07, sum=97668, gainCount=408, lossCount=172, successRatio=0.7034482758620689
+openRange=7, hit=0.9, loss=0.07, sum=70894, gainCount=314, lossCount=144, successRatio=0.6855895196506551
+openRange=7, hit=1.0, loss=0.07, sum=58451, gainCount=304, lossCount=140, successRatio=0.6846846846846847
+
+openRange=7, hit=0.5, loss=0.08, sum=3056310, gainCount=952, lossCount=404, successRatio=0.7020648967551623
+openRange=7, hit=0.6, loss=0.08, sum=2057595, gainCount=809, lossCount=354, successRatio=0.6956147893379192
+openRange=7, hit=0.7, loss=0.08, sum=635257, gainCount=683, lossCount=273, successRatio=0.7144351464435147
+openRange=7, hit=0.8, loss=0.08, sum=106504, gainCount=411, lossCount=169, successRatio=0.7086206896551724
+openRange=7, hit=0.9, loss=0.08, sum=75261, gainCount=318, lossCount=141, successRatio=0.6928104575163399
+openRange=7, hit=1.0, loss=0.08, sum=58713, gainCount=306, lossCount=141, successRatio=0.6845637583892618
+
+openRange=7, hit=0.5, loss=0.09, sum=3310947, gainCount=1023, lossCount=422, successRatio=0.7079584775086505
+openRange=7, hit=0.6, loss=0.09, sum=2211461, gainCount=861, lossCount=368, successRatio=0.7005695687550855
+openRange=7, hit=0.7, loss=0.09, sum=628817, gainCount=664, lossCount=268, successRatio=0.7124463519313304
+openRange=7, hit=0.8, loss=0.09, sum=99429, gainCount=424, lossCount=167, successRatio=0.7174280879864636
+openRange=7, hit=0.9, loss=0.09, sum=73923, gainCount=323, lossCount=134, successRatio=0.7067833698030634
+openRange=7, hit=1.0, loss=0.09, sum=66508, gainCount=294, lossCount=129, successRatio=0.6950354609929078
+
+openRange=7, hit=0.5, loss=0.1, sum=3554272, gainCount=1085, lossCount=447, successRatio=0.70822454308094
+openRange=7, hit=0.6, loss=0.1, sum=2237136, gainCount=889, lossCount=376, successRatio=0.7027667984189724
+openRange=7, hit=0.7, loss=0.1, sum=671125, gainCount=736, lossCount=289, successRatio=0.7180487804878048
+openRange=7, hit=0.8, loss=0.1, sum=100118, gainCount=428, lossCount=165, successRatio=0.7217537942664418
+openRange=7, hit=0.9, loss=0.1, sum=76970, gainCount=333, lossCount=136, successRatio=0.7100213219616205
+openRange=7, hit=1.0, loss=0.1, sum=68475, gainCount=315, lossCount=133, successRatio=0.703125
+
+openRange=7, hit=0.5, loss=0.12, sum=3541531, gainCount=1082, lossCount=433, successRatio=0.7141914191419142
+openRange=7, hit=0.6, loss=0.12, sum=2515758, gainCount=934, lossCount=378, successRatio=0.711890243902439
+openRange=7, hit=0.7, loss=0.12, sum=846161, gainCount=781, lossCount=298, successRatio=0.7238183503243745
+openRange=7, hit=0.8, loss=0.12, sum=130008, gainCount=459, lossCount=186, successRatio=0.7116279069767442
+openRange=7, hit=0.9, loss=0.12, sum=120493, gainCount=354, lossCount=139, successRatio=0.718052738336714
+openRange=7, hit=1.0, loss=0.12, sum=100180, gainCount=321, lossCount=138, successRatio=0.6993464052287581
+
+openRange=7, hit=0.5, loss=0.15, sum=4618124, gainCount=1283, lossCount=496, successRatio=0.7211916807195053
+openRange=7, hit=0.6, loss=0.15, sum=2837487, gainCount=1019, lossCount=394, successRatio=0.7211606510969568
+openRange=7, hit=0.7, loss=0.15, sum=897391, gainCount=791, lossCount=298, successRatio=0.7263544536271809
+openRange=7, hit=0.8, loss=0.15, sum=148601, gainCount=467, lossCount=182, successRatio=0.7195685670261941
+openRange=7, hit=0.9, loss=0.15, sum=118063, gainCount=349, lossCount=138, successRatio=0.7166324435318275
+openRange=7, hit=1.0, loss=0.15, sum=108141, gainCount=330, lossCount=139, successRatio=0.7036247334754797
+
+openRange=7, hit=0.5, loss=0.2, sum=5052640, gainCount=1369, lossCount=523, successRatio=0.7235729386892178
+openRange=7, hit=0.6, loss=0.2, sum=3392017, gainCount=1096, lossCount=425, successRatio=0.7205785667324129
+openRange=7, hit=0.7, loss=0.2, sum=966741, gainCount=810, lossCount=296, successRatio=0.7323688969258589
+openRange=7, hit=0.8, loss=0.2, sum=185421, gainCount=468, lossCount=183, successRatio=0.7188940092165899
+openRange=7, hit=0.9, loss=0.2, sum=134770, gainCount=352, lossCount=139, successRatio=0.7169042769857433
+openRange=7, hit=1.0, loss=0.2, sum=104067, gainCount=320, lossCount=137, successRatio=0.700218818380744
+
+openRange=7, hit=0.5, loss=0.3, sum=6209960, gainCount=1588, lossCount=584, successRatio=0.7311233885819521
+openRange=7, hit=0.6, loss=0.3, sum=3359925, gainCount=1106, lossCount=424, successRatio=0.722875816993464
+openRange=7, hit=0.7, loss=0.3, sum=902634, gainCount=775, lossCount=283, successRatio=0.7325141776937618
+openRange=7, hit=0.8, loss=0.3, sum=190771, gainCount=464, lossCount=185, successRatio=0.7149460708782742
+openRange=7, hit=0.9, loss=0.3, sum=130121, gainCount=349, lossCount=136, successRatio=0.7195876288659794
+openRange=7, hit=1.0, loss=0.3, sum=111141, gainCount=328, lossCount=131, successRatio=0.7145969498910676
+
+openRange=7, hit=0.5, loss=0.4, sum=6230202, gainCount=1591, lossCount=589, successRatio=0.7298165137614679
+openRange=7, hit=0.6, loss=0.4, sum=3366949, gainCount=1097, lossCount=424, successRatio=0.7212360289283366
+openRange=7, hit=0.7, loss=0.4, sum=939453, gainCount=782, lossCount=288, successRatio=0.7308411214953271
+openRange=7, hit=0.8, loss=0.4, sum=198710, gainCount=476, lossCount=181, successRatio=0.7245053272450532
+openRange=7, hit=0.9, loss=0.4, sum=142001, gainCount=354, lossCount=144, successRatio=0.7108433734939759
+openRange=7, hit=1.0, loss=0.4, sum=108956, gainCount=320, lossCount=130, successRatio=0.7111111111111111
+
+参数：成功率0.5~1，止损线0.07~0.4，价格线（开盘价）5~7以上
+回测数据：2020年之前所有股票计算成功率，以2020年数据进行回测
+策略：加最新交易，但仅限交易的股票，未交易的不计入成功率，按照openDnDiff倒排来选择交易股票
+初始成本：1w
+
+openRange=5, hit=0.5, loss=0.07, sum=565998, gainCount=698, lossCount=353, successRatio=0.6641294005708849
+openRange=5, hit=0.6, loss=0.07, sum=479448, gainCount=621, lossCount=301, successRatio=0.6735357917570499
+openRange=5, hit=0.7, loss=0.07, sum=350216, gainCount=492, lossCount=235, successRatio=0.6767537826685007
+openRange=5, hit=0.8, loss=0.07, sum=77240, gainCount=320, lossCount=149, successRatio=0.6823027718550106
+openRange=5, hit=0.9, loss=0.07, sum=55835, gainCount=250, lossCount=98, successRatio=0.7183908045977011
+openRange=5, hit=1.0, loss=0.07, sum=46896, gainCount=247, lossCount=99, successRatio=0.7138728323699421
+
+openRange=5, hit=0.5, loss=0.08, sum=675751, gainCount=792, lossCount=361, successRatio=0.6869037294015612
+openRange=5, hit=0.6, loss=0.08, sum=621861, gainCount=693, lossCount=324, successRatio=0.6814159292035398
+openRange=5, hit=0.7, loss=0.08, sum=487873, gainCount=552, lossCount=239, successRatio=0.6978508217446271
+openRange=5, hit=0.8, loss=0.08, sum=76943, gainCount=338, lossCount=142, successRatio=0.7041666666666667
+openRange=5, hit=0.9, loss=0.08, sum=55644, gainCount=258, lossCount=97, successRatio=0.7267605633802817
+openRange=5, hit=1.0, loss=0.08, sum=53321, gainCount=252, lossCount=99, successRatio=0.717948717948718
+
+openRange=5, hit=0.5, loss=0.09, sum=672507, gainCount=809, lossCount=356, successRatio=0.6944206008583691
+openRange=5, hit=0.6, loss=0.09, sum=653262, gainCount=727, lossCount=323, successRatio=0.6923809523809524
+openRange=5, hit=0.7, loss=0.09, sum=467428, gainCount=538, lossCount=234, successRatio=0.6968911917098446
+openRange=5, hit=0.8, loss=0.09, sum=71714, gainCount=333, lossCount=136, successRatio=0.7100213219616205
+openRange=5, hit=0.9, loss=0.09, sum=57771, gainCount=259, lossCount=97, successRatio=0.7275280898876404
+openRange=5, hit=1.0, loss=0.09, sum=44465, gainCount=248, lossCount=96, successRatio=0.7209302325581395
+
+openRange=5, hit=0.5, loss=0.1, sum=683537, gainCount=799, lossCount=357, successRatio=0.6911764705882353
+openRange=5, hit=0.6, loss=0.1, sum=714501, gainCount=728, lossCount=318, successRatio=0.6959847036328872
+openRange=5, hit=0.7, loss=0.1, sum=551815, gainCount=555, lossCount=228, successRatio=0.7088122605363985
+openRange=5, hit=0.8, loss=0.1, sum=131518, gainCount=356, lossCount=138, successRatio=0.7206477732793523
+openRange=5, hit=0.9, loss=0.1, sum=51518, gainCount=254, lossCount=95, successRatio=0.7277936962750716
+openRange=5, hit=1.0, loss=0.1, sum=43585, gainCount=251, lossCount=94, successRatio=0.7275362318840579
+
+openRange=5, hit=0.5, loss=0.12, sum=885615, gainCount=862, lossCount=366, successRatio=0.7019543973941368
+openRange=5, hit=0.6, loss=0.12, sum=809241, gainCount=748, lossCount=322, successRatio=0.6990654205607477
+openRange=5, hit=0.7, loss=0.12, sum=716337, gainCount=574, lossCount=224, successRatio=0.7192982456140351
+openRange=5, hit=0.8, loss=0.12, sum=144876, gainCount=378, lossCount=137, successRatio=0.7339805825242719
+openRange=5, hit=0.9, loss=0.12, sum=49759, gainCount=253, lossCount=95, successRatio=0.7270114942528736
+openRange=5, hit=1.0, loss=0.12, sum=48922, gainCount=244, lossCount=91, successRatio=0.7283582089552239
+
+openRange=5, hit=0.5, loss=0.15, sum=886132, gainCount=863, lossCount=352, successRatio=0.7102880658436214
+openRange=5, hit=0.6, loss=0.15, sum=882097, gainCount=775, lossCount=316, successRatio=0.7103574702108157
+openRange=5, hit=0.7, loss=0.15, sum=705043, gainCount=581, lossCount=228, successRatio=0.7181705809641533
+openRange=5, hit=0.8, loss=0.15, sum=167115, gainCount=376, lossCount=134, successRatio=0.7372549019607844
+openRange=5, hit=0.9, loss=0.15, sum=43102, gainCount=252, lossCount=92, successRatio=0.7325581395348837
+openRange=5, hit=1.0, loss=0.15, sum=43249, gainCount=244, lossCount=92, successRatio=0.7261904761904762
+
+openRange=5, hit=0.5, loss=0.2, sum=847066, gainCount=860, lossCount=347, successRatio=0.7125103562551781
+openRange=5, hit=0.6, loss=0.2, sum=880616, gainCount=789, lossCount=317, successRatio=0.713381555153707
+openRange=5, hit=0.7, loss=0.2, sum=826115, gainCount=668, lossCount=241, successRatio=0.7348734873487349
+openRange=5, hit=0.8, loss=0.2, sum=177933, gainCount=383, lossCount=134, successRatio=0.7408123791102514
+openRange=5, hit=0.9, loss=0.2, sum=51227, gainCount=258, lossCount=92, successRatio=0.7371428571428571
+openRange=5, hit=1.0, loss=0.2, sum=43151, gainCount=250, lossCount=90, successRatio=0.7352941176470589
+
+openRange=5, hit=0.5, loss=0.3, sum=991543, gainCount=896, lossCount=349, successRatio=0.7196787148594378
+openRange=5, hit=0.6, loss=0.3, sum=844377, gainCount=779, lossCount=308, successRatio=0.7166513339466422
+openRange=5, hit=0.7, loss=0.3, sum=851526, gainCount=686, lossCount=243, successRatio=0.7384284176533907
+openRange=5, hit=0.8, loss=0.3, sum=162392, gainCount=378, lossCount=130, successRatio=0.7440944881889764
+openRange=5, hit=0.9, loss=0.3, sum=44847, gainCount=256, lossCount=95, successRatio=0.7293447293447294
+openRange=5, hit=1.0, loss=0.3, sum=42802, gainCount=251, lossCount=91, successRatio=0.7339181286549707
+
+openRange=5, hit=0.5, loss=0.4, sum=798635, gainCount=851, lossCount=335, successRatio=0.7175379426644182
+openRange=5, hit=0.6, loss=0.4, sum=773108, gainCount=763, lossCount=300, successRatio=0.7177798682972719
+openRange=5, hit=0.7, loss=0.4, sum=851592, gainCount=687, lossCount=242, successRatio=0.7395048439181916
+openRange=5, hit=0.8, loss=0.4, sum=162392, gainCount=378, lossCount=128, successRatio=0.7470355731225297
+openRange=5, hit=0.9, loss=0.4, sum=49176, gainCount=264, lossCount=92, successRatio=0.7415730337078652
+openRange=5, hit=1.0, loss=0.4, sum=42604, gainCount=248, lossCount=92, successRatio=0.7294117647058823
+
+openRange=6, hit=0.5, loss=0.07, sum=629396, gainCount=670, lossCount=324, successRatio=0.6740442655935613
+openRange=6, hit=0.6, loss=0.07, sum=583120, gainCount=601, lossCount=287, successRatio=0.6768018018018018
+openRange=6, hit=0.7, loss=0.07, sum=390991, gainCount=465, lossCount=214, successRatio=0.6848306332842415
+openRange=6, hit=0.8, loss=0.07, sum=65574, gainCount=301, lossCount=134, successRatio=0.6919540229885057
+openRange=6, hit=0.9, loss=0.07, sum=60812, gainCount=252, lossCount=96, successRatio=0.7241379310344828
+openRange=6, hit=1.0, loss=0.07, sum=49843, gainCount=235, lossCount=97, successRatio=0.7078313253012049
+
+openRange=6, hit=0.5, loss=0.08, sum=708357, gainCount=750, lossCount=337, successRatio=0.6899724011039559
+openRange=6, hit=0.6, loss=0.08, sum=647754, gainCount=654, lossCount=291, successRatio=0.692063492063492
+openRange=6, hit=0.7, loss=0.08, sum=540610, gainCount=527, lossCount=217, successRatio=0.7083333333333334
+openRange=6, hit=0.8, loss=0.08, sum=107951, gainCount=332, lossCount=134, successRatio=0.7124463519313304
+openRange=6, hit=0.9, loss=0.08, sum=69220, gainCount=262, lossCount=95, successRatio=0.7338935574229691
+openRange=6, hit=1.0, loss=0.08, sum=56778, gainCount=249, lossCount=98, successRatio=0.7175792507204611
+
+openRange=6, hit=0.5, loss=0.09, sum=700120, gainCount=743, lossCount=326, successRatio=0.6950420954162769
+openRange=6, hit=0.6, loss=0.09, sum=637921, gainCount=659, lossCount=290, successRatio=0.6944151738672286
+openRange=6, hit=0.7, loss=0.09, sum=474646, gainCount=519, lossCount=219, successRatio=0.7032520325203252
+openRange=6, hit=0.8, loss=0.09, sum=96094, gainCount=322, lossCount=130, successRatio=0.7123893805309734
+openRange=6, hit=0.9, loss=0.09, sum=61481, gainCount=264, lossCount=97, successRatio=0.7313019390581718
+openRange=6, hit=1.0, loss=0.09, sum=51259, gainCount=241, lossCount=97, successRatio=0.7130177514792899
+
+openRange=6, hit=0.5, loss=0.1, sum=742404, gainCount=762, lossCount=324, successRatio=0.7016574585635359
+openRange=6, hit=0.6, loss=0.1, sum=692045, gainCount=660, lossCount=289, successRatio=0.6954689146469969
+openRange=6, hit=0.7, loss=0.1, sum=568884, gainCount=528, lossCount=207, successRatio=0.7183673469387755
+openRange=6, hit=0.8, loss=0.1, sum=143948, gainCount=334, lossCount=128, successRatio=0.7229437229437229
+openRange=6, hit=0.9, loss=0.1, sum=61230, gainCount=258, lossCount=90, successRatio=0.7413793103448276
+openRange=6, hit=1.0, loss=0.1, sum=50296, gainCount=244, lossCount=94, successRatio=0.7218934911242604
+
+openRange=6, hit=0.5, loss=0.12, sum=984068, gainCount=820, lossCount=332, successRatio=0.7118055555555556
+openRange=6, hit=0.6, loss=0.12, sum=819306, gainCount=699, lossCount=290, successRatio=0.7067745197168858
+openRange=6, hit=0.7, loss=0.12, sum=753037, gainCount=542, lossCount=209, successRatio=0.7217043941411452
+openRange=6, hit=0.8, loss=0.12, sum=205154, gainCount=362, lossCount=133, successRatio=0.7313131313131314
+openRange=6, hit=0.9, loss=0.12, sum=54222, gainCount=251, lossCount=93, successRatio=0.7296511627906976
+openRange=6, hit=1.0, loss=0.12, sum=44701, gainCount=235, lossCount=92, successRatio=0.7186544342507645
+
+openRange=6, hit=0.5, loss=0.15, sum=989429, gainCount=817, lossCount=324, successRatio=0.7160385626643295
+openRange=6, hit=0.6, loss=0.15, sum=903605, gainCount=724, lossCount=286, successRatio=0.7168316831683168
+openRange=6, hit=0.7, loss=0.15, sum=771964, gainCount=558, lossCount=211, successRatio=0.7256176853055917
+openRange=6, hit=0.8, loss=0.15, sum=137994, gainCount=341, lossCount=130, successRatio=0.7239915074309978
+openRange=6, hit=0.9, loss=0.15, sum=48248, gainCount=250, lossCount=92, successRatio=0.7309941520467836
+openRange=6, hit=1.0, loss=0.15, sum=45520, gainCount=234, lossCount=89, successRatio=0.7244582043343654
+
+openRange=6, hit=0.5, loss=0.2, sum=956011, gainCount=809, lossCount=322, successRatio=0.7152961980548187
+openRange=6, hit=0.6, loss=0.2, sum=905237, gainCount=735, lossCount=284, successRatio=0.7212953876349362
+openRange=6, hit=0.7, loss=0.2, sum=809084, gainCount=591, lossCount=218, successRatio=0.73053152039555
+openRange=6, hit=0.8, loss=0.2, sum=188025, gainCount=358, lossCount=129, successRatio=0.7351129363449692
+openRange=6, hit=0.9, loss=0.2, sum=54137, gainCount=256, lossCount=91, successRatio=0.7377521613832853
+openRange=6, hit=1.0, loss=0.2, sum=45767, gainCount=246, lossCount=90, successRatio=0.7321428571428571
+
+openRange=6, hit=0.5, loss=0.3, sum=948648, gainCount=815, lossCount=318, successRatio=0.7193292144748455
+openRange=6, hit=0.6, loss=0.3, sum=862347, gainCount=722, lossCount=286, successRatio=0.7162698412698413
+openRange=6, hit=0.7, loss=0.3, sum=823113, gainCount=620, lossCount=217, successRatio=0.7407407407407407
+openRange=6, hit=0.8, loss=0.3, sum=172118, gainCount=354, lossCount=126, successRatio=0.7375
+openRange=6, hit=0.9, loss=0.3, sum=47120, gainCount=248, lossCount=91, successRatio=0.7315634218289085
+openRange=6, hit=1.0, loss=0.3, sum=44546, gainCount=237, lossCount=92, successRatio=0.7203647416413373
+
+openRange=6, hit=0.5, loss=0.4, sum=790647, gainCount=760, lossCount=309, successRatio=0.7109448082319925
+openRange=6, hit=0.6, loss=0.4, sum=790407, gainCount=696, lossCount=274, successRatio=0.7175257731958763
+openRange=6, hit=0.7, loss=0.4, sum=823113, gainCount=621, lossCount=216, successRatio=0.7419354838709677
+openRange=6, hit=0.8, loss=0.4, sum=172118, gainCount=355, lossCount=125, successRatio=0.7395833333333334
+openRange=6, hit=0.9, loss=0.4, sum=51984, gainCount=262, lossCount=91, successRatio=0.7422096317280453
+openRange=6, hit=1.0, loss=0.4, sum=43012, gainCount=241, lossCount=89, successRatio=0.7303030303030303
+
+openRange=7, hit=0.5, loss=0.07, sum=528876, gainCount=586, lossCount=298, successRatio=0.6628959276018099
+openRange=7, hit=0.6, loss=0.07, sum=593566, gainCount=562, lossCount=276, successRatio=0.6706443914081146
+openRange=7, hit=0.7, loss=0.07, sum=329026, gainCount=437, lossCount=195, successRatio=0.6914556962025317
+openRange=7, hit=0.8, loss=0.07, sum=82010, gainCount=298, lossCount=136, successRatio=0.6866359447004609
+openRange=7, hit=0.9, loss=0.07, sum=56495, gainCount=234, lossCount=92, successRatio=0.7177914110429447
+openRange=7, hit=1.0, loss=0.07, sum=51168, gainCount=217, lossCount=95, successRatio=0.6955128205128205
+
+openRange=7, hit=0.5, loss=0.08, sum=570665, gainCount=619, lossCount=308, successRatio=0.6677454153182308
+openRange=7, hit=0.6, loss=0.08, sum=638216, gainCount=586, lossCount=280, successRatio=0.6766743648960739
+openRange=7, hit=0.7, loss=0.08, sum=403668, gainCount=490, lossCount=207, successRatio=0.703012912482066
+openRange=7, hit=0.8, loss=0.08, sum=86530, gainCount=310, lossCount=132, successRatio=0.7013574660633484
+openRange=7, hit=0.9, loss=0.08, sum=65302, gainCount=256, lossCount=94, successRatio=0.7314285714285714
+openRange=7, hit=1.0, loss=0.08, sum=53204, gainCount=231, lossCount=96, successRatio=0.7064220183486238
+
+openRange=7, hit=0.5, loss=0.09, sum=575436, gainCount=619, lossCount=298, successRatio=0.6750272628135223
+openRange=7, hit=0.6, loss=0.09, sum=623418, gainCount=598, lossCount=274, successRatio=0.6857798165137615
+openRange=7, hit=0.7, loss=0.09, sum=367218, gainCount=484, lossCount=200, successRatio=0.7076023391812866
+openRange=7, hit=0.8, loss=0.09, sum=96783, gainCount=301, lossCount=125, successRatio=0.7065727699530516
+openRange=7, hit=0.9, loss=0.09, sum=57826, gainCount=245, lossCount=94, successRatio=0.7227138643067846
+openRange=7, hit=1.0, loss=0.09, sum=53752, gainCount=229, lossCount=92, successRatio=0.7133956386292835
+
+openRange=7, hit=0.5, loss=0.1, sum=636440, gainCount=637, lossCount=297, successRatio=0.6820128479657388
+openRange=7, hit=0.6, loss=0.1, sum=693878, gainCount=597, lossCount=272, successRatio=0.6869965477560415
+openRange=7, hit=0.7, loss=0.1, sum=461785, gainCount=494, lossCount=197, successRatio=0.7149059334298119
+openRange=7, hit=0.8, loss=0.1, sum=124110, gainCount=315, lossCount=121, successRatio=0.7224770642201835
+openRange=7, hit=0.9, loss=0.1, sum=57699, gainCount=240, lossCount=88, successRatio=0.7317073170731707
+openRange=7, hit=1.0, loss=0.1, sum=54031, gainCount=232, lossCount=88, successRatio=0.725
+
+openRange=7, hit=0.5, loss=0.12, sum=752046, gainCount=677, lossCount=302, successRatio=0.6915219611848825
+openRange=7, hit=0.6, loss=0.12, sum=878438, gainCount=649, lossCount=275, successRatio=0.7023809523809523
+openRange=7, hit=0.7, loss=0.12, sum=683444, gainCount=517, lossCount=199, successRatio=0.7220670391061452
+openRange=7, hit=0.8, loss=0.12, sum=170576, gainCount=332, lossCount=123, successRatio=0.7296703296703296
+openRange=7, hit=0.9, loss=0.12, sum=50871, gainCount=241, lossCount=88, successRatio=0.7325227963525835
+openRange=7, hit=1.0, loss=0.12, sum=47983, gainCount=229, lossCount=88, successRatio=0.722397476340694
+
+openRange=7, hit=0.5, loss=0.15, sum=789629, gainCount=688, lossCount=299, successRatio=0.6970618034447822
+openRange=7, hit=0.6, loss=0.15, sum=914206, gainCount=652, lossCount=274, successRatio=0.7041036717062635
+openRange=7, hit=0.7, loss=0.15, sum=691034, gainCount=522, lossCount=198, successRatio=0.725
+openRange=7, hit=0.8, loss=0.15, sum=147368, gainCount=329, lossCount=126, successRatio=0.7230769230769231
+openRange=7, hit=0.9, loss=0.15, sum=51393, gainCount=237, lossCount=85, successRatio=0.7360248447204969
+openRange=7, hit=1.0, loss=0.15, sum=41951, gainCount=224, lossCount=88, successRatio=0.717948717948718
+
+openRange=7, hit=0.5, loss=0.2, sum=822914, gainCount=681, lossCount=290, successRatio=0.7013388259526262
+openRange=7, hit=0.6, loss=0.2, sum=925165, gainCount=676, lossCount=274, successRatio=0.7115789473684211
+openRange=7, hit=0.7, loss=0.2, sum=731385, gainCount=560, lossCount=202, successRatio=0.7349081364829396
+openRange=7, hit=0.8, loss=0.2, sum=122026, gainCount=331, lossCount=119, successRatio=0.7355555555555555
+openRange=7, hit=0.9, loss=0.2, sum=50863, gainCount=249, lossCount=88, successRatio=0.7388724035608308
+openRange=7, hit=1.0, loss=0.2, sum=47708, gainCount=228, lossCount=85, successRatio=0.7284345047923323
+
+openRange=7, hit=0.5, loss=0.3, sum=763594, gainCount=671, lossCount=278, successRatio=0.7070600632244468
+openRange=7, hit=0.6, loss=0.3, sum=898478, gainCount=672, lossCount=275, successRatio=0.7096092925026399
+openRange=7, hit=0.7, loss=0.3, sum=758826, gainCount=570, lossCount=208, successRatio=0.7326478149100257
+openRange=7, hit=0.8, loss=0.3, sum=145990, gainCount=334, lossCount=118, successRatio=0.7389380530973452
+openRange=7, hit=0.9, loss=0.3, sum=50446, gainCount=241, lossCount=85, successRatio=0.7392638036809815
+openRange=7, hit=1.0, loss=0.3, sum=41983, gainCount=230, lossCount=84, successRatio=0.732484076433121
+
+openRange=7, hit=0.5, loss=0.4, sum=784437, gainCount=680, lossCount=286, successRatio=0.7039337474120083
+openRange=7, hit=0.6, loss=0.4, sum=832378, gainCount=637, lossCount=262, successRatio=0.7085650723025584
+openRange=7, hit=0.7, loss=0.4, sum=758807, gainCount=575, lossCount=208, successRatio=0.7343550446998723
+openRange=7, hit=0.8, loss=0.4, sum=145990, gainCount=335, lossCount=117, successRatio=0.7411504424778761
+openRange=7, hit=0.9, loss=0.4, sum=48654, gainCount=246, lossCount=86, successRatio=0.7409638554216867
+openRange=7, hit=1.0, loss=0.4, sum=45644, gainCount=226, lossCount=87, successRatio=0.7220447284345048

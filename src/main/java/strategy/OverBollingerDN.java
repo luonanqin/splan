@@ -107,8 +107,10 @@ public class OverBollingerDN {
 
 
     public static void main(String[] args) throws Exception {
-        double capital = 10000;
-        Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio();
+        double init = 10000;
+        int beforeYear = 2022, afterYear = 2020, afterYear2 = 2021, historyBeforeYear = 2021;
+        double capital = init;
+        Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio(historyBeforeYear);
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
 
@@ -119,7 +121,7 @@ public class OverBollingerDN {
                 continue;
             }
             String filePath = dailyFileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2022, 2020);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, beforeYear, afterYear);
 
             for (StockKLine kLine : kLines) {
                 String date = kLine.getDate();
@@ -136,7 +138,7 @@ public class OverBollingerDN {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.INDICATOR_BOLL_PATH + "daily/" + stock, 2022, 2021);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.INDICATOR_BOLL_PATH + "daily/" + stock, beforeYear, afterYear2);
 
             for (BOLL boll : bolls) {
                 String date = boll.getDate();
@@ -148,7 +150,7 @@ public class OverBollingerDN {
         }
 
         // 准备当天和20天前的日期映射，用于实时计算布林值
-        List<StockKLine> kLines = BaseUtils.loadDataToKline(dailyFileMap.get("AAPL"), 2022, 2020);
+        List<StockKLine> kLines = BaseUtils.loadDataToKline(dailyFileMap.get("AAPL"), beforeYear, afterYear);
         Map<String, List<String>> dateToBefore20dayMap = Maps.newHashMap();
         List<String> dateList = Lists.newArrayList();
         for (int i = 0; i < kLines.size(); i++) {
@@ -163,7 +165,7 @@ public class OverBollingerDN {
             dateToBefore20dayMap.put(date, list);
 
             String year = date.substring(date.lastIndexOf("/") + 1);
-            if (year.equals("2022")) {
+            if (year.equals(String.valueOf(beforeYear))) {
                 dateList.add(date);
             }
         }
@@ -178,10 +180,13 @@ public class OverBollingerDN {
             for (String stock : stockToKlineMap.keySet()) {
                 StockKLine kline = stockToKlineMap.get(stock);
                 BOLL boll = stockToBollMap.get(stock);
-                if (boll != null) {
+                if (boll != null && boll.getDn() > 0) {
                     double dn = boll.getDn();
                     double open = kline.getOpen();
                     double ratio = (dn - open) / dn;
+                    if (ratio < 0) {
+                        continue;
+                    }
                     stockToRatioMap.put(stock, ratio);
                 }
             }
@@ -194,135 +199,154 @@ public class OverBollingerDN {
             dateToStocksMap.put(date, stocks);
         }
 
-        List<Double> hitRatio = Lists.newArrayList(0.8d, 0.9d, 1d);
-        List<Double> lossRatioRange = Lists.newArrayList(0.04d, 0.05d, 0.06d, 0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d);
-        for (Double lossRange : lossRatioRange) {
-            for (int i = 0; i < hitRatio.size(); i++) {
-                double hit = hitRatio.get(i);
+        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d, 1d);
+        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d, 0.2d, 0.3d, 0.4d);
+        List<Integer> openRange = Lists.newArrayList(5, 6, 7);
+        for (Integer openR : openRange) {
+            for (Double lossRange : lossRatioRange) {
+                for (int i = 0; i < hitRatio.size(); i++) {
+                    double hit = hitRatio.get(i);
 
-                Double nextHit = 2d;
-                if (i + 1 < hitRatio.size()) {
-                    nextHit = hitRatio.get(i + 1);
-                }
-                if (hit != 1.0d || lossRange != 0.15d) {
-                    continue;
-                }
-                Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
+                    //                Double nextHit = 2d;
+                    //                if (i + 1 < hitRatio.size()) {
+                    //                    nextHit = hitRatio.get(i + 1);
+                    //                }
+                    if (hit != 0.5d || lossRange != 0.3d) {
+//                        continue;
+                    }
+                    Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
-                int gainCount = 0, lossCount = 0;
-                for (String date : dateList) {
-                    Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
-                    Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
-                    List<String> stocks = dateToStocksMap.get(date);
+                    int gainCount = 0, lossCount = 0;
+                    for (String date : dateList) {
+                        Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
+                        Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
+                        List<String> stocks = dateToStocksMap.get(date);
 
-                    boolean hasCompute = false;
-                    for (String stock : stocks) {
-                        StockKLine kLine = stockKLineMap.get(stock);
-                        BOLL boll = stockBollMap.get(stock);
+                        boolean hasCompute = false;
+                        double income = 0;
+                        double sum = capital;
+                        for (String stock : stocks) {
+                            StockKLine kLine = stockKLineMap.get(stock);
+                            BOLL boll = stockBollMap.get(stock);
 
-                        double open = kLine.getOpen();
-                        double close = kLine.getClose();
-                        double low = kLine.getLow();
-                        double currMb = boll.getMb();
+                            double open = kLine.getOpen();
+                            double close = kLine.getClose();
+                            double low = kLine.getLow();
+                            double currMb = boll.getMb();
 
-                        if (open > currMb) {
-                            continue;
-                        }
+                            if (open < openR) {
+                                continue;
+                            }
 
-                        // 根据开盘价实时算布林上轨
-                        BigDecimal m20close = BigDecimal.valueOf(open);
-                        List<String> _20day = dateToBefore20dayMap.get(date);
-                        List<StockKLine> _20Kline = Lists.newArrayList(kLine);
-                        boolean failed = false;
-                        for (String day : _20day) {
-                            StockKLine temp = dateToStockLineMap.get(day).get(stock);
-                            if (temp == null) {
-                                failed = true;
+                            if (open > currMb) {
+                                continue;
+                            }
+
+                            // 根据开盘价实时算布林上轨
+                            BigDecimal m20close = BigDecimal.valueOf(open);
+                            List<String> _20day = dateToBefore20dayMap.get(date);
+                            List<StockKLine> _20Kline = Lists.newArrayList(kLine);
+                            boolean failed = false;
+                            for (String day : _20day) {
+                                StockKLine temp = dateToStockLineMap.get(day).get(stock);
+                                if (temp == null) {
+                                    failed = true;
+                                    break;
+                                }
+                                _20Kline.add(temp);
+                                m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
+                            }
+                            if (failed) {
+                                continue;
+                            }
+
+                            double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
+                            BigDecimal avgDiffSum = BigDecimal.ZERO;
+                            for (StockKLine temp : _20Kline) {
+                                double c = temp.getClose();
+                                avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
+                            }
+
+                            double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
+                            BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
+                            double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
+
+                            if (open > dn) {
+                                continue;
+                            }
+                            // 根据开盘价算openDnDiffRatio
+                            double openDnDiffPnt = (dn - open) / dn;
+                            int openDnDiffInt = (int) openDnDiffPnt;
+                            BigDecimal volume = kLine.getVolume();
+                            int avgVolume = (int) volume.doubleValue() / 360;
+
+                            StockRatio stockRatio = ratioMap.get(stock);
+                            Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
+                            if (MapUtils.isEmpty(ratioDetail)) {
+                                stockRatio.addBean(buildBean(kLine, boll));
+                                continue;
+                            }
+
+                            RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
+                            if (ratioBean == null || ratioBean.getRatio() < hit) {
+                                stockRatio.addBean(buildBean(kLine, boll));
+                                continue;
+                            }
+
+                            if (hasCompute) {
+                                stockRatio.addBean(buildBean(kLine, boll));
+                                continue;
+                            }
+
+                            int count = (int) (sum / open);
+                            if (count == 0) {
+                                hasCompute = true;
                                 break;
                             }
-                            _20Kline.add(temp);
-                            m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
-                        }
-                        if (failed) {
-                            continue;
-                        }
-
-                        double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
-                        BigDecimal avgDiffSum = BigDecimal.ZERO;
-                        for (StockKLine temp : _20Kline) {
-                            double c = temp.getClose();
-                            avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
-                        }
-
-                        double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
-                        BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
-                        double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
-
-                        if (open > dn) {
-                            continue;
-                        }
-                        // 根据开盘价算openDnDiffRatio
-                        double openDnDiffPnt = (dn - open) / dn;
-                        int openDnDiffInt = (int) openDnDiffPnt;
-                        BigDecimal volume = kLine.getVolume();
-
-                        StockRatio stockRatio = ratioMap.get(stock);
-                        Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
-                        if (MapUtils.isEmpty(ratioDetail)) {
-                            stockRatio.addBean(buildBean(kLine, boll));
-                            continue;
-                        }
-
-                        RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
-                        if (ratioBean == null || ratioBean.getRatio() < hit) {
-                            stockRatio.addBean(buildBean(kLine, boll));
-                            continue;
-                        }
-
-                        if (hasCompute) {
-                            stockRatio.addBean(buildBean(kLine, boll));
-                            continue;
-                        }
-
-                        int count = (int) (capital / open);
-                        double lossRatio = (open - low) / open;
-                        double v = lossRange;
-                        if (lossRatio > v) {
-                            double loss = -count * open * v;
-                            capital += loss;
-                            System.out.println("date=" + date + ", stock=" + stock + ", volumn=" + volume + ", loss = " + (int) loss);
-                            //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
-                            //                            stockRatio.addBean(buildBean(kLine, boll));
-                            lossCount++;
-                            //                            break;
-                        } else {
-                            double gain = count * (close - open);
-                            capital += gain;
-                            System.out.println("date=" + date + ", stock=" + stock + ", volumn=" + volume + ", gain = " + (int) gain);
-                            //                            stockRatio.addBean(buildBean(kLine, boll));
-
-                            if (gain >= 0) {
-                                //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
-                                gainCount++;
-                            } else {
-                                lossCount++;
-                                //                                System.out.println(String.format("loss openLowDiff=%d, closeOpenDiff=%d", openLowDiff, (int) ((close - open) / open * 100)));
+                            double lossRatio = (open - low) / open;
+                            double v = lossRange;
+                            if (avgVolume < count) {
+                                count = avgVolume;
                             }
-                            //                            break;
+                            sum -= count * open;
+                            if (lossRatio > v) {
+                                double loss = -count * open * v;
+                                income += loss;
+                                //                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
+                                //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
+                                //                            stockRatio.addBean(buildBean(kLine, boll));
+                                lossCount++;
+                                //                            break;
+                            } else {
+                                double gain = count * (close - open);
+                                income += gain;
+                                //                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
+                                //                            stockRatio.addBean(buildBean(kLine, boll));
+
+                                if (gain >= 0) {
+                                    //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
+                                    gainCount++;
+                                } else {
+                                    lossCount++;
+                                    //                                System.out.println(String.format("loss openLowDiff=%d, closeOpenDiff=%d", openLowDiff, (int) ((close - open) / open * 100)));
+                                }
+                                //                            break;
+                            }
+                            stockRatio.addBean(buildBean(kLine, boll));
                         }
-                        stockRatio.addBean(buildBean(kLine, boll));
-                        hasCompute = true;
+                        capital += income;
+                        //                    System.out.println("date=" + date + ", income=" + income + ", capital=" + capital + "\n");
                     }
+                    double successRatio = (double) gainCount / (gainCount + lossCount);
+                    System.out.println("openRange=" + openR + ", hit=" + hit + ", loss=" + lossRange + ", sum=" + (int) capital + ", gainCount=" + gainCount + ", lossCount=" + lossCount + ", successRatio=" + successRatio);
+                    capital = init;
                 }
-                double successRatio = (double) gainCount / (gainCount + lossCount);
-                System.out.println("hit=" + hit + ", loss=" + lossRange + ", sum=" + (int) capital + ", gainCount=" + gainCount + ", lossCount=" + lossCount + ", successRatio=" + successRatio);
-                capital = 10000;
+                System.out.println();
             }
-            System.out.println();
         }
     }
 
-    public static Map<String, StockRatio> computeHistoricalOverBollingerRatio() throws Exception {
+    public static Map<String, StockRatio> computeHistoricalOverBollingerRatio(int beforeYear) throws Exception {
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         List<String> filterStock = FilterStock.tradeFlat(Constants.STD_DAILY_PATH);
 
@@ -332,11 +356,11 @@ public class OverBollingerDN {
                 continue;
             }
             if (!filterStock.contains(stock)) {
-                continue;
+                //                continue;
             }
 
             String filePath = dailyFileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2021);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, beforeYear);
             Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
             String bollingPath = Constants.INDICATOR_BOLL_PATH + "daily/" + stock;
@@ -353,13 +377,13 @@ public class OverBollingerDN {
             stockRatioMap.put(stock, stockRatio);
         }
 
-        for (String stock : stockRatioMap.keySet()) {
-            StockRatio ratio = stockRatioMap.get(stock);
-            if (MapUtils.isEmpty(ratio.getRatioMap())) {
-                continue;
-            }
-            System.out.println(stock + ": " + ratio);
-        }
+        //        for (String stock : stockRatioMap.keySet()) {
+        //            StockRatio ratio = stockRatioMap.get(stock);
+        //            if (MapUtils.isEmpty(ratio.getRatioMap())) {
+        //                continue;
+        //            }
+        //            System.out.println(stock + ": " + ratio);
+        //        }
 
         return stockRatioMap;
     }
