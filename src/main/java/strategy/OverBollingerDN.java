@@ -107,7 +107,8 @@ public class OverBollingerDN {
 
 
     public static void main(String[] args) throws Exception {
-        double init = 10000;
+        double exchange = 6.94;
+        double init = 5000;
         int beforeYear = 2022, afterYear = 2020, afterYear2 = 2021, historyBeforeYear = 2021;
         double capital = init;
         Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio(historyBeforeYear);
@@ -200,7 +201,9 @@ public class OverBollingerDN {
         }
 
         List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d, 1d);
-        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.12d, 0.15d, 0.2d, 0.3d, 0.4d);
+        hitRatio.clear();
+        hitRatio.add(0.5d);
+        List<Double> lossRatioRange = Lists.newArrayList(0.15d, 0.2d, 0.3d, 0.4d);
         List<Integer> openRange = Lists.newArrayList(5, 6, 7);
         for (Integer openR : openRange) {
             for (Double lossRange : lossRatioRange) {
@@ -211,8 +214,8 @@ public class OverBollingerDN {
                     //                if (i + 1 < hitRatio.size()) {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
-                    if (hit != 0.5d || lossRange != 0.3d) {
-//                        continue;
+                    if (openR != 5 || hit != 0.5d || lossRange != 0.15d) {
+                                                continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -312,7 +315,7 @@ public class OverBollingerDN {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                //                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
+                                                                                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
                                 lossCount++;
@@ -320,7 +323,7 @@ public class OverBollingerDN {
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                //                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
+                                                                                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
 
                                 if (gain >= 0) {
@@ -335,10 +338,10 @@ public class OverBollingerDN {
                             stockRatio.addBean(buildBean(kLine, boll));
                         }
                         capital += income;
-                        //                    System.out.println("date=" + date + ", income=" + income + ", capital=" + capital + "\n");
+                                                                    System.out.println("date=" + date + ", income=" + income + ", capital=" + capital);
                     }
                     double successRatio = (double) gainCount / (gainCount + lossCount);
-                    System.out.println("openRange=" + openR + ", hit=" + hit + ", loss=" + lossRange + ", sum=" + (int) capital + ", gainCount=" + gainCount + ", lossCount=" + lossCount + ", successRatio=" + successRatio);
+                    System.out.println("openRange=" + openR + ", hit=" + hit + ", loss=" + lossRange + ", sum=" + (int) (capital) + ", gainCount=" + gainCount + ", lossCount=" + lossCount + ", successRatio=" + successRatio);
                     capital = init;
                 }
                 System.out.println();

@@ -21,25 +21,26 @@ public class Bollinger {
 
     public static void main(String[] args) throws Exception {
         calculate("daily");
-        calculate("weekly");
-        calculate("monthly");
-        calculate("quarterly");
-        calculate("yearly");
+//        calculate("weekly");
+//        calculate("monthly");
+//        calculate("quarterly");
+//        calculate("yearly");
     }
 
     public static void calculate(String period) throws Exception {
-        Map<String, String> stockToKLineMap = BaseUtils.getFileMap(Constants.STD_BASE_PATH + period + "/");
-        Map<String, String> hasCalcMap = BaseUtils.getFileMap(Constants.INDICATOR_BOLL_PATH + period);
+        String mergePath = Constants.HIS_BASE_PATH + "merge/";
+        Map<String, String> stockToKLineMap = BaseUtils.getFileMap(mergePath);
+        Map<String, String> hasCalcMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "mergeBoll");
         Set<String> hasCalcStock = hasCalcMap.keySet();
 
         for (String stock : stockToKLineMap.keySet()) {
             if (!stock.equals("AAPL")) {
-                //                continue;
+//                                continue;
             }
             if (hasCalcStock.contains(stock)) {
                 continue;
             }
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock));
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock), 2023);
 
             BigDecimal m20close = BigDecimal.ZERO;
             int ma20count = 0;
@@ -76,7 +77,7 @@ public class Bollinger {
                 maList.add(boll.toString());
             }
 
-            BaseUtils.writeFile(Constants.INDICATOR_BOLL_PATH + period + "/" + stock, Lists.reverse(maList));
+            BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, Lists.reverse(maList));
             System.out.println("finish " + period + " " + stock);
         }
     }

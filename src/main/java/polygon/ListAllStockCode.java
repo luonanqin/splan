@@ -20,8 +20,8 @@ public class ListAllStockCode {
 
     public static void getStock(String market) {
         System.out.println(market);
-        String apiKeyParam = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
-        String url = "https://api.polygon.io/v3/reference/tickers?type=CS&market=stocks&exchange=" + market + "&active=true&limit=100" + apiKeyParam;
+        String apiKeyParam = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
+        String url = "https://api.polygon.io/v3/trades/AAPL?" + apiKeyParam;
 
         HttpClient httpclient = new HttpClient();
         GetMethod get = new GetMethod(url);
