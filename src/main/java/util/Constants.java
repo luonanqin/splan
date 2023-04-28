@@ -27,5 +27,8 @@ public final class Constants {
     public static final String INDICATOR_MA_PATH = INDICATOR_BASE_PATH + "MA/";
     public static final String INDICATOR_BOLL_PATH = INDICATOR_BASE_PATH + "BOLL/";
 
+    public static final String TRADE_PATH = "src/main/resources/tradeData/";
+    public static final String TRADE_OPEN_PATH = TRADE_PATH + "open/";
+
     public static final String TEST_PATH = "src/main/resources/testData/";
 }
