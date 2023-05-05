@@ -41,27 +41,30 @@ public class GetHistoricalTrade {
         String timeGte = "timestamp.gte=";
         // https://api.polygon.io/v3/trades/FUTU?timestamp=2023-04-27&order=desc&limit=1000&sort=timestamp&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
 
-        // 2023
-        LocalDateTime dayLight = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
         int limit = 100;
-        int year = 2023;
+        // 2023
+        //        LocalDateTime dayLight = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
+        //        int year = 2023;
 
         // 2022
+        LocalDateTime dayLight1 = LocalDateTime.of(2022, 3, 13, 0, 0, 0);
+        LocalDateTime dayLight2 = LocalDateTime.of(2022, 11, 6, 0, 0, 0);
+        int year = 2022;
 
         Map<String, String> hasMergeMap = BaseUtils.getFileMap(Constants.TRADE_OPEN_PATH + year);
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(20, 20, 10, TimeUnit.SECONDS, workQueue);
 
-        Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
+        Map<String, String> stockMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         for (String stock : stockMap.keySet()) {
             if (!stock.equals("FUTU")) {
-                //                continue;
+                //                                continue;
             }
             if (hasMergeMap.containsKey(stock)) {
                 continue;
             }
             String stockFile = stockMap.get(stock);
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockFile, 2023);
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockFile, 2022, 2021);
 
             List<String> result = Collections.synchronizedList(Lists.newArrayList());
             Lock lock = new ReentrantLock();
@@ -86,7 +89,7 @@ public class GetHistoricalTrade {
                         LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
 
                         int hour, minute = 30, seconds = 0;
-                        if (day.isAfter(dayLight)) {
+                        if (day.isAfter(dayLight1) && day.isBefore(dayLight2)) {
                             hour = 21;
                         } else {
                             hour = 22;
@@ -105,7 +108,13 @@ public class GetHistoricalTrade {
                         double totalAmount = 0;
                         try {
                             while (true) {
-                                int code = httpclient.executeMethod(get);
+                                int code = 0;
+                                for (int i = 0; i < 3; i++) {
+                                    code = httpclient.executeMethod(get);
+                                    if (code == 200) {
+                                        break;
+                                    }
+                                }
                                 if (code != 200) {
                                     System.err.println("request failed");
                                     result.add("request failed. date=" + date);
@@ -131,12 +140,13 @@ public class GetHistoricalTrade {
                             double avgPrice = totalAmount / totalVolumn;
                             result.add(String.format("%s,%d,%.2f", date, totalVolumn, avgPrice));
                             //                            System.out.println("finish stock: " + stock + " date: " + date);
-                            lock.lock();
-                            size.incrementAndGet();
-                            cond.signalAll();
                         } catch (Exception e) {
                             result.add("request error. date=" + date);
                         } finally {
+                            get.releaseConnection();
+                            lock.lock();
+                            size.incrementAndGet();
+                            cond.signalAll();
                             cdl.countDown();
                             lock.unlock();
                         }
@@ -147,17 +157,21 @@ public class GetHistoricalTrade {
             }
 
             cdl.await();
-            Collections.sort(result, (o1, o2) -> {
-                o1 = o1.substring(0, o1.indexOf(","));
-                o2 = o2.substring(0, o2.indexOf(","));
-                return BaseUtils.dateToInt(o2) - BaseUtils.dateToInt(o1);
-            });
-            FileWriter fw = new FileWriter(Constants.TRADE_OPEN_PATH + year + "/" + stock);
-            for (String str : result) {
-                fw.write(str + "\n");
+            try {
+                Collections.sort(result, (o1, o2) -> {
+                    o1 = o1.substring(0, o1.indexOf(","));
+                    o2 = o2.substring(0, o2.indexOf(","));
+                    return BaseUtils.dateToInt(o2) - BaseUtils.dateToInt(o1);
+                });
+                FileWriter fw = new FileWriter(Constants.TRADE_OPEN_PATH + year + "/" + stock);
+                for (String str : result) {
+                    fw.write(str + "\n");
+                }
+                fw.close();
+                System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+            } catch (Exception e) {
+                System.out.println("error: " + result);
             }
-            fw.close();
-            System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
         }
     }
 }
