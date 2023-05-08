@@ -31,4 +31,6 @@ public final class Constants {
     public static final String TRADE_OPEN_PATH = TRADE_PATH + "open/";
 
     public static final String TEST_PATH = "src/main/resources/testData/";
+
+    public static final String SPLIT_PATH = "src/main/resources/splitData/";
 }

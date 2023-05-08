@@ -231,7 +231,7 @@ public class BaseUtils {
             br.readLine();
         }
 
-        List<String> list = Lists.newArrayList();
+        List<String> list = Lists.newLinkedList();
         String line;
         while (StringUtils.isNotBlank(line = br.readLine())) {
             list.add(line);
@@ -252,7 +252,7 @@ public class BaseUtils {
         if (afterYear == null) {
             afterYear = 1900;
         }
-        List<StockKLine> list = Lists.newArrayList();
+        List<StockKLine> list = Lists.newLinkedList();
         for (String line : lineList) {
             // 修正数字中带逗号
             if (line.contains("\"")) {
@@ -393,6 +393,15 @@ public class BaseUtils {
         br.close();
 
         return lineList;
+    }
+
+    public static void appendIfFile(String filePath, List<String> list) throws Exception {
+        FileWriter bw = new FileWriter(filePath, true);
+        for (String l : list) {
+            bw.write(l);
+            bw.write("\n");
+        }
+        bw.close();
     }
 
     public static void writeFile(String filePath, List<String> list) throws Exception {
