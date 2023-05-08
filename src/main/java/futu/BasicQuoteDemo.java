@@ -6,6 +6,7 @@ import com.futu.openapi.FTAPI_Conn_Qot;
 import com.futu.openapi.FTSPI_Conn;
 import com.futu.openapi.FTSPI_Qot;
 import com.futu.openapi.pb.QotCommon;
+import com.futu.openapi.pb.QotGetBasicQot;
 import com.futu.openapi.pb.QotGetSubInfo;
 import com.futu.openapi.pb.QotSub;
 import com.futu.openapi.pb.QotUpdateBasicQot;
@@ -74,9 +75,41 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
             for (QotCommon.BasicQot basicQot : basicQotListList) {
                 String stock = basicQot.getSecurity().getCode();
                 double curPrice = basicQot.getCurPrice();
-                //                System.out.println("stock=" + stock + " price=" + curPrice);
+                long id = Thread.currentThread().getId();
+                System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
             }
         }
+    }
+
+    @Override
+    public void onReply_GetBasicQot(FTAPI_Conn client, int nSerialNo, QotGetBasicQot.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("QotGetBasicQot failed: %s\n", rsp.getRetMsg());
+        }
+        else {
+            QotGetBasicQot.S2C s2C = rsp.getS2C();
+            List<QotCommon.BasicQot> basicQotListList = s2C.getBasicQotListList();
+            for (QotCommon.BasicQot basicQot : basicQotListList) {
+                String stock = basicQot.getSecurity().getCode();
+//                QotCommon.PreAfterMarketData preMarket = basicQot.getPreMarket();
+//                double curPrice = preMarket.getPrice();
+                double curPrice = basicQot.getCurPrice();
+                long id = Thread.currentThread().getId();
+                System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
+            }
+        }
+    }
+
+    public void getBasicQot(String stock){
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setCode(stock)
+          .build();
+        QotGetBasicQot.C2S c2s = QotGetBasicQot.C2S.newBuilder()
+          .addSecurityList(sec)
+          .build();
+        QotGetBasicQot.Request req = QotGetBasicQot.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.getBasicQot(req);
     }
 
     @Override
@@ -105,7 +138,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
           .addSecurityList(sec)
           .addAllSubTypeList(subTypeList)
           .setIsSubOrUnSub(true)
-          .setIsRegOrUnRegPush(true)
+//          .setIsRegOrUnRegPush(true)
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
@@ -122,24 +155,33 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
 
     public static void main(String[] args) {
         FTAPI.init();
-        BasicQuoteDemo ticker = new BasicQuoteDemo();
-        ticker.start();
+        BasicQuoteDemo quote = new BasicQuoteDemo();
+        quote.start();
 
-        ticker.subBasicQuote("FUTU");
-        ticker.subBasicQuote("AAPL");
-        ticker.subBasicQuote("AMZN");
-        ticker.subBasicQuote("TSLA");
-        ticker.subBasicQuote("JPM");
-        ticker.subBasicQuote("TSM");
-        ticker.subBasicQuote("BA");
-        ticker.subBasicQuote("CSCO");
-        ticker.subBasicQuote("CVCO");
+        quote.subBasicQuote("FUTU");
+        quote.subBasicQuote("AAPL");
+        quote.subBasicQuote("AMZN");
+        quote.subBasicQuote("TSLA");
+        quote.subBasicQuote("JPM");
+        quote.subBasicQuote("TSM");
+        quote.subBasicQuote("BA");
+        quote.subBasicQuote("CSCO");
+        quote.subBasicQuote("CVCO");
 
-//        ticker.getSubInfo();
+        //        quote.getSubInfo();
 
         while (true) {
             try {
                 Thread.sleep(1000);
+                quote.getBasicQot("FUTU");
+                quote.getBasicQot("AAPL");
+                quote.getBasicQot("AMZN");
+                quote.getBasicQot("TSLA");
+                quote.getBasicQot("JPM");
+                quote.getBasicQot("TSM");
+                quote.getBasicQot("BA");
+                quote.getBasicQot("CSCO");
+                quote.getBasicQot("CVCO");
             } catch (InterruptedException exc) {
 
             }
