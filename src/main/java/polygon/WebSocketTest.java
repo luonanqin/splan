@@ -9,7 +9,7 @@ import java.net.URI;
 /**
  * Created by Luonanqin on 2023/5/8.
  */
-public class Test {
+public class WebSocketTest {
 
 
     public WebSocketClient webSocketClient() {
@@ -48,7 +48,7 @@ public class Test {
     }
 
     public static void main(String[] args) {
-        Test test = new Test();
+        WebSocketTest test = new WebSocketTest();
         WebSocketClient client = test.webSocketClient();
         client.send("{\"action\":\"auth\",\"params\":\"Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY\"}");
         client.send("{\"action\":\"subscribe\", \"params\":\"T.FUTU\"}");

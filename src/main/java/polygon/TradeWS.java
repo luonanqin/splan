@@ -1,7 +1,6 @@
 package polygon;
 
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
@@ -14,7 +13,7 @@ public class TradeWS {
 
     public WebSocketClient webSocketClient() {
         try {
-            WebSocketClient webSocketClient = new WebSocketClient(new URI("wss://delayed.polygon.io/stocks"), new Draft_6455()) {
+            WebSocketClient webSocketClient = new WebSocketClient(new URI("wss://delayed.polygon.io/stocks")) {
                 //连接服务端时触发
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
@@ -25,7 +24,7 @@ public class TradeWS {
                 //收到服务端消息时触发
                 @Override
                 public void onMessage(String message) {
-                    System.out.println("websocket客户端收到消息=" + message);
+                    System.out.println("websocket客户端收到消息 " + Thread.currentThread().getId() + " =" + message);
                 }
 
                 //和服务端断开连接时触发
