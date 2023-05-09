@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import stock.FilterStock;
@@ -23,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.math.BigDecimal.ROUND_DOWN;
-import static java.math.BigDecimal.ROUND_HALF_UP;
 
 /**
  * Created by Luonanqin on 2023/3/21.
@@ -248,13 +244,20 @@ public class OverBollingerDN2023Real {
                     //                if (i + 1 < hitRatio.size()) {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
-                    if (hit != 0.5d) {
-//                        continue;
+                    if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
+                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
                     int gainCount = 0, lossCount = 0;
-                    for (String date : dateList) {
+                    for (int j = 0; j < dateList.size() ; j++) {
+                        String date = dateList.get(j);
+                        Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
+                        String lastDate = "";
+                        if (j > 0) {
+                            lastDate = dateList.get(j - 1);
+                            lastStockBollMap = dateToStockBollMap.get(lastDate);
+                        }
                         Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                         Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
                         List<String> stocks = dateToStocksMap.get(date);
@@ -263,14 +266,22 @@ public class OverBollingerDN2023Real {
                         boolean hasCompute = false;
                         double income = 0;
                         double sum = capital;
+                        int size = 0;
                         for (String stock : stocks) {
                             StockKLine kLine = stockKLineMap.get(stock);
                             BOLL boll = stockBollMap.get(stock);
+                            BOLL lastBoll = lastStockBollMap.get(lastDate);
 
                             double open = kLine.getOpen();
                             double close = kLine.getClose();
                             double low = kLine.getLow();
                             double currMb = boll.getMb();
+                            if (lastBoll != null) {
+                                double lastDn = lastBoll.getDn();
+                                if (open > lastDn) {
+                                    continue;
+                                }
+                            }
 
                             if (open < openR) {
                                 continue;
@@ -298,89 +309,91 @@ public class OverBollingerDN2023Real {
                                 continue;
                             }
 
-                            double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
-                            BigDecimal avgDiffSum = BigDecimal.ZERO;
-                            for (StockKLine temp : _20Kline) {
-                                double c = temp.getClose();
-                                avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
-                            }
-
-                            double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
-                            BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
-                            double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
-
-                            if (open > dn) {
-                                continue;
-                            }
-                            // 根据开盘价算openDnDiffRatio
-                            double openDnDiffPnt = (dn - open) / dn;
-                            int openDnDiffInt = (int) openDnDiffPnt;
-                            BigDecimal volume = kLine.getVolume();
-                            int avgVolume = (int) volume.doubleValue() / 360;
-
-                            StockRatio stockRatio = ratioMap.get(stock);
-                            Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
-                            if (MapUtils.isEmpty(ratioDetail)) {
-                                stockRatio.addBean(buildBean(kLine, boll));
-                                continue;
-                            }
-
-                            RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
-                            if (ratioBean == null || ratioBean.getRatio() < hit) {
-                                stockRatio.addBean(buildBean(kLine, boll));
-                                continue;
-                            }
-
-                            if (hasCompute) {
-                                stockRatio.addBean(buildBean(kLine, boll));
-                                continue;
-                            }
-
-                            int count = (int) (sum / open);
-                            RealOpenVol realOpenVol = stockRealOpenVolMap.get(stock);
-                            if (realOpenVol == null) {
-                                continue;
-                            }
-                            avgVolume = (int) realOpenVol.getVolumn() / 2;
-                            if (count == 0) {
-                                break;
-                            }
-                            double lossRatio = (open - low) / open;
-                            double v = lossRange;
-                            if (avgVolume < count) {
-                                count = avgVolume;
-                            }
-                            sum -= count * open;
-                            if (lossRatio > v) {
-                                double loss = -count * open * v;
-                                income += loss;
-                                //                                                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
-                                //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
-                                //                            stockRatio.addBean(buildBean(kLine, boll));
-                                lossCount++;
-                                //                            break;
-                            } else {
-                                double gain = count * (close - open);
-                                income += gain;
-                                //                                                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
-                                //                            stockRatio.addBean(buildBean(kLine, boll));
-
-                                if (gain >= 0) {
-                                    //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
-                                    gainCount++;
-                                } else {
-                                    lossCount++;
-                                    //                                System.out.println(String.format("loss openLowDiff=%d, closeOpenDiff=%d", openLowDiff, (int) ((close - open) / open * 100)));
-                                }
-                                //                            break;
-                            }
-                            stockRatio.addBean(buildBean(kLine, boll));
+//                            double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
+//                            BigDecimal avgDiffSum = BigDecimal.ZERO;
+//                            for (StockKLine temp : _20Kline) {
+//                                double c = temp.getClose();
+//                                avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
+//                            }
+//
+//                            double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
+//                            BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
+//                            double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
+//
+//                            if (open > dn) {
+//                                continue;
+//                            }
+//                            // 根据开盘价算openDnDiffRatio
+//                            double openDnDiffPnt = (dn - open) / dn;
+//                            int openDnDiffInt = (int) openDnDiffPnt;
+//                            BigDecimal volume = kLine.getVolume();
+//                            int avgVolume = (int) volume.doubleValue() / 360;
+//
+//                            StockRatio stockRatio = ratioMap.get(stock);
+//                            Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
+//                            if (MapUtils.isEmpty(ratioDetail)) {
+//                                stockRatio.addBean(buildBean(kLine, boll));
+//                                continue;
+//                            }
+//
+//                            RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
+//                            if (ratioBean == null || ratioBean.getRatio() < hit) {
+//                                stockRatio.addBean(buildBean(kLine, boll));
+//                                continue;
+//                            }
+//
+//                            if (hasCompute) {
+//                                stockRatio.addBean(buildBean(kLine, boll));
+//                                continue;
+//                            }
+//
+//                            int count = (int) (sum / open);
+//                            RealOpenVol realOpenVol = stockRealOpenVolMap.get(stock);
+//                            if (realOpenVol == null) {
+//                                continue;
+//                            }
+//                            avgVolume = (int) realOpenVol.getVolumn() / 2;
+//                            if (count == 0) {
+//                                break;
+//                            }
+//                            double lossRatio = (open - low) / open;
+//                            double v = lossRange;
+//                            if (avgVolume < count) {
+//                                count = avgVolume;
+//                            }
+//                            sum -= count * open;
+//                            if (lossRatio > v) {
+//                                double loss = -count * open * v;
+//                                income += loss;
+////                                                                                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
+//                                //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
+//                                //                            stockRatio.addBean(buildBean(kLine, boll));
+//                                lossCount++;
+//                                //                            break;
+//                            } else {
+//                                double gain = count * (close - open);
+//                                income += gain;
+////                                                                                            System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
+//                                //                            stockRatio.addBean(buildBean(kLine, boll));
+//
+//                                if (gain >= 0) {
+//                                    //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
+//                                    gainCount++;
+//                                } else {
+//                                    lossCount++;
+//                                    //                                System.out.println(String.format("loss openLowDiff=%d, closeOpenDiff=%d", openLowDiff, (int) ((close - open) / open * 100)));
+//                                }
+//                                //                            break;
+//                            }
+//                            stockRatio.addBean(buildBean(kLine, boll));
+                            size++;
                         }
                         capital += income;
                         //                                            System.out.println("date=" + date + ", income=" + income + ", capital=" + capital);
+                        System.out.println(date+" "+size);
                     }
                     double successRatio = (double) gainCount / (gainCount + lossCount);
-                    System.out.println("openRange=" + openR + ", hit=" + hit + ", loss=" + lossRange + ", sum=" + (int) (capital * exchange) + ", gainCount=" + gainCount + ", lossCount=" + lossCount + ", successRatio=" + successRatio);
+//                    System.out.println("openRange=" + openR + ", hit=" + hit + ", loss=" + lossRange + ", sum=" + (int) (capital * exchange) + ", gainCount=" + gainCount + ", lossCount=" + lossCount + ", successRatio=" + successRatio);
                     capital = init;
                 }
                 System.out.println();

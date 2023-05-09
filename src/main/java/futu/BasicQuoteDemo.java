@@ -13,10 +13,15 @@ import com.futu.openapi.pb.QotUpdateBasicQot;
 import com.google.common.collect.Maps;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import lombok.Data;
+import util.BaseUtils;
+import util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * Created by Luonanqin on 2023/5/5.
@@ -28,6 +33,14 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
 
     private Map<String, Double> stockToCurrPriceMap = Maps.newHashMap();
 
+    @Data
+    public static class StockQuote {
+        private String stock;
+        private double price;
+    }
+
+    private static PriorityQueue<StockQuote> queue = new PriorityQueue<>(100, (o1, o2) -> (int) (o1.getPrice() - o2.getPrice()));
+
     public BasicQuoteDemo() {
         qot.setClientInfo("javaclient", 1);  //设置客户端信息
         qot.setConnSpi(this);  //设置连接回调
@@ -36,6 +49,10 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
 
     public void start() {
         qot.initConnect("127.0.0.1", (short) 11111, false);
+    }
+
+    public void end(){
+        qot.close();
     }
 
     @Override
@@ -85,14 +102,13 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
     public void onReply_GetBasicQot(FTAPI_Conn client, int nSerialNo, QotGetBasicQot.Response rsp) {
         if (rsp.getRetType() != 0) {
             System.out.printf("QotGetBasicQot failed: %s\n", rsp.getRetMsg());
-        }
-        else {
+        } else {
             QotGetBasicQot.S2C s2C = rsp.getS2C();
             List<QotCommon.BasicQot> basicQotListList = s2C.getBasicQotListList();
             for (QotCommon.BasicQot basicQot : basicQotListList) {
                 String stock = basicQot.getSecurity().getCode();
-//                QotCommon.PreAfterMarketData preMarket = basicQot.getPreMarket();
-//                double curPrice = preMarket.getPrice();
+                //                QotCommon.PreAfterMarketData preMarket = basicQot.getPreMarket();
+                //                double curPrice = preMarket.getPrice();
                 double curPrice = basicQot.getCurPrice();
                 long id = Thread.currentThread().getId();
                 System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
@@ -100,7 +116,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
-    public void getBasicQot(String stock){
+    public void getBasicQot(String stock) {
         QotCommon.Security sec = QotCommon.Security.newBuilder()
           .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
           .setCode(stock)
@@ -138,7 +154,26 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
           .addSecurityList(sec)
           .addAllSubTypeList(subTypeList)
           .setIsSubOrUnSub(true)
-//          .setIsRegOrUnRegPush(true)
+          //          .setIsRegOrUnRegPush(true)
+          .build();
+        QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.sub(req);
+        System.out.printf("Send QotSub: %d\n", seqNo);
+    }
+
+    public void unSubBasicQuote(String stock) {
+        List<Integer> subTypeList = new ArrayList<>();
+        subTypeList.add(QotCommon.SubType.SubType_Basic_VALUE);
+
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setCode(stock)
+          .build();
+        QotSub.C2S c2s = QotSub.C2S.newBuilder()
+          .addSecurityList(sec)
+          .addAllSubTypeList(subTypeList)
+          .setIsSubOrUnSub(false)
+          //          .setIsRegOrUnRegPush(true)
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
@@ -153,11 +188,30 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         System.out.printf("Send QotGetSubInfo: %d\n", seqNo);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         FTAPI.init();
         BasicQuoteDemo quote = new BasicQuoteDemo();
         quote.start();
 
+        quote.subBasicQuote("FUTU");
+        quote.getSubInfo();
+
+        quote.end();
+        quote.start();
+        quote.unSubBasicQuote("FUTU");
+        quote.getSubInfo();
+
+        Map<String, String> stockFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily/");
+        Set<String> stockSet = stockFileMap.keySet();
+        int count = 0;
+        for (String stock : stockSet) {
+            quote.subBasicQuote("FUTU");
+            quote.getBasicQot("FUTU");
+            if (queue.size()>100) {
+                StockQuote remove = queue.remove();
+
+            }
+        }
         quote.subBasicQuote("FUTU");
         quote.subBasicQuote("AAPL");
         quote.subBasicQuote("AMZN");
