@@ -38,7 +38,7 @@ public class Bollinger {
 //                                continue;
             }
             if (hasCalcStock.contains(stock)) {
-                continue;
+//                continue;
             }
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock), 2023);
 

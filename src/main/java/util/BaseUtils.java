@@ -163,6 +163,28 @@ public class BaseUtils {
         return stockList;
     }
 
+    public static void asyncWriteStockKLine(String filePath, List<StockKLine> list) throws Exception {
+        new Thread(() -> {
+            BufferedWriter bw=null;
+            try {
+                 bw = new BufferedWriter(new FileWriter(filePath));
+                for (StockKLine l : list) {
+                    bw.write(l.toString());
+                    bw.write("\n");
+                }
+                bw.close();
+            } catch (IOException e) {
+                if (bw != null) {
+                    try {
+                        bw.close();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
     public static void writeStockKLine(String filePath, List<StockKLine> list) throws Exception {
         BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
         for (StockKLine l : list) {

@@ -25,9 +25,9 @@ public class Merge2023 {
 
         Map<String, String> _2023Map = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
         for (String stock : stockList) {
-            if (hasMergeMap.containsKey(stock)) {
-                continue;
-            }
+//            if (hasMergeMap.containsKey(stock)) {
+//                continue;
+//            }
 
             if (!_2023Map.containsKey(stock)) {
                 continue;

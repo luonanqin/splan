@@ -84,7 +84,6 @@ public class TradeWSClient extends WebSocketClient {
         }
 
         List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", beforeYear, afterYear);
-        Map<String, List<String>> dateToBefore20dayMap = Maps.newHashMap();
 
         List<String> _19day = Lists.newArrayList();
         for (int i = 0; i < 19; i++) {
@@ -155,22 +154,22 @@ public class TradeWSClient extends WebSocketClient {
         try {
             List<Map> maps = JSON.parseArray(s, Map.class);
             if (subscribed) {
-                                System.out.println(s);
-//                Map<String, Double> stockToPrice = Maps.newHashMap();
-//                for (Map map : maps) {
-//                    String stock = MapUtils.getString(map, "sym");
-//                    Double price = MapUtils.getDouble(map, "p");
+                //                                System.out.println(s);
+                Map<String, Double> stockToPrice = Maps.newHashMap();
+                for (Map map : maps) {
+                    String stock = MapUtils.getString(map, "sym");
+                    Double price = MapUtils.getDouble(map, "p");
                     // 当前价大于前一天的下轨则直接过滤
                     //                Double lastDn = stockToLastDn.get(stock);
                     //                if (price > lastDn) {
                     //                    continue;
                     //                }
-//                    stockToPrice.put(stock, price);
-//                }
-//                for (Map.Entry<String, Double> entry : stockToPrice.entrySet()) {
-//                                        eventBus.post(entry);
-//                    System.out.println(entry.getKey() + " " + entry.getValue());
-//                }
+                    stockToPrice.put(stock, price);
+                }
+                for (Map.Entry<String, Double> entry : stockToPrice.entrySet()) {
+                    //                    eventBus.post(entry);
+                    System.out.println(entry.getKey() + " " + entry.getValue());
+                }
             } else {
                 Map map = maps.get(0);
                 String status = MapUtils.getString(map, "status");
@@ -181,8 +180,8 @@ public class TradeWSClient extends WebSocketClient {
                     this.send("{\"action\":\"auth\",\"params\":\"Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY\"}");
                 } else if ("auth_success".equals(status) && "authenticated".equals(message)) {
                     System.out.println(status);
-                    this.send("{\"action\":\"subscribe\", \"params\":\"T.FUTU\"}");
-                } else if ("success".equals(status) && "subscribed to: T.FUTU".equals(message)) {
+                    this.send("{\"action\":\"subscribe\", \"params\":\"T.AAPL\"}");
+                } else if ("success".equals(status) && "subscribed to: T.AAPL".equals(message)) {
                     System.out.println(message);
                     subscribed = true;
                 }
