@@ -35,7 +35,7 @@ public class GetHistoricalDaily {
       "ARCK", "COWN", "DNZ", "CPAR", "CPAQ", "MCG", "MIT", "RKTA", "EVOP", "VGFC", "AAWW", "TZPS", "RCII", "OBSV",
       "MTP", "MEAC", "SJR", "APEN", "BLI", "CENQ", "JATT", "TYDE", "MLAI", "HERA", "VORB", "JMAC", "VPCB", "ABGI",
       "PFDR", "PFHD", "ESM", "HORI", "NGC", "FINM", "SGFY", "BNFT", "UMPQ", "DLCA", "DCRD", "DTRT", "FRON", "IBER",
-      "ATCO", "FRSG", "PONO", "ACDI", "SPKB", "MFGP", "TBSA", "NAAC", "ALBO", "ACQR", "CIXX", "GEEX");
+      "ATCO", "FRSG", "PONO", "ACDI", "SPKB", "MFGP", "TBSA", "NAAC", "ALBO", "ACQR", "CIXX", "GEEX", "BSGA");
 
     public static List<StockKLine> getHistoricalDaily(String stock, List<String> addDate) {
         List<StockKLine> list = Lists.newArrayList();
@@ -91,7 +91,7 @@ public class GetHistoricalDaily {
     }
 
     public static void main(String[] args) throws Exception {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.of(2023, 5, 10);
         LocalDate yesterday = today.minusDays(1);
 
         Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily/");

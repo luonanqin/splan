@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.java_websocket.client.WebSocketClient;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -32,12 +34,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TradeWSClient extends WebSocketClient {
 
-    public static final String TEST_STOCK = "FUTU";
+    public static final String TEST_STOCK = "";
 
     private boolean subscribed = false;
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
     public static Map<String, Set<Double>> stockToM19Close = Maps.newHashMap();
+    private BlockingQueue<String> bq = new LinkedBlockingQueue<>(1000);
 
     private static Set<String> stockSet;
     private static Map<String, String> fileMap;
@@ -91,6 +94,9 @@ public class TradeWSClient extends WebSocketClient {
         }
 
         for (String stock : stockSet) {
+            if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
+                continue;
+            }
             BigDecimal m20close = BigDecimal.ZERO;
             Set<Double> _19Close = Sets.newHashSet();
             boolean failed = false;
@@ -119,6 +125,9 @@ public class TradeWSClient extends WebSocketClient {
                 continue;
             }
             List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2023, 2022);
+            if (CollectionUtils.isEmpty(bolls)) {
+                continue;
+            }
             BOLL boll = bolls.get(0);
             double dn = boll.getDn();
             stockToLastDn.put(stock, dn);
@@ -152,25 +161,11 @@ public class TradeWSClient extends WebSocketClient {
     @Override
     public void onMessage(String s) {
         try {
-            List<Map> maps = JSON.parseArray(s, Map.class);
             if (subscribed) {
-                //                                System.out.println(s);
-                Map<String, Double> stockToPrice = Maps.newHashMap();
-                for (Map map : maps) {
-                    String stock = MapUtils.getString(map, "sym");
-                    Double price = MapUtils.getDouble(map, "p");
-                    // 当前价大于前一天的下轨则直接过滤
-                    //                Double lastDn = stockToLastDn.get(stock);
-                    //                if (price > lastDn) {
-                    //                    continue;
-                    //                }
-                    stockToPrice.put(stock, price);
-                }
-                for (Map.Entry<String, Double> entry : stockToPrice.entrySet()) {
-                    //                    eventBus.post(entry);
-                    System.out.println(entry.getKey() + " " + entry.getValue());
-                }
+                //                bq.offer(s);
+                System.out.println(s);
             } else {
+                List<Map> maps = JSON.parseArray(s, Map.class);
                 Map map = maps.get(0);
                 String status = MapUtils.getString(map, "status");
                 String message = MapUtils.getString(map, "message");
@@ -180,8 +175,8 @@ public class TradeWSClient extends WebSocketClient {
                     this.send("{\"action\":\"auth\",\"params\":\"Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY\"}");
                 } else if ("auth_success".equals(status) && "authenticated".equals(message)) {
                     System.out.println(status);
-                    this.send("{\"action\":\"subscribe\", \"params\":\"T.AAPL\"}");
-                } else if ("success".equals(status) && "subscribed to: T.AAPL".equals(message)) {
+                    this.send("{\"action\":\"subscribe\", \"params\":\"T.*\"}");
+                } else if ("success".equals(status) && "subscribed to: T.*".equals(message)) {
                     System.out.println(message);
                     subscribed = true;
                 }
@@ -202,9 +197,35 @@ public class TradeWSClient extends WebSocketClient {
         e.printStackTrace();
     }
 
+    public void sendToListener() {
+        try {
+            while (true) {
+                String msg = bq.take();
+                List<Map> maps = JSON.parseArray(msg, Map.class);
+                Map<String, Double> stockToPrice = Maps.newHashMap();
+                for (Map map : maps) {
+                    String stock = MapUtils.getString(map, "sym");
+                    Double price = MapUtils.getDouble(map, "p");
+                    // 当前价大于前一天的下轨则直接过滤
+                    //                Double lastDn = stockToLastDn.get(stock);
+                    //                if (price > lastDn) {
+                    //                    continue;
+                    //                }
+                    stockToPrice.put(stock, price);
+                }
+                for (Map.Entry<String, Double> entry : stockToPrice.entrySet()) {
+                    eventBus.post(entry);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
         TradeWSClient client = new TradeWSClient(URI.create("wss://delayed.polygon.io/stocks"));
         client.connect();
+        client.sendToListener();
 
         while (true) {
             System.out.println();

@@ -1,6 +1,7 @@
 package polygon;
 
 import com.google.common.eventbus.Subscribe;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -23,6 +24,10 @@ public class TradeListener {
     public void cal(String stock, double price) {
         Double m19closeSum = TradeWSClient.stockToM19CloseSum.get(stock);
         Set<Double> m19closeSet = TradeWSClient.stockToM19Close.get(stock);
+        if (m19closeSum == null || CollectionUtils.isEmpty(m19closeSet)) {
+            return;
+        }
+
         double mb = (m19closeSum + price) / 20;
         BigDecimal avgDiffSum = BigDecimal.ZERO;
 
