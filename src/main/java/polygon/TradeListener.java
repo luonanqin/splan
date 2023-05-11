@@ -1,10 +1,12 @@
 package polygon;
 
 import com.google.common.eventbus.Subscribe;
+import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import static java.math.BigDecimal.ROUND_DOWN;
@@ -14,6 +16,26 @@ import static java.math.BigDecimal.ROUND_DOWN;
  */
 public class TradeListener {
 
+
+    @Data
+    static class BollDiff {
+        String stock;
+        double diff;
+
+        BollDiff(String stock, double diff){
+            this.stock = stock;
+            this.diff = diff;
+        }
+    }
+
+    private PriorityQueue<BollDiff> queue = new PriorityQueue<>(100, (o1, o2) -> {
+        if (o1.getDiff() > o2.getDiff()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    });
+
     @Subscribe
     public void onMessageEvent(Map.Entry<String, Double> entry) {
         String stock = entry.getKey();
@@ -22,8 +44,8 @@ public class TradeListener {
     }
 
     public void cal(String stock, double price) {
-        Double m19closeSum = TradeWSClient.stockToM19CloseSum.get(stock);
-        Set<Double> m19closeSet = TradeWSClient.stockToM19Close.get(stock);
+        Double m19closeSum = WebsocketClientEndpoint.stockToM19CloseSum.get(stock);
+        Set<Double> m19closeSet = WebsocketClientEndpoint.stockToM19Close.get(stock);
         if (m19closeSum == null || CollectionUtils.isEmpty(m19closeSet)) {
             return;
         }
@@ -41,5 +63,8 @@ public class TradeListener {
         double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
 
         System.out.println(stock + " price=" + price + " dn=" + dn);
+        double diff = (price - dn) / dn;
+        BollDiff bollDiff = new BollDiff(stock, diff);
+        queue.offer(bollDiff);
     }
 }
