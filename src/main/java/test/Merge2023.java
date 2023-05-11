@@ -17,17 +17,16 @@ public class Merge2023 {
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
         Map<String, String> hasMergeMap = BaseUtils.getFileMap(mergePath);
 
-
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         List<String> stockList = Lists.newArrayList(dailyFileMap.keySet());
-//        stockList.clear();
-//        stockList.add("A");
+        //        stockList.clear();
+        //        stockList.add("A");
 
         Map<String, String> _2023Map = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
         for (String stock : stockList) {
-//            if (hasMergeMap.containsKey(stock)) {
-//                continue;
-//            }
+            //            if (hasMergeMap.containsKey(stock)) {
+            //                continue;
+            //            }
 
             if (!_2023Map.containsKey(stock)) {
                 continue;
@@ -45,6 +44,7 @@ public class Merge2023 {
             _2023KLines.addAll(stockKLines);
 
             BaseUtils.writeStockKLine(mergePath + stock, _2023KLines);
+            System.out.println("finish " + stock);
         }
     }
 }

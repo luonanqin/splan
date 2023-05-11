@@ -19,6 +19,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Luonanqin on 2023/5/5.
@@ -40,7 +45,6 @@ public class GetHistoricalDaily {
     public static List<StockKLine> getHistoricalDaily(String stock, List<String> addDate) {
         List<StockKLine> list = Lists.newArrayList();
         HttpClient httpclient = new HttpClient();
-        long s1 = System.currentTimeMillis();
         for (String date : addDate) {
             String url = api + stock + "/" + date + "?adjust=true&" + apiKey;
             GetMethod get = new GetMethod(url);
@@ -85,14 +89,24 @@ public class GetHistoricalDaily {
                 get.releaseConnection();
             }
         }
-        System.out.println((System.currentTimeMillis() - s1) / 1000);
 
         return list;
     }
 
     public static void main(String[] args) throws Exception {
-        LocalDate today = LocalDate.of(2023, 5, 10);
+        LocalDate today = LocalDate.of(2023, 5, 11);
         LocalDate yesterday = today.minusDays(1);
+
+        int threadCount = 10;
+        int corePoolSize = threadCount;
+        int maximumPoolSize = corePoolSize;
+        long keepAliveTime = 60L;
+        LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
+        Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
+        BlockingQueue<String> queue = new LinkedBlockingQueue<>(threadCount);
+        for (int i = 0; i < threadCount; i++) {
+            queue.offer("");
+        }
 
         Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily/");
         for (String stock : stockMap.keySet()) {
@@ -103,11 +117,13 @@ public class GetHistoricalDaily {
             //            if (!stock.equals("AAPL")) {
             //                continue;
             //            }
-            long begin = System.currentTimeMillis();
-
             String file = stockMap.get(stock);
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(file, 2023);
             List<String> addDate = Lists.newArrayList();
+            if (CollectionUtils.isEmpty(stockKLines)) {
+                System.out.println("no file " + stock);
+                continue;
+            }
 
             StockKLine stockKLine = stockKLines.get(0);
             String date = stockKLine.getDate();
@@ -118,17 +134,31 @@ public class GetHistoricalDaily {
             }
 
             if (CollectionUtils.isEmpty(addDate)) {
-                System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+                System.out.println("has get " + stock);
                 continue;
             }
-
-            List<StockKLine> dataList = getHistoricalDaily(stock, addDate);
-            for (StockKLine kLine : dataList) {
-                stockKLines.add(0, kLine);
-            }
-            BaseUtils.asyncWriteStockKLine(file, stockKLines);
-
-            System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+            queue.take();
+            cachedThread.execute(() -> {
+                List<StockKLine> dataList = null;
+                try {
+                    dataList = getHistoricalDaily(stock, addDate);
+                    if (CollectionUtils.isEmpty(dataList)) {
+                        System.out.println("no data " + stock);
+                        return;
+                    }
+                    for (StockKLine kLine : dataList) {
+                        stockKLines.add(0, kLine);
+                    }
+                    BaseUtils.writeStockKLine(file, stockKLines);
+                } catch (Exception e) {
+                    System.out.println(stock + " " + e.getMessage());
+                } finally {
+                    if (CollectionUtils.isNotEmpty(dataList)) {
+                        System.out.println("get success " + stock);
+                    }
+                    queue.offer("");
+                }
+            });
         }
     }
 }
