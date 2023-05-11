@@ -1,11 +1,8 @@
 package polygon;
 
-import com.alibaba.fastjson.JSON;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by Luonanqin on 2023/5/8.
@@ -14,11 +11,27 @@ public class WebSocketTest2 {
 
 
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket();
-        socket.connect(new InetSocketAddress("wss://delayed.polygon.io/stocks", 80));
+        try {
+            // open websocket
+            final WebsocketClientEndpoint clientEndPoint = new WebsocketClientEndpoint(new URI("wss://delayed.polygon.io/stocks"));
 
-        InputStream inputStream = socket.getInputStream();
-        String s = JSON.parseObject(inputStream, String.class);
-        System.out.println(s);
+            // add listener
+            clientEndPoint.addMessageHandler(message -> System.out.println(message));
+
+            // send message to websocket
+            clientEndPoint.sendMessage("{\"action\":\"auth\",\"params\":\"Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY\"}");
+            clientEndPoint.sendMessage("{\"action\":\"subscribe\", \"params\":\"T.*\"}");
+
+            // wait 5 seconds for messages from websocket
+
+            while (true) {
+                System.out.println();
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException ex) {
+            System.err.println("InterruptedException exception: " + ex.getMessage());
+        } catch (URISyntaxException ex) {
+            System.err.println("URISyntaxException exception: " + ex.getMessage());
+        }
     }
 }
