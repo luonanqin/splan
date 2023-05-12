@@ -94,10 +94,10 @@ public class GetHistoricalDaily {
     }
 
     public static void main(String[] args) throws Exception {
-        LocalDate today = LocalDate.of(2023, 5, 11);
+        LocalDate today = LocalDate.of(2023, 5, 12);
         LocalDate yesterday = today.minusDays(1);
 
-        int threadCount = 10;
+        int threadCount = 5;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
