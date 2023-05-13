@@ -1,16 +1,17 @@
-package test;
+package bean;
 
 import lombok.Data;
 
 @Data
 public class Node {
 
+    private String name;
     private double value;
     private Node next = null;
     private Node prev = null;
 
-    public Node(double value) {
+    public Node(String name, double value) {
+        this.name = name;
         this.value = value;
     }
-
 }

@@ -1,12 +1,12 @@
 package polygon;
 
+import bean.NodeList;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 import static java.math.BigDecimal.ROUND_DOWN;
@@ -14,27 +14,11 @@ import static java.math.BigDecimal.ROUND_DOWN;
 /**
  * Created by Luonanqin on 2023/5/9.
  */
+@Data
 public class TradeListener {
 
-
-    @Data
-    static class BollDiff {
-        String stock;
-        double diff;
-
-        BollDiff(String stock, double diff){
-            this.stock = stock;
-            this.diff = diff;
-        }
-    }
-
-    private PriorityQueue<BollDiff> queue = new PriorityQueue<>(100, (o1, o2) -> {
-        if (o1.getDiff() > o2.getDiff()) {
-            return -1;
-        } else {
-            return 1;
-        }
-    });
+    private NodeList list = new NodeList(10);
+    private WebsocketClientEndpoint client;
 
     @Subscribe
     public void onMessageEvent(Map.Entry<String, Double> entry) {
@@ -62,9 +46,15 @@ public class TradeListener {
         BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
         double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
 
+        if (dn < price) {
+            return;
+        }
+
         System.out.println(stock + " price=" + price + " dn=" + dn);
-        double diff = (price - dn) / dn;
-        BollDiff bollDiff = new BollDiff(stock, diff);
-        queue.offer(bollDiff);
+        double diff = (dn - price) / dn;
+        boolean success = list.add(stock, diff);
+        if (success) {
+            list.show();
+        }
     }
 }
