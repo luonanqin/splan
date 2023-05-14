@@ -108,7 +108,7 @@ public class OverBollingerDN {
 
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
-        double init = 5000;
+        double init = 10000;
         int beforeYear = 2022, afterYear = 2020, afterYear2 = 2021, historyBeforeYear = 2021;
         double capital = init;
         Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio(historyBeforeYear);
