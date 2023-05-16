@@ -7,7 +7,6 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class GetHistoricalPreClose {
 
-    public static HttpClient httpclient = new HttpClient(new MultiThreadedHttpConnectionManager());
+//    public static HttpClient httpclient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
     public static void main(String[] args) throws Exception {
         String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
@@ -56,15 +55,17 @@ public class GetHistoricalPreClose {
 
         // 每只股票循环查询2022-2023年每个交易日的盘前最后交易价，并写入文件。查询时10个线程并行
 
-        int threadCount = 10;
+        int threadCount = 20;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
         BlockingQueue<String> queue = new LinkedBlockingQueue<>(threadCount);
+        BlockingQueue<HttpClient> clients = new LinkedBlockingQueue<>(threadCount);
         for (int i = 0; i < threadCount; i++) {
             queue.offer("");
+            clients.offer(new HttpClient());
         }
 
         // 2022
@@ -77,13 +78,14 @@ public class GetHistoricalPreClose {
 
         for (String stock : stockSet) {
             if (!stock.equals("AAPL")) {
-                                continue;
+                //                continue;
             }
 
             String hasGetFile = hasGetMap.get(stock);
             if (StringUtils.isNotBlank(hasGetFile)) {
                 List<String> lines = BaseUtils.readFile(hasGetFile);
                 if (lines.get(lines.size() - 1).equals("finish")) {
+                    System.out.println("has get " + stock);
                     continue;
                 }
             }
@@ -111,20 +113,23 @@ public class GetHistoricalPreClose {
                 long preGteTS = preGte.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
                 String preUrl = api + stock + "?order=desc&" + timeGte + preGteTS + "000000&" + timeLte + openTS + "000000&limit=" + limit + "&" + apiKey;
-                queue.take();
+//                queue.take();
+                HttpClient client = clients.take();
                 cachedThread.execute(() -> {
                     try {
-                        String preTrade = getTrade(preUrl);
+                        String preTrade = getTrade(preUrl, client);
                         if (NumberUtils.isCreatable(preTrade)) {
                             String str = date + "\t" + preTrade;
                             sync.add(str);
-                            System.out.println(str);
+                            //                                                        System.out.println(str);
                         }
                     } finally {
                         cdl.countDown();
-                        queue.offer("");
+//                        queue.offer("");
+                        clients.offer(client);
                     }
                 });
+//                System.out.println(date);
             }
 
             cdl.await();
@@ -188,12 +193,15 @@ public class GetHistoricalPreClose {
         //        }
     }
 
-    private static String getTrade(String preUrl) {
+    private static String getTrade(String preUrl, HttpClient httpclient) {
+//        HttpClient httpclient = new HttpClient();
+        GetMethod get = new GetMethod(preUrl);
         try {
-            GetMethod get = new GetMethod(preUrl);
             int code = 0;
             for (int i = 0; i < 3; i++) {
+//                long l = System.currentTimeMillis();
                 code = httpclient.executeMethod(get);
+//                System.out.println("cost=" + (System.currentTimeMillis() - l));
                 if (code == 200) {
                     break;
                 }
@@ -213,6 +221,8 @@ public class GetHistoricalPreClose {
             }
         } catch (Exception e) {
             return e.getMessage();
+        } finally {
+            get.releaseConnection();
         }
     }
 }

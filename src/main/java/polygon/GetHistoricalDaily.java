@@ -94,7 +94,7 @@ public class GetHistoricalDaily {
     }
 
     public static void main(String[] args) throws Exception {
-        LocalDate today = LocalDate.of(2023, 5, 13);
+        LocalDate today = LocalDate.of(2023, 5, 16);
         LocalDate yesterday = today.minusDays(1);
 
         int threadCount = 5;
@@ -114,9 +114,9 @@ public class GetHistoricalDaily {
                 System.out.println("invalid stock: " + stock);
                 continue;
             }
-            //            if (!stock.equals("AAPL")) {
-            //                continue;
-            //            }
+            if (!stock.equals("AAPL")) {
+                //                continue;
+            }
             String file = stockMap.get(stock);
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(file, 2023);
             List<String> addDate = Lists.newArrayList();
