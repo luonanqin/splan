@@ -195,7 +195,7 @@ public class OverBollingerDN2023Real {
                     double dn = boll.getDn();
                     double open = kline.getOpen();
                     double ratio = (dn - open) / dn;
-                    if (ratio < 0 || open < 7) {
+                    if (ratio < 0) {
                         continue;
                     }
                     stockToRatioMap.put(stock, ratio);
@@ -213,7 +213,7 @@ public class OverBollingerDN2023Real {
         for (String date : dateList) {
             List<String> stock = dateToStocksMap.get(date);
             if (CollectionUtils.isNotEmpty(stock)) {
-                System.out.println(date + ": " + (stock.size() > 10 ? stock.subList(0, 10) : stock));
+//                System.out.println(date + ": " + (stock.size() > 10 ? stock.subList(0, 10) : stock));
             }
         }
 
@@ -257,7 +257,7 @@ public class OverBollingerDN2023Real {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
                     if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
-                        //                        continue;
+                                                continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -377,7 +377,7 @@ public class OverBollingerDN2023Real {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                //                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
+                                                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
                                 lossCount++;
@@ -385,7 +385,7 @@ public class OverBollingerDN2023Real {
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                //                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
+                                                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
 
                                 if (gain >= 0) {
