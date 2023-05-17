@@ -42,15 +42,14 @@ public class GetHistoricalDaily {
       "PFDR", "PFHD", "ESM", "HORI", "NGC", "FINM", "SGFY", "BNFT", "UMPQ", "DLCA", "DCRD", "DTRT", "FRON", "IBER",
       "ATCO", "FRSG", "PONO", "ACDI", "SPKB", "MFGP", "TBSA", "NAAC", "ALBO", "ACQR", "CIXX", "GEEX", "BSGA");
 
-    public static List<StockKLine> getHistoricalDaily(String stock, List<String> addDate) {
+    public static List<StockKLine> getHistoricalDaily(String stock, List<String> addDate, HttpClient httpClient) {
         List<StockKLine> list = Lists.newArrayList();
-        HttpClient httpclient = new HttpClient();
         for (String date : addDate) {
             String url = api + stock + "/" + date + "?adjust=true&" + apiKey;
             GetMethod get = new GetMethod(url);
 
             try {
-                httpclient.executeMethod(get);
+                httpClient.executeMethod(get);
                 InputStream stream = get.getResponseBodyAsStream();
                 Map<String, Object> result = JSON.parseObject(stream, Map.class);
                 String status = MapUtils.getString(result, "status");
@@ -94,18 +93,18 @@ public class GetHistoricalDaily {
     }
 
     public static void main(String[] args) throws Exception {
-        LocalDate today = LocalDate.of(2023, 5, 16);
+        LocalDate today = LocalDate.of(2023, 5, 17);
         LocalDate yesterday = today.minusDays(1);
 
-        int threadCount = 5;
+        int threadCount = 10;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
-        Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, workQueue);
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>(threadCount);
+        Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
+        BlockingQueue<HttpClient> queue = new LinkedBlockingQueue<>(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            queue.offer("");
+            queue.offer(new HttpClient());
         }
 
         Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily/");
@@ -137,11 +136,11 @@ public class GetHistoricalDaily {
                 System.out.println("has get " + stock);
                 continue;
             }
-            queue.take();
+            HttpClient httpClient = queue.take();
             cachedThread.execute(() -> {
                 List<StockKLine> dataList = null;
                 try {
-                    dataList = getHistoricalDaily(stock, addDate);
+                    dataList = getHistoricalDaily(stock, addDate, httpClient);
                     if (CollectionUtils.isEmpty(dataList)) {
                         System.out.println("no data " + stock);
                         return;
@@ -156,7 +155,7 @@ public class GetHistoricalDaily {
                     if (CollectionUtils.isNotEmpty(dataList)) {
                         System.out.println("get success " + stock);
                     }
-                    queue.offer("");
+                    queue.offer(httpClient);
                 }
             });
         }
