@@ -1,6 +1,7 @@
 package strategy;
 
 import bean.BOLL;
+import bean.PreClose;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -30,7 +31,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 /**
  * Created by Luonanqin on 2023/3/21.
  */
-public class OverBollingerDN2023Real {
+public class OverBollingerDN2023PreClose {
 
     public static final String TEST_STOCK = "";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
@@ -183,19 +184,48 @@ public class OverBollingerDN2023Real {
         dateList = dateList.subList(0, 75);
 
         // 根据open实时计算出低于dn比例最高的前十股票，然后再遍历计算收益
+        Map<String, Map<String, PreClose>> dateToPreCloseMap = Maps.newHashMap();
+        Map<String, String> preCloseFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "preClose");
+        for (String stock : preCloseFileMap.keySet()) {
+            List<String> lines = BaseUtils.readFile(preCloseFileMap.get(stock));
+            if (CollectionUtils.isEmpty(lines)) {
+                continue;
+            }
+
+            lines.remove(lines.size() - 1);
+            for (String line : lines) {
+                String[] split = line.split("\t");
+                String date = split[0];
+                double price = Double.parseDouble(split[1]);
+                if (!dateToPreCloseMap.containsKey(date)) {
+                    dateToPreCloseMap.put(date, Maps.newHashMap());
+                }
+                PreClose preClose = new PreClose();
+                preClose.setStock(stock);
+                preClose.setDate(date);
+                preClose.setPreClose(price);
+
+                dateToPreCloseMap.get(date).put(stock, preClose);
+            }
+        }
+
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
         for (String date : dateToStockBollMap.keySet()) {
-            Map<String, StockKLine> stockToKlineMap = dateToStockLineMap.get(date);
+            Map<String, PreClose> stockToPreCloseMap = dateToPreCloseMap.get(date);
+            if (stockToPreCloseMap == null) {
+                continue;
+            }
+
             Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
-            for (String stock : stockToKlineMap.keySet()) {
-                StockKLine kline = stockToKlineMap.get(stock);
+            for (String stock : stockToPreCloseMap.keySet()) {
+                PreClose preClose = stockToPreCloseMap.get(stock);
                 BOLL boll = stockToBollMap.get(stock);
                 if (boll != null && boll.getDn() > 0) {
                     double dn = boll.getDn();
-                    double open = kline.getOpen();
+                    double open = preClose.getPreClose();
                     double ratio = (dn - open) / dn;
-                    if (ratio < 0 || open < 7) {
+                    if (ratio < 0) {
                         continue;
                     }
                     stockToRatioMap.put(stock, ratio);
@@ -208,13 +238,6 @@ public class OverBollingerDN2023Real {
                 return -1;
             }).map(o -> o.getKey()).collect(Collectors.toList());
             dateToStocksMap.put(date, stocks);
-        }
-
-        for (String date : dateList) {
-            List<String> stock = dateToStocksMap.get(date);
-            if (CollectionUtils.isNotEmpty(stock)) {
-                System.out.println(date + ": " + (stock.size() > 10 ? stock.subList(0, 10) : stock));
-            }
         }
 
         // 加载2023年每支股票的真是开盘交易量和均价

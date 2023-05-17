@@ -21,10 +21,10 @@ public class Bollinger {
 
     public static void main(String[] args) throws Exception {
         calculate("daily");
-//        calculate("weekly");
-//        calculate("monthly");
-//        calculate("quarterly");
-//        calculate("yearly");
+        //        calculate("weekly");
+        //        calculate("monthly");
+        //        calculate("quarterly");
+        //        calculate("yearly");
     }
 
     public static void calculate(String period) throws Exception {
@@ -34,11 +34,11 @@ public class Bollinger {
         Set<String> hasCalcStock = hasCalcMap.keySet();
 
         for (String stock : stockToKLineMap.keySet()) {
-            if (!stock.equals("AAPL")) {
-//                                continue;
+            if (!stock.equals("MPC")) {
+                continue;
             }
             if (hasCalcStock.contains(stock)) {
-//                continue;
+                //                continue;
             }
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock), 2023);
 

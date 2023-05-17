@@ -48,6 +48,7 @@ public class GetHistoricalPreClose {
         // 获取2022-2023年所有交易日
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2021);
         List<String> dateList = stockKLines.stream().map(StockKLine::getDate).collect(Collectors.toList());
+        dateList.remove(0);
 
         // 获取所有股票列表
         Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
@@ -77,16 +78,16 @@ public class GetHistoricalPreClose {
         LocalDateTime dayLight2023_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
 
         for (String stock : stockSet) {
-            if (!stock.equals("AAPL")) {
-                //                continue;
+            if (!stock.equals("MSI")) {
+                                continue;
             }
 
             String hasGetFile = hasGetMap.get(stock);
             if (StringUtils.isNotBlank(hasGetFile)) {
                 List<String> lines = BaseUtils.readFile(hasGetFile);
                 if (lines.get(lines.size() - 1).equals("finish")) {
-                    System.out.println("has get " + stock);
-                    continue;
+//                    System.out.println("has get " + stock);
+//                    continue;
                 }
             }
 
@@ -95,6 +96,9 @@ public class GetHistoricalPreClose {
             List<String> sync = Collections.synchronizedList(result);
             CountDownLatch cdl = new CountDownLatch(dateList.size());
             for (String date : dateList) {
+                if (!date.equals("01/03/2023")) {
+                    continue;
+                }
                 LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
                 int year = day.get(ChronoField.YEAR);
                 int hour, minute = 30, seconds = 0;
