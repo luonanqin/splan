@@ -6,9 +6,9 @@ import lombok.Data;
  * Created by Luonanqin on 2023/5/17.
  */
 @Data
-public class PreClose {
+public class SimpleTrade {
 
     private String date;
     private String stock;
-    private double preClose;
+    private double tradePrice;
 }

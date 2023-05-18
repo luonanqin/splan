@@ -1,7 +1,7 @@
 package test;
 
 import bean.BOLL;
-import bean.PreClose;
+import bean.SimpleTrade;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -64,7 +64,7 @@ public class PreCloseSort {
         Collections.reverse(dateList);
         dateList = dateList.subList(0, 75);
 
-        Map<String, Map<String, PreClose>> dateToPreCloseMap = Maps.newHashMap();
+        Map<String, Map<String, SimpleTrade>> dateToPreCloseMap = Maps.newHashMap();
         Map<String, String> preCloseFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "preClose");
         for (String stock : preCloseFileMap.keySet()) {
             List<String> lines = BaseUtils.readFile(preCloseFileMap.get(stock));
@@ -80,10 +80,10 @@ public class PreCloseSort {
                 if (!dateToPreCloseMap.containsKey(date)) {
                     dateToPreCloseMap.put(date, Maps.newHashMap());
                 }
-                PreClose preClose = new PreClose();
+                SimpleTrade preClose = new SimpleTrade();
                 preClose.setStock(stock);
                 preClose.setDate(date);
-                preClose.setPreClose(price);
+                preClose.setTradePrice(price);
 
                 dateToPreCloseMap.get(date).put(stock, preClose);
             }
@@ -91,7 +91,7 @@ public class PreCloseSort {
 
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
         for (String date : dateToStockBollMap.keySet()) {
-            Map<String, PreClose> stockToPreCloseMap = dateToPreCloseMap.get(date);
+            Map<String, SimpleTrade> stockToPreCloseMap = dateToPreCloseMap.get(date);
             if (stockToPreCloseMap == null) {
                 continue;
             }
@@ -99,11 +99,11 @@ public class PreCloseSort {
             Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
             for (String stock : stockToPreCloseMap.keySet()) {
-                PreClose preClose = stockToPreCloseMap.get(stock);
+                SimpleTrade preClose = stockToPreCloseMap.get(stock);
                 BOLL boll = stockToBollMap.get(stock);
                 if (boll != null && boll.getDn() > 0) {
                     double dn = boll.getDn();
-                    double open = preClose.getPreClose();
+                    double open = preClose.getTradePrice();
                     double ratio = (dn - open) / dn;
                     if (ratio < 0 || open < 7) {
                         continue;

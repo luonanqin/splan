@@ -213,7 +213,7 @@ public class OverBollingerDN2023Real {
         for (String date : dateList) {
             List<String> stock = dateToStocksMap.get(date);
             if (CollectionUtils.isNotEmpty(stock)) {
-//                System.out.println(date + ": " + (stock.size() > 10 ? stock.subList(0, 10) : stock));
+                System.out.println(date + ": " + (stock.size() > 10 ? stock.subList(0, 10) : stock));
             }
         }
 

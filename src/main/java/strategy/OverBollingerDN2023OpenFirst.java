@@ -1,7 +1,7 @@
 package strategy;
 
 import bean.BOLL;
-import bean.PreClose;
+import bean.SimpleTrade;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -31,7 +31,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 /**
  * Created by Luonanqin on 2023/3/21.
  */
-public class OverBollingerDN2023PreClose {
+public class OverBollingerDN2023OpenFirst {
 
     public static final String TEST_STOCK = "";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
@@ -184,46 +184,58 @@ public class OverBollingerDN2023PreClose {
         dateList = dateList.subList(0, 75);
 
         // 根据open实时计算出低于dn比例最高的前十股票，然后再遍历计算收益
-        Map<String, Map<String, PreClose>> dateToPreCloseMap = Maps.newHashMap();
-        Map<String, String> preCloseFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "preClose");
-        for (String stock : preCloseFileMap.keySet()) {
-            List<String> lines = BaseUtils.readFile(preCloseFileMap.get(stock));
+        Map<String, Map<String, SimpleTrade>> dateToOpenTradeMap = Maps.newHashMap();
+        Map<String, String> openFirstFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade");
+        for (String stock : openFirstFileMap.keySet()) {
+            List<String> lines = BaseUtils.readFile(openFirstFileMap.get(stock));
             if (CollectionUtils.isEmpty(lines)) {
                 continue;
             }
 
             lines.remove(lines.size() - 1);
             for (String line : lines) {
-                String[] split = line.split("\t");
+                String[] split = line.split(",");
+                if (split.length < 3) {
+                    continue;
+                }
                 String date = split[0];
                 double price = Double.parseDouble(split[1]);
-                if (!dateToPreCloseMap.containsKey(date)) {
-                    dateToPreCloseMap.put(date, Maps.newHashMap());
+                String tradeTime = split[2];
+                String[] timeSplit = tradeTime.split(":");
+                String secondStr = timeSplit[2];
+                int second = Integer.valueOf(secondStr.substring(0, 2));
+                int minute = Integer.valueOf(timeSplit[1]);
+                if (minute > 30 || second > 5) {
+                    continue;
                 }
-                PreClose preClose = new PreClose();
-                preClose.setStock(stock);
-                preClose.setDate(date);
-                preClose.setPreClose(price);
 
-                dateToPreCloseMap.get(date).put(stock, preClose);
+                if (!dateToOpenTradeMap.containsKey(date)) {
+                    dateToOpenTradeMap.put(date, Maps.newHashMap());
+                }
+                SimpleTrade openTrade = new SimpleTrade();
+                openTrade.setStock(stock);
+                openTrade.setDate(date);
+                openTrade.setTradePrice(price);
+
+                dateToOpenTradeMap.get(date).put(stock, openTrade);
             }
         }
 
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
         for (String date : dateToStockBollMap.keySet()) {
-            Map<String, PreClose> stockToPreCloseMap = dateToPreCloseMap.get(date);
-            if (stockToPreCloseMap == null) {
+            Map<String, SimpleTrade> stockToOpenTradeMap = dateToOpenTradeMap.get(date);
+            if (stockToOpenTradeMap == null) {
                 continue;
             }
 
             Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
-            for (String stock : stockToPreCloseMap.keySet()) {
-                PreClose preClose = stockToPreCloseMap.get(stock);
+            for (String stock : stockToOpenTradeMap.keySet()) {
+                SimpleTrade openTrade = stockToOpenTradeMap.get(stock);
                 BOLL boll = stockToBollMap.get(stock);
                 if (boll != null && boll.getDn() > 0) {
                     double dn = boll.getDn();
-                    double open = preClose.getPreClose();
+                    double open = openTrade.getTradePrice();
                     double ratio = (dn - open) / dn;
                     if (ratio < 0) {
                         continue;
@@ -238,6 +250,13 @@ public class OverBollingerDN2023PreClose {
                 return -1;
             }).map(o -> o.getKey()).collect(Collectors.toList());
             dateToStocksMap.put(date, stocks);
+        }
+
+        for (String date : dateList) {
+            List<String> stock = dateToStocksMap.get(date);
+            if (CollectionUtils.isNotEmpty(stock)) {
+                System.out.println(date + ": " + (stock.size() > 10 ? stock.subList(0, 10) : stock));
+            }
         }
 
         // 加载2023年每支股票的真是开盘交易量和均价
@@ -280,7 +299,7 @@ public class OverBollingerDN2023PreClose {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
                     if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
-                        //                        continue;
+                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -400,7 +419,7 @@ public class OverBollingerDN2023PreClose {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                //                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
+                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
                                 lossCount++;
@@ -408,7 +427,7 @@ public class OverBollingerDN2023PreClose {
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                //                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
+                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
 
                                 if (gain >= 0) {
