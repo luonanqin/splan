@@ -93,7 +93,7 @@ public class GetHistoricalDaily {
     }
 
     public static void main(String[] args) throws Exception {
-        LocalDate today = LocalDate.of(2023, 5, 17);
+        LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
         int threadCount = 10;

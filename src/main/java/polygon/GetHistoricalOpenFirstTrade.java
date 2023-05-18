@@ -56,16 +56,14 @@ public class GetHistoricalOpenFirstTrade {
 
         // 每只股票循环查询2022-2023年每个交易日的盘前最后交易价，并写入文件。查询时10个线程并行
 
-        int threadCount = 20;
+        int threadCount = 100;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
         Executor cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>(threadCount);
         BlockingQueue<HttpClient> clients = new LinkedBlockingQueue<>(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            queue.offer("");
             clients.offer(new HttpClient());
         }
 
@@ -85,6 +83,10 @@ public class GetHistoricalOpenFirstTrade {
             String hasGetFile = hasGetMap.get(stock);
             if (StringUtils.isNotBlank(hasGetFile)) {
                 List<String> lines = BaseUtils.readFile(hasGetFile);
+                if (CollectionUtils.isEmpty(lines)) {
+                    System.out.println(stock+" has no data");
+                    continue;
+                }
                 if (lines.get(lines.size() - 1).equals("finish")) {
                     System.out.println("has get " + stock);
                     continue;
@@ -126,7 +128,6 @@ public class GetHistoricalOpenFirstTrade {
 //                        System.out.println(str);
                     } finally {
                         cdl.countDown();
-                        //                        queue.offer("");
                         clients.offer(client);
                     }
                 });

@@ -34,7 +34,7 @@ public class Bollinger {
         Set<String> hasCalcStock = hasCalcMap.keySet();
 
         for (String stock : stockToKLineMap.keySet()) {
-            if (!stock.equals("MPC")) {
+            if (!stock.equals("TKR")) {
                 continue;
             }
             if (hasCalcStock.contains(stock)) {

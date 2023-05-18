@@ -19,8 +19,8 @@ public class Merge2023 {
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         List<String> stockList = Lists.newArrayList(dailyFileMap.keySet());
-                stockList.clear();
-                stockList.add("MPC");
+//                stockList.clear();
+//                stockList.add("MPC");
 
         Map<String, String> _2023Map = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
         for (String stock : stockList) {
