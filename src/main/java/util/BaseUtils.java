@@ -165,9 +165,9 @@ public class BaseUtils {
 
     public static void asyncWriteStockKLine(String filePath, List<StockKLine> list) throws Exception {
         new Thread(() -> {
-            BufferedWriter bw=null;
+            BufferedWriter bw = null;
             try {
-                 bw = new BufferedWriter(new FileWriter(filePath));
+                bw = new BufferedWriter(new FileWriter(filePath));
                 for (StockKLine l : list) {
                     bw.write(l.toString());
                     bw.write("\n");
@@ -473,4 +473,20 @@ public class BaseUtils {
 
         return convertToKLine(Lists.newArrayList(first)).get(0);
     }
+
+    public static StockKLine getLatestKLine(String filePath) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        if (filePath.contains("_historical")) {
+            br.readLine();
+        }
+
+        String first = br.readLine();
+        br.close();
+        if (StringUtils.isBlank(first)) {
+            return null;
+        }
+
+        return convertToKLine(Lists.newArrayList(first), 2023, 0).get(0);
+    }
+
 }

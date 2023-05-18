@@ -4,12 +4,14 @@ import bean.NodeList;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
+import strategy.OverBollingerDN2023OpenFirst;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
 
 import static java.math.BigDecimal.ROUND_DOWN;
+import static polygon.WebsocketClientEndpoint.originRatioMap;
 
 /**
  * Created by Luonanqin on 2023/5/9.
@@ -52,6 +54,13 @@ public class TradeListener {
 
         System.out.println(stock + " price=" + price + " dn=" + dn);
         double diff = (dn - price) / dn;
+        int diffInt = (int) diff;
+        OverBollingerDN2023OpenFirst.StockRatio stockRatio = originRatioMap.get(stock);
+        Map<Integer, OverBollingerDN2023OpenFirst.RatioBean> ratioMap = stockRatio.getRatioMap();
+        OverBollingerDN2023OpenFirst.RatioBean ratioBean = ratioMap.get(diffInt);
+        if (ratioBean.getRatio() < 0.5) {
+            return;
+        }
         boolean success = list.add(stock, diff);
         if (success) {
             list.show();

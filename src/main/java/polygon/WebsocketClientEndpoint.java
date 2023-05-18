@@ -10,6 +10,7 @@ import com.google.common.eventbus.AsyncEventBus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import strategy.OverBollingerDN2023OpenFirst;
 import util.BaseUtils;
 import util.Constants;
 
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -41,14 +43,18 @@ public class WebsocketClientEndpoint {
 
     public static final String TEST_STOCK = "";
     public static final String TEST_SUBSCRIBE_STOCK = "T.CXAI,T.SLV,T.DRMA,T.FMS,T.SOXS,T.GFAI,T.APPH,T.TNA,T.IWM,T.TZA,T.TWM,T.SRTY,T.NFLX,T.JEPI,T.META,T.AUD,T.IONQ,T.TIVC,T.TSLA,T.CYTO,T.FFIE,T.GPRO,T.TMF,T.MO,T.BBIG,T.SOXL,T.BBLN,T.MINM,T.MSFT,T.UVXY,T.GOOG,T.MVST,T.NVDA,T.TQQQ,T.GETR,T.ATNF,T.IBRX,T.AMZN,T.PLX,T.UPRO,T.UCO,T.PACW,T.SPY,T.MARA,T.AGBA,T.ZFOX,T.INTC,T.DIS,T.PYPL,T.CDTX,T.INBS,T.LICN,T.SPXU,T.SRTS,T.SBFM,T.TSLL,T.NRGU,T.SOFI,T.SQQQ,T.AIG,T.U,T.O,T.EGIO,T.MTC,T.IEF,T.TLT,T.CWEB,T.TCBP,T.SVFD,T.GDC,T.TRKA,T.AAPL,T.SSO,T.IDEX,T.VRM,T.SNDL,T.NTEST,T.GMDA,T.ABNB,T.TMV,T.SDOW,T.VCIG,T.XLI,T.CRKN,T.GDXD,T.VSSYW,T.KNTE,T.ASML,T.NKLA,T.AMD,T.OPK,T.UVIX,T.SBSW,T.JD,T.LABU,T.BABA,T.PTGX,T.CS,T.BITO,T.NIO,T.TCRX,T.XPEV,T.SFWL,T.OPEN,T.BNTX,T.GOOGL,T.INDA,T.ZURA,T.LILM,T.PBTS,T.ADMP,T.Z,T.RYAAY,T.WMT,T.CISO,T.USO,T.CCL,T.BOIL,T.TUP,T.AFRM,T.SLGG,T.OPFI,T.BNKU,T.F,T.BE,T.SURG,T.MWG,T.LCID,T.RIVN,T.NVO,T.SOS,T.CNEY,T.SNTG,T.POLA,T.IZM,T.OXY,T.QBTS,T.GFI,T.GOEV,T.EPAM,T.HOUR,T.BLBD,T.GOLD,T.JAGX,T.GLD,T.TWLO,T.EURN,T.JOBY,T.CVX,T.VIXY,T.ALLR,T.SMX,T.MRNA,T.HYZN,T.BFRG,T.ZIM,T.NOBL,T.ORGO,T.VATE,T.IAU,T.SCHD,T.AGQ,T.VOO,T.XLF,T.SOUN,T.GETY,T.UAVS,T.CRSP,T.KO,T.PTEST,T.CVNA,T.CI,T.KOLD,T.WFC,T.BLUE,T.CJJD,T.GDX,T.LABD,T.BLNK,T.BAC,T.MULN,T.LUNR,T.IMGN,T.IONM,T.FUTU,T.SHFS,T.SONO,T.STSS,T.CEI,T.CMCSA,T.CYTK,T.HLN,T.IREN,T.SBUX,T.ZOM,T.TCJH,T.C,T.QQQ,T.TOP,T.UFAB,T.RACE,T.HKD,T.AMPE,T.QQQM,T.DDL,T.YINN,T.ASTI,T.UBS,T.TCMD,T.FNGU,T.SPXS,T.LAC,T.PLUG,T.TRVN,T.QCOM,T.NVTA,T.JEPQ,T.ICUCW,T.BULZ,T.BRDS,T.GRVY,T.CLRO,T.SHOP,T.MOBQ,T.LI,T.VALE,T.GCTK,T.BB,T.DRN,T.HUBS,T.DNA,T.IQ,T.PLTR,T.FSLR,T.QLD,T.PAAS,T.PBLA,T.BIOL,T.HSBC,T.PEP,T.AUGX,T.MFH,T.CPE,T.DOG,T.HUDI,T.COSM,T.WDAY,T.XELA,T.DB,T.INPX,T.SNN,T.PDD,T.FXI,T.SSRM,T.TSLQ,T.HMPT,T.BYND,T.QID,T.GRIL,T.GSK,T.BNKD,T.HSTO,T.CTLT,T.ZION,T.HCDI,T.WETG,T.VXX,T.SAVA,T.SVXY,T.AKAN,T.BFLY,T.CARR,T.CLSK,T.IBM,T.DWAC,T.NKE,T.NVDS,T.INCR,T.MSTR,T.T,T.TSM,T.CSCO,T.DADA,T.SQ,T.ZSL,T.SARK,T.IVV,T.SDS,T.SPLG,T.UDOW,T.HMY,T.DXF,T.PFE,T.OMH,T.MHNC,T.SIGA,T.ATXG,T.NOGN,T.LYFT,T.RIOT,T.BMY,T.FAS,T.TECL,T.SPG,T.NDAQ,T.GNS,T.SPXL,T.WAL,T.SVIX,T.UNG,T.NOK,T.SAI,T.ARKK,T.AKLI,T.RKLB,T.AGFY,T.DDOG,T.RBLX,T.NBTX,T.MCRB,T.SNAP,T.TIO,T.HGEN,T.TAL,T.WOOF,T.DIA,T.BTBT,T.MGAM,T.UPWK,T.TWOU,T.AMC,T.YANG,T.WISA,T.ABBV,T.TCOM,T.SMTC,T.MAXN,T.UPST,T.CMND,T.ARR,T.ROKU,T.FISV,T.TSLS,T.MU,T.RELI,T.AI,T.AZN,T.NU,T.ZVZZT,T.TLRY,T.BURU,T.XLP,T.EEFT,T.CROX,T.ADXN,T.PBR,T.CXAIW,T.BITI,T.APE,T.ABB,T.FNGD,T.XLV,T.SENS,T.APLD,T.HOLO,T.TSP,T.HUIZ,T.ATEST,T.NVS,T.TLTW,T.MOS,T.DPST,T.EJH,T.BPT,T.SHEL,T.SPRO,T.SVOL,T.COIN,T.NCMI,T.TMC,T.MGIH,T.DHY,T.FOXA,T.TRUP,T.WPM,T.NVAX,T.SQM,T.KWEB,T.ZH,T.EVA,T.SNGX,T.LICY,T.HIMX,T.SPYG,T.RWM,T.VXRT,T.CTVA,T.MS,T.SPCE,T.ADBE,T.ING,T.FLNC,T.TDOC,T.NNOX,T.ENPH,T.NCLH,T.MCD,T.GDXU";
+    public static final long STANDARD_TIME = 1684589400000L;
 
     private boolean subscribed = false;
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
     public static Map<String, Set<Double>> stockToM19Close = Maps.newHashMap();
+    public static Map<String, OverBollingerDN2023OpenFirst.StockRatio> originRatioMap;
     private BlockingQueue<String> bq = new LinkedBlockingQueue<>(1000);
+    private Executor executor;
 
     private static Set<String> stockSet;
+    private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private static Map<String, String> fileMap;
     private static AsyncEventBus eventBus;
 
@@ -69,8 +75,12 @@ public class WebsocketClientEndpoint {
         try {
             String mergePath = Constants.HIS_BASE_PATH + "merge/";
             fileMap = BaseUtils.getFileMap(mergePath);
-            stockSet = fileMap.keySet();
-
+            stockSet = buildStockSet(fileMap);
+            System.out.println("stock set size: " + stockSet.size());
+            //            stockSet.clear();
+            //            stockSet.add("AAPL");
+            originRatioMap = OverBollingerDN2023OpenFirst.computeHistoricalOverBollingerRatio(2023);
+            buildExecutor();
             loadLastDn();
             loadM20();
             eventBus = asyncEventBus();
@@ -80,6 +90,27 @@ public class WebsocketClientEndpoint {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void buildExecutor() {
+        int threadCount = 100;
+        int corePoolSize = threadCount;
+        int maximumPoolSize = corePoolSize;
+        long keepAliveTime = 60L;
+        LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
+        executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
+    }
+
+    private static Set<String> buildStockSet(Map<String, String> fileMap) throws Exception {
+        Set<String> set = Sets.newHashSet();
+        for (String stock : fileMap.keySet()) {
+            String filePath = fileMap.get(stock);
+            StockKLine first = BaseUtils.getLatestKLine(filePath);
+            if (first.getClose() > 7) {
+                set.add(stock);
+            }
+        }
+        return set;
     }
 
     private static void loadM20() throws Exception {
@@ -154,7 +185,7 @@ public class WebsocketClientEndpoint {
         int maxPoolSize = 100;
         int keepAliveTime = 60 * 1000;
 
-        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(5000);
+        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(1000);
         RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
         ThreadFactory factory = new ThreadFactory() {
             private final AtomicInteger integer = new AtomicInteger(1);
@@ -215,18 +246,21 @@ public class WebsocketClientEndpoint {
                     System.out.println(status);
                     //                    this.sendMessage("{\"action\":\"subscribe\", \"params\":\"" + TEST_SUBSCRIBE_STOCK + "\"}");
                     subscribed = true;
-                    new Thread(() -> {
-//                        Set<String> stocks = Sets.newHashSet("CXAI", "SLV", "DRMA", "FMS", "SOXS", "GFAI", "APPH", "TNA", "IWM", "TZA", "TWM", "SRTY", "NFLX", "JEPI", "META", "AUD", "IONQ", "TIVC", "TSLA", "CYTO", "FFIE", "GPRO", "TMF", "MO", "BBIG", "SOXL", "BBLN", "MINM", "MSFT", "UVXY", "GOOG", "MVST", "NVDA", "TQQQ", "GETR", "ATNF", "IBRX", "AMZN", "PLX", "UPRO", "UCO", "PACW", "SPY", "MARA", "AGBA", "ZFOX", "INTC", "DIS", "PYPL", "CDTX", "INBS", "LICN", "SPXU", "SRTS", "SBFM", "TSLL", "NRGU", "SOFI", "SQQQ", "AIG", "U", "O", "EGIO", "MTC", "IEF", "TLT", "CWEB", "TCBP", "SVFD", "GDC", "TRKA", "AAPL", "SSO", "IDEX", "VRM", "SNDL", "NTEST", "GMDA", "ABNB", "TMV", "SDOW", "VCIG", "XLI", "CRKN", "GDXD", "VSSYW", "KNTE", "ASML", "NKLA", "AMD", "OPK", "UVIX", "SBSW", "JD", "LABU", "BABA", "PTGX", "CS", "BITO", "NIO", "TCRX", "XPEV", "SFWL", "OPEN", "BNTX", "GOOGL", "INDA", "ZURA", "LILM", "PBTS", "ADMP", "Z", "RYAAY", "WMT", "CISO", "USO", "CCL", "BOIL", "TUP", "AFRM", "SLGG", "OPFI", "BNKU", "F", "BE", "SURG", "MWG", "LCID", "RIVN", "NVO", "SOS", "CNEY", "SNTG", "POLA", "IZM", "OXY", "QBTS", "GFI", "GOEV", "EPAM", "HOUR", "BLBD", "GOLD", "JAGX", "GLD", "TWLO", "EURN", "JOBY", "CVX", "VIXY", "ALLR", "SMX", "MRNA", "HYZN", "BFRG", "ZIM", "NOBL", "ORGO", "VATE", "IAU", "SCHD", "AGQ", "VOO", "XLF", "SOUN", "GETY", "UAVS", "CRSP", "KO", "PTEST", "CVNA", "CI", "KOLD", "WFC", "BLUE", "CJJD", "GDX", "LABD", "BLNK", "BAC", "MULN", "LUNR", "IMGN", "IONM", "FUTU", "SHFS", "SONO", "STSS", "CEI", "CMCSA", "CYTK", "HLN", "IREN", "SBUX", "ZOM", "TCJH", "C", "QQQ", "TOP", "UFAB", "RACE", "HKD", "AMPE", "QQQM", "DDL", "YINN", "ASTI", "UBS", "TCMD", "FNGU", "SPXS", "LAC", "PLUG", "TRVN", "QCOM", "NVTA", "JEPQ", "ICUCW", "BULZ", "BRDS", "GRVY", "CLRO", "SHOP", "MOBQ", "LI", "VALE", "GCTK", "BB", "DRN", "HUBS", "DNA", "IQ", "PLTR", "FSLR", "QLD", "PAAS", "PBLA", "BIOL", "HSBC", "PEP", "AUGX", "MFH", "CPE", "DOG", "HUDI", "COSM", "WDAY", "XELA", "DB", "INPX", "SNN", "PDD", "FXI", "SSRM", "TSLQ", "HMPT", "BYND", "QID", "GRIL", "GSK", "BNKD", "HSTO", "CTLT", "ZION", "HCDI", "WETG", "VXX", "SAVA", "SVXY", "AKAN", "BFLY", "CARR", "CLSK", "IBM", "DWAC", "NKE", "NVDS", "INCR", "MSTR", "T", "TSM", "CSCO", "DADA", "SQ", "ZSL", "SARK", "IVV", "SDS", "SPLG", "UDOW", "HMY", "DXF", "PFE", "OMH", "MHNC", "SIGA", "ATXG", "NOGN", "LYFT", "RIOT", "BMY", "FAS", "TECL", "SPG", "NDAQ", "GNS", "SPXL", "WAL", "SVIX", "UNG", "NOK", "SAI", "ARKK", "AKLI", "RKLB", "AGFY", "DDOG", "RBLX", "NBTX", "MCRB", "SNAP", "TIO", "HGEN", "TAL", "WOOF", "DIA", "BTBT", "MGAM", "UPWK", "TWOU", "AMC", "YANG", "WISA", "ABBV", "TCOM", "SMTC", "MAXN", "UPST", "CMND", "ARR", "ROKU", "FISV", "TSLS", "MU", "RELI", "AI", "AZN", "NU", "ZVZZT", "TLRY", "BURU", "XLP", "EEFT", "CROX", "ADXN", "PBR", "CXAIW", "BITI", "APE", "ABB", "FNGD", "XLV", "SENS", "APLD", "HOLO", "TSP", "HUIZ", "ATEST", "NVS", "TLTW", "MOS", "DPST", "EJH", "BPT", "SHEL", "SPRO", "SVOL", "COIN", "NCMI", "TMC", "MGIH", "DHY", "FOXA", "TRUP", "WPM", "NVAX", "SQM", "KWEB", "ZH", "EVA", "SNGX", "LICY", "HIMX", "SPYG", "RWM", "VXRT", "CTVA", "MS", "SPCE", "ADBE", "ING", "FLNC", "TDOC", "NNOX", "ENPH", "NCLH", "MCD", "GDXU");
-//                        for (String stock : stocks) {
+                    long l = System.currentTimeMillis();
+                    System.out.println("====================  begin" + l);
+                    executor.execute(() -> {
+                        //                        Set<String> stocks = Sets.newHashSet("CXAI", "SLV", "DRMA", "FMS", "SOXS", "GFAI", "APPH", "TNA", "IWM", "TZA", "TWM", "SRTY", "NFLX", "JEPI", "META", "AUD", "IONQ", "TIVC", "TSLA", "CYTO", "FFIE", "GPRO", "TMF", "MO", "BBIG", "SOXL", "BBLN", "MINM", "MSFT", "UVXY", "GOOG", "MVST", "NVDA", "TQQQ", "GETR", "ATNF", "IBRX", "AMZN", "PLX", "UPRO", "UCO", "PACW", "SPY", "MARA", "AGBA", "ZFOX", "INTC", "DIS", "PYPL", "CDTX", "INBS", "LICN", "SPXU", "SRTS", "SBFM", "TSLL", "NRGU", "SOFI", "SQQQ", "AIG", "U", "O", "EGIO", "MTC", "IEF", "TLT", "CWEB", "TCBP", "SVFD", "GDC", "TRKA", "AAPL", "SSO", "IDEX", "VRM", "SNDL", "NTEST", "GMDA", "ABNB", "TMV", "SDOW", "VCIG", "XLI", "CRKN", "GDXD", "VSSYW", "KNTE", "ASML", "NKLA", "AMD", "OPK", "UVIX", "SBSW", "JD", "LABU", "BABA", "PTGX", "CS", "BITO", "NIO", "TCRX", "XPEV", "SFWL", "OPEN", "BNTX", "GOOGL", "INDA", "ZURA", "LILM", "PBTS", "ADMP", "Z", "RYAAY", "WMT", "CISO", "USO", "CCL", "BOIL", "TUP", "AFRM", "SLGG", "OPFI", "BNKU", "F", "BE", "SURG", "MWG", "LCID", "RIVN", "NVO", "SOS", "CNEY", "SNTG", "POLA", "IZM", "OXY", "QBTS", "GFI", "GOEV", "EPAM", "HOUR", "BLBD", "GOLD", "JAGX", "GLD", "TWLO", "EURN", "JOBY", "CVX", "VIXY", "ALLR", "SMX", "MRNA", "HYZN", "BFRG", "ZIM", "NOBL", "ORGO", "VATE", "IAU", "SCHD", "AGQ", "VOO", "XLF", "SOUN", "GETY", "UAVS", "CRSP", "KO", "PTEST", "CVNA", "CI", "KOLD", "WFC", "BLUE", "CJJD", "GDX", "LABD", "BLNK", "BAC", "MULN", "LUNR", "IMGN", "IONM", "FUTU", "SHFS", "SONO", "STSS", "CEI", "CMCSA", "CYTK", "HLN", "IREN", "SBUX", "ZOM", "TCJH", "C", "QQQ", "TOP", "UFAB", "RACE", "HKD", "AMPE", "QQQM", "DDL", "YINN", "ASTI", "UBS", "TCMD", "FNGU", "SPXS", "LAC", "PLUG", "TRVN", "QCOM", "NVTA", "JEPQ", "ICUCW", "BULZ", "BRDS", "GRVY", "CLRO", "SHOP", "MOBQ", "LI", "VALE", "GCTK", "BB", "DRN", "HUBS", "DNA", "IQ", "PLTR", "FSLR", "QLD", "PAAS", "PBLA", "BIOL", "HSBC", "PEP", "AUGX", "MFH", "CPE", "DOG", "HUDI", "COSM", "WDAY", "XELA", "DB", "INPX", "SNN", "PDD", "FXI", "SSRM", "TSLQ", "HMPT", "BYND", "QID", "GRIL", "GSK", "BNKD", "HSTO", "CTLT", "ZION", "HCDI", "WETG", "VXX", "SAVA", "SVXY", "AKAN", "BFLY", "CARR", "CLSK", "IBM", "DWAC", "NKE", "NVDS", "INCR", "MSTR", "T", "TSM", "CSCO", "DADA", "SQ", "ZSL", "SARK", "IVV", "SDS", "SPLG", "UDOW", "HMY", "DXF", "PFE", "OMH", "MHNC", "SIGA", "ATXG", "NOGN", "LYFT", "RIOT", "BMY", "FAS", "TECL", "SPG", "NDAQ", "GNS", "SPXL", "WAL", "SVIX", "UNG", "NOK", "SAI", "ARKK", "AKLI", "RKLB", "AGFY", "DDOG", "RBLX", "NBTX", "MCRB", "SNAP", "TIO", "HGEN", "TAL", "WOOF", "DIA", "BTBT", "MGAM", "UPWK", "TWOU", "AMC", "YANG", "WISA", "ABBV", "TCOM", "SMTC", "MAXN", "UPST", "CMND", "ARR", "ROKU", "FISV", "TSLS", "MU", "RELI", "AI", "AZN", "NU", "ZVZZT", "TLRY", "BURU", "XLP", "EEFT", "CROX", "ADXN", "PBR", "CXAIW", "BITI", "APE", "ABB", "FNGD", "XLV", "SENS", "APLD", "HOLO", "TSP", "HUIZ", "ATEST", "NVS", "TLTW", "MOS", "DPST", "EJH", "BPT", "SHEL", "SPRO", "SVOL", "COIN", "NCMI", "TMC", "MGIH", "DHY", "FOXA", "TRUP", "WPM", "NVAX", "SQM", "KWEB", "ZH", "EVA", "SNGX", "LICY", "HIMX", "SPYG", "RWM", "VXRT", "CTVA", "MS", "SPCE", "ADBE", "ING", "FLNC", "TDOC", "NNOX", "ENPH", "NCLH", "MCD", "GDXU");
+                        //                        for (String stock : stocks) {
                         for (String stock : stockSet) {
                             sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                            //                            try {
+                            //                                Thread.sleep(10);
+                            //                            } catch (InterruptedException e) {
+                            //                                e.printStackTrace();
+                            //                            }
                         }
-                    }).start();
+                        System.out.println("======= cost: " + (System.currentTimeMillis() - l));
+                    });
                     //                } else if ("success".equals(status) && ("subscribed to: " + TEST_SUBSCRIBE_STOCK).equals(msg)) {
                     //                    subscribed = true;
                     //                    System.out.println(msg);
@@ -270,12 +304,18 @@ public class WebsocketClientEndpoint {
                 List<Map> maps = JSON.parseArray(msg, Map.class);
                 Map<String, Double> stockToPrice = Maps.newHashMap();
                 for (Map map : maps) {
-                    String stock = MapUtils.getString(map, "sym");
-                    if (StringUtils.isBlank(stock)) {
-                        System.out.println(msg);
+                    String stock = MapUtils.getString(map, "sym", "");
+
+                    if (unsubcribeStockSet.contains(stock) || StringUtils.isBlank(stock)) {
+                        //                        System.out.println(msg);
                         continue;
                     }
                     Double price = MapUtils.getDouble(map, "p");
+                    Long time = MapUtils.getLong(map, "t");
+                    if (time < STANDARD_TIME) {
+                        System.out.println("time is early");
+                        continue;
+                    }
                     // 当前价大于前一天的下轨则直接过滤
                     Double lastDn = stockToLastDn.get(stock);
                     if (lastDn == null || price > lastDn) {
@@ -285,7 +325,10 @@ public class WebsocketClientEndpoint {
                     stockToPrice.put(stock, price);
                 }
                 for (Map.Entry<String, Double> entry : stockToPrice.entrySet()) {
-                    eventBus.post(entry);
+                    String stock = entry.getKey();
+                    if (unsubscribed(stock)) {
+                        eventBus.post(entry);
+                    }
                 }
             }
         } catch (InterruptedException e) {
@@ -293,8 +336,14 @@ public class WebsocketClientEndpoint {
         }
     }
 
-    public void unsubscribed(String stock) {
-        sendMessage("{\"action\":\"unsubscribe\", \"params\":\"T." + stock + "\"}");
+    public boolean unsubscribed(String stock) {
+        if (unsubcribeStockSet.contains(stock)) {
+            return false;
+        }
+        executor.execute(() -> sendMessage("{\"action\":\"unsubscribe\", \"params\":\"T." + stock + "\"}"));
+        unsubcribeStockSet.add(stock);
+        System.out.println("unsubcribeStockSet size: "+ unsubcribeStockSet.size()+ System.currentTimeMillis());
+        return true;
     }
 
     public static void main(String[] args) throws InterruptedException {
