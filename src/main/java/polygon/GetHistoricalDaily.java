@@ -96,7 +96,7 @@ public class GetHistoricalDaily {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
-        int threadCount = 10;
+        int threadCount = 50;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;

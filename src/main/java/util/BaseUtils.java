@@ -489,4 +489,18 @@ public class BaseUtils {
         return convertToKLine(Lists.newArrayList(first), 2023, 0).get(0);
     }
 
+    public static String getLatestLine(String filePath) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        if (filePath.contains("_historical")) {
+            br.readLine();
+        }
+
+        String first = br.readLine();
+        br.close();
+        if (StringUtils.isBlank(first)) {
+            return null;
+        }
+
+        return first;
+    }
 }
