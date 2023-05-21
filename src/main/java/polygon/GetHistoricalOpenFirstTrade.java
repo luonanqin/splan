@@ -44,15 +44,15 @@ public class GetHistoricalOpenFirstTrade {
         String timeGte = "timestamp.gte=";
         String limit = "10";
 
-        Map<String, String> hasGetMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade");
+        Map<String, String> stockOpenFirstMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade");
         // 获取2022-2023年所有交易日
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2021);
-        List<String> dateList = stockKLines.stream().map(StockKLine::getDate).collect(Collectors.toList());
+        List<String> tradeDateList = stockKLines.stream().map(StockKLine::getDate).collect(Collectors.toList());
 
         // 获取所有股票列表
         Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
         Set<String> stockSet = fileMap.keySet();
-//        Set<String> stockSet = Sets.newHashSet("TKR", "ALTI", "LULU", "GBX", "EURN", "BLTE", "PRCT", "OPOF", "VECT", "AC", "CHGG", "FULT", "HRT", "BLFY", "XYL", "SRCE", "PPL", "NBTB", "ALRS", "CLBK", "FIBK", "TERN", "EBF", "WRK", "BDX", "VREX", "ARIS", "NEM", "SMLR", "TTGT", "AZTA", "SRTS", "OM", "CRDO", "MX", "DZSI", "EQC", "YETI", "LASR", "INGN", "XPEL", "RETA", "FHN", "FIGS", "XMTR", "SI", "CDNA", "IAA", "CARA", "UNFI", "SBNY", "ZION", "WAL", "QTWO", "TARS", "EBIX", "NWFL", "MNTK", "ARCE", "CTRN", "PHAR", "PROK", "SQ", "TRUP", "SCHL", "HRMY", "AURA", "SMTC", "ANGO", "ASND", "ATEN", "RGP", "SSTI", "STG", "ADTN", "CRUS", "WISH", "LAKE", "ACR", "ALVO", "GFF", "FFIV");
+        //        Set<String> stockSet = Sets.newHashSet("TKR", "ALTI", "LULU", "GBX", "EURN", "BLTE", "PRCT", "OPOF", "VECT", "AC", "CHGG", "FULT", "HRT", "BLFY", "XYL", "SRCE", "PPL", "NBTB", "ALRS", "CLBK", "FIBK", "TERN", "EBF", "WRK", "BDX", "VREX", "ARIS", "NEM", "SMLR", "TTGT", "AZTA", "SRTS", "OM", "CRDO", "MX", "DZSI", "EQC", "YETI", "LASR", "INGN", "XPEL", "RETA", "FHN", "FIGS", "XMTR", "SI", "CDNA", "IAA", "CARA", "UNFI", "SBNY", "ZION", "WAL", "QTWO", "TARS", "EBIX", "NWFL", "MNTK", "ARCE", "CTRN", "PHAR", "PROK", "SQ", "TRUP", "SCHL", "HRMY", "AURA", "SMTC", "ANGO", "ASND", "ATEN", "RGP", "SSTI", "STG", "ADTN", "CRUS", "WISH", "LAKE", "ACR", "ALVO", "GFF", "FFIV");
 
         // 每只股票循环查询2022-2023年每个交易日的盘前最后交易价，并写入文件。查询时10个线程并行
 
@@ -80,17 +80,30 @@ public class GetHistoricalOpenFirstTrade {
 //                continue;
             }
 
-            String hasGetFile = hasGetMap.get(stock);
-            if (StringUtils.isNotBlank(hasGetFile)) {
-                List<String> lines = BaseUtils.readFile(hasGetFile);
-                if (CollectionUtils.isEmpty(lines)) {
-                    System.out.println(stock+" has no data");
-                    continue;
+            String file = stockOpenFirstMap.get(stock);
+            if (StringUtils.isBlank(file)) {
+                continue;
+            }
+            List<String> lines = BaseUtils.readFile(file);
+            String[] split = lines.get(0).split(",");
+            if (split.length < 3) {
+                continue;
+            }
+            String latestDate = split[0];
+
+            List<String> dateList = Lists.newArrayList();
+            LocalDate latestDay = LocalDate.parse(latestDate, Constants.FORMATTER);
+            for (String tradeDate : tradeDateList) {
+                LocalDate tradeDay = LocalDate.parse(tradeDate, Constants.FORMATTER);
+                if (latestDay.isBefore(tradeDay)) {
+                    dateList.add(tradeDate);
+                } else {
+                    break;
                 }
-                if (lines.get(lines.size() - 1).equals("finish")) {
-                    System.out.println("has get " + stock);
-                    continue;
-                }
+            }
+            if (CollectionUtils.isEmpty(dateList)) {
+                System.out.println("has get " + stock);
+                continue;
             }
 
             long begin = System.currentTimeMillis();
@@ -98,9 +111,6 @@ public class GetHistoricalOpenFirstTrade {
             List<String> sync = Collections.synchronizedList(result);
             CountDownLatch cdl = new CountDownLatch(dateList.size());
             for (String date : dateList) {
-                if (!date.equals("01/03/2023")) {
-                    //                    continue;
-                }
                 LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
                 int year = day.get(ChronoField.YEAR);
                 int hour, minute = 30, seconds = 0;
@@ -125,13 +135,11 @@ public class GetHistoricalOpenFirstTrade {
                         String preTrade = getTrade(preUrl, client);
                         String str = date + "," + preTrade;
                         sync.add(str);
-//                        System.out.println(str);
                     } finally {
                         cdl.countDown();
                         clients.offer(client);
                     }
                 });
-                //                System.out.println(date);
             }
 
             cdl.await();
@@ -141,69 +149,23 @@ public class GetHistoricalOpenFirstTrade {
                 return BaseUtils.dateToInt(date2) - BaseUtils.dateToInt(date1);
             });
 
-            sync.add("finish");
             try {
-                BaseUtils.writeFile(Constants.TRADE_PATH + "openFirstTrade/" + stock, sync);
+                lines.addAll(0, sync);
+                BaseUtils.writeFile(Constants.TRADE_PATH + "openFirstTrade/" + stock, lines);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             long cost = System.currentTimeMillis() - begin;
             System.out.println("finish " + stock + " " + cost / 1000);
         }
-        // 然后再执行下一只股票
-
-        //        Map<String, List<String>> dateToStocksMap = Maps.newTreeMap();
-        //        List<String> lines = BaseUtils.readFile(Constants.TEST_PATH + "overBollingOpen");
-        //        for (String line : lines) {
-        //            String[] split = line.split(",");
-        //            String date = split[0].trim().substring(5);
-        //            String stock = split[1].trim().substring(6);
-        //            if (!dateToStocksMap.containsKey(date)) {
-        //                dateToStocksMap.put(date, Lists.newArrayList());
-        //            }
-        //            dateToStocksMap.get(date).add(stock);
-        //        }
-        //
-        //        for (String date : dateToStocksMap.keySet()) {
-        //            List<String> stocks = dateToStocksMap.get(date);
-        //
-        //            LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
-        //            int hour, minute = 30, seconds = 0;
-        //            if (day.isAfter(dayLight2022_1) && day.isBefore(dayLight2022_2)) {
-        //                hour = 21;
-        //            } else {
-        //                hour = 22;
-        //            }
-        //
-        //            LocalDateTime open = day.withHour(hour).withMinute(minute).withSecond(seconds);
-        //            LocalDateTime preGte = day.withHour(hour).withMinute(minute - 29).withSecond(seconds);
-        //            LocalDateTime openLte = day.withHour(hour).withMinute(minute + 1).withSecond(seconds);
-        //
-        //            long openTS = open.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        //            long preGteTS = preGte.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        //            long openLteTS = openLte.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        //
-        //            for (String stock : stocks) {
-        //                String preUrl = api + stock + "?order=desc&" + timeGte + preGteTS + "000000&" + timeLte + openTS + "000000&limit=" + limit + "&" + apiKey;
-        //                String openUrl = api + stock + "?order=asc&" + timeGte + openTS + "000000&" + timeLte + openLteTS + "000000&limit=" + limit + "&" + apiKey;
-        //
-        //                String preTrade = getTrade(preUrl);
-        //                String openTrade = getTrade(openUrl);
-        //
-        //                System.out.println("date=" + date + " stock=" + stock + " preTrade=" + preTrade + " openTrade=" + openTrade);
-        //            }
-        //        }
     }
 
     private static String getTrade(String preUrl, HttpClient httpclient) {
-        //        HttpClient httpclient = new HttpClient();
         GetMethod get = new GetMethod(preUrl);
         try {
             int code = 0;
             for (int i = 0; i < 3; i++) {
-                //                long l = System.currentTimeMillis();
                 code = httpclient.executeMethod(get);
-                //                System.out.println("cost=" + (System.currentTimeMillis() - l));
                 if (code == 200) {
                     break;
                 }
