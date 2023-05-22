@@ -19,7 +19,7 @@ import static polygon.WebsocketClientEndpoint.originRatioMap;
 @Data
 public class TradeListener {
 
-    private NodeList list = new NodeList(10);
+    private NodeList list;
     private WebsocketClientEndpoint client;
 
     @Subscribe

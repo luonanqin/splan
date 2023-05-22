@@ -1,6 +1,7 @@
 package polygon;
 
 import bean.BOLL;
+import bean.NodeList;
 import bean.StockKLine;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -64,6 +65,7 @@ public class WebsocketClientEndpoint {
     private long preTradeTime;
     private Map<String, Set<Double>> stockPreTradeMap = Maps.newHashMap();
     private boolean listenEnd = false;
+    private NodeList list = new NodeList(10);
 
     private static Set<String> stockSet;
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
@@ -76,7 +78,6 @@ public class WebsocketClientEndpoint {
     public WebsocketClientEndpoint(URI endpointURI) {
         try {
             init();
-            // todo 模拟测试盘前均价计算耗时，可以估算出盘前监听到什么时间点再进行股票过滤，初步已每分钟100次成交为标准可进行均价计算
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
         } catch (Exception e) {
@@ -100,6 +101,7 @@ public class WebsocketClientEndpoint {
             eventBus = asyncEventBus();
             TradeListener tradeListener = new TradeListener();
             tradeListener.setClient(this);
+            tradeListener.setList(list);
             eventBus.register(tradeListener);
         } catch (Exception e) {
             e.printStackTrace();

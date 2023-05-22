@@ -124,4 +124,13 @@ public class NodeList {
         System.out.println(StringUtils.join(list, ","));
     }
 
+    public List<Node> getNodes() {
+        List<Node> nodes = Lists.newArrayList();
+        Node temp = head;
+        while (temp != null) {
+            nodes.add(temp);
+            temp = temp.getNext();
+        }
+        return nodes;
+    }
 }
