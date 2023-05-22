@@ -396,6 +396,9 @@ public class OverBollingerDN2023OpenFirst {
                                 continue;
                             }
 
+                            if (date.equals("05/19/2023")) {
+                                System.out.println();
+                            }
                             RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
                             if (ratioBean == null || ratioBean.getRatio() < hit) {
                                 stockRatio.addBean(buildBean(kLine, boll));

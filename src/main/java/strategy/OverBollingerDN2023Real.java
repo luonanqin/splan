@@ -259,7 +259,7 @@ public class OverBollingerDN2023Real {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
                     if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
-//                                                continue;
+                                                continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -349,7 +349,9 @@ public class OverBollingerDN2023Real {
                                 stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
-
+                            if (date.equals("05/19/2023")) {
+                                System.out.println();
+                            }
                             RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
                             if (ratioBean == null || ratioBean.getRatio() < hit) {
                                 stockRatio.addBean(buildBean(kLine, boll));
