@@ -50,7 +50,7 @@ public class WebsocketClientEndpoint {
     public static final double HIT = 0.5d;
     public static final int CLOSE_PRICE = 7;
     public static final int DELAY_MINUTE = 15;
-    public static final long STANDARD_TIME = 1684764960000L - DELAY_MINUTE * 60000L;
+    public static final long STANDARD_TIME = 1684848600000L;
     public static final long LISTEN_END_TIME = STANDARD_TIME + 10000L;
     private static LocalDateTime dayLight_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
     private static LocalDateTime dayLight_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
@@ -71,6 +71,7 @@ public class WebsocketClientEndpoint {
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private static Map<String, String> fileMap;
     private static AsyncEventBus eventBus;
+    private FutuListener futuListener;
 
     Session userSession = null;
     private MessageHandler messageHandler;
@@ -98,11 +99,15 @@ public class WebsocketClientEndpoint {
             buildExecutor();
             loadLastDn();
             loadM20();
+
             eventBus = asyncEventBus();
             TradeListener tradeListener = new TradeListener();
             tradeListener.setClient(this);
             tradeListener.setList(list);
             eventBus.register(tradeListener);
+
+            futuListener = new FutuListener();
+            futuListener.setList(list);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -367,6 +372,7 @@ public class WebsocketClientEndpoint {
                     if (time > LISTEN_END_TIME) {
                         unsubscribeAll();
                         listenEnd = true;
+                        futuListener.beginTrade();
                         return;
                     }
                     // 当前价大于前一天的下轨则直接过滤

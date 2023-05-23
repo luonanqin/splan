@@ -21,6 +21,12 @@ public class NodeList {
 
     public boolean add(String name, double value) {
         Node node = new Node(name, value);
+        return add(node);
+    }
+
+    public boolean add(Node node) {
+        String name = node.getName();
+        double value = node.getValue();
         if (head == null) {
             last = node;
             head = node;
@@ -29,7 +35,7 @@ public class NodeList {
             return true;
         } else {
             boolean contain = map.containsKey(name);
-            if (last.getValue() > node.getValue()) {
+            if (last.getValue() > value) {
                 if (contain) {
                     last.setNext(node);
                     node.setPrev(last);
@@ -42,8 +48,8 @@ public class NodeList {
             Node temp = last.getPrev();
             while (true) {
                 if (temp == null) {
-                    if (head.getName().equals(node.getName())) {
-                        head.setValue(node.getValue());
+                    if (head.getName().equals(name)) {
+                        head.setValue(value);
                         return false;
                     } else {
                         node.setNext(head);
@@ -59,10 +65,10 @@ public class NodeList {
                     break;
                 }
 
-                if (temp.getValue() > node.getValue()) {
+                if (temp.getValue() > value) {
                     Node t_next = temp.getNext();
-                    if (t_next.getName().equals(node.getName())) {
-                        t_next.setValue(node.getValue());
+                    if (t_next.getName().equals(name)) {
+                        t_next.setValue(value);
                         return false;
                     } else {
                         temp.setNext(node);

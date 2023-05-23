@@ -1,5 +1,6 @@
 package polygon;
 
+import bean.Node;
 import bean.NodeList;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
@@ -61,7 +62,10 @@ public class TradeListener {
         if (ratioBean.getRatio() < 0.5) {
             return;
         }
-        boolean success = list.add(stock, diff);
+
+        Node node = new Node(stock, diff);
+        node.setPrice(price);
+        boolean success = list.add(node);
         if (success) {
             list.show();
         }

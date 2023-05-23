@@ -7,6 +7,7 @@ public class Node {
 
     private String name;
     private double value;
+    private double price;
     private Node next = null;
     private Node prev = null;
 
