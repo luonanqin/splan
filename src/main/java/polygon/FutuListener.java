@@ -11,6 +11,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Luonanqin on 2023/5/9.
@@ -21,6 +23,7 @@ public class FutuListener {
     private NodeList list;
     private TradeApi tradeApi;
     private int cut = 995000;
+    private BlockingQueue<String> tradeStock = new LinkedBlockingQueue<>();
 
     public FutuListener() {
         FTAPI.init();
@@ -28,6 +31,7 @@ public class FutuListener {
         tradeApi.useSimulateEnv();
         tradeApi.setAccountId(TradeApi.simulateUsAccountId);
         tradeApi.start();
+        tradeApi.unlock();
     }
 
     public void beginTrade() {
@@ -64,8 +68,7 @@ public class FutuListener {
                 /** 5.1.如果成交完成，则继续 */
                 // todo 打印成交结果
                 System.out.println(orderFill);
-                /** 6.计算之前已成交的止损价格，并设置止损市价单 */
-                placeStopLossOrder(code);
+                tradeStock.add(code);
             }
 
             /** 重新获取剩余可用现金 */
@@ -73,34 +76,41 @@ public class FutuListener {
             remainCash -= cut;
         }
         System.out.println("trade end");
+
+        /** 6.计算之前已成交的止损价格，并设置止损市价单 */
+        // todo 计算止损价格临时存储，然后让主进程监听这些股票，发现低于止损价则触发止损限价单、
+        // todo 建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出
+        //        for (String code : tradeStock) {
+        //            placeStopLossOrder(code);
+        //        }
     }
 
+    // 模拟盘不支持止损市价单
     public void placeStopLossOrder(String code) {
-        new Thread(() -> {
-            Map<String, StockPosition> positionMap = tradeApi.getPositionMap(code);
-            StockPosition stockPosition = positionMap.get(code);
-            if (stockPosition == null) {
-                System.out.println(code + " 持仓不存在");
-                return;
-            }
+        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(code);
+        StockPosition stockPosition = positionMap.get(code);
+        if (stockPosition == null) {
+            System.out.println(code + " 持仓不存在");
+            return;
+        }
 
-            double canSellQty = stockPosition.getCanSellQty();
-            double costPrice = stockPosition.getCostPrice();
-            double auxPrice = BigDecimal.valueOf(costPrice * (1 - WebsocketClientEndpoint.LOSS_RATIO)).setScale(3).doubleValue();
+        double canSellQty = stockPosition.getCanSellQty();
+        double costPrice = stockPosition.getCostPrice();
+        double auxPrice = BigDecimal.valueOf(costPrice * (1 - WebsocketClientEndpoint.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
 
-            long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
-            System.out.println(code + " 止损下单成功 订单号：" + orderId);
-        }).start();
+        long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
+        System.out.println(code + " 止损下单成功 订单号：" + orderId);
     }
 
     public static void main(String[] args) {
         FutuListener futuListener = new FutuListener();
         NodeList nodeList = new NodeList(10);
         Node node = new Node("RNAZ", 1);
-        node.setPrice(5.77d);
+        node.setPrice(5.71d);
         nodeList.add(node);
         futuListener.setList(nodeList);
 
-        futuListener.beginTrade();
+        //        futuListener.beginTrade();
+        futuListener.placeStopLossOrder("RNAZ");
     }
 }

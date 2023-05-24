@@ -119,7 +119,7 @@ public class WebsocketClientEndpoint {
         LocalDateTime now = LocalDateTime.now();
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
             preTradeTime = now.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(21).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(23).withMinute(22 - DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
         } else {
             preTradeTime = now.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             openTime = now.withHour(22).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
@@ -316,8 +316,13 @@ public class WebsocketClientEndpoint {
                     executor.execute(() -> {
                         //                        Set<String> stocks = Sets.newHashSet("CXAI", "SLV", "DRMA", "FMS", "SOXS", "GFAI", "APPH", "TNA", "IWM", "TZA", "TWM", "SRTY", "NFLX", "JEPI", "META", "AUD", "IONQ", "TIVC", "TSLA", "CYTO", "FFIE", "GPRO", "TMF", "MO", "BBIG", "SOXL", "BBLN", "MINM", "MSFT", "UVXY", "GOOG", "MVST", "NVDA", "TQQQ", "GETR", "ATNF", "IBRX", "AMZN", "PLX", "UPRO", "UCO", "PACW", "SPY", "MARA", "AGBA", "ZFOX", "INTC", "DIS", "PYPL", "CDTX", "INBS", "LICN", "SPXU", "SRTS", "SBFM", "TSLL", "NRGU", "SOFI", "SQQQ", "AIG", "U", "O", "EGIO", "MTC", "IEF", "TLT", "CWEB", "TCBP", "SVFD", "GDC", "TRKA", "AAPL", "SSO", "IDEX", "VRM", "SNDL", "NTEST", "GMDA", "ABNB", "TMV", "SDOW", "VCIG", "XLI", "CRKN", "GDXD", "VSSYW", "KNTE", "ASML", "NKLA", "AMD", "OPK", "UVIX", "SBSW", "JD", "LABU", "BABA", "PTGX", "CS", "BITO", "NIO", "TCRX", "XPEV", "SFWL", "OPEN", "BNTX", "GOOGL", "INDA", "ZURA", "LILM", "PBTS", "ADMP", "Z", "RYAAY", "WMT", "CISO", "USO", "CCL", "BOIL", "TUP", "AFRM", "SLGG", "OPFI", "BNKU", "F", "BE", "SURG", "MWG", "LCID", "RIVN", "NVO", "SOS", "CNEY", "SNTG", "POLA", "IZM", "OXY", "QBTS", "GFI", "GOEV", "EPAM", "HOUR", "BLBD", "GOLD", "JAGX", "GLD", "TWLO", "EURN", "JOBY", "CVX", "VIXY", "ALLR", "SMX", "MRNA", "HYZN", "BFRG", "ZIM", "NOBL", "ORGO", "VATE", "IAU", "SCHD", "AGQ", "VOO", "XLF", "SOUN", "GETY", "UAVS", "CRSP", "KO", "PTEST", "CVNA", "CI", "KOLD", "WFC", "BLUE", "CJJD", "GDX", "LABD", "BLNK", "BAC", "MULN", "LUNR", "IMGN", "IONM", "FUTU", "SHFS", "SONO", "STSS", "CEI", "CMCSA", "CYTK", "HLN", "IREN", "SBUX", "ZOM", "TCJH", "C", "QQQ", "TOP", "UFAB", "RACE", "HKD", "AMPE", "QQQM", "DDL", "YINN", "ASTI", "UBS", "TCMD", "FNGU", "SPXS", "LAC", "PLUG", "TRVN", "QCOM", "NVTA", "JEPQ", "ICUCW", "BULZ", "BRDS", "GRVY", "CLRO", "SHOP", "MOBQ", "LI", "VALE", "GCTK", "BB", "DRN", "HUBS", "DNA", "IQ", "PLTR", "FSLR", "QLD", "PAAS", "PBLA", "BIOL", "HSBC", "PEP", "AUGX", "MFH", "CPE", "DOG", "HUDI", "COSM", "WDAY", "XELA", "DB", "INPX", "SNN", "PDD", "FXI", "SSRM", "TSLQ", "HMPT", "BYND", "QID", "GRIL", "GSK", "BNKD", "HSTO", "CTLT", "ZION", "HCDI", "WETG", "VXX", "SAVA", "SVXY", "AKAN", "BFLY", "CARR", "CLSK", "IBM", "DWAC", "NKE", "NVDS", "INCR", "MSTR", "T", "TSM", "CSCO", "DADA", "SQ", "ZSL", "SARK", "IVV", "SDS", "SPLG", "UDOW", "HMY", "DXF", "PFE", "OMH", "MHNC", "SIGA", "ATXG", "NOGN", "LYFT", "RIOT", "BMY", "FAS", "TECL", "SPG", "NDAQ", "GNS", "SPXL", "WAL", "SVIX", "UNG", "NOK", "SAI", "ARKK", "AKLI", "RKLB", "AGFY", "DDOG", "RBLX", "NBTX", "MCRB", "SNAP", "TIO", "HGEN", "TAL", "WOOF", "DIA", "BTBT", "MGAM", "UPWK", "TWOU", "AMC", "YANG", "WISA", "ABBV", "TCOM", "SMTC", "MAXN", "UPST", "CMND", "ARR", "ROKU", "FISV", "TSLS", "MU", "RELI", "AI", "AZN", "NU", "ZVZZT", "TLRY", "BURU", "XLP", "EEFT", "CROX", "ADXN", "PBR", "CXAIW", "BITI", "APE", "ABB", "FNGD", "XLV", "SENS", "APLD", "HOLO", "TSP", "HUIZ", "ATEST", "NVS", "TLTW", "MOS", "DPST", "EJH", "BPT", "SHEL", "SPRO", "SVOL", "COIN", "NCMI", "TMC", "MGIH", "DHY", "FOXA", "TRUP", "WPM", "NVAX", "SQM", "KWEB", "ZH", "EVA", "SNGX", "LICY", "HIMX", "SPYG", "RWM", "VXRT", "CTVA", "MS", "SPCE", "ADBE", "ING", "FLNC", "TDOC", "NNOX", "ENPH", "NCLH", "MCD", "GDXU");
                         //                        for (String stock : stocks) {
+                        //                        int i = 0;
                         for (String stock : stockSet) {
                             sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
+                            //                            i++;
+                            //                            if (i > 100) {
+                            //                                return;
+                            //                            }
                         }
                     });
                 }
@@ -377,7 +382,7 @@ public class WebsocketClientEndpoint {
                     if (time > listenEndTime) {
                         unsubscribeAll();
                         listenEnd = true;
-                        futuListener.beginTrade();
+                        //                        futuListener.beginTrade();
                         return;
                     }
                     // 当前价大于前一天的下轨则直接过滤

@@ -55,6 +55,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
     private AtomicInteger cancelResCode = new AtomicInteger(1);
     private Map<Long, LinkedBlockingQueue<OrderFill>> orderFillMap = Maps.newHashMap();
     private BlockingQueue<Map<String, StockPosition>> stockPositionBlock = new LinkedBlockingQueue<>();
+    private BlockingQueue<Long> stopLossOrder = new LinkedBlockingQueue<>();
 
     FTAPI_Conn_Trd trd = new FTAPI_Conn_Trd();
 
@@ -223,12 +224,12 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         System.out.printf("Send TrdPlaceOrder: %d\n", seqNo);
         while (true) {
             if (orderId.get() != 0) {
-                return orderId.get();
+                return orderId.getAndSet(0);
             }
         }
     }
 
-    // 下单接口，指定数量和价格，有价格就是限价单，没价格就是市价单，返回订单ID
+    // 下单接口，专用于止损市价单
     public long placeOrderForLossMarket(String code, double count, Double auxPrice) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
@@ -248,10 +249,10 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
 
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
         int seqNo = trd.placeOrder(req);
-        System.out.printf("Send TrdPlaceOrder: %d\n", seqNo);
+        System.out.printf("Send placeOrderForLossMarket: %d\n", seqNo);
         while (true) {
             if (orderId.get() != 0) {
-                return orderId.get();
+                return orderId.getAndSet(0);
             }
         }
     }
