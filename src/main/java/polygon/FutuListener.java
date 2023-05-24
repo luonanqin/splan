@@ -64,6 +64,8 @@ public class FutuListener {
                 /** 5.1.如果成交完成，则继续 */
                 // todo 打印成交结果
                 System.out.println(orderFill);
+                /** 6.计算之前已成交的止损价格，并设置止损市价单 */
+                placeStopLossOrder(code);
             }
 
             /** 重新获取剩余可用现金 */
@@ -71,7 +73,6 @@ public class FutuListener {
             remainCash -= cut;
         }
         System.out.println("trade end");
-        // todo 6.计算之前已成交的止损价格，并设置止损市价单
     }
 
     public void placeStopLossOrder(String code) {
@@ -87,7 +88,8 @@ public class FutuListener {
             double costPrice = stockPosition.getCostPrice();
             double auxPrice = BigDecimal.valueOf(costPrice * (1 - WebsocketClientEndpoint.LOSS_RATIO)).setScale(3).doubleValue();
 
-            tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
+            long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
+            System.out.println(code + " 止损下单成功 订单号：" + orderId);
         }).start();
     }
 
