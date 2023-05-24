@@ -3,11 +3,14 @@ package polygon;
 import bean.Node;
 import bean.NodeList;
 import bean.OrderFill;
+import bean.StockPosition;
 import com.futu.openapi.FTAPI;
 import futu.TradeApi;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Luonanqin on 2023/5/9.
@@ -69,6 +72,23 @@ public class FutuListener {
         }
         System.out.println("trade end");
         // todo 6.计算之前已成交的止损价格，并设置止损市价单
+    }
+
+    public void placeStopLossOrder(String code) {
+        new Thread(() -> {
+            Map<String, StockPosition> positionMap = tradeApi.getPositionMap(code);
+            StockPosition stockPosition = positionMap.get(code);
+            if (stockPosition == null) {
+                System.out.println(code + " 持仓不存在");
+                return;
+            }
+
+            double canSellQty = stockPosition.getCanSellQty();
+            double costPrice = stockPosition.getCostPrice();
+            double auxPrice = BigDecimal.valueOf(costPrice * (1 - WebsocketClientEndpoint.LOSS_RATIO)).setScale(3).doubleValue();
+
+            tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
+        }).start();
     }
 
     public static void main(String[] args) {

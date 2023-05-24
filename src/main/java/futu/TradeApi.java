@@ -1,6 +1,7 @@
 package futu;
 
 import bean.OrderFill;
+import bean.StockPosition;
 import com.futu.openapi.FTAPI;
 import com.futu.openapi.FTAPI_Conn;
 import com.futu.openapi.FTAPI_Conn_Trd;
@@ -19,18 +20,23 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import util.MD5Util;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by Luonanqin on 2022/12/22.
@@ -48,6 +54,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
     private AtomicLong orderId = new AtomicLong(0);
     private AtomicInteger cancelResCode = new AtomicInteger(1);
     private Map<Long, LinkedBlockingQueue<OrderFill>> orderFillMap = Maps.newHashMap();
+    private BlockingQueue<Map<String, StockPosition>> stockPositionBlock = new LinkedBlockingQueue<>();
 
     FTAPI_Conn_Trd trd = new FTAPI_Conn_Trd();
 
@@ -134,24 +141,36 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         System.out.printf("Send TrdGetFunds: %d\n", seqNo);
         while (true) {
             if (remainCash.get() != 0) {
-                return remainCash.get();
+                return remainCash.getAndSet(0);
             }
         }
     }
 
     // 获取持仓
-    public void getPositionList() {
+    public Map<String, StockPosition> getPositionMap(String... code) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
           .setTrdEnv(tradeEnv)
           .setTrdMarket(tradeMarket)
           .build();
-        TrdGetPositionList.C2S c2s = TrdGetPositionList.C2S.newBuilder()
-          .setHeader(header)
-          .build();
+        TrdGetPositionList.C2S.Builder c2sBuilder = TrdGetPositionList.C2S.newBuilder()
+          .setHeader(header);
+        if (ArrayUtils.isNotEmpty(code)) {
+            List<String> codeList = Arrays.stream(code).collect(Collectors.toList());
+            c2sBuilder.setFilterConditions(TrdCommon.TrdFilterConditions.newBuilder().addAllCodeList(codeList).build());
+        }
+        TrdGetPositionList.C2S c2s = c2sBuilder.build();
         TrdGetPositionList.Request req = TrdGetPositionList.Request.newBuilder().setC2S(c2s).build();
         int seqNo = trd.getPositionList(req);
         System.out.printf("Send TrdGetPositionList: %d\n", seqNo);
+
+        try {
+            Map<String, StockPosition> positionmap = stockPositionBlock.take();
+            return positionmap;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // 下单接口
@@ -209,6 +228,34 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         }
     }
 
+    // 下单接口，指定数量和价格，有价格就是限价单，没价格就是市价单，返回订单ID
+    public long placeOrderForLossMarket(String code, double count, Double auxPrice) {
+        TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
+          .setAccID(accountId)
+          .setTrdEnv(tradeEnv)
+          .setTrdMarket(tradeMarket)
+          .build();
+
+        TrdPlaceOrder.C2S c2s = TrdPlaceOrder.C2S.newBuilder()
+          .setPacketID(trd.nextPacketID())
+          .setHeader(header)
+          .setTrdSide(TrdCommon.TrdSide.TrdSide_Sell_VALUE)
+          .setSecMarket(TrdCommon.TrdSecMarket.TrdSecMarket_US_VALUE)
+          .setCode(code)
+          .setQty(count)
+          .setAuxPrice(auxPrice)
+          .setOrderType(TrdCommon.OrderType.OrderType_Stop_VALUE).build();
+
+        TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = trd.placeOrder(req);
+        System.out.printf("Send TrdPlaceOrder: %d\n", seqNo);
+        while (true) {
+            if (orderId.get() != 0) {
+                return orderId.get();
+            }
+        }
+    }
+
     // 撤单
     public int cancelOrder(long orderId) {
         return modifyOrder(orderId, TrdCommon.ModifyOrderOp.ModifyOrderOp_Cancel_VALUE);
@@ -242,23 +289,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         System.out.printf("Qot onDisConnect: %d\n", errCode);
     }
 
-    // 成交回调
-//    @Override
-//    public void onPush_UpdateOrderFill(FTAPI_Conn client, TrdUpdateOrderFill.Response rsp) {
-//        if (rsp.getRetType() != 0) {
-//            System.out.printf("TrdUpdateOrderFill failed: %s\n", rsp.getRetMsg());
-//        } else {
-//            try {
-//                TrdCommon.OrderFill orderFill = rsp.getS2COrBuilder().getOrderFill();
-//
-//                String json = JsonFormat.printer().print(rsp);
-//                System.out.printf("Receive TrdUpdateOrderFill: %s\n", json);
-//            } catch (InvalidProtocolBufferException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
+    // 订单成交回调
     @Override
     public void onPush_UpdateOrder(FTAPI_Conn client, TrdUpdateOrder.Response rsp) {
         if (rsp.getRetType() != 0) {
@@ -335,8 +366,25 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
             System.out.printf("TrdGetPositionList failed: %s\n", rsp.getRetMsg());
         } else {
             try {
+                List<TrdCommon.Position> positionListList = rsp.getS2COrBuilder().getPositionListList();
+                Map<String, TrdCommon.Position> codeToPositionMap = positionListList.stream().collect(Collectors.toMap(TrdCommon.Position::getCode, Function.identity()));
+                Map<String, StockPosition> positionMap = Maps.newHashMap();
+                for (String code : codeToPositionMap.keySet()) {
+                    TrdCommon.Position position = codeToPositionMap.get(code);
+                    double canSellQty = position.getCanSellQty();
+                    double costPrice = position.getCostPrice();
+
+                    StockPosition stockPosition = new StockPosition();
+                    stockPosition.setStock(code);
+                    stockPosition.setCanSellQty(canSellQty);
+                    stockPosition.setCostPrice(costPrice);
+
+                    positionMap.put(code, stockPosition);
+                }
+
                 String json = JsonFormat.printer().print(rsp);
                 System.out.printf("Receive TrdGetPositionList: %s\n", json);
+                stockPositionBlock.offer(positionMap);
             } catch (InvalidProtocolBufferException e) {
                 e.printStackTrace();
             }
