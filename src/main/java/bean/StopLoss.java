@@ -3,10 +3,9 @@ package bean;
 import lombok.Data;
 
 @Data
-public class StockPosition {
+public class StopLoss {
 
     private String stock;
     private double canSellQty; // 可卖数量
-    private double costPrice; // 成本价
-    private double currPrice; // 当前价
+    private double lossPrice; // 止损价
 }

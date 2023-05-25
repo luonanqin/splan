@@ -59,7 +59,7 @@ public class TradeListener {
         OverBollingerDN2023OpenFirst.StockRatio stockRatio = originRatioMap.get(stock);
         Map<Integer, OverBollingerDN2023OpenFirst.RatioBean> ratioMap = stockRatio.getRatioMap();
         OverBollingerDN2023OpenFirst.RatioBean ratioBean = ratioMap.get(diffInt);
-        if (ratioBean.getRatio() < 0.5) {
+        if (ratioBean == null || ratioBean.getRatio() < 0.5) {
             return;
         }
 

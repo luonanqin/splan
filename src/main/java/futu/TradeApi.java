@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import util.MD5Util;
@@ -231,6 +232,16 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
 
     // 下单接口，专用于止损市价单
     public long placeOrderForLossMarket(String code, double count, Double auxPrice) {
+        return placeOrderForLoss(code, count, auxPrice, TrdCommon.OrderType.OrderType_Stop_VALUE);
+    }
+
+    // 下单接口，专用于普通卖出限价单
+    public long placeOrderForLossNormal(String code, double count, Double price) {
+        return placeOrderForLoss(code, count, price, TrdCommon.OrderType.OrderType_Normal_VALUE);
+    }
+
+    // 下单接口，专用于止损单
+    public long placeOrderForLoss(String code, double count, Double price, int orderType) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
           .setTrdEnv(tradeEnv)
@@ -244,8 +255,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
           .setSecMarket(TrdCommon.TrdSecMarket.TrdSecMarket_US_VALUE)
           .setCode(code)
           .setQty(count)
-          .setAuxPrice(auxPrice)
-          .setOrderType(TrdCommon.OrderType.OrderType_Stop_VALUE).build();
+          .setAuxPrice(price)
+          .setOrderType(orderType)
+          .build();
 
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
         int seqNo = trd.placeOrder(req);
@@ -367,20 +379,25 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
             System.out.printf("TrdGetPositionList failed: %s\n", rsp.getRetMsg());
         } else {
             try {
-                List<TrdCommon.Position> positionListList = rsp.getS2COrBuilder().getPositionListList();
-                Map<String, TrdCommon.Position> codeToPositionMap = positionListList.stream().collect(Collectors.toMap(TrdCommon.Position::getCode, Function.identity()));
                 Map<String, StockPosition> positionMap = Maps.newHashMap();
-                for (String code : codeToPositionMap.keySet()) {
-                    TrdCommon.Position position = codeToPositionMap.get(code);
-                    double canSellQty = position.getCanSellQty();
-                    double costPrice = position.getCostPrice();
 
-                    StockPosition stockPosition = new StockPosition();
-                    stockPosition.setStock(code);
-                    stockPosition.setCanSellQty(canSellQty);
-                    stockPosition.setCostPrice(costPrice);
+                List<TrdCommon.Position> positionListList = rsp.getS2COrBuilder().getPositionListList();
+                if (CollectionUtils.isNotEmpty(positionListList)) {
+                    Map<String, TrdCommon.Position> codeToPositionMap = positionListList.stream().collect(Collectors.toMap(TrdCommon.Position::getCode, Function.identity()));
+                    for (String code : codeToPositionMap.keySet()) {
+                        TrdCommon.Position position = codeToPositionMap.get(code);
+                        double canSellQty = position.getCanSellQty();
+                        double costPrice = position.getCostPrice();
+                        double price = position.getPrice();
 
-                    positionMap.put(code, stockPosition);
+                        StockPosition stockPosition = new StockPosition();
+                        stockPosition.setStock(code);
+                        stockPosition.setCanSellQty(canSellQty);
+                        stockPosition.setCostPrice(costPrice);
+                        stockPosition.setCurrPrice(price);
+
+                        positionMap.put(code, stockPosition);
+                    }
                 }
 
                 String json = JsonFormat.printer().print(rsp);

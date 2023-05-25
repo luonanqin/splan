@@ -3,6 +3,7 @@ package polygon;
 import bean.BOLL;
 import bean.NodeList;
 import bean.StockKLine;
+import bean.StopLoss;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -29,6 +30,7 @@ import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,15 +58,18 @@ public class WebsocketClientEndpoint {
     private static LocalDateTime dayLight_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
 
     private boolean subscribed = false;
+    private boolean listenStopLoss = false;
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
     public static Map<String, Set<Double>> stockToM19Close = Maps.newHashMap();
     public static Map<String, OverBollingerDN2023OpenFirst.StockRatio> originRatioMap;
-    private BlockingQueue<String> bq = new LinkedBlockingQueue<>(1000);
+    private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
+    private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
     private Executor executor;
     private long preTradeTime;
     private long openTime;
     private long listenEndTime;
+    private Date closeCheckTime;
     private Map<String, Set<Double>> stockPreTradeMap = Maps.newHashMap();
     private boolean listenEnd = false;
     private NodeList list = new NodeList(10);
@@ -97,7 +102,7 @@ public class WebsocketClientEndpoint {
             //            stockSet.clear();
             //            stockSet.add("AAPL");
 
-            initPreTradeTime();
+            initManyTime();
             buildExecutor();
             loadLastDn();
             loadM20();
@@ -115,14 +120,20 @@ public class WebsocketClientEndpoint {
         }
     }
 
-    private void initPreTradeTime() {
+    public Date getCloseCheckTime(){
+        return closeCheckTime;
+    }
+
+    private void initManyTime() {
         LocalDateTime now = LocalDateTime.now();
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
             preTradeTime = now.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(23).withMinute(22 - DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(21).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            closeCheckTime = Date.from(now.withHour(3).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         } else {
             preTradeTime = now.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             openTime = now.withHour(22).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            closeCheckTime = Date.from(now.withHour(4).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         }
         listenEndTime = openTime + LISTENING_TIME;
     }
@@ -287,8 +298,9 @@ public class WebsocketClientEndpoint {
     public void onMessage(String message) {
         try {
             if (subscribed) {
-                bq.offer(message);
-                //                System.out.println(message);
+                subscribeBQ.offer(message);
+            } else if (listenStopLoss) {
+                stopLossBQ.offer(message);
             } else {
                 List<Map> maps = JSON.parseArray(message, Map.class);
                 Map map = maps.get(0);
@@ -338,15 +350,6 @@ public class WebsocketClientEndpoint {
     }
 
     /**
-     * register message handler
-     *
-     * @param msgHandler
-     */
-    public void addMessageHandler(MessageHandler msgHandler) {
-        this.messageHandler = msgHandler;
-    }
-
-    /**
      * Send a message.
      *
      * @param message
@@ -358,7 +361,7 @@ public class WebsocketClientEndpoint {
     public void sendToListener() {
         try {
             while (true) {
-                String msg = bq.take();
+                String msg = subscribeBQ.take();
                 if (listenEnd) {
                     return;
                 }
@@ -366,6 +369,7 @@ public class WebsocketClientEndpoint {
                 //                System.out.println(msg);
                 List<Map> maps = JSON.parseArray(msg, Map.class);
                 Map<String, Double> stockToPrice = Maps.newHashMap();
+                int i = 0;
                 for (Map map : maps) {
                     String stock = MapUtils.getString(map, "sym", "");
 
@@ -376,13 +380,19 @@ public class WebsocketClientEndpoint {
                     Double price = MapUtils.getDouble(map, "p");
                     Long time = MapUtils.getLong(map, "t");
                     if (time < openTime) {
-                        //                        System.out.println("time is early");
+                        i++;
+                        if (i % 1000 == 0) {
+                            System.out.println("time is early");
+                            System.out.println(map);
+                        }
                         continue;
                     }
                     if (time > listenEndTime) {
+                        subscribed = false;
+                        System.out.println("listen end!");
+                        //                        futuListener.beginTrade();
                         unsubscribeAll();
                         listenEnd = true;
-                        //                        futuListener.beginTrade();
                         return;
                     }
                     // 当前价大于前一天的下轨则直接过滤
@@ -424,8 +434,37 @@ public class WebsocketClientEndpoint {
         System.out.println("=========== subscribe end ===========");
     }
 
-    public void analysisPreTrade(String stock, double price) {
-        stockPreTradeMap.get(stock).add(price);
+    public void listenStopLoss(Map<String, StopLoss> stockToStopLoss) {
+        listenStopLoss = true;
+        for (String stock : stockToStopLoss.keySet()) {
+            sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
+        }
+
+        try {
+            while (true) {
+                String msg = stopLossBQ.take();
+                List<Map> maps = JSON.parseArray(msg, Map.class);
+                for (Map map : maps) {
+                    String stock = MapUtils.getString(map, "sym", "");
+                    Double price = MapUtils.getDouble(map, "p");
+                    StopLoss stopLoss = stockToStopLoss.get(stock);
+                    if (stopLoss == null) {
+                        System.out.println(stock + " 止损信息不存在，将取消订阅，请检查。");
+                        unsubscribe(stock);
+                        continue;
+                    }
+                    double lossPrice = stopLoss.getLossPrice();
+                    double canSellQty = stopLoss.getCanSellQty();
+                    if (price < lossPrice) {
+                        futuListener.placeStopLossOrder(stock, canSellQty, price - 0.05d);
+                        stockToStopLoss.remove(stock);
+                    }
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) throws InterruptedException {
