@@ -408,6 +408,9 @@ public class OverBollingerDN2023OpenFirst {
                             }
 
                             int count = (int) (sum / open);
+                            if (stockRealOpenVolMap == null) {
+                                System.out.println();
+                            }
                             RealOpenVol realOpenVol = stockRealOpenVolMap.get(stock);
                             if (realOpenVol == null) {
                                 continue;
