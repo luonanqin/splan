@@ -1,4 +1,4 @@
-package test;
+package stock;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
