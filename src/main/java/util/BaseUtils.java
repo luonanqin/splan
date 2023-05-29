@@ -2,9 +2,11 @@ package util;
 
 import barchart.DownloadStockHistory;
 import bean.BOLL;
+import bean.SplitStockInfo;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -24,6 +26,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static util.Constants.GRAB_PATH;
@@ -502,5 +505,45 @@ public class BaseUtils {
         }
 
         return first;
+    }
+
+    public static Set<String> getMergeStock() throws Exception {
+        Set<String> merge = Sets.newHashSet();
+        List<String> lines = readFile(Constants.SPLIT_PATH);
+        for (String line : lines) {
+            String[] split = line.split(",");
+            String stock = split[1];
+            String from = split[2];
+            String to = split[3];
+            int fromNum = Integer.valueOf(from);
+            int toNum = Integer.valueOf(to);
+            if (fromNum > toNum) {
+                merge.add(stock);
+            }
+        }
+        return merge;
+    }
+
+    public static Set<SplitStockInfo> getSplitStockInfo() throws Exception {
+        Set<SplitStockInfo> splitSet = Sets.newHashSet();
+        List<String> lines = readFile(Constants.SPLIT_PATH);
+        for (String line : lines) {
+            String[] split = line.split(",");
+            String date = split[0];
+            String stock = split[1];
+            String from = split[2];
+            String to = split[3];
+            int fromNum = Integer.valueOf(from);
+            int toNum = Integer.valueOf(to);
+            if (fromNum < toNum) {
+                SplitStockInfo splitStockInfo = new SplitStockInfo();
+                splitStockInfo.setDate(date);
+                splitStockInfo.setStock(stock);
+                splitStockInfo.setFrom(fromNum);
+                splitStockInfo.setTo(toNum);
+                splitSet.add(splitStockInfo);
+            }
+        }
+        return splitSet;
     }
 }

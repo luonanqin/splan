@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.math.BigDecimal.ROUND_DOWN;
-import static polygon.WebsocketClientEndpoint.originRatioMap;
+import static polygon.RealTimeDataWS.originRatioMap;
 
 /**
  * Created by Luonanqin on 2023/5/9.
@@ -21,7 +21,7 @@ import static polygon.WebsocketClientEndpoint.originRatioMap;
 public class TradeListener {
 
     private NodeList list;
-    private WebsocketClientEndpoint client;
+    private RealTimeDataWS client;
 
     @Subscribe
     public void onMessageEvent(Map.Entry<String, Double> entry) {
@@ -31,8 +31,8 @@ public class TradeListener {
     }
 
     public void cal(String stock, double price) {
-        Double m19closeSum = WebsocketClientEndpoint.stockToM19CloseSum.get(stock);
-        Set<Double> m19closeSet = WebsocketClientEndpoint.stockToM19Close.get(stock);
+        Double m19closeSum = RealTimeDataWS.stockToM19CloseSum.get(stock);
+        Set<Double> m19closeSet = RealTimeDataWS.stockToM19Close.get(stock);
         if (m19closeSum == null || CollectionUtils.isEmpty(m19closeSet)) {
             return;
         }

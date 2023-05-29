@@ -28,7 +28,7 @@ public class FutuListener {
     private TradeApi tradeApi;
     private int cut = 995000;
     private List<String> tradeStock = Lists.newArrayList();
-    private WebsocketClientEndpoint client;
+    private RealTimeDataWS client;
 
     public FutuListener() {
         FTAPI.init();
@@ -131,7 +131,7 @@ public class FutuListener {
 
             double canSellQty = stockPosition.getCanSellQty();
             double costPrice = stockPosition.getCostPrice();
-            double lossPrice = BigDecimal.valueOf(costPrice * (1 - WebsocketClientEndpoint.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
+            double lossPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
             StopLoss stopLoss = new StopLoss();
             stopLoss.setStock(stock);
             stopLoss.setCanSellQty(canSellQty);
@@ -158,7 +158,7 @@ public class FutuListener {
 
         double canSellQty = stockPosition.getCanSellQty();
         double costPrice = stockPosition.getCostPrice();
-        double auxPrice = BigDecimal.valueOf(costPrice * (1 - WebsocketClientEndpoint.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
+        double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
 
         long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
         System.out.println(code + " 止损单下单成功 订单号：" + orderId);
