@@ -38,7 +38,7 @@ import static util.Constants.*;
 public class GetSplitHistoricalDaily {
 
 
-    public static void main() throws Exception {
+    public static void main(String[] args) throws Exception {
         System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
         BlockingQueue<ChromeDriver> driverQueue = new LinkedBlockingQueue<>();
@@ -84,7 +84,7 @@ public class GetSplitHistoricalDaily {
 
             // 断点续抓需要获取已经抓过的最新日期
             String latestDay = getLatestDay(stock);
-            String endDate = StringUtils.defaultString(latestDay, "01/01/2022");
+            String endDate = StringUtils.defaultString(latestDay, "01/01/2023");
             int year = Integer.parseInt(endDate.substring(endDate.lastIndexOf("/") + 1));
             endDate = "01/01/" + year;
             while (true) {
