@@ -339,7 +339,7 @@ public class RealTimeDataWS {
         this.userSession.getAsyncRemote().sendText(message);
     }
 
-    public void sendToListener() {
+    public void sendToTradeDataListener() {
         try {
             while (true) {
                 String msg = subscribeBQ.take();
@@ -392,7 +392,7 @@ public class RealTimeDataWS {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("sendToTradeDataListener error. " + e.getMessage());
         }
     }
 
@@ -431,7 +431,7 @@ public class RealTimeDataWS {
                     Double price = MapUtils.getDouble(map, "p");
                     StopLoss stopLoss = stockToStopLoss.get(stock);
                     if (stopLoss == null) {
-                        System.out.println(stock + " 止损信息不存在，将取消订阅，请检查。");
+                        System.out.println(stock + " don't need stop loss. it'll be unsubscribe");
                         unsubscribe(stock);
                         continue;
                     }
@@ -444,14 +444,13 @@ public class RealTimeDataWS {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("listenStopLoss error. " + e.getMessage());
         }
-
     }
 
     public static void main(String[] args) throws InterruptedException {
         RealTimeDataWS client = new RealTimeDataWS(URI.create("wss://delayed.polygon.io/stocks"));
-        client.sendToListener();
+        client.sendToTradeDataListener();
 
         while (true) {
             Thread.sleep(1000);
