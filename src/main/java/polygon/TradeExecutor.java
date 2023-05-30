@@ -33,8 +33,8 @@ public class TradeExecutor {
     public TradeExecutor() {
         FTAPI.init();
         tradeApi = new TradeApi();
-        tradeApi.useSimulateEnv();
-        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
+        //        tradeApi.useSimulateEnv();
+        //        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
         tradeApi.start();
         tradeApi.unlock();
     }
@@ -60,19 +60,18 @@ public class TradeExecutor {
 
             /** 3.用可买数量下市价单 */
             long orderId = tradeApi.placeOrder(code, count, price);
-            System.out.println("orderId: " + orderId);
+            System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ",orderId: " + orderId);
 
             /** 4.下单完成后，十秒后获取成交状态 */
             OrderFill orderFill = tradeApi.getOrderFill(orderId, 10);
             if (orderFill == null) {
                 /** 5.如果没有成交完成，则撤销剩下订单，并继续 */
                 int cancelResCode = tradeApi.cancelOrder(orderId);
-                // todo 打印撤单结果
-                System.out.println("orderId: " + orderId + ", cancel res code: " + cancelResCode + "");
+                System.out.println(code + " order has been canceled. orderId: " + orderId + ", cancel res code: " + cancelResCode);
             } else {
-                /** 5.1.如果成交完成，则继续 */
-                // todo 打印成交结果
+                /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
                 System.out.println(orderFill);
+                //                placeStopLossOrder(code);
                 tradeStock.add(code);
             }
 
@@ -82,12 +81,12 @@ public class TradeExecutor {
         }
         System.out.println("trade end");
 
-        /** 6.计算之前已成交的止损价格，并设置止损市价单（模拟盘不支持） */
-        /** 6*.（只用于模拟盘，实盘需注释掉）计算止损价格临时存储，然后让主进程监听这些股票，发现低于止损价则触发止损限价单 */
-        beginListenStopLoss();
-
-        /** 建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */
+        /** 6.建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */
         closeCheckPosition();
+
+        /** 7.计算之前已成交的止损价格，并设置止损市价单（模拟盘不支持） */
+        /** 7*.（只用于模拟盘，实盘需注释掉）计算止损价格临时存储，然后让主进程监听这些股票，发现低于止损价则触发止损限价单 */
+        beginListenStopLoss();
     }
 
     public void closeCheckPosition() {
@@ -98,12 +97,12 @@ public class TradeExecutor {
                                          String[] tradeStockArr = tradeStock.toArray(new String[tradeStock.size()]);
                                          Map<String, StockPosition> positionMap = tradeApi.getPositionMap(tradeStockArr);
                                          if (MapUtils.isEmpty(positionMap)) {
-                                             System.out.println("持仓为空，今天的交易结束");
+                                             System.out.println("position is empty. trade is end today!!!");
                                          } else {
                                              for (String stock : tradeStock) {
                                                  StockPosition stockPosition = positionMap.get(stock);
                                                  if (stockPosition == null) {
-                                                     System.out.println(stock + " 持仓不存在");
+                                                     System.out.println("closeCheckPosition failed! " + stock + " position is not exist!");
                                                      continue;
                                                  }
 
@@ -125,7 +124,7 @@ public class TradeExecutor {
         for (String stock : tradeStock) {
             StockPosition stockPosition = positionMap.get(stock);
             if (stockPosition == null) {
-                System.out.println(stock + " 持仓不存在");
+                System.out.println("beginListenStopLoss failed! " + stock + " position is not exist!");
                 continue;
             }
 
@@ -141,7 +140,7 @@ public class TradeExecutor {
         }
 
         if (MapUtils.isEmpty(stockToStopLoss)) {
-            System.out.println("没有持仓需要监听");
+            System.out.println("there is no position that need to be listened");
             return;
         }
         client.listenStopLoss(stockToStopLoss);
@@ -152,7 +151,7 @@ public class TradeExecutor {
         Map<String, StockPosition> positionMap = tradeApi.getPositionMap(code);
         StockPosition stockPosition = positionMap.get(code);
         if (stockPosition == null) {
-            System.out.println(code + " 持仓不存在");
+            System.out.println("placeStopLossOrder faild! " + code + " position is not exist!");
             return;
         }
 
@@ -161,23 +160,27 @@ public class TradeExecutor {
         double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
 
         long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
-        System.out.println(code + " 止损单下单成功 订单号：" + orderId);
+        System.out.println(code + " placeStopLoss market order. qty=" + canSellQty + ", auxPrice=" + auxPrice + ", orderId：" + orderId);
     }
 
     public void placeStopLossOrder(String code, double canSellQty, double price) {
         long orderId = tradeApi.placeOrderForLossNormal(code, canSellQty, price);
-        System.out.println(code + " 普通卖出限价单下单成功 订单号：" + orderId);
+        System.out.println(code + " placeStopLoss limit order. qty=" + canSellQty + ", price=" + price + ", orderId: " + orderId);
     }
 
+    public StockPosition getPosition(String stock) {
+        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(stock);
+        return positionMap.get(stock);
+    }
     public static void main(String[] args) {
         TradeExecutor tradeExecutor = new TradeExecutor();
-        NodeList nodeList = new NodeList(10);
-        Node node = new Node("RNAZ", 1);
-        node.setPrice(5.71d);
-        nodeList.add(node);
-        tradeExecutor.setList(nodeList);
+        //        NodeList nodeList = new NodeList(10);
+        //        Node node = new Node("RNAZ", 1);
+        //        node.setPrice(5.71d);
+        //        nodeList.add(node);
+        //        tradeExecutor.setList(nodeList);
 
         //        futuListener.beginTrade();
-        tradeExecutor.placeStopLossOrder("RNAZ");
+        tradeExecutor.placeStopLossOrder("");
     }
 }

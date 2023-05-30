@@ -18,8 +18,6 @@ import com.futu.openapi.pb.TrdUpdateOrder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AtomicDouble;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -93,17 +91,17 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
 
     public void start() {
         trd.initConnect("127.0.0.1", (short) 11111, false);
-        System.out.println("staring...");
+        System.out.println("trade api initialize staring...");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException exc) {
         }
-        System.out.println("start finish!");
+        System.out.println("trade api initialize finish start!");
     }
 
     @Override
     public void onInitConnect(FTAPI_Conn client, long errCode, String desc) {
-        System.out.printf("Qot onInitConnect: ret=%b desc=%s connID=%d\n", errCode, desc, client.getConnectID());
+        System.out.printf("TradeApi onInitConnect: ret=%b desc=%s connID=%d\n", errCode, desc, client.getConnectID());
         if (errCode != 0) {
             return;
         }
@@ -112,8 +110,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
           .addAccIDList(accountId)
           .build();
         TrdSubAccPush.Request req = TrdSubAccPush.Request.newBuilder().setC2S(c2s).build();
-        int seqNo = trd.subAccPush(req);
-        System.out.printf("Send TrdSubAccPush: %d\n", seqNo);
+        trd.subAccPush(req);
     }
 
     // 解锁接口，只需要解锁一次
@@ -124,8 +121,8 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
           .setSecurityFirm(TrdCommon.SecurityFirm.SecurityFirm_FutuSecurities_VALUE) // account返回的securityFirm
           .build();
         TrdUnlockTrade.Request req = TrdUnlockTrade.Request.newBuilder().setC2S(c2s).build();
-        int seqNo = trd.unlockTrade(req);
-        System.out.printf("Send TrdUnlockTrade: %d\n", seqNo);
+        trd.unlockTrade(req);
+        //        System.out.printf("Send TrdUnlockTrade: %d\n", seqNo);
     }
 
     // 获取资金接口
@@ -139,8 +136,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
           .setHeader(header)
           .build();
         TrdGetFunds.Request req = TrdGetFunds.Request.newBuilder().setC2S(c2s).build();
-        int seqNo = trd.getFunds(req);
-        System.out.printf("Send TrdGetFunds: %d\n", seqNo);
+        trd.getFunds(req);
         while (true) {
             if (remainCash.get() != 0) {
                 return remainCash.getAndSet(0);
@@ -163,8 +159,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         }
         TrdGetPositionList.C2S c2s = c2sBuilder.build();
         TrdGetPositionList.Request req = TrdGetPositionList.Request.newBuilder().setC2S(c2s).build();
-        int seqNo = trd.getPositionList(req);
-        System.out.printf("Send TrdGetPositionList: %d\n", seqNo);
+        trd.getPositionList(req);
 
         try {
             Map<String, StockPosition> positionmap = stockPositionBlock.take();
@@ -221,8 +216,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         TrdPlaceOrder.C2S c2s = c2sBuilder.build();
 
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
-        int seqNo = trd.placeOrder(req);
-        System.out.printf("Send TrdPlaceOrder: %d\n", seqNo);
+        trd.placeOrder(req);
         while (true) {
             if (orderId.get() != 0) {
                 return orderId.getAndSet(0);
@@ -260,8 +254,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
           .build();
 
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
-        int seqNo = trd.placeOrder(req);
-        System.out.printf("Send placeOrderForLossMarket: %d\n", seqNo);
+        trd.placeOrder(req);
         while (true) {
             if (orderId.get() != 0) {
                 return orderId.getAndSet(0);
@@ -288,11 +281,10 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
           .setModifyOrderOp(modifyOrderOp)
           .build();
         TrdModifyOrder.Request req = TrdModifyOrder.Request.newBuilder().setC2S(c2s).build();
-        int seqNo = trd.modifyOrder(req);
-        System.out.printf("Send TrdModifyOrder: %d\n", seqNo);
+        trd.modifyOrder(req);
         while (true) {
             if (cancelResCode.get() < 1) {
-                return cancelResCode.get();
+                return cancelResCode.getAndSet(1);
             }
         }
     }
@@ -332,10 +324,8 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
                     orderFillMap.put(orderID, new LinkedBlockingQueue<>(10));
                 }
                 orderFillMap.get(orderID).offer(fill);
-                String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive TrdUpdateOrder: %s\n", json);
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("onPush_UpdateOrder error. " + e.getMessage());
             }
         }
     }
@@ -347,10 +337,11 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
             System.out.printf("TrdUnlockTrade failed: %s\n", rsp.getRetMsg());
         } else {
             try {
-                String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive TrdUnlockTrade: %s\n", json);
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
+                System.out.println("unlock success");
+                //                            String json = JsonFormat.printer().print(rsp);
+                //                            System.out.printf("Receive TrdUnlockTrade: %s\n", json);
+            } catch (Exception e) {
+                System.out.println("onReply_UnlockTrade error. " + e.getMessage());
             }
         }
     }
@@ -362,12 +353,12 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
             System.out.printf("TrdGetFunds failed: %s\n", rsp.getRetMsg());
         } else {
             try {
-                String json = JsonFormat.printer().print(rsp);
+                //                String json = JsonFormat.printer().print(rsp);
                 //                System.out.printf("Receive TrdGetFunds: %s\n", json);
                 double cash = rsp.getS2COrBuilder().getFunds().getCash();
                 remainCash.set(cash);
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("onReply_GetFunds error. " + e.getMessage());
             }
         }
     }
@@ -400,11 +391,11 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
                     }
                 }
 
-                String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive TrdGetPositionList: %s\n", json);
+                //                String json = JsonFormat.printer().print(rsp);
+                //                System.out.printf("Receive TrdGetPositionList: %s\n", json);
                 stockPositionBlock.offer(positionMap);
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.out.println("onReply_GetPositionList error. " + e.getMessage());
             }
         }
     }
@@ -419,10 +410,10 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
                 long orderID = rsp.getS2COrBuilder().getOrderID();
                 orderFillMap.put(orderID, new LinkedBlockingQueue<>());
                 orderId.set(orderID);
-                String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive TrdPlaceOrder: %s\n", json);
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
+                //                String json = JsonFormat.printer().print(rsp);
+                //                System.out.printf("Receive TrdPlaceOrder: %s\n", json);
+            } catch (Exception e) {
+                System.out.println("onReply_PlaceOrder error. " + e.getMessage());
             }
         }
     }
@@ -435,10 +426,10 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         } else {
             try {
                 cancelResCode.set(rsp.getErrCode());
-                String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive TrdModifyOrder: %s\n", json);
-            } catch (InvalidProtocolBufferException e) {
-                e.printStackTrace();
+                //                String json = JsonFormat.printer().print(rsp);
+                //                System.out.printf("Receive TrdModifyOrder: %s\n", json);
+            } catch (Exception e) {
+                System.out.println("onReply_ModifyOrder error. " + e.getMessage());
             }
         }
     }
