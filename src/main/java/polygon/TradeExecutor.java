@@ -33,8 +33,8 @@ public class TradeExecutor {
     public TradeExecutor() {
         FTAPI.init();
         tradeApi = new TradeApi();
-        //        tradeApi.useSimulateEnv();
-        //        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
+        tradeApi.useSimulateEnv();
+        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
         tradeApi.start();
         tradeApi.unlock();
     }
@@ -172,6 +172,7 @@ public class TradeExecutor {
         Map<String, StockPosition> positionMap = tradeApi.getPositionMap(stock);
         return positionMap.get(stock);
     }
+
     public static void main(String[] args) {
         TradeExecutor tradeExecutor = new TradeExecutor();
         //        NodeList nodeList = new NodeList(10);
@@ -181,6 +182,6 @@ public class TradeExecutor {
         //        tradeExecutor.setList(nodeList);
 
         //        futuListener.beginTrade();
-        tradeExecutor.placeStopLossOrder("");
+        tradeExecutor.placeStopLossOrder("HKD");
     }
 }
