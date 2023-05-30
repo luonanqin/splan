@@ -26,7 +26,7 @@ public class TradeExecutor {
 
     private NodeList list;
     private TradeApi tradeApi;
-    private int cut = 995000;
+    private int cut = 990000;
     private List<String> tradeStock = Lists.newArrayList();
     private RealTimeDataWS client;
 
