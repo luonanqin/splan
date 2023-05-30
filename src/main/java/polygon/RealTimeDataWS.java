@@ -2,6 +2,7 @@ package polygon;
 
 import bean.BOLL;
 import bean.NodeList;
+import bean.SplitStockInfo;
 import bean.StockKLine;
 import bean.StopLoss;
 import com.alibaba.fastjson.JSON;
@@ -43,6 +44,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @ClientEndpoint
 public class RealTimeDataWS {
@@ -61,7 +63,7 @@ public class RealTimeDataWS {
     private boolean listenStopLoss = false;
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
-    public static Map<String, Set<Double>> stockToM19Close = Maps.newHashMap();
+    public static Map<String, List<Double>> stockToM19Close = Maps.newHashMap();
     public static Map<String, OverBollingerDN2023OpenFirst.StockRatio> originRatioMap;
     private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
@@ -76,11 +78,10 @@ public class RealTimeDataWS {
     private static Set<String> stockSet;
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private static Map<String, String> fileMap;
-    private static AsyncEventBus eventBus;
-    private FutuListener futuListener;
+    private static AsyncEventBus tradeEventBus = asyncEventBus();
+    private TradeExecutor tradeExecutor = new TradeExecutor();
 
     Session userSession = null;
-    private MessageHandler messageHandler;
 
     public RealTimeDataWS(URI endpointURI) {
         try {
@@ -102,18 +103,17 @@ public class RealTimeDataWS {
             //            stockSet.add("AAPL");
 
             initManyTime();
-            buildExecutor();
+            readyUnsubscribeExecutor();
             loadLastDn();
-            loadM20();
+            loadLatestMA20();
 
-            eventBus = asyncEventBus();
-            TradeListener tradeListener = new TradeListener();
-            tradeListener.setClient(this);
-            tradeListener.setList(list);
-            eventBus.register(tradeListener);
+            TradeDataListener tradeDataListener = new TradeDataListener();
+            tradeDataListener.setClient(this);
+            tradeDataListener.setList(list);
+            tradeEventBus.register(tradeDataListener);
 
-            futuListener = new FutuListener();
-            futuListener.setList(list);
+            tradeExecutor.setList(list);
+            System.out.println("finish init method");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,9 +135,10 @@ public class RealTimeDataWS {
             closeCheckTime = Date.from(now.withHour(4).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         }
         listenEndTime = openTime + LISTENING_TIME;
+        System.out.println("finish initialize many time");
     }
 
-    private void buildExecutor() {
+    private void readyUnsubscribeExecutor() {
         int threadCount = 100;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
@@ -178,61 +179,39 @@ public class RealTimeDataWS {
         // 过滤所有合股
         Set<String> mergeStock = BaseUtils.getMergeStock();
         set.removeAll(mergeStock);
-        System.out.println(String.format("after filter, the stock set size is %d", set.size()));
+        System.out.println(String.format("filter merge stock, the stock set size is %d", set.size()));
+
+        // 过滤所有拆股
+        Set<SplitStockInfo> splitStockInfo = BaseUtils.getSplitStockInfo();
+        Set<String> splitStock = splitStockInfo.stream().map(SplitStockInfo::getStock).collect(Collectors.toSet());
+        set.removeAll(splitStock);
+        System.out.println(String.format("filter split stock, the stock set size is %d", set.size()));
 
         return set;
     }
 
-    private static void loadM20() throws Exception {
+    private static void loadLatestMA20() throws Exception {
         int beforeYear = 2023, afterYear = 2021;
-        Map<String, Map<String, StockKLine>> dateToStockLineMap = Maps.newHashMap();
         for (String stock : stockSet) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            String filePath = fileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, beforeYear, afterYear);
-
-            for (StockKLine kLine : kLines) {
-                String date = kLine.getDate();
-                if (!dateToStockLineMap.containsKey(date)) {
-                    dateToStockLineMap.put(date, Maps.newHashMap());
-                }
-                dateToStockLineMap.get(date).put(stock, kLine);
-            }
-        }
-
-        List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", beforeYear, afterYear);
-
-        List<String> _19day = Lists.newArrayList();
-        for (int i = 0; i < 19; i++) {
-            _19day.add(kLines.get(i).getDate());
-        }
-
-        for (String stock : stockSet) {
-            if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, beforeYear, afterYear);
+            if (kLines.size() < 19) {
                 continue;
             }
             BigDecimal m20close = BigDecimal.ZERO;
-            Set<Double> _19Close = Sets.newHashSet();
-            boolean failed = false;
-            for (String day : _19day) {
-                StockKLine temp = dateToStockLineMap.get(day).get(stock);
-                if (temp == null) {
-                    failed = true;
-                    break;
-                }
-                double close = temp.getClose();
+            List<Double> _19Close = Lists.newArrayList();
+            for (int i = 0; i < 19; i++) {
+                double close = kLines.get(i).getClose();
                 m20close = m20close.add(BigDecimal.valueOf(close));
                 _19Close.add(close);
-            }
-            if (failed) {
-                continue;
             }
 
             stockToM19CloseSum.put(stock, m20close.doubleValue());
             stockToM19Close.put(stock, _19Close);
         }
+        System.out.println("finish load lastest 19-days close data");
     }
 
     private static void loadLastDn() throws Exception {
@@ -248,6 +227,7 @@ public class RealTimeDataWS {
             double dn = boll.getDn();
             stockToLastDn.put(stock, dn);
         }
+        System.out.println("finish load last DN for BOLL");
     }
 
     public static AsyncEventBus asyncEventBus() {
@@ -255,7 +235,7 @@ public class RealTimeDataWS {
         int maxPoolSize = 100;
         int keepAliveTime = 60 * 1000;
 
-        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(1000);
+        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(2000);
         RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
         ThreadFactory factory = new ThreadFactory() {
             private final AtomicInteger integer = new AtomicInteger(1);
@@ -324,22 +304,20 @@ public class RealTimeDataWS {
                             System.out.println("wait pre trade time. now is " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                             Thread.sleep(5000);
                         } else {
-                            System.out.println("begin subcribe at " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                            System.out.println("begin subcribe stock at " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                             break;
                         }
                     }
-                    executor.execute(() -> {
+
+                    new Thread(() -> {
                         //                        Set<String> stocks = Sets.newHashSet("CXAI", "SLV", "DRMA", "FMS", "SOXS", "GFAI", "APPH", "TNA", "IWM", "TZA", "TWM", "SRTY", "NFLX", "JEPI", "META", "AUD", "IONQ", "TIVC", "TSLA", "CYTO", "FFIE", "GPRO", "TMF", "MO", "BBIG", "SOXL", "BBLN", "MINM", "MSFT", "UVXY", "GOOG", "MVST", "NVDA", "TQQQ", "GETR", "ATNF", "IBRX", "AMZN", "PLX", "UPRO", "UCO", "PACW", "SPY", "MARA", "AGBA", "ZFOX", "INTC", "DIS", "PYPL", "CDTX", "INBS", "LICN", "SPXU", "SRTS", "SBFM", "TSLL", "NRGU", "SOFI", "SQQQ", "AIG", "U", "O", "EGIO", "MTC", "IEF", "TLT", "CWEB", "TCBP", "SVFD", "GDC", "TRKA", "AAPL", "SSO", "IDEX", "VRM", "SNDL", "NTEST", "GMDA", "ABNB", "TMV", "SDOW", "VCIG", "XLI", "CRKN", "GDXD", "VSSYW", "KNTE", "ASML", "NKLA", "AMD", "OPK", "UVIX", "SBSW", "JD", "LABU", "BABA", "PTGX", "CS", "BITO", "NIO", "TCRX", "XPEV", "SFWL", "OPEN", "BNTX", "GOOGL", "INDA", "ZURA", "LILM", "PBTS", "ADMP", "Z", "RYAAY", "WMT", "CISO", "USO", "CCL", "BOIL", "TUP", "AFRM", "SLGG", "OPFI", "BNKU", "F", "BE", "SURG", "MWG", "LCID", "RIVN", "NVO", "SOS", "CNEY", "SNTG", "POLA", "IZM", "OXY", "QBTS", "GFI", "GOEV", "EPAM", "HOUR", "BLBD", "GOLD", "JAGX", "GLD", "TWLO", "EURN", "JOBY", "CVX", "VIXY", "ALLR", "SMX", "MRNA", "HYZN", "BFRG", "ZIM", "NOBL", "ORGO", "VATE", "IAU", "SCHD", "AGQ", "VOO", "XLF", "SOUN", "GETY", "UAVS", "CRSP", "KO", "PTEST", "CVNA", "CI", "KOLD", "WFC", "BLUE", "CJJD", "GDX", "LABD", "BLNK", "BAC", "MULN", "LUNR", "IMGN", "IONM", "FUTU", "SHFS", "SONO", "STSS", "CEI", "CMCSA", "CYTK", "HLN", "IREN", "SBUX", "ZOM", "TCJH", "C", "QQQ", "TOP", "UFAB", "RACE", "HKD", "AMPE", "QQQM", "DDL", "YINN", "ASTI", "UBS", "TCMD", "FNGU", "SPXS", "LAC", "PLUG", "TRVN", "QCOM", "NVTA", "JEPQ", "ICUCW", "BULZ", "BRDS", "GRVY", "CLRO", "SHOP", "MOBQ", "LI", "VALE", "GCTK", "BB", "DRN", "HUBS", "DNA", "IQ", "PLTR", "FSLR", "QLD", "PAAS", "PBLA", "BIOL", "HSBC", "PEP", "AUGX", "MFH", "CPE", "DOG", "HUDI", "COSM", "WDAY", "XELA", "DB", "INPX", "SNN", "PDD", "FXI", "SSRM", "TSLQ", "HMPT", "BYND", "QID", "GRIL", "GSK", "BNKD", "HSTO", "CTLT", "ZION", "HCDI", "WETG", "VXX", "SAVA", "SVXY", "AKAN", "BFLY", "CARR", "CLSK", "IBM", "DWAC", "NKE", "NVDS", "INCR", "MSTR", "T", "TSM", "CSCO", "DADA", "SQ", "ZSL", "SARK", "IVV", "SDS", "SPLG", "UDOW", "HMY", "DXF", "PFE", "OMH", "MHNC", "SIGA", "ATXG", "NOGN", "LYFT", "RIOT", "BMY", "FAS", "TECL", "SPG", "NDAQ", "GNS", "SPXL", "WAL", "SVIX", "UNG", "NOK", "SAI", "ARKK", "AKLI", "RKLB", "AGFY", "DDOG", "RBLX", "NBTX", "MCRB", "SNAP", "TIO", "HGEN", "TAL", "WOOF", "DIA", "BTBT", "MGAM", "UPWK", "TWOU", "AMC", "YANG", "WISA", "ABBV", "TCOM", "SMTC", "MAXN", "UPST", "CMND", "ARR", "ROKU", "FISV", "TSLS", "MU", "RELI", "AI", "AZN", "NU", "ZVZZT", "TLRY", "BURU", "XLP", "EEFT", "CROX", "ADXN", "PBR", "CXAIW", "BITI", "APE", "ABB", "FNGD", "XLV", "SENS", "APLD", "HOLO", "TSP", "HUIZ", "ATEST", "NVS", "TLTW", "MOS", "DPST", "EJH", "BPT", "SHEL", "SPRO", "SVOL", "COIN", "NCMI", "TMC", "MGIH", "DHY", "FOXA", "TRUP", "WPM", "NVAX", "SQM", "KWEB", "ZH", "EVA", "SNGX", "LICY", "HIMX", "SPYG", "RWM", "VXRT", "CTVA", "MS", "SPCE", "ADBE", "ING", "FLNC", "TDOC", "NNOX", "ENPH", "NCLH", "MCD", "GDXU");
                         //                        for (String stock : stocks) {
                         //                        int i = 0;
                         for (String stock : stockSet) {
                             sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
-                            //                            i++;
-                            //                            if (i > 100) {
-                            //                                return;
-                            //                            }
                         }
-                    });
+                        System.out.println("finish subcribe real time!");
+                    }).start();
                 }
             }
         } catch (Exception e) {
@@ -409,7 +387,7 @@ public class RealTimeDataWS {
                 for (Map.Entry<String, Double> entry : stockToPrice.entrySet()) {
                     String stock = entry.getKey();
                     if (unsubscribe(stock)) {
-                        eventBus.post(entry);
+                        tradeEventBus.post(entry);
                     }
                 }
             }
@@ -434,11 +412,12 @@ public class RealTimeDataWS {
         for (String stock : stockSet) {
             unsubscribe(stock);
         }
-        System.out.println("=========== subscribe end ===========");
+        System.out.println("=========== finish unsubscribe ===========");
     }
 
     public void listenStopLoss(Map<String, StopLoss> stockToStopLoss) {
         listenStopLoss = true;
+        System.out.println("being listen stop loss: " + stockToStopLoss.keySet());
         for (String stock : stockToStopLoss.keySet()) {
             sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
         }
@@ -459,7 +438,7 @@ public class RealTimeDataWS {
                     double lossPrice = stopLoss.getLossPrice();
                     double canSellQty = stopLoss.getCanSellQty();
                     if (price < lossPrice) {
-                        futuListener.placeStopLossOrder(stock, canSellQty, price - 0.05d);
+                        tradeExecutor.placeStopLossOrder(stock, canSellQty, price - 0.05d);
                         stockToStopLoss.remove(stock);
                     }
                 }

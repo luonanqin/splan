@@ -60,8 +60,8 @@ public class TradeWSClient extends WebSocketClient {
             loadLastDn();
             loadM20();
             eventBus = asyncEventBus();
-            TradeListener tradeListener = new TradeListener();
-            eventBus.register(tradeListener);
+            TradeDataListener tradeDataListener = new TradeDataListener();
+            eventBus.register(tradeDataListener);
         } catch (Exception e) {
             e.printStackTrace();
         }

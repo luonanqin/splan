@@ -8,8 +8,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import strategy.OverBollingerDN2023OpenFirst;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static java.math.BigDecimal.ROUND_DOWN;
 import static polygon.RealTimeDataWS.originRatioMap;
@@ -32,16 +32,16 @@ public class TradeDataListener {
 
     public void cal(String stock, double price) {
         Double m19closeSum = RealTimeDataWS.stockToM19CloseSum.get(stock);
-        Set<Double> m19closeSet = RealTimeDataWS.stockToM19Close.get(stock);
-        if (m19closeSum == null || CollectionUtils.isEmpty(m19closeSet)) {
+        List<Double> m19closeList = RealTimeDataWS.stockToM19Close.get(stock);
+        if (m19closeSum == null || CollectionUtils.isEmpty(m19closeList)) {
             return;
         }
 
         double mb = (m19closeSum + price) / 20;
         BigDecimal avgDiffSum = BigDecimal.ZERO;
 
-        m19closeSet.add(price);
-        for (double close : m19closeSet) {
+        m19closeList.add(price);
+        for (double close : m19closeList) {
             avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(close - mb).pow(2));
         }
 

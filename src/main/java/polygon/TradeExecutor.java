@@ -22,7 +22,7 @@ import java.util.TimerTask;
  * Created by Luonanqin on 2023/5/9.
  */
 @Data
-public class TradeProcessor {
+public class TradeExecutor {
 
     private NodeList list;
     private TradeApi tradeApi;
@@ -30,7 +30,7 @@ public class TradeProcessor {
     private List<String> tradeStock = Lists.newArrayList();
     private RealTimeDataWS client;
 
-    public TradeProcessor() {
+    public TradeExecutor() {
         FTAPI.init();
         tradeApi = new TradeApi();
         tradeApi.useSimulateEnv();
@@ -170,14 +170,14 @@ public class TradeProcessor {
     }
 
     public static void main(String[] args) {
-        TradeProcessor tradeProcessor = new TradeProcessor();
+        TradeExecutor tradeExecutor = new TradeExecutor();
         NodeList nodeList = new NodeList(10);
         Node node = new Node("RNAZ", 1);
         node.setPrice(5.71d);
         nodeList.add(node);
-        tradeProcessor.setList(nodeList);
+        tradeExecutor.setList(nodeList);
 
         //        futuListener.beginTrade();
-        tradeProcessor.placeStopLossOrder("RNAZ");
+        tradeExecutor.placeStopLossOrder("RNAZ");
     }
 }
