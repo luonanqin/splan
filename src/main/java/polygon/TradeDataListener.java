@@ -18,7 +18,7 @@ import static polygon.RealTimeDataWS.originRatioMap;
  * Created by Luonanqin on 2023/5/9.
  */
 @Data
-public class TradeListener {
+public class TradeDataListener {
 
     private NodeList list;
     private RealTimeDataWS client;
