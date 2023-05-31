@@ -129,16 +129,20 @@ public class RealTimeDataWS {
         LocalDateTime now = LocalDateTime.now();
         boolean beforeDawn = now.getHour() < 10; // 小于10则表示新的一天凌晨
         LocalDateTime closeCheck = now;
+        LocalDateTime preTrade = now;
         if (!beforeDawn) {
             closeCheck = now.plusDays(1);
         }
+        if (beforeDawn) {
+            preTrade = now.minusDays(1);
+        }
 
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
-            preTradeTime = now.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(23).withMinute(34).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(0).withMinute(8).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         } else {
-            preTradeTime = now.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            preTradeTime = preTrade.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             openTime = now.withHour(22).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             closeCheckTime = Date.from(closeCheck.withHour(4).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         }
@@ -289,7 +293,7 @@ public class RealTimeDataWS {
     public void onMessage(String message) {
         try {
             if (subscribed) {
-                System.out.println(message);
+                //                System.out.println(message);
                 subscribeBQ.offer(message);
             } else if (listenStopLoss) {
                 stopLossBQ.offer(message);
@@ -359,7 +363,6 @@ public class RealTimeDataWS {
                 //                System.out.println(msg);
                 List<Map> maps = JSON.parseArray(msg, Map.class);
                 Map<String, Double> stockToPrice = Maps.newHashMap();
-                int i = 0;
                 for (Map map : maps) {
                     String stock = MapUtils.getString(map, "sym", "");
 
@@ -371,8 +374,7 @@ public class RealTimeDataWS {
                     Long time = MapUtils.getLong(map, "t");
                     //                    System.out.println(map);
                     if (time < openTime) {
-                        i++;
-                        if (i % 1000 == 0) {
+                        if (time % 1000 == 0) {
                             System.out.println("time is early");
                             System.out.println(map);
                         }
@@ -427,7 +429,7 @@ public class RealTimeDataWS {
 
     public void listenStopLoss(Map<String, StopLoss> stockToStopLoss) {
         listenStopLoss = true;
-        System.out.println("being listen stop loss: " + stockToStopLoss.keySet());
+        System.out.println("being listen stop loss: " + stockToStopLoss);
         for (String stock : stockToStopLoss.keySet()) {
             sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
         }
@@ -466,6 +468,7 @@ public class RealTimeDataWS {
                         unsubscribe(stock);
                         continue;
                     }
+                    System.out.println(map);
                     double lossPrice = stopLoss.getLossPrice();
                     double canSellQty = stopLoss.getCanSellQty();
                     if (price < lossPrice) {
