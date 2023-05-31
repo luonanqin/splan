@@ -40,11 +40,12 @@ public class TradeExecutor {
     }
 
     public void beginTrade() {
+        list.show();
         List<Node> nodes = list.getNodes();
         /** 1.获取剩余可用现金 */
         double remainCash = tradeApi.getFunds();
-        System.out.println("remain cash: " + remainCash);
         remainCash -= cut;
+        System.out.println("remain cash: " + remainCash);
         for (int i = 0; i < nodes.size(); i++) {
             Node node = nodes.get(i);
             String code = node.getName();
@@ -54,13 +55,13 @@ public class TradeExecutor {
 
             /** 如果可买数量为0，则执行56 */
             if (count <= 0) {
-                System.out.println("trade finish");
+                System.out.println("there is no cash to trade. trade finish");
                 break;
             }
 
             /** 3.用可买数量下市价单 */
             long orderId = tradeApi.placeOrder(code, count, price);
-            System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ",orderId: " + orderId);
+            System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderId: " + orderId);
 
             /** 4.下单完成后，十秒后获取成交状态 */
             OrderFill orderFill = tradeApi.getOrderFill(orderId, 10);
@@ -70,7 +71,7 @@ public class TradeExecutor {
                 System.out.println(code + " order has been canceled. orderId: " + orderId + ", cancel res code: " + cancelResCode);
             } else {
                 /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
-                System.out.println(orderFill);
+                System.out.println(code + " order is successfully executed. orderId: " + orderId);
                 //                placeStopLossOrder(code);
                 tradeStock.add(code);
             }
@@ -109,7 +110,7 @@ public class TradeExecutor {
                                                  double canSellQty = stockPosition.getCanSellQty();
                                                  double currPrice = stockPosition.getCurrPrice();
                                                  long orderId = tradeApi.placeOrderForLossNormal(stock, canSellQty, currPrice - 0.5d);
-                                                 System.out.println(stock + " 收盘前卖出限价单下单成功 订单号：" + orderId);
+                                                 System.out.println("before close sell stock. stock=" + stock + ", orderId：" + orderId);
                                              }
                                          }
                                      }

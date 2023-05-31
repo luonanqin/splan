@@ -127,14 +127,20 @@ public class RealTimeDataWS {
 
     private void initManyTime() {
         LocalDateTime now = LocalDateTime.now();
+        boolean beforeDawn = now.getHour() < 10; // 小于10则表示新的一天凌晨
+        LocalDateTime closeCheck = now;
+        if (!beforeDawn) {
+            closeCheck = now.plusDays(1);
+        }
+
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
             preTradeTime = now.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(23).withMinute(38).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            closeCheckTime = Date.from(now.withHour(3).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
+            openTime = now.withHour(23).withMinute(34).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         } else {
             preTradeTime = now.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             openTime = now.withHour(22).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            closeCheckTime = Date.from(now.withHour(4).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
+            closeCheckTime = Date.from(closeCheck.withHour(4).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         }
         listenEndTime = openTime + LISTENING_TIME;
         System.out.println("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
@@ -375,9 +381,9 @@ public class RealTimeDataWS {
                     if (time > listenEndTime) {
                         subscribed = false;
                         System.out.println("listen end!");
-                        tradeExecutor.beginTrade();
                         unsubscribeAll();
                         listenEnd = true;
+                        executor.execute(() -> tradeExecutor.beginTrade());
                         return;
                     }
                     // 当前价大于前一天的下轨则直接过滤
@@ -449,6 +455,10 @@ public class RealTimeDataWS {
                 List<Map> maps = JSON.parseArray(msg, Map.class);
                 for (Map map : maps) {
                     String stock = MapUtils.getString(map, "sym", "");
+                    if (StringUtils.isBlank(stock)) {
+                        continue;
+                    }
+
                     Double price = MapUtils.getDouble(map, "p");
                     StopLoss stopLoss = stockToStopLoss.get(stock);
                     if (stopLoss == null) {
@@ -459,7 +469,7 @@ public class RealTimeDataWS {
                     double lossPrice = stopLoss.getLossPrice();
                     double canSellQty = stopLoss.getCanSellQty();
                     if (price < lossPrice) {
-                        tradeExecutor.placeStopLossOrder(stock, canSellQty, price - 0.05d);
+                        tradeExecutor.placeStopLossOrder(stock, canSellQty, lossPrice - 0.05d);
                         stockToStopLoss.remove(stock);
                     }
                 }

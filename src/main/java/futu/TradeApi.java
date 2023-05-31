@@ -242,17 +242,21 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
           .setTrdMarket(tradeMarket)
           .build();
 
-        TrdPlaceOrder.C2S c2s = TrdPlaceOrder.C2S.newBuilder()
+        TrdPlaceOrder.C2S.Builder c2sBuilder = TrdPlaceOrder.C2S.newBuilder()
           .setPacketID(trd.nextPacketID())
           .setHeader(header)
           .setTrdSide(TrdCommon.TrdSide.TrdSide_Sell_VALUE)
           .setSecMarket(TrdCommon.TrdSecMarket.TrdSecMarket_US_VALUE)
           .setCode(code)
           .setQty(count)
-          .setAuxPrice(price)
-          .setOrderType(orderType)
-          .build();
+          .setOrderType(orderType);
+        if (orderType == TrdCommon.OrderType.OrderType_Normal_VALUE) {
+            c2sBuilder.setPrice(price);
+        } else if (orderType == TrdCommon.OrderType.OrderType_Stop_VALUE) {
+            c2sBuilder.setAuxPrice(price);
+        }
 
+        TrdPlaceOrder.C2S c2s = c2sBuilder.build();
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
         trd.placeOrder(req);
         while (true) {
@@ -307,7 +311,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
                 double fillQty = order.getFillQty();
                 double fillAvgPrice = order.getFillAvgPrice();
                 if (orderStatus != TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE) {
-                    System.out.println("fillQty: " + fillQty + ", fillAvgPrice: " + fillAvgPrice);
+                    //                    System.out.println("fillQty: " + fillQty + ", fillAvgPrice: " + fillAvgPrice);
                     return;
                 }
 
@@ -324,6 +328,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
                     orderFillMap.put(orderID, new LinkedBlockingQueue<>(10));
                 }
                 orderFillMap.get(orderID).offer(fill);
+                System.out.println("update order: " + fill);
             } catch (Exception e) {
                 System.out.println("onPush_UpdateOrder error. " + e.getMessage());
             }
