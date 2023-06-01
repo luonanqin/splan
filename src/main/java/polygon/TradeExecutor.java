@@ -13,6 +13,7 @@ import lombok.Data;
 import org.apache.commons.collections4.MapUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -97,6 +98,7 @@ public class TradeExecutor {
                                      public void run() {
                                          String[] tradeStockArr = tradeStock.toArray(new String[tradeStock.size()]);
                                          Map<String, StockPosition> positionMap = tradeApi.getPositionMap(tradeStockArr);
+                                         System.out.println("ready to sell before close market. position=" + positionMap + ", time=" + LocalDateTime.now());
                                          if (MapUtils.isEmpty(positionMap)) {
                                              System.out.println("position is empty. trade is end today!!!");
                                          } else {

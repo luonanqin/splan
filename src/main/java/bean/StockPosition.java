@@ -1,7 +1,9 @@
 package bean;
 
 import lombok.Data;
+import lombok.ToString;
 
+@ToString
 @Data
 public class StockPosition {
 
