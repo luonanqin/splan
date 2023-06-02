@@ -8,6 +8,7 @@ import com.futu.openapi.FTSPI_Qot;
 import com.futu.openapi.pb.QotCommon;
 import com.futu.openapi.pb.QotGetBasicQot;
 import com.futu.openapi.pb.QotGetSubInfo;
+import com.futu.openapi.pb.QotRequestRehab;
 import com.futu.openapi.pb.QotSub;
 import com.futu.openapi.pb.QotUpdateBasicQot;
 import com.google.common.collect.Maps;
@@ -49,6 +50,10 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
 
     public void start() {
         qot.initConnect("127.0.0.1", (short) 11111, false);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException exc) {
+        }
     }
 
     public void end(){
@@ -188,11 +193,40 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         System.out.printf("Send QotGetSubInfo: %d\n", seqNo);
     }
 
+
+    public void getRehab(String code){
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setCode(code)
+          .build();
+        QotRequestRehab.C2S c2s = QotRequestRehab.C2S.newBuilder()
+          .setSecurity(sec)
+          .build();
+        QotRequestRehab.Request req = QotRequestRehab.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.requestRehab(req);
+    }
+
+    @Override
+    public void onReply_RequestRehab(FTAPI_Conn client, int nSerialNo, QotRequestRehab.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("QotRequestRehab failed: %s\n", rsp.getRetMsg());
+        } else {
+            try {
+                List<QotCommon.Rehab> rehabListList = rsp.getS2COrBuilder().getRehabListList();
+                String json = JsonFormat.printer().print(rsp);
+                System.out.printf("Receive QotRequestRehab: %s\n", json);
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         FTAPI.init();
         BasicQuoteDemo quote = new BasicQuoteDemo();
         quote.start();
 
+        quote.getRehab("DPST");
         quote.subBasicQuote("FUTU");
         quote.getSubInfo();
 

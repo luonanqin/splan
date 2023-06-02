@@ -444,6 +444,7 @@ public class RealTimeDataWS {
                         StockPosition position = tradeExecutor.getPosition(stock);
                         if (position == null || position.getCanSellQty() == 0) {
                             noNeedListen.add(stock);
+                            unsubscribe(stock);
                         }
                     }
                     noNeedListen.forEach(s -> stockToStopLoss.remove(s));
@@ -468,7 +469,10 @@ public class RealTimeDataWS {
                         unsubscribe(stock);
                         continue;
                     }
-                    System.out.println(map);
+                    Long time = MapUtils.getLong(map, "t");
+                    if (time % 1000 == 0) {
+                        System.out.println(map);
+                    }
                     double lossPrice = stopLoss.getLossPrice();
                     double canSellQty = stopLoss.getCanSellQty();
                     if (price < lossPrice) {
