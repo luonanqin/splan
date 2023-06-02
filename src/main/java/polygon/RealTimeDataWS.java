@@ -139,7 +139,7 @@ public class RealTimeDataWS {
 
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
             preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(0).withMinute(8).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(21).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
         } else {
             preTradeTime = preTrade.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
