@@ -385,7 +385,7 @@ public class RealTimeDataWS {
                         System.out.println("listen end!");
                         unsubscribeAll();
                         listenEnd = true;
-                        executor.execute(() -> tradeExecutor.beginTrade());
+                        tradeExecutor.beginTrade();
                         return;
                     }
                     // 当前价大于前一天的下轨则直接过滤
