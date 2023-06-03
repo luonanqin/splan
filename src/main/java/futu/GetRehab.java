@@ -8,6 +8,7 @@ import com.futu.openapi.FTSPI_Qot;
 import com.futu.openapi.pb.QotCommon;
 import com.futu.openapi.pb.QotGetSubInfo;
 import com.futu.openapi.pb.QotRequestRehab;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
@@ -89,7 +90,7 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
           .build();
         QotRequestRehab.Request req = QotRequestRehab.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.requestRehab(req);
-//        System.out.println(code + " " + seqNo);
+        //        System.out.println(code + " " + seqNo);
         seqNoToStock.put(seqNo, code);
     }
 
@@ -130,11 +131,13 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
         for (String stock : stockFileMap.keySet()) {
             quote.getRehab(stock);
             Thread.sleep(500);
-            if (quote.getResult().size() % 10 == 0) {
-                System.out.println("result size=" + quote.getResult().size());
-            }
         }
-        System.out.println(quote.getResult());
-        System.out.println();
+        Map<String, String> result = quote.getResult();
+        System.out.println(result);
+        List<String> data = Lists.newArrayList();
+        for (String stock : result.keySet()) {
+            data.add(String.format("%s %s", stock, result.get(stock)));
+        }
+        BaseUtils.writeFile(Constants.SPLIT_PATH + "rehab", data);
     }
 }

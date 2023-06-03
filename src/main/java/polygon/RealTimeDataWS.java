@@ -476,6 +476,7 @@ public class RealTimeDataWS {
                     double lossPrice = stopLoss.getLossPrice();
                     double canSellQty = stopLoss.getCanSellQty();
                     if (price < lossPrice) {
+                        System.out.println(stock + " touch the stop loss. current price=" + price);
                         tradeExecutor.placeStopLossOrder(stock, canSellQty, lossPrice - 0.05d);
                         stockToStopLoss.remove(stock);
                     }
