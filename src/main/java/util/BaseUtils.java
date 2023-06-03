@@ -42,7 +42,7 @@ public class BaseUtils {
             try {
                 driver.get(url);
                 //                driver.findElement(checkBy);
-                new WebDriverWait(driver, Duration.ofSeconds(5)).until(d -> driver.findElement(checkBy));
+                new WebDriverWait(driver, Duration.ofSeconds(5).getSeconds()).until(d -> driver.findElement(checkBy));
                 return;
             } catch (Exception e) {
                 try {

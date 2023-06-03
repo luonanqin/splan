@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -30,7 +29,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static util.Constants.*;
+import static util.Constants.DAILY_PATH;
+import static util.Constants.GRAB_ONE_YEAR_PATH;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -48,7 +48,7 @@ public class GrabStockFor3MHistory {
             chromeOptions.addArguments("--remote-allow-origins=*");
             ChromeDriver driver = new ChromeDriver(chromeOptions);
             driver.manage().window().setSize(new Dimension(1280, 1027));
-            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+            driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
             BaseUtils.loginBarchart(driver);
             driverQueue.offer(driver);
         }

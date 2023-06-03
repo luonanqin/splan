@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +53,7 @@ public class GrabStock2023History {
                 chromeOptions.addArguments("--remote-allow-origins=*");
                 ChromeDriver driver = new ChromeDriver(chromeOptions);
                 driver.manage().window().setSize(new Dimension(1280, 1027));
-                driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+                driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
                 BaseUtils.loginBarchart(driver);
                 driverQueue.offer(driver);
             }

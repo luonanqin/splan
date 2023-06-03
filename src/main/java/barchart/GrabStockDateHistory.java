@@ -14,7 +14,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import stock.FilterStock;
+import luonq.stock.FilterStock;
 import util.BaseUtils;
 import util.Constants;
 
@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +51,7 @@ public class GrabStockDateHistory {
             chromeOptions.addArguments("--remote-allow-origins=*");
             ChromeDriver driver = new ChromeDriver(chromeOptions);
             driver.manage().window().setSize(new Dimension(1280, 1027));
-            driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+            driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
             BaseUtils.loginBarchart(driver);
             driverQueue.offer(driver);
         }

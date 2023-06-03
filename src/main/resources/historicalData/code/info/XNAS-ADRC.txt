@@ -92,7 +92,7 @@ ticker='HUIZ', name='Huize Holding Limited American Depositary Shares', type=ADR
 ticker='HYW', name='Hywin Holdings Ltd. American Depositary Shares', type=ADRC, active='true', cik='0001785680', composite_figi='BBG00ZGYGYD4'
 ticker='ICLK', name='iClick Interactive Asia Group Limited', type=ADRC, active='true', cik='0001697818', composite_figi='BBG00J0BKBX0'
 ticker='IDBA', name='IDEX Biometrics ASA American Depositary Shares', type=ADRC, active='true', cik='0001824036', composite_figi='BBG00ZGXQVY8'
-ticker='ILAG', name='Intelligent Living Application Group Inc. Ordinary Shares', type=ADRC, active='true', cik='0001814963', composite_figi='null'
+ticker='ILAG', name='Intelligent Living start.Application Group Inc. Ordinary Shares', type=ADRC, active='true', cik='0001814963', composite_figi='null'
 ticker='IMAB', name='I-MAB American Depositary Shares', type=ADRC, active='true', cik='0001778016', composite_figi='BBG00QQ8DFK6'
 ticker='IMCR', name='Immunocore Holdings plc American Depositary Shares', type=ADRC, active='true', cik='0001671927', composite_figi='BBG00YYCXFB9'
 ticker='IMMP', name='Immutep Limited American Depositary Shares', type=ADRC, active='true', cik='0001506184', composite_figi='BBG002WD6SY6'
