@@ -111,8 +111,9 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
             QotCommon.Rehab rehab = rehabList.get(rehabList.size() - 1);
             String time = rehab.getTime();
             double fwdFactorA = rehab.getFwdFactorA();
+            long companyActFlag = rehab.getCompanyActFlag();
 
-            String value = time + " " + fwdFactorA;
+            String value = time + " " + fwdFactorA + " " + companyActFlag;
             String stock = seqNoToStock.get(nSerialNo);
             System.out.println(stock + " " + value);
 
