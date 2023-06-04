@@ -3,6 +3,8 @@ package luonq.polygon;
 import bean.StockKLine;
 import bean.Trade;
 import bean.TradeResp;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
@@ -10,6 +12,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
@@ -33,12 +36,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class GetHistoricalTrade {
 
-    public static void main(String[] args) throws Exception {
+    public static void getData() throws Exception {
         String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
         String api = "https://api.polygon.io/v3/trades/";
         String timeLte = "timestamp.lte=";
         String timeGte = "timestamp.gte=";
-        // https://api.polygon.io/v3/trades/FUTU?timestamp=2023-04-27&order=desc&limit=1000&sort=timestamp&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
 
         int limit = 100;
         // 2023
@@ -184,5 +186,13 @@ public class GetHistoricalTrade {
                 System.out.println("error: " + result);
             }
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
+
+        getData();
+        System.out.println("============ end ============");
     }
 }

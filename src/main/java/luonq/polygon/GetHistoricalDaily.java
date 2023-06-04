@@ -12,7 +12,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
@@ -98,8 +97,7 @@ public class GetHistoricalDaily {
         return list;
     }
 
-    @Scheduled(cron = "0 1 23 * * ?")
-    public void getData() throws Exception {
+    public static void getData() throws Exception {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
@@ -171,6 +169,7 @@ public class GetHistoricalDaily {
                 break;
             }
         }
+
         return;
     }
 
@@ -178,8 +177,7 @@ public class GetHistoricalDaily {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
-        GetHistoricalDaily t = new GetHistoricalDaily();
-        t.getData();
-        System.out.println("end");
+        getData();
+        System.out.println("============ end ============");
     }
 }

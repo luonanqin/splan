@@ -3,12 +3,15 @@ package luonq.polygon;
 import bean.StockKLine;
 import bean.Trade;
 import bean.TradeResp;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
@@ -35,9 +38,7 @@ import java.util.stream.Collectors;
  */
 public class GetHistoricalOpenFirstTrade {
 
-    //    public static HttpClient httpclient = new HttpClient(new MultiThreadedHttpConnectionManager());
-
-    public static void main(String[] args) throws Exception {
+    public static void getData() throws Exception {
         String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
         String api = "https://api.polygon.io/v3/trades/";
         String timeLte = "timestamp.lte=";
@@ -194,5 +195,13 @@ public class GetHistoricalOpenFirstTrade {
         } finally {
             get.releaseConnection();
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
+
+        getData();
+        System.out.println("============ end ============");
     }
 }
