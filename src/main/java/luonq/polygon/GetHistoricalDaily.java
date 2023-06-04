@@ -166,6 +166,12 @@ public class GetHistoricalDaily {
                 }
             });
         }
+        while (true) {
+            if (queue.size() == threadCount) {
+                break;
+            }
+        }
+        return;
     }
 
     public static void main(String[] args) throws Exception {

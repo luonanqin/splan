@@ -1,4 +1,4 @@
-package luonq.indicator;
+package luonq.stock;
 
 import bean.BOLL;
 import bean.StockKLine;
@@ -18,15 +18,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 /**
  * Created by Luonanqin on 2023/2/3.
  */
-public class Bollinger2023 {
-
-    public static void main(String[] args) throws Exception {
-        calculate("daily");
-        //        calculate("weekly");
-        //        calculate("monthly");
-        //        calculate("quarterly");
-        //        calculate("yearly");
-    }
+public class MergeBollinger {
 
     public static void calculate(String period) throws Exception {
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
@@ -94,5 +86,13 @@ public class Bollinger2023 {
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, bollList);
             System.out.println("finish " + period + " " + stock);
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        calculate("daily");
+        //        calculate("weekly");
+        //        calculate("monthly");
+        //        calculate("quarterly");
+        //        calculate("yearly");
     }
 }
