@@ -25,6 +25,15 @@ import java.util.PriorityQueue;
 @Data
 public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
 
+    // CompanyAct_None = 0; 无
+    // CompanyAct_Split = 1; 拆股
+    // CompanyAct_Join = 2; 合股
+    // CompanyAct_Bonus = 4; 送股
+    // CompanyAct_Transfer = 8; 转赠股
+    // CompanyAct_Allot = 16; 配股
+    // CompanyAct_Add = 32; 增发股
+    // CompanyAct_Dividend = 64; 现金分红
+    // CompanyAct_SPDividend = 128; 特别股息
 
     FTAPI_Conn_Qot qot = new FTAPI_Conn_Qot();
 

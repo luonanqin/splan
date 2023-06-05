@@ -1,6 +1,7 @@
 package luonq.polygon;
 
 import bean.BOLL;
+import bean.FrontReinstatement;
 import bean.NodeList;
 import bean.SplitStockInfo;
 import bean.StockKLine;
@@ -29,6 +30,7 @@ import javax.websocket.WebSocketContainer;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -45,6 +47,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @ClientEndpoint
@@ -138,13 +141,13 @@ public class RealTimeDataWS {
         }
 
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
-            preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(21).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
+            preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(21).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         } else {
-            preTradeTime = preTrade.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(22).withMinute(30).withSecond(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            closeCheckTime = Date.from(closeCheck.withHour(4).withMinute(59).withSecond(0).toInstant(ZoneOffset.of("+8")));
+            preTradeTime = preTrade.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(22).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            closeCheckTime = Date.from(closeCheck.withHour(4).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         }
         listenEndTime = openTime + LISTENING_TIME;
         System.out.println("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
@@ -199,6 +202,24 @@ public class RealTimeDataWS {
         set.removeAll(splitStock);
         System.out.println(String.format("filter split stock, the stock set size is %d", set.size()));
 
+        // 过滤所有今年前复权因子低于0.98的
+        LocalDate firstDay = LocalDate.parse("2023-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        Set<FrontReinstatement> reinstatementInfo = BaseUtils.getFrontReinstatementInfo();
+        Map<String, FrontReinstatement> map = reinstatementInfo.stream().collect(Collectors.toMap(FrontReinstatement::getStock, Function.identity()));
+        for (String stock : map.keySet()) {
+            FrontReinstatement fr = map.get(stock);
+            double factor = fr.getFactor();
+            if (factor > 0.98) {
+                continue;
+            }
+
+            String date = fr.getDate();
+            LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (dateParse.isAfter(firstDay)) {
+                set.remove(stock);
+            }
+        }
+        System.out.println(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
         return set;
     }
 

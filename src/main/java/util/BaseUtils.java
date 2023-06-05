@@ -2,6 +2,7 @@ package util;
 
 import barchart.DownloadStockHistory;
 import bean.BOLL;
+import bean.FrontReinstatement;
 import bean.SplitStockInfo;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
@@ -526,7 +527,7 @@ public class BaseUtils {
 
     public static Set<SplitStockInfo> getSplitStockInfo() throws Exception {
         Set<SplitStockInfo> splitSet = Sets.newHashSet();
-        List<String> lines = readFile(Constants.SPLIT_PATH);
+        List<String> lines = readFile(Constants.SPLIT_PATH + "splitInfo");
         for (String line : lines) {
             String[] split = line.split(",");
             String date = split[0];
@@ -545,5 +546,24 @@ public class BaseUtils {
             }
         }
         return splitSet;
+    }
+
+    public static Set<FrontReinstatement> getFrontReinstatementInfo() throws Exception {
+        Set<FrontReinstatement> set = Sets.newHashSet();
+        List<String> lines = readFile(Constants.SPLIT_PATH + "rehab");
+        for (String line : lines) {
+            String[] split = line.split(" ");
+            String stock = split[0];
+            String date = split[1];
+            double factor = Double.valueOf(split[2]);
+            int factorType = Integer.parseInt(split[3]);
+            FrontReinstatement fr = new FrontReinstatement();
+            fr.setStock(stock);
+            fr.setDate(date);
+            fr.setFactor(factor);
+            fr.setFactorType(factorType);
+            set.add(fr);
+        }
+        return set;
     }
 }
