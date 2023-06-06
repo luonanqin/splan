@@ -223,7 +223,7 @@ public class TradeWSClient extends WebSocketClient {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        TradeWSClient client = new TradeWSClient(URI.create("wss://delayed.polygon.io/stocks"));
+        TradeWSClient client = new TradeWSClient(URI.create("wss://socket.polygon.io/stocks"));
         client.connect();
         client.sendToListener();
 

@@ -13,7 +13,7 @@ public class TradeWS {
 
     public WebSocketClient webSocketClient() {
         try {
-            WebSocketClient webSocketClient = new WebSocketClient(new URI("wss://delayed.polygon.io/stocks")) {
+            WebSocketClient webSocketClient = new WebSocketClient(new URI("wss://socket.polygon.io/stocks")) {
                 //连接服务端时触发
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
