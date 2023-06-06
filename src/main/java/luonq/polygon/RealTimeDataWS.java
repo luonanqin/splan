@@ -345,6 +345,10 @@ public class RealTimeDataWS {
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
         System.out.println("closing websocket. reason=" + reason);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+        }
         reconnect();
         this.userSession = userSession;
     }
