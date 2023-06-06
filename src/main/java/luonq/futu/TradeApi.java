@@ -144,7 +144,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         }
     }
 
-    // 获取持仓
+    // 获取指定股票的持仓
     public Map<String, StockPosition> getPositionMap(String... code) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)

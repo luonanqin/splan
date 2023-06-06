@@ -8,8 +8,8 @@ import bean.StopLoss;
 import com.futu.openapi.FTAPI;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import luonq.futu.TradeApi;
 import lombok.Data;
+import luonq.futu.TradeApi;
 import org.apache.commons.collections4.MapUtils;
 
 import java.math.BigDecimal;
@@ -38,6 +38,10 @@ public class TradeExecutor {
         tradeApi.setAccountId(TradeApi.simulateUsAccountId);
         tradeApi.start();
         tradeApi.unlock();
+    }
+
+    public void setTradeStock(List<String> stocks) {
+        tradeStock = stocks;
     }
 
     public void beginTrade() {
@@ -174,6 +178,30 @@ public class TradeExecutor {
     public StockPosition getPosition(String stock) {
         Map<String, StockPosition> positionMap = tradeApi.getPositionMap(stock);
         return positionMap.get(stock);
+    }
+
+    public Map<String, StockPosition> getAllPosition() {
+        return tradeApi.getPositionMap(null);
+    }
+
+    public void reListenStopLoss() {
+        Map<String, StopLoss> stockToStopLoss = Maps.newHashMap();
+        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(null);
+        for (String stock : positionMap.keySet()) {
+            StockPosition stockPosition = positionMap.get(stock);
+
+            double canSellQty = stockPosition.getCanSellQty();
+            double costPrice = stockPosition.getCostPrice();
+            double lossPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
+            StopLoss stopLoss = new StopLoss();
+            stopLoss.setStock(stock);
+            stopLoss.setCanSellQty(canSellQty);
+            stopLoss.setLossPrice(lossPrice);
+
+            stockToStopLoss.put(stock, stopLoss);
+        }
+
+        client.listenStopLoss(stockToStopLoss);
     }
 
     public static void main(String[] args) {

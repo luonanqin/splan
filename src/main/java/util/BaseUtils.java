@@ -360,7 +360,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
-            System.out.println("can not find file: " + filePath);
+//            System.out.println("can not find file: " + filePath);
             return Lists.newArrayList();
         }
 
@@ -389,7 +389,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
-            System.out.println("can not find file: " + filePath);
+//            System.out.println("can not find file: " + filePath);
             return Lists.newArrayList();
         }
 
