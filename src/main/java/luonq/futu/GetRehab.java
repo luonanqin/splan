@@ -130,7 +130,7 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void getData() throws Exception {
         FTAPI.init();
         GetRehab quote = new GetRehab();
         quote.start();
@@ -149,5 +149,9 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
             data.add(String.format("%s %s", stock, result.get(stock)));
         }
         BaseUtils.writeFile(Constants.SPLIT_PATH + "rehab", data);
+    }
+
+    public static void main(String[] args) throws Exception{
+        getData();
     }
 }

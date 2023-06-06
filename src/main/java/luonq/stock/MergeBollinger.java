@@ -20,7 +20,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
  */
 public class MergeBollinger {
 
-    public static void calculate(String period) throws Exception {
+    public static void calculate() throws Exception {
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
         Map<String, String> stockToKLineMap = BaseUtils.getFileMap(mergePath);
         Map<String, String> hasCalcMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "mergeBoll");
@@ -84,15 +84,11 @@ public class MergeBollinger {
             }
 
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, bollList);
-            System.out.println("finish " + period + " " + stock);
+//            System.out.println("finish " + stock);
         }
     }
 
     public static void main(String[] args) throws Exception {
-        calculate("daily");
-        //        calculate("weekly");
-        //        calculate("monthly");
-        //        calculate("quarterly");
-        //        calculate("yearly");
+        calculate();
     }
 }

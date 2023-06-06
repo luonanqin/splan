@@ -12,7 +12,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
 
@@ -32,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Luonanqin on 2023/5/5.
  */
-@Component
 public class GetHistoricalDaily {
 
     public static String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
@@ -138,7 +136,7 @@ public class GetHistoricalDaily {
             }
 
             if (CollectionUtils.isEmpty(addDate)) {
-                System.out.println("has get " + stock);
+//                System.out.println("has get " + stock);
                 continue;
             }
             HttpClient httpClient = queue.take();
@@ -169,8 +167,6 @@ public class GetHistoricalDaily {
                 break;
             }
         }
-
-        return;
     }
 
     public static void main(String[] args) throws Exception {
