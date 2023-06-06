@@ -60,7 +60,7 @@ public class RealTimeDataWS {
     public static final double HIT = 0.5d; // 策略成功率
     public static final int PRICE_LIMIT = 6; // 价格限制，用于限制这个价格下的股票不参与计算
     public static final double LOSS_RATIO = 0.1d; // 止损比例
-    public static final int DELAY_MINUTE = 15;
+    public static final int DELAY_MINUTE = 0;
     public static final long LISTENING_TIME = 10000L; // 监听时长，毫秒
     private static LocalDateTime dayLight_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
     private static LocalDateTime dayLight_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
@@ -552,8 +552,9 @@ public class RealTimeDataWS {
                     double lossPrice = stopLoss.getLossPrice();
                     double canSellQty = stopLoss.getCanSellQty();
                     if (price < lossPrice) {
-                        System.out.println(stock + " touch the stop loss. current price=" + price);
-                        tradeExecutor.placeStopLossOrder(stock, canSellQty, lossPrice - 0.05d);
+                        double orderPrice = BigDecimal.valueOf(lossPrice * 0.99).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+                        System.out.println(stock + " touch the stop loss. current price=" + price + ", lossPrice=" + lossPrice + ", orderPrice=" + orderPrice);
+                        tradeExecutor.placeStopLossOrder(stock, canSellQty, orderPrice);
                         stockToStopLoss.remove(stock);
                     }
                 }

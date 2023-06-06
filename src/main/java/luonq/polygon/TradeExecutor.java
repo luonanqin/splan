@@ -55,8 +55,9 @@ public class TradeExecutor {
             Node node = nodes.get(i);
             String code = node.getName();
             double price = node.getPrice();
+            double orderPrice = BigDecimal.valueOf(price * 1.01).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
             /** 2.用剩余可用现金计算可买数量 */
-            int count = (int) (remainCash / price);
+            int count = (int) (remainCash / orderPrice);
 
             /** 如果可买数量为0，则执行56 */
             if (count <= 0) {
@@ -65,8 +66,8 @@ public class TradeExecutor {
             }
 
             /** 3.用可买数量下市价单 */
-            long orderId = tradeApi.placeOrder(code, count, price);
-            System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderId: " + orderId);
+            long orderId = tradeApi.placeOrder(code, count, orderPrice);
+            System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId);
 
             /** 4.下单完成后，十秒后获取成交状态 */
             OrderFill orderFill = tradeApi.getOrderFill(orderId, 10);
@@ -115,7 +116,9 @@ public class TradeExecutor {
 
                                                  double canSellQty = stockPosition.getCanSellQty();
                                                  double currPrice = stockPosition.getCurrPrice();
-                                                 long orderId = tradeApi.placeOrderForLossNormal(stock, canSellQty, currPrice - 0.5d);
+                                                 double orderPrice = BigDecimal.valueOf(currPrice * 0.99).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+                                                 System.out.println("before close sell stock. stock=" + stock + ", count=" + canSellQty + ", currentPrice=" + currPrice + ", orderPrice=" + orderPrice);
+                                                 long orderId = tradeApi.placeOrderForLossNormal(stock, canSellQty, orderPrice);
                                                  System.out.println("before close sell stock. stock=" + stock + ", orderId：" + orderId);
                                              }
                                          }
@@ -148,6 +151,7 @@ public class TradeExecutor {
 
         if (MapUtils.isEmpty(stockToStopLoss)) {
             System.out.println("there is no position that need to be listened");
+            System.exit(0);
             return;
         }
         client.listenStopLoss(stockToStopLoss);
