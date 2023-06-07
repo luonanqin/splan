@@ -123,7 +123,7 @@ public class OverBollingerDN2023OpenFirst {
 
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
-        double init = 100000 / exchange;
+        double init = 10000 / exchange;
         int beforeYear = 2023, afterYear = 2021, afterYear2 = 2022, historyBeforeYear = 2022;
         //        int beforeYear = 2022, afterYear = 2020, afterYear2 = 2021, historyBeforeYear = 2021;
         double capital = init;
@@ -230,42 +230,91 @@ public class OverBollingerDN2023OpenFirst {
             }
         }
 
-        Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
+        // todo 并没有事实计算doll ratio，需要重写
+        Map<String, List<Map.Entry<String, Double>>> dateToStocksMap = Maps.newHashMap();
         for (String date : dateToStockBollMap.keySet()) {
             Map<String, SimpleTrade> stockToOpenTradeMap = dateToOpenTradeMap.get(date);
             if (stockToOpenTradeMap == null) {
                 continue;
             }
 
+            Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
             Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
             for (String stock : stockToOpenTradeMap.keySet()) {
+                if (date.equals("06/05/2023") && stock.equals("CSTL")) {
+//                    System.out.println();
+                }
                 SimpleTrade openTrade = stockToOpenTradeMap.get(stock);
+                if (openTrade == null) {
+                    continue;
+                }
+                double openPrice = openTrade.getTradePrice();
                 BOLL boll = stockToBollMap.get(stock);
-                if (boll != null && boll.getDn() > 0) {
-                    double dn = boll.getDn();
-                    double open = openTrade.getTradePrice();
-                    double ratio = (dn - open) / dn;
+                if (boll == null) {
+                    continue;
+                }
+
+                StockKLine kLine = stockKLineMap.get(stock);
+                if (kLine == null) {
+                    continue;
+                }
+
+                double open = kLine.getOpen();
+                double currMb = boll.getMb();
+
+                if (open > currMb) {
+                    continue;
+                }
+
+                // 根据开盘价实时算布林上轨
+                BigDecimal m20close = BigDecimal.valueOf(openPrice);
+                List<String> _20day = dateToBefore20dayMap.get(date);
+                List<StockKLine> _20Kline = Lists.newArrayList(kLine);
+                boolean failed = false;
+                for (int k = 0; k < _20day.size(); k++) {
+                    String day = _20day.get(k);
+                    StockKLine temp = dateToStockLineMap.get(day).get(stock);
+                    if (temp == null) {
+                        failed = true;
+                        break;
+                    }
+                    _20Kline.add(temp);
+                    m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
+                }
+                if (failed) {
+                    continue;
+                }
+
+                double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
+                BigDecimal avgDiffSum = BigDecimal.ZERO;
+                for (int k = 0; k < _20Kline.size(); k++) {
+                    StockKLine temp = _20Kline.get(k);
+                    double c = temp.getClose();
+                    if (k == 0) {
+                        c = openPrice;
+                    }
+                    avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
+                }
+
+                double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
+                BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
+                double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
+                if (dn > 0) {
+                    double ratio = (dn - openPrice) / dn;
                     if (ratio < 0) {
                         continue;
                     }
                     stockToRatioMap.put(stock, ratio);
                 }
             }
-            List<String> stocks = stockToRatioMap.entrySet().stream().sorted((o1, o2) -> {
+            List<Map.Entry<String, Double>> stocks = stockToRatioMap.entrySet().stream().sorted((o1, o2) -> {
                 if (o1.getValue() < o2.getValue()) {
                     return 1;
                 }
                 return -1;
-            }).map(o -> o.getKey()).collect(Collectors.toList());
+            }).collect(Collectors.toList());
             dateToStocksMap.put(date, stocks);
-        }
-
-        for (String date : dateList) {
-            List<String> stock = dateToStocksMap.get(date);
-            if (CollectionUtils.isNotEmpty(stock)) {
-                //                System.out.println(date + ": " + (stock.size() > 10 ? stock.subList(0, 10) : stock));
-            }
         }
 
         // 加载2023年每支股票的真是开盘交易量和均价
@@ -295,7 +344,7 @@ public class OverBollingerDN2023OpenFirst {
             }
         }
 
-        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d);
+        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d);
         List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.2d, 0.3d);
         List<Integer> openRange = Lists.newArrayList(6, 7);
         for (Integer openR : openRange) {
@@ -323,8 +372,8 @@ public class OverBollingerDN2023OpenFirst {
                         }
                         Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                         Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
-                        List<String> stocks = dateToStocksMap.get(date);
-                        if (CollectionUtils.isEmpty(stocks)) {
+                        List<Map.Entry<String, Double>> stocksEntry = dateToStocksMap.get(date);
+                        if (CollectionUtils.isEmpty(stocksEntry)) {
                             continue;
                         }
                         Map<String, RealOpenVol> stockRealOpenVolMap = dateToStockRealOpenVolMap.get(date);
@@ -333,64 +382,71 @@ public class OverBollingerDN2023OpenFirst {
                         double income = 0;
                         double sum = capital;
                         int size = 0;
-                        for (String stock : stocks) {
+                        for (Map.Entry<String, Double> stockEntry : stocksEntry) {
+                            String stock = stockEntry.getKey();
                             StockKLine kLine = stockKLineMap.get(stock);
                             BOLL boll = stockBollMap.get(stock);
-                            BOLL lastBoll = lastStockBollMap.get(lastDate);
-
+//                            BOLL lastBoll = lastStockBollMap.get(lastDate);
+//
                             double open = kLine.getOpen();
                             double close = kLine.getClose();
                             double low = kLine.getLow();
-                            double currMb = boll.getMb();
-                            if (lastBoll != null) {
-                                double lastDn = lastBoll.getDn();
-                                if (open > lastDn) {
-                                    continue;
-                                }
-                            }
-
+//                            double currMb = boll.getMb();
+//                            if (lastBoll != null) {
+//                                double lastDn = lastBoll.getDn();
+//                                if (open > lastDn) {
+//                                    continue;
+//                                }
+//                            }
+//
                             if (open < openR) {
                                 continue;
                             }
-
-                            if (open > currMb) {
-                                continue;
-                            }
-
-                            // 根据开盘价实时算布林上轨
-                            BigDecimal m20close = BigDecimal.valueOf(open);
-                            List<String> _20day = dateToBefore20dayMap.get(date);
-                            List<StockKLine> _20Kline = Lists.newArrayList(kLine);
-                            boolean failed = false;
-                            for (String day : _20day) {
-                                StockKLine temp = dateToStockLineMap.get(day).get(stock);
-                                if (temp == null) {
-                                    failed = true;
-                                    break;
-                                }
-                                _20Kline.add(temp);
-                                m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
-                            }
-                            if (failed) {
-                                continue;
-                            }
-
-                            double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
-                            BigDecimal avgDiffSum = BigDecimal.ZERO;
-                            for (StockKLine temp : _20Kline) {
-                                double c = temp.getClose();
-                                avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
-                            }
-
-                            double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
-                            BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
-                            double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
-
-                            if (open > dn) {
-                                continue;
-                            }
+//
+//                            if (open > currMb) {
+//                                continue;
+//                            }
+//
+//                            // 根据开盘价实时算布林上轨
+//                            BigDecimal m20close = BigDecimal.valueOf(open);
+//                            List<String> _20day = dateToBefore20dayMap.get(date);
+//                            List<StockKLine> _20Kline = Lists.newArrayList(kLine);
+//                            boolean failed = false;
+//                            for (int k = 0; k < _20day.size(); k++) {
+//                                String day = _20day.get(k);
+//                                StockKLine temp = dateToStockLineMap.get(day).get(stock);
+//                                if (temp == null) {
+//                                    failed = true;
+//                                    break;
+//                                }
+//                                _20Kline.add(temp);
+//                                m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
+//                            }
+//                            if (failed) {
+//                                continue;
+//                            }
+//
+//                            double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
+//                            BigDecimal avgDiffSum = BigDecimal.ZERO;
+//                            for (int k = 0; k < _20Kline.size(); k++) {
+//                                StockKLine temp = _20Kline.get(k);
+//                                double c = temp.getClose();
+//                                if (k == 0) {
+//                                    c = temp.getOpen();
+//                                }
+//                                avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
+//                            }
+//
+//                            double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
+//                            BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
+//                            double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
+//
+//                            if (open > dn) {
+//                                continue;
+//                            }
                             // 根据开盘价算openDnDiffRatio
-                            double openDnDiffPnt = (dn - open) / dn;
+//                            double openDnDiffPnt = (dn - open) / dn;
+                            double openDnDiffPnt = stockEntry.getValue();
                             int openDnDiffInt = (int) openDnDiffPnt;
                             BigDecimal volume = kLine.getVolume();
                             int avgVolume = (int) volume.doubleValue() / 360;
@@ -434,9 +490,9 @@ public class OverBollingerDN2023OpenFirst {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                if (j > dateList.size() - 10) {
+//                                if (j > dateList.size() - 10) {
                                     System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
-                                }
+//                                }
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
                                 lossCount++;
@@ -444,9 +500,9 @@ public class OverBollingerDN2023OpenFirst {
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                if (j > dateList.size() - 10) {
+//                                if (j > dateList.size() - 10) {
                                     System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
-                                }
+//                                }
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
 
                                 if (gain >= 0) {
@@ -492,7 +548,7 @@ public class OverBollingerDN2023OpenFirst {
             }
 
             String filePath = dailyFileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2023, 2020);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2023, 2021);
             Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
             String bollingPath = Constants.HIS_BASE_PATH + "mergeBoll/" + stock;
@@ -591,7 +647,7 @@ public class OverBollingerDN2023OpenFirst {
         return map;
     }
 
-    private static void filterStock(Set<String> set) throws Exception{
+    private static void filterStock(Set<String> set) throws Exception {
         // 过滤所有合股
         Set<String> mergeStock = BaseUtils.getMergeStock();
         set.removeAll(mergeStock);

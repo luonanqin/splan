@@ -83,7 +83,7 @@ public class RealTimeDataWS {
     private NodeList list = new NodeList(10);
     private AtomicBoolean hasAuth = new AtomicBoolean(false);
 
-    private static Set<String> stockSet;
+    public static Set<String> stockSet;
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private static Map<String, String> fileMap;
     private static AsyncEventBus tradeEventBus = asyncEventBus();
@@ -266,7 +266,7 @@ public class RealTimeDataWS {
         return set;
     }
 
-    private static void loadLatestMA20() throws Exception {
+    public static void loadLatestMA20() throws Exception {
         int beforeYear = 2023, afterYear = 2021;
         for (String stock : stockSet) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
@@ -276,6 +276,7 @@ public class RealTimeDataWS {
             if (kLines.size() < 19) {
                 continue;
             }
+//            kLines = kLines.subList(1, kLines.size());
             BigDecimal m20close = BigDecimal.ZERO;
             List<Double> _19Close = Lists.newArrayList();
             for (int i = 0; i < 19; i++) {

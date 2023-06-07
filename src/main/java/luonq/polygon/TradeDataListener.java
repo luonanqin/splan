@@ -2,6 +2,7 @@ package luonq.polygon;
 
 import bean.Node;
 import bean.NodeList;
+import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
@@ -69,5 +70,13 @@ public class TradeDataListener {
         if (success) {
             list.show();
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        RealTimeDataWS.stockSet = Sets.newHashSet("CSTL");
+
+        RealTimeDataWS.loadLatestMA20();
+        TradeDataListener tradeDataListener = new TradeDataListener();
+        tradeDataListener.cal("CSTL", 17.82d);
     }
 }

@@ -121,7 +121,7 @@ public class OverBollingerDN2022Real {
 
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
-        double init = 10000 / exchange;
+        double init = 5000 / exchange;
         int beforeYear = 2022, afterYear = 2020, afterYear2 = 2021, historyBeforeYear = 2021;
         double capital = init;
         Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio(historyBeforeYear);
@@ -296,14 +296,19 @@ public class OverBollingerDN2022Real {
                             List<String> _20day = dateToBefore20dayMap.get(date);
                             List<StockKLine> _20Kline = Lists.newArrayList(kLine);
                             boolean failed = false;
-                            for (String day : _20day) {
+                            for (int k = 0; k < _20day.size(); k++) {
+                                String day = _20day.get(k);
                                 StockKLine temp = dateToStockLineMap.get(day).get(stock);
                                 if (temp == null) {
                                     failed = true;
                                     break;
                                 }
                                 _20Kline.add(temp);
-                                m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
+                                double c = temp.getClose();
+                                if (k == _20day.size() - 1) {
+                                    c = temp.getOpen();
+                                }
+                                m20close = m20close.add(BigDecimal.valueOf(c));
                             }
                             if (failed) {
                                 continue;
@@ -311,8 +316,12 @@ public class OverBollingerDN2022Real {
 
                             double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
                             BigDecimal avgDiffSum = BigDecimal.ZERO;
-                            for (StockKLine temp : _20Kline) {
+                            for (int k = 0; k < _20Kline.size(); k++) {
+                                StockKLine temp = _20Kline.get(k);
                                 double c = temp.getClose();
+                                if (k == _20Kline.size() - 1) {
+                                    c = temp.getOpen();
+                                }
                                 avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
                             }
 
