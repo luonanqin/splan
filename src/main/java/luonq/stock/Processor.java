@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Processor {
 
-    @Scheduled(cron = "0 0 13 * * ?")
+    @Scheduled(cron = "0 23 14 * * ?")
     public void getData() throws Exception {
         System.out.println("GetRehab.getData start");
         long s1 = System.currentTimeMillis();
