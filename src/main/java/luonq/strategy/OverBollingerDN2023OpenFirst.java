@@ -38,7 +38,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
  */
 public class OverBollingerDN2023OpenFirst {
 
-    public static final String TEST_STOCK = "";
+    public static final String TEST_STOCK = "EBC";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
 
     @Data
@@ -158,7 +158,7 @@ public class OverBollingerDN2023OpenFirst {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, beforeYear, afterYear2);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, beforeYear, afterYear2);
 
             for (BOLL boll : bolls) {
                 String date = boll.getDate();
@@ -242,8 +242,8 @@ public class OverBollingerDN2023OpenFirst {
             Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
             for (String stock : stockToOpenTradeMap.keySet()) {
-                if (date.equals("01/23/2023") && StringUtils.equalsAny(stock, "NAMS", "BLFY")) {
-//                    System.out.println();
+                if (date.equals("01/23/2023") && StringUtils.equalsAny(stock, "EBC", "BLFY")) {
+                    System.out.println();
                 }
                 SimpleTrade openTrade = stockToOpenTradeMap.get(stock);
                 if (openTrade == null) {

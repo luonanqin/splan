@@ -1,6 +1,7 @@
 package luonq.stock;
 
 import luonq.futu.GetRehab;
+import luonq.indicator.BollingerWithOpen;
 import luonq.polygon.GetHistoricalDaily;
 import luonq.polygon.GetHistoricalOpenFirstTrade;
 import luonq.polygon.GetHistoricalTrade;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Processor {
 
-    @Scheduled(cron = "0 23 14 * * ?")
+    @Scheduled(cron = "0 15 17 * * ?")
     public void getData() throws Exception {
         System.out.println("GetRehab.getData start");
         long s1 = System.currentTimeMillis();
@@ -36,6 +37,7 @@ public class Processor {
         long e4 = System.currentTimeMillis();
         System.out.println("MergeBollinger.calculate end. cost: " + (e4 - s4) / 1000 + "s\n");
 
+
         System.out.println("GetHistoricalTrade.getData start");
         long s5 = System.currentTimeMillis();
         GetHistoricalTrade.getData();
@@ -47,5 +49,13 @@ public class Processor {
         GetHistoricalOpenFirstTrade.getData();
         long e6 = System.currentTimeMillis();
         System.out.println("GetHistoricalOpenFirstTrade.getData end. cost: " + (e6 - s6) / 1000 + "s\n");
+
+        System.out.println("BollingerWithOpen.calculate start");
+        long s7 = System.currentTimeMillis();
+        BollingerWithOpen.calculate();
+        long e7 = System.currentTimeMillis();
+        System.out.println("BollingerWithOpen.getData end. cost: " + (e7 - s7) / 1000 + "s\n");
+
+        System.out.println("get data finish");
     }
 }
