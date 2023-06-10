@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import luonq.stock.FilterStock;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -121,7 +120,7 @@ public class OverBollingerDN2022Real {
 
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
-        double init = 5000 / exchange;
+        double init = 500000 / exchange;
         int beforeYear = 2022, afterYear = 2020, afterYear2 = 2021, historyBeforeYear = 2021;
         double capital = init;
         Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio(historyBeforeYear);
@@ -187,7 +186,7 @@ public class OverBollingerDN2022Real {
             }
         }
         Collections.reverse(dateList);
-        dateList = dateList.subList(0, 106);
+        dateList = dateList.subList(0, 109);
 
         // 根据open实时计算出低于dn比例最高的前十股票，然后再遍历计算收益
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
@@ -201,7 +200,7 @@ public class OverBollingerDN2022Real {
                 if (boll != null && boll.getDn() > 0) {
                     double dn = boll.getDn();
                     double open = kline.getOpen();
-                    double ratio = (dn - open) / dn;
+                    double ratio = (dn - open) / dn * 100;
                     if (ratio < 0) {
                         continue;
                     }
@@ -244,11 +243,11 @@ public class OverBollingerDN2022Real {
             }
         }
 
-        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d, 1d);
-        hitRatio.clear();
-        hitRatio.add(0.5d);
-        List<Double> lossRatioRange = Lists.newArrayList(0.15d, 0.2d, 0.3d, 0.4d);
-        List<Integer> openRange = Lists.newArrayList(5, 6, 7);
+        List<Double> hitRatio = Lists.newArrayList(0.7d, 0.8d, 0.9d, 1d);
+//        hitRatio.clear();
+//        hitRatio.add(0.5d);
+        List<Double> lossRatioRange = Lists.newArrayList(0.15d, 0.2d, 0.3d);
+        List<Integer> openRange = Lists.newArrayList(6, 7);
         for (Integer openR : openRange) {
             for (Double lossRange : lossRatioRange) {
                 for (int i = 0; i < hitRatio.size(); i++) {
@@ -374,18 +373,18 @@ public class OverBollingerDN2022Real {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                if (j > dateList.size() - 10) {
-                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
-                                }//                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
+//                                if (j > dateList.size() - 10) {
+//                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
+//                                }//                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
                                 lossCount++;
                                 //                            break;
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                if (j > dateList.size() - 10) {
-                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
-                                }//                            stockRatio.addBean(buildBean(kLine, boll));
+//                                if (j > dateList.size() - 10) {
+//                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
+//                                }//                            stockRatio.addBean(buildBean(kLine, boll));
 
                                 if (gain >= 0) {
                                     //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
@@ -427,12 +426,13 @@ public class OverBollingerDN2022Real {
             List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, beforeYear);
             Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
-            String bollingPath = Constants.INDICATOR_BOLL_PATH + "daily/" + stock;
-            List<String> lineList = BaseUtils.readFile(bollingPath);
-            if (CollectionUtils.isEmpty(lineList)) {
-                continue;
-            }
-            Map<String, BOLL> dateToBollMap = lineList.stream().map(BOLL::convert).collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
+//            String bollingPath = Constants.INDICATOR_BOLL_PATH + "daily/" + stock;
+//            List<String> lineList = BaseUtils.readFile(bollingPath);
+//            if (CollectionUtils.isEmpty(lineList)) {
+//                continue;
+//            }
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, 2021, 0);
+            Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
 
             List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 

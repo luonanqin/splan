@@ -15,7 +15,7 @@ import com.google.common.eventbus.AsyncEventBus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import luonq.strategy.OverBollingerDN2023OpenFirst;
+import luonq.strategy.OverBollingerLastDay2023;
 import util.BaseUtils;
 import util.Constants;
 
@@ -71,7 +71,7 @@ public class RealTimeDataWS {
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
     public static Map<String, List<Double>> stockToM19Close = Maps.newHashMap();
-    public static Map<String, OverBollingerDN2023OpenFirst.StockRatio> originRatioMap;
+    public static Map<String, OverBollingerLastDay2023.StockRatio> originRatioMap;
     private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
     private Executor executor;
@@ -128,7 +128,7 @@ public class RealTimeDataWS {
         try {
             String mergePath = Constants.HIS_BASE_PATH + "merge/";
             fileMap = BaseUtils.getFileMap(mergePath);
-            originRatioMap = OverBollingerDN2023OpenFirst.computeHistoricalOverBollingerRatio(2023);
+            originRatioMap = OverBollingerLastDay2023.computeHistoricalOverBollingerRatio(2023);
             stockSet = buildStockSet(fileMap);
             //            stockSet.clear();
             //            stockSet.add("AAPL");
@@ -219,10 +219,10 @@ public class RealTimeDataWS {
 
         // 过滤所有OverBolling策略命中率低于HIT
         for (String stock : originRatioMap.keySet()) {
-            OverBollingerDN2023OpenFirst.StockRatio stockRatio = originRatioMap.get(stock);
-            Map<Integer, OverBollingerDN2023OpenFirst.RatioBean> ratioMap = stockRatio.getRatioMap();
+            OverBollingerLastDay2023.StockRatio stockRatio = originRatioMap.get(stock);
+            Map<Integer, OverBollingerLastDay2023.RatioBean> ratioMap = stockRatio.getRatioMap();
             boolean hitFailed = true;
-            for (OverBollingerDN2023OpenFirst.RatioBean ratio : ratioMap.values()) {
+            for (OverBollingerLastDay2023.RatioBean ratio : ratioMap.values()) {
                 double ratioVal = ratio.getRatio();
                 if (ratioVal > HIT) {
                     hitFailed = false;

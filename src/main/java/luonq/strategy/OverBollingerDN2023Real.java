@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_UP;
-import static luonq.strategy.OverBollingerDN2023OpenFirst.filterStock;
+import static luonq.strategy.OverBollingerLastDay2023.filterStock;
 
 /**
  * Created by Luonanqin on 2023/3/21.

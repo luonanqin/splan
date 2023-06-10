@@ -36,9 +36,9 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 /**
  * Created by Luonanqin on 2023/3/21.
  */
-public class OverBollingerDN2023OpenFirst {
+public class OverBollingerLastDay2023 {
 
-    public static final String TEST_STOCK = "EBC";
+    public static final String TEST_STOCK = "";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
 
     @Data
@@ -158,7 +158,7 @@ public class OverBollingerDN2023OpenFirst {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, beforeYear, afterYear2);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, beforeYear, afterYear2);
 
             for (BOLL boll : bolls) {
                 String date = boll.getDate();
@@ -192,7 +192,7 @@ public class OverBollingerDN2023OpenFirst {
         Collections.reverse(dateList);
         //        dateList = dateList.subList(0, 75);
 
-        // 根据open实时计算出低于dn比例最高的前十股票，然后再遍历计算收益
+        // 加载开盘有真实交易的股票
         Map<String, Map<String, SimpleTrade>> dateToOpenTradeMap = Maps.newHashMap();
         Map<String, String> openFirstFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade");
         for (String stock : openFirstFileMap.keySet()) {
@@ -230,7 +230,7 @@ public class OverBollingerDN2023OpenFirst {
             }
         }
 
-        // 用开盘价实时计算boll然后倒排diff
+        // 用开盘价真实价计算boll然后倒排diff
         Map<String, List<Map.Entry<String, Double>>> dateToStocksMap = Maps.newHashMap();
         for (String date : dateToStockBollMap.keySet()) {
             Map<String, SimpleTrade> stockToOpenTradeMap = dateToOpenTradeMap.get(date);
@@ -242,7 +242,7 @@ public class OverBollingerDN2023OpenFirst {
             Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
             for (String stock : stockToOpenTradeMap.keySet()) {
-                if (date.equals("01/23/2023") && StringUtils.equalsAny(stock, "EBC", "BLFY")) {
+                if (date.equals("06/07/2023") && StringUtils.equalsAny(stock, "CVGW", "HCP", "UNFI", "NVCR")) {
                     System.out.println();
                 }
                 SimpleTrade openTrade = stockToOpenTradeMap.get(stock);
@@ -300,7 +300,7 @@ public class OverBollingerDN2023OpenFirst {
                 BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
                 double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
                 if (dn > 0) {
-                    double ratio = (dn - open) / dn;
+                    double ratio = (dn - open) / dn * 100;
                     if (ratio < 0) {
                         continue;
                     }
@@ -316,7 +316,7 @@ public class OverBollingerDN2023OpenFirst {
             dateToStocksMap.put(date, stocks);
         }
 
-        // 加载2023年每支股票的真是开盘交易量和均价
+        // 加载2023年每支股票的真实开盘交易量和均价
         Map<String, Map<String, RealOpenVol>> dateToStockRealOpenVolMap = Maps.newHashMap();
         for (String stock : originRatioMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
@@ -355,8 +355,8 @@ public class OverBollingerDN2023OpenFirst {
                     //                if (i + 1 < hitRatio.size()) {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
-                    if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
-                        //                        continue;
+                    if (hit != 0.7d || lossRange != 0.3d || openR != 6) {
+//                                                continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -457,8 +457,11 @@ public class OverBollingerDN2023OpenFirst {
                                 continue;
                             }
 
+                            if (openDnDiffInt>6) {
+                                openDnDiffInt = 6;
+                            }
                             RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
-                            if (ratioBean == null || ratioBean.getRatio() < hit) {
+                            if (ratioBean == null || ratioBean.getRatio() < hit || ratioBean.beanList.size() <= 1) {
                                 stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
@@ -490,7 +493,7 @@ public class OverBollingerDN2023OpenFirst {
                                 double loss = -count * open * v;
                                 income += loss;
 //                                if (j > dateList.size() - 10) {
-                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
+//                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
 //                                }
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
@@ -500,7 +503,7 @@ public class OverBollingerDN2023OpenFirst {
                                 double gain = count * (close - open);
                                 income += gain;
 //                                if (j > dateList.size() - 10) {
-                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
+//                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
 //                                }
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
 
@@ -547,15 +550,11 @@ public class OverBollingerDN2023OpenFirst {
             }
 
             String filePath = dailyFileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2023, 2021);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2022, 0);
             Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
-            String bollingPath = Constants.HIS_BASE_PATH + "mergeBoll/" + stock;
-            List<String> lineList = BaseUtils.readFile(bollingPath);
-            if (CollectionUtils.isEmpty(lineList)) {
-                continue;
-            }
-            Map<String, BOLL> dateToBollMap = lineList.stream().map(BOLL::convert).collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, 2023, 0);
+            Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
 
             List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 
