@@ -103,7 +103,7 @@ public class GetHistoricalOpenFirstTrade {
                 }
             }
             if (CollectionUtils.isEmpty(dateList)) {
-//                System.out.println("has get " + stock);
+                System.out.println("has get " + stock);
                 continue;
             }
 
@@ -157,7 +157,7 @@ public class GetHistoricalOpenFirstTrade {
                 e.printStackTrace();
             }
             long cost = System.currentTimeMillis() - begin;
-//            System.out.println("finish " + stock + " " + cost / 1000);
+            System.out.println("finish " + stock + " " + cost / 1000);
         }
     }
 

@@ -95,7 +95,7 @@ public class GetHistoricalTrade {
             }
 
             if (CollectionUtils.isEmpty(dateList)) {
-//                System.out.println("has get " + stock);
+                System.out.println("has get " + stock);
                 continue;
             }
 
@@ -181,7 +181,7 @@ public class GetHistoricalTrade {
                     fw.write(str + "\n");
                 }
                 fw.close();
-//                System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+                System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
             } catch (Exception e) {
                 System.out.println("error: " + result);
             }

@@ -247,10 +247,11 @@ public class OverBollingerLastDay2023 {
                     continue;
                 }
 
+                double open = kLine.getOpen();
                 double close = kLine.getClose();
                 double dn = boll.getDn();
 
-                if (close > dn || dn < 0) {
+                if (close > dn || dn < 0 || close > open) {
                     continue;
                 }
 
@@ -314,8 +315,8 @@ public class OverBollingerLastDay2023 {
                     //                if (i + 1 < hitRatio.size()) {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
-                    if (hit != 0.7d || lossRange != 0.3d || openR != 6) {
-                        //                                                continue;
+                    if (hit != 0.9d || lossRange != 0.1d || openR != 7) {
+                                                                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -392,18 +393,18 @@ public class OverBollingerLastDay2023 {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                                                if (j > dateList.size() - 10) {
+//                                                                if (j > dateList.size() - 10) {
                                                                                                     System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close +  ", count=" + count + ", loss = " + (int) loss * exchange);
-                                                                }
+//                                                                }
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 lossCount++;
                                 //                            break;
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                                                if (j > dateList.size() - 10) {
+//                                                                if (j > dateList.size() - 10) {
                                                                                                     System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", count=" + count + ", gain = " + (int) gain * exchange);
-                                                                }
+//                                                                }
                                 if (gain >= 0) {
                                     //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
                                     gainCount++;

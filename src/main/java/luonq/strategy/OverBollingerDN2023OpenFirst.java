@@ -355,8 +355,8 @@ public class OverBollingerDN2023OpenFirst {
                     //                if (i + 1 < hitRatio.size()) {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
-                    if (hit != 0.7d || lossRange != 0.3d || openR != 6) {
-//                                                continue;
+                    if (hit != 0.7d || lossRange != 0.07d || openR != 6) {
+                                                continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -493,7 +493,7 @@ public class OverBollingerDN2023OpenFirst {
                                 double loss = -count * open * v;
                                 income += loss;
 //                                if (j > dateList.size() - 10) {
-//                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
+                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
 //                                }
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
@@ -503,7 +503,7 @@ public class OverBollingerDN2023OpenFirst {
                                 double gain = count * (close - open);
                                 income += gain;
 //                                if (j > dateList.size() - 10) {
-//                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
+                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
 //                                }
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
 
