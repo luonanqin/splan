@@ -421,6 +421,10 @@ public class BaseUtils {
         return lineList;
     }
 
+    public static String readFirstLine(String filePath) throws Exception{
+
+    }
+
     public static void appendIfFile(String filePath, List<String> list) throws Exception {
         FileWriter bw = new FileWriter(filePath, true);
         for (String l : list) {
