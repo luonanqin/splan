@@ -78,7 +78,7 @@ public class OverBollingerLastDay2023 {
             double dn = bean.getDn();
             double low = bean.getLow();
             double open = bean.getOpen();
-            if (!(low < dn && open < dn)) {
+            if (low > dn || open > dn) {
                 return;
             }
 
@@ -251,7 +251,7 @@ public class OverBollingerLastDay2023 {
                 double close = kLine.getClose();
                 double dn = boll.getDn();
 
-                if (close > dn || dn < 0 || close > open) {
+                if (close > dn || dn < 0) {
                     continue;
                 }
 
@@ -297,8 +297,25 @@ public class OverBollingerLastDay2023 {
             }
         }
 
-        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d);
-        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.2d, 0.3d);
+        // 构建2022年各股票bolling线
+        Map<String, Map<String, BOLL>> dateToStockOpenBollMap = Maps.newHashMap();
+        for (String stock : originRatioMap.keySet()) {
+            if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
+                continue;
+            }
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, beforeYear, afterYear2);
+
+            for (BOLL boll : bolls) {
+                String date = boll.getDate();
+                if (!dateToStockOpenBollMap.containsKey(date)) {
+                    dateToStockOpenBollMap.put(date, Maps.newHashMap());
+                }
+                dateToStockOpenBollMap.get(date).put(stock, boll);
+            }
+        }
+
+        List<Double> hitRatio = Lists.newArrayList(0.6d, 0.7d, 0.8d, 0.9d, 1d);
+        List<Double> lossRatioRange = Lists.newArrayList(0.09d, 0.1d, 0.2d, 0.3d);
         List<Integer> openRange = Lists.newArrayList(6, 7);
 
 //        openRange.clear();
@@ -316,7 +333,7 @@ public class OverBollingerLastDay2023 {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
                     if (hit != 0.9d || lossRange != 0.1d || openR != 7) {
-                                                                        continue;
+//                                                                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -333,6 +350,7 @@ public class OverBollingerLastDay2023 {
                             continue;
                         }
                         Map<String, RealOpenVol> stockRealOpenVolMap = dateToStockRealOpenVolMap.get(date);
+                        Map<String, BOLL> openBollMap = dateToStockOpenBollMap.get(date);
 
                         double income = 0;
                         double sum = capital;
@@ -342,7 +360,8 @@ public class OverBollingerLastDay2023 {
                             StockKLine kLine = stockKLineMap.get(stock);
                             BOLL boll = stockBollMap.get(stock);
                             BOLL lastBoll = lastStockBollMap.get(stock);
-                            if (kLine == null || boll == null || lastBoll == null) {
+                            BOLL openBoll = openBollMap.get(stock);
+                            if (kLine == null || boll == null || lastBoll == null || openBoll == null) {
                                 continue;
                             }
 
@@ -367,7 +386,8 @@ public class OverBollingerLastDay2023 {
                                 closeDnDiffInt = 6;
                             }
                             RatioBean ratioBean = ratioDetail.get(closeDnDiffInt);
-                            if (ratioBean == null || ratioBean.getRatio() < hit || ratioBean.getBeanList().size() <= 1) {
+                            double openBollDn = openBoll.getDn();
+                            if (ratioBean == null || ratioBean.getRatio() < hit) {
                                 stockRatio.addBean(buildBean(kLine, boll, closeGtOpen));
                                 continue;
                             }
@@ -394,7 +414,7 @@ public class OverBollingerLastDay2023 {
                                 double loss = -count * open * v;
                                 income += loss;
 //                                                                if (j > dateList.size() - 10) {
-                                                                                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close +  ", count=" + count + ", loss = " + (int) loss * exchange);
+//                                                                                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close +  ", count=" + count + ", loss = " + (int) loss * exchange);
 //                                                                }
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 lossCount++;
@@ -403,7 +423,7 @@ public class OverBollingerLastDay2023 {
                                 double gain = count * (close - open);
                                 income += gain;
 //                                                                if (j > dateList.size() - 10) {
-                                                                                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", count=" + count + ", gain = " + (int) gain * exchange);
+//                                                                                                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", count=" + count + ", gain = " + (int) gain * exchange);
 //                                                                }
                                 if (gain >= 0) {
                                     //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
@@ -497,6 +517,7 @@ public class OverBollingerLastDay2023 {
             StockKLine nextKLine = dateToKLineMap.get(nextDate);
             double nextOpen = nextKLine.getOpen();
             double nextClose = nextKLine.getClose();
+            double open = kLine.getOpen();
             double close = kLine.getClose();
             if (close < dn) {
                 result.add(buildBean(kLine, boll, nextClose > nextOpen));
