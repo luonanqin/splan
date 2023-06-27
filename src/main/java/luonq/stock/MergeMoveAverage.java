@@ -9,7 +9,6 @@ import util.Constants;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Luonanqin on 2023/2/3.
@@ -81,8 +80,8 @@ public class MergeMoveAverage {
                 maList.add(ma.toString());
             }
 
-            BaseUtils.writeFile(Constants.INDICATOR_MA_PATH + period + "/" + stock, Lists.reverse(maList));
-            System.out.println("finish " + period + " " + stock);
+//            BaseUtils.writeFile(Constants.INDICATOR_MA_PATH + period + "/" + stock, Lists.reverse(maList));
+//            System.out.println("finish " + period + " " + stock);
         }
     }
 }

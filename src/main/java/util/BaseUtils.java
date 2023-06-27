@@ -422,7 +422,7 @@ public class BaseUtils {
     }
 
     public static String readFirstLine(String filePath) throws Exception{
-
+        return null;
     }
 
     public static void appendIfFile(String filePath, List<String> list) throws Exception {
