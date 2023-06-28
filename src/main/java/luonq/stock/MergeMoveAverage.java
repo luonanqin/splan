@@ -3,6 +3,7 @@ package luonq.stock;
 import bean.MA;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 import util.Constants;
 
@@ -28,13 +29,38 @@ public class MergeMoveAverage {
                 //                continue;
             }
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock), 2023);
-            BaseUtils.readFile(Constants.HIS_BASE_PATH + "mergeMA/");
+            List<String> mas = BaseUtils.readMaFile(Constants.HIS_BASE_PATH + "mergeMA/" + stock, 2023, 0);
+
+            int missCount = 0;
+            if (CollectionUtils.isNotEmpty(mas)) {
+                String[] split = mas.get(0).split(",");
+                String maDate = split[0];
+                int maDateInt = BaseUtils.dateToInt(maDate);
+
+                for (int i = 0; i < stockKLines.size(); i++) {
+                    StockKLine kline = stockKLines.get(i);
+                    String date = kline.getDate();
+                    int dateInt = BaseUtils.dateToInt(date);
+                    if (dateInt <= maDateInt) {
+                        missCount = i;
+                        break;
+                    }
+                }
+            }
+            if (missCount == 0) {
+                System.out.println("has calculate: " + stock);
+                continue;
+            }
 
             BigDecimal m5close = BigDecimal.ZERO, m10close = BigDecimal.ZERO, m20close = BigDecimal.ZERO, m30close = BigDecimal.ZERO, m60close = BigDecimal.ZERO;
             int ma5count = 0, ma10count = 0, ma20count = 0, ma30count = 0, ma60count = 0;
             double ma5 = 0, ma10 = 0, ma20 = 0, ma30 = 0, ma60 = 0;
             List<String> maList = Lists.newArrayList();
-            for (int i = stockKLines.size() - 1; i >= 0; i--) {
+            int i = 58 + missCount;
+            if (i > stockKLines.size()) {
+                continue;
+            }
+            for (; i >= 0; i--) {
                 StockKLine kLine = stockKLines.get(i);
                 String date = kLine.getDate();
 
@@ -75,13 +101,14 @@ public class MergeMoveAverage {
                     ma60 = m60close.divide(BigDecimal.valueOf(60), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
                     ma60count--;
                     m60close = m60close.subtract(BigDecimal.valueOf(stockKLines.get(i + 60 - 1).getClose()));
+                    MA ma = MA.builder().date(date).ma5(ma5).ma10(ma10).ma20(ma20).ma30(ma30).ma60(ma60).build();
+                    maList.add(ma.toString());
+                    mas.add(0, ma.toString());
                 }
-                MA ma = MA.builder().date(date).ma5(ma5).ma10(ma10).ma20(ma20).ma30(ma30).ma60(ma60).build();
-                maList.add(ma.toString());
             }
 
-//            BaseUtils.writeFile(Constants.INDICATOR_MA_PATH + period + "/" + stock, Lists.reverse(maList));
-//            System.out.println("finish " + period + " " + stock);
+            BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeMA/" + stock, mas);
+            System.out.println("finish " + stock);
         }
     }
 }

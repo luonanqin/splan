@@ -360,7 +360,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
-//            System.out.println("can not find file: " + filePath);
+            //            System.out.println("can not find file: " + filePath);
             return Lists.newArrayList();
         }
 
@@ -383,13 +383,49 @@ public class BaseUtils {
         return lineList;
     }
 
+    public static List<String> readMaFile(String filePath, Integer beforeYear, Integer afterYear) throws Exception {
+        if (beforeYear == null) {
+            beforeYear = 2022;
+        }
+        if (afterYear == null) {
+            afterYear = 1900;
+        }
+
+        List<String> lineList = Lists.newArrayList();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            //            System.out.println("can not find file: " + filePath);
+            return Lists.newArrayList();
+        }
+
+        String line;
+        while (StringUtils.isNotBlank(line = br.readLine())) {
+            String[] split = line.split(",");
+            String date = split[0];
+            String year = date.substring(date.lastIndexOf("/") + 1);
+            int yearInt = Integer.valueOf(year);
+            if (afterYear >= yearInt) {
+                break;
+            }
+            if (beforeYear < yearInt) {
+                continue;
+            }
+            lineList.add(line);
+        }
+        br.close();
+
+        return lineList;
+    }
+
     public static List<String> readFile(String filePath) throws Exception {
         List<String> lineList = Lists.newArrayList();
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
-//            System.out.println("can not find file: " + filePath);
+            //            System.out.println("can not find file: " + filePath);
             return Lists.newArrayList();
         }
 
@@ -419,10 +455,6 @@ public class BaseUtils {
         br.close();
 
         return lineList;
-    }
-
-    public static String readFirstLine(String filePath) throws Exception{
-        return null;
     }
 
     public static void appendIfFile(String filePath, List<String> list) throws Exception {
