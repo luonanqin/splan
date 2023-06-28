@@ -1,6 +1,8 @@
 package luonq.stock;
 
+import luonq.futu.GetRehab;
 import luonq.indicator.BollingerWithOpen;
+import luonq.polygon.GetHistoricalDaily;
 import luonq.polygon.GetHistoricalOpenFirstTrade;
 import luonq.polygon.GetHistoricalTrade;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,23 +11,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class Processor {
 
-    @Scheduled(cron = "0 11 19 * * ?")
+    @Scheduled(cron = "0 0 12 * * ?")
     public void getData() throws Exception {
         System.out.println("GetRehab.getData start");
         long s1 = System.currentTimeMillis();
-//        GetRehab.getData();
+        GetRehab.getData();
         long e1 = System.currentTimeMillis();
         System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
 
         System.out.println("GetHistoricalDaily.getData start");
         long s2 = System.currentTimeMillis();
-//        GetHistoricalDaily.getData();
+        GetHistoricalDaily.getData();
         long e2 = System.currentTimeMillis();
         System.out.println("GetHistoricalDaily.getData end. cost: " + (e2 - s2) / 1000 + "s\n");
 
         System.out.println("MergeKline.merge start");
         long s3 = System.currentTimeMillis();
-//        MergeKline.merge();
+        MergeKline.merge();
         long e3 = System.currentTimeMillis();
         System.out.println("MergeKline.merge end. cost: " + (e3 - s3) / 1000 + "s\n");
 
