@@ -266,7 +266,7 @@ public class OverBdnWithMA {
             }
         }
 
-        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.9d);
+        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d);
         List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.2d, 0.3d);
         List<Integer> openRange = Lists.newArrayList(6, 7);
         for (Integer openR : openRange) {
@@ -279,7 +279,7 @@ public class OverBdnWithMA {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
                     if (hit != 0.9d || lossRange != 0.1d || openR != 7) {
-                                                                        continue;
+//                                                                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -438,7 +438,7 @@ public class OverBdnWithMA {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
+//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
                                 lossCount++;
@@ -446,7 +446,7 @@ public class OverBdnWithMA {
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
+//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
                                 //                            stockRatio.addBean(buildBean(kLine, boll));
 
                                 if (gain >= 0) {
@@ -492,15 +492,11 @@ public class OverBdnWithMA {
             }
 
             String filePath = dailyFileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2023, 2021);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2022, 2020);
             Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
-            String bollingPath = Constants.HIS_BASE_PATH + "mergeBoll/" + stock;
-            List<String> lineList = BaseUtils.readFile(bollingPath);
-            if (CollectionUtils.isEmpty(lineList)) {
-                continue;
-            }
-            Map<String, BOLL> dateToBollMap = lineList.stream().map(BOLL::convert).collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, 2023, 0);
+            Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
 
             List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 
