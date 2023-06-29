@@ -3,6 +3,7 @@ package luonq.stock;
 import bean.BOLL;
 import bean.StockKLine;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
 import util.Constants;
 
@@ -38,7 +39,20 @@ public class MergeBollinger {
             if (CollectionUtils.isEmpty(bolls) || CollectionUtils.isEmpty(stockKLines)) {
                 continue;
             }
-            if (bolls.get(0).getDate().equals(stockKLines.get(0).getDate())) {
+            List<String> stockDateList = stockKLines.stream().filter(s -> s.getDate().endsWith("2023")).map(StockKLine::getDate).collect(Collectors.toList());
+            Set<String> bollDateSet = bolls.stream().filter(b -> b.getDate().endsWith("2023")).map(BOLL::getDate).collect(Collectors.toSet());
+            String earliestDate = "", prevDate = "";
+            int index = 0;
+            for (int i = 0; i < stockDateList.size(); i++) {
+                String stockDate = stockDateList.get(i);
+                if (!bollDateSet.contains(stockDate)) {
+                    earliestDate = stockDate;
+                    prevDate = stockDateList.get(i + 1);
+                    index = i;
+                }
+            }
+            if (StringUtils.isBlank(earliestDate)) {
+                System.out.println("has calculate: " + stock);
                 continue;
             }
 
@@ -46,13 +60,20 @@ public class MergeBollinger {
             int ma20count = 0;
             double md = 0, mb = 0, up = 0, dn = 0;
 
+            for (int i = 0; i < bolls.size(); i++) {
+                BOLL boll = bolls.get(i);
+                if (boll.getDate().equals(prevDate)) {
+                    if (i == 0) {
+                        break;
+                    }
+                    bolls = bolls.subList(i, bolls.size());
+                    break;
+                }
+            }
             List<String> bollList = bolls.stream().map(BOLL::toString).collect(Collectors.toList());
-            for (int i = 19; i >= 0; i--) {
+            for (int i = 19 + index; i >= 0; i--) {
                 StockKLine kLine = stockKLines.get(i);
                 String date = kLine.getDate();
-                if (i > 19) {
-                    continue;
-                }
 
                 BigDecimal close = BigDecimal.valueOf(kLine.getClose());
                 m20close = m20close.add(close);
@@ -84,7 +105,7 @@ public class MergeBollinger {
             }
 
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, bollList);
-//            System.out.println("finish " + stock);
+            System.out.println("finish " + stock);
         }
     }
 
