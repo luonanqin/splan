@@ -1,6 +1,5 @@
 package luonq.stock;
 
-import luonq.futu.GetRehab;
 import luonq.indicator.BollingerWithOpen;
 import luonq.polygon.GetHistoricalDaily;
 import luonq.polygon.GetHistoricalOpenFirstTrade;
@@ -11,11 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class Processor {
 
-    @Scheduled(cron = "0 0 14 * * ?")
+    @Scheduled(cron = "0 52 12 * * ?")
     public void getData() throws Exception {
         System.out.println("GetRehab.getData start");
         long s1 = System.currentTimeMillis();
-        GetRehab.getData();
+//        GetRehab.getData();
         long e1 = System.currentTimeMillis();
         System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
 
