@@ -18091,3 +18091,19 @@ BTAI don't need stop loss. it'll be unsubscribe
 BTAI don't need stop loss. it'll be unsubscribe
 BTAI don't need stop loss. it'll be unsubscribe
 update order: OrderFill(tradeSide=2, fillID=0, orderID=1622146349075604305, code=BTAI, name=BioXcel Therapeutics, count=965.0, price=6.95, createTime=2023-06-29 10:20:39, updateTimestamp=1.688048443E9, status=0)
+{p=17.5, ev=T, q=1680136, s=100, t=1688062521000, sym=XPOF, trfi=202, x=4, i=71692723566416, z=1, trft=1688062521000}
+{p=17.6021, ev=T, q=1774638, s=28, c=[10,37,41], t=1688063705000, sym=XPOF, trfi=202, x=4, i=71692874173491, z=1, trft=1688063705000}
+{p=17.8, ev=T, q=1816424, s=100, t=1688064175000, sym=XPOF, trfi=202, x=4, i=71692940689735, z=1, trft=1688064175000}
+{p=18.05, ev=T, q=2112721, s=100, t=1688067095000, sym=XPOF, trfi=202, x=4, i=71697068278840, z=1, trft=1688067095000}
+{p=18.01, ev=T, q=2269015, s=63, c=[37], t=1688068025000, sym=XPOF, x=15, i=56389737787768, z=1}
+{p=17.91, ev=T, q=2278802, s=100, t=1688068074000, sym=XPOF, x=8, i=52983525694524, z=1}
+{p=18, ev=T, q=2426366, s=100, t=1688068541000, sym=XPOF, x=15, i=56424800609111, z=1}
+ready to sell before close market. position={XPOF=StockPosition(stock=XPOF, canSellQty=49.0, costPrice=17.59, currPrice=18.09)}, time=2023-06-30T03:59:00.687
+closeCheckPosition failed! BTAI position is not exist!
+before close sell stock. stock=XPOF, count=49.0, currentPrice=18.09, orderPrice=17.9
+before close sell stock. stock=XPOF, orderId：1622514891628547287
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1622514891628547287, code=XPOF, name=Xponential Fitness, count=49.0, price=17.9, createTime=2023-06-29 15:59:00, updateTimestamp=1.688068743E9, status=0)
+all stock has stop loss
+trade exit
+
+Process finished with exit code 0
