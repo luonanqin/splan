@@ -2,7 +2,6 @@ package luonq.stock;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import luonq.futu.GetRehab;
 import luonq.indicator.BollingerWithOpen;
 import luonq.polygon.GetHistoricalDaily;
 import luonq.polygon.GetHistoricalOpenFirstTrade;
@@ -18,7 +17,7 @@ public class Processor {
     public static void getData() throws Exception {
         System.out.println("GetRehab.getData start");
         long s1 = System.currentTimeMillis();
-        GetRehab.getData();
+//        GetRehab.getData();
         long e1 = System.currentTimeMillis();
         System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
 
