@@ -40,7 +40,6 @@ import static java.math.BigDecimal.ROUND_DOWN;
  * 5.候选需要计算的股票，以前一日的x倒排，按照以下条件进行过滤计算
  *
  * 不满足：
- *   1.如果x对应的历史数据只有1条，则不满足条件
  *   2.如果y比给定的hit小，则不满足条件
  *   3.如果第二天开盘价对应的布林线下轨低于开盘价，则不满足条件
  *   4.如果第二天开盘价低于给定openRange，则不满足条件
@@ -51,9 +50,10 @@ import static java.math.BigDecimal.ROUND_DOWN;
  *
  * 注：参与2023年计算的股票，一定要在开盘后5秒内有真实交易，否则会被过滤
  *
- * Created by Luonanqin on 2023/3/21.
+ * 结果：截止六月底
+ * openRange=6, hit=0.9, loss=0.09, sum=26374, gainCount=70, lossCount=48, successRatio=0.5932203389830508
  */
-public class Stratgy1 {
+public class Strategy2 {
 
     public static final String TEST_STOCK = "";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
@@ -368,7 +368,7 @@ public class Stratgy1 {
                     //                    nextHit = hitRatio.get(i + 1);
                     //                }
                     if (hit != 0.9d || lossRange != 0.09d || openR != 7) {
-                        continue;
+//                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -376,7 +376,7 @@ public class Stratgy1 {
                     for (int j = 1; j < dateList.size(); j++) {
                         String date = dateList.get(j);
                         if (date.equals("03/07/2023")) {
-                            System.out.println();
+//                            System.out.println();
                         }
                         String lastDate = dateList.get(j - 1);
                         Map<String, BOLL> lastStockBollMap = dateToStockBollMap.get(lastDate);
@@ -459,7 +459,7 @@ public class Stratgy1 {
                             }
                             RatioBean ratioBean = ratioDetail.get(closeDnDiffInt);
                             double openBollDn = openBoll.getDn();
-                            if (ratioBean == null || ratioBean.getRatio() < hit || ratioBean.getBeanList().size() == 1 || openBollDn < open) {
+                            if (ratioBean == null || ratioBean.getRatio() < hit || openBollDn < open) {
                                 stockRatio.addBean(buildBean(kLine, lastBoll, closeGtOpen));
                                 continue;
                             }
@@ -486,7 +486,7 @@ public class Stratgy1 {
                                 double loss = -count * open * v;
                                 income += loss;
                                 //                                                                if (j > dateList.size() - 10) {
-                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", count=" + count + ", loss = " + (int) loss * exchange);
+//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", count=" + count + ", loss = " + (int) loss * exchange);
                                 //                                                                }
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 lossCount++;
@@ -495,7 +495,7 @@ public class Stratgy1 {
                                 double gain = count * (close - open);
                                 income += gain;
                                 //                                                                if (j > dateList.size() - 10) {
-                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", count=" + count + ", gain = " + (int) gain * exchange);
+//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", count=" + count + ", gain = " + (int) gain * exchange);
                                 //                                                                }
                                 if (gain >= 0) {
                                     //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
