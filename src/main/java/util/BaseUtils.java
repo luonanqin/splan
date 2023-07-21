@@ -25,9 +25,11 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static util.Constants.GRAB_PATH;
@@ -602,4 +604,37 @@ public class BaseUtils {
         }
         return set;
     }
+
+    public static void filterStock(Set<String> set) throws Exception {
+        // 过滤所有合股
+        Set<String> mergeStock = BaseUtils.getMergeStock();
+        set.removeAll(mergeStock);
+        System.out.println(String.format("filter merge stock, the stock set size is %d", set.size()));
+
+        // 过滤所有拆股
+        Set<SplitStockInfo> splitStockInfo = BaseUtils.getSplitStockInfo();
+        Set<String> splitStock = splitStockInfo.stream().map(SplitStockInfo::getStock).collect(Collectors.toSet());
+        set.removeAll(splitStock);
+        System.out.println(String.format("filter split stock, the stock set size is %d", set.size()));
+
+        // 过滤所有今年前复权因子低于0.98的
+        LocalDate firstDay = LocalDate.parse("2023-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        Set<FrontReinstatement> reinstatementInfo = BaseUtils.getFrontReinstatementInfo();
+        Map<String, FrontReinstatement> map = reinstatementInfo.stream().collect(Collectors.toMap(FrontReinstatement::getStock, Function.identity()));
+        for (String stock : map.keySet()) {
+            FrontReinstatement fr = map.get(stock);
+            double factor = fr.getFactor();
+            if (factor > 0.98) {
+                continue;
+            }
+
+            String date = fr.getDate();
+            LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (dateParse.isAfter(firstDay)) {
+                set.remove(stock);
+            }
+        }
+        System.out.println(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
+    }
+
 }
