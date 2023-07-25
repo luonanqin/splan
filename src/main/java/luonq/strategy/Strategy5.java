@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * 测试
  * 1.价格大于6
  * 2.成交量大于10w
- * 3.最高级低于布林线下轨
+ * 3.最高价低于布林线下轨
  * 4.当前最低低于前日最低
  *
  * Created by Luonanqin on 2023/7/18.
