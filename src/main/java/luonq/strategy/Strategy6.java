@@ -38,7 +38,7 @@ public class Strategy6 {
         List<Double> ratioRange = Lists.newArrayList(0.5, 0.6, 0.7, 0.8, 0.9);
         //        for (Double ratio : ratioRange) {
         int successCount = 0, failedCount = 0;
-        
+
         for (String stock : stockSet) {
             String file = dailyFileMap.get(stock);
             if (StringUtils.isBlank(file)) {
@@ -93,7 +93,29 @@ public class Strategy6 {
                 boolean highLtPrevOpen = high < prevOpen;
 
                 if (priceLimit && activity) {
-                    List<Object> list = Lists.newArrayList(date, open, close, high, low, nextClose, prevOpen, prevClose, prevLow, closeLowDiff, openLowDiff, highLowDiff, lossRatio, gainRatio, loss, gain, prevLoss, closeGtPrevClose, lowGtPrevLow, lowLtPrevLow, highLtPrevOpen);
+                    List<Object> list = Lists.newArrayList(
+                      /*0*/date,
+                      /*1*/open,
+                      /*2*/close,
+                      /*3*/high,
+                      /*4*/low,
+                      /*5*/nextClose,
+                      /*6*/prevOpen,
+                      /*7*/prevClose,
+                      /*8*/prevLow,
+                      /*9*/closeLowDiff,
+                      /*10*/openLowDiff,
+                      /*11*/highLowDiff,
+                      /*12*/lossRatio,
+                      /*13*/gainRatio,
+                      /*14*/loss,
+                      /*15*/gain,
+                      /*16*/prevLoss,
+                      /*17*/closeGtPrevClose,
+                      /*18*/lowGtPrevLow,
+                      /*19*/lowLtPrevLow,
+                      /*20*/highLtPrevOpen
+                    );
                     dataList.add(StringUtils.join(list, ","));
                 }
                 //                gain = true;
