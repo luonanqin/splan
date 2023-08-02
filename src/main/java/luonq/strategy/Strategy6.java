@@ -91,6 +91,8 @@ public class Strategy6 {
                 boolean lowLtPrevLow = low < prevLow;
                 boolean activity = volume.doubleValue() > 100000;
                 boolean highLtPrevOpen = high < prevOpen;
+                boolean highLtPrevLow = high < prevLow;
+                boolean highLtPrevClose = high < prevClose;
 
                 if (priceLimit && activity) {
                     List<Object> list = Lists.newArrayList(
@@ -114,7 +116,9 @@ public class Strategy6 {
                       /*17*/closeGtPrevClose,
                       /*18*/lowGtPrevLow,
                       /*19*/lowLtPrevLow,
-                      /*20*/highLtPrevOpen
+                      /*20*/highLtPrevOpen,
+                      /*21*/highLtPrevLow,
+                      /*22*/highLtPrevClose
                     );
                     dataList.add(StringUtils.join(list, ","));
                 }
