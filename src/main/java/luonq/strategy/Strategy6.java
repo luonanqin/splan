@@ -71,16 +71,19 @@ public class Strategy6 {
                 double close = kLine.getClose();
                 double open = kLine.getOpen();
                 double low = kLine.getLow();
-                BigDecimal volume = kLine.getVolume();
+                BigDecimal volumeBig = kLine.getVolume();
                 double nextClose = nextKLine.getClose();
                 double prevClose = prevKLine.getClose();
                 double prevOpen = prevKLine.getOpen();
                 double prevLow = prevKLine.getLow();
+                BigDecimal prevVolumeBig = prevKLine.getVolume();
                 double closeLowDiff = close - low;
                 double openLowDiff = open - low;
                 double highLowDiff = high - low;
                 double lossRatio = closeLowDiff / highLowDiff;
                 double gainRatio = openLowDiff / highLowDiff;
+                double upperShadowRatio = (high - Math.max(close, open)) / highLowDiff;
+                double lowerShadowRatio = (Math.min(close, open) - low) / highLowDiff;
 
                 boolean loss = close < open;
                 boolean gain = close > open;
@@ -89,7 +92,9 @@ public class Strategy6 {
                 boolean closeGtPrevClose = close > prevClose;
                 boolean lowGtPrevLow = low > prevLow;
                 boolean lowLtPrevLow = low < prevLow;
-                boolean activity = volume.doubleValue() > 100000;
+                double volume = volumeBig.doubleValue();
+                double prevVolume = prevVolumeBig.doubleValue();
+                boolean activity = volume > 100000;
                 boolean highLtPrevOpen = high < prevOpen;
                 boolean highLtPrevLow = high < prevLow;
                 boolean highLtPrevClose = high < prevClose;
@@ -101,15 +106,15 @@ public class Strategy6 {
                       /*2*/close,
                       /*3*/high,
                       /*4*/low,
-                      /*5*/nextClose,
-                      /*6*/prevOpen,
-                      /*7*/prevClose,
-                      /*8*/prevLow,
-                      /*9*/closeLowDiff,
-                      /*10*/openLowDiff,
-                      /*11*/highLowDiff,
-                      /*12*/lossRatio,
-                      /*13*/gainRatio,
+                      /*5 后一天收盘*/nextClose,
+                      /*6 前一天开盘*/prevOpen,
+                      /*7 前一天收盘*/prevClose,
+                      /*8 前一天最低*/prevLow,
+                      /*9 收盘和最低的差值*/closeLowDiff,
+                      /*10 开盘和最低的差值*/openLowDiff,
+                      /*11 最高和最低的差值*/highLowDiff,
+                      /*12 上影线在全天的占比*/upperShadowRatio,
+                      /*13 下影线在全天的占比*/lowerShadowRatio,
                       /*14*/loss,
                       /*15*/gain,
                       /*16*/prevLoss,
@@ -118,7 +123,9 @@ public class Strategy6 {
                       /*19*/lowLtPrevLow,
                       /*20*/highLtPrevOpen,
                       /*21*/highLtPrevLow,
-                      /*22*/highLtPrevClose
+                      /*22*/highLtPrevClose,
+                      /*23 当日成交量*/volume,
+                      /*24 前日成交量*/prevVolume
                     );
                     dataList.add(StringUtils.join(list, ","));
                 }

@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class Strategy6_1 {
 
-    public static String TEST_STOCK = "SA";
+    public static String TEST_STOCK = "PENN";
     public static String TEST_DATE = "";
 
 
@@ -51,25 +51,31 @@ public class Strategy6_1 {
                 }
                 double close = Double.parseDouble(split[2]);
                 double nextClose = Double.parseDouble(split[5]);
-                double lossRatio = Double.parseDouble(split[12]);
-                double gainRatio = Double.parseDouble(split[13]);
+                double upperShadowRatio = Double.parseDouble(split[12]);
+                double lowerShadowRatio = Double.parseDouble(split[13]);
 
                 boolean loss = Boolean.parseBoolean(split[14]);
                 boolean gain = Boolean.parseBoolean(split[15]);
                 boolean prevLoss = Boolean.parseBoolean(split[16]);
                 boolean lowLtPrevLow = Boolean.parseBoolean(split[19]);
                 boolean highLtPrevOpen = Boolean.parseBoolean(split[20]);
-                //                    boolean gainRatioRes = gain && gainRatio > ratio;
-                boolean lossRatioRes = loss && lossRatio > ratio;
+                //                    boolean gainRatioRes = gain && lowerShadowRatio > ratio;
+                //                boolean lossRatioRes = loss && upperShadowRatio > ratio;
+                double volume = Double.parseDouble(split[23]);
+                double prevVolume = Double.parseDouble(split[24]);
 
-//                boolean lossRatioRes = true;
+                boolean lossRatioRes = true;
                 boolean gainRatioRes = false;
                 //                gain = true;
                 //                lowLtPrevLow = true;
-//                                highLtPrevOpen = true;
+                //                                highLtPrevOpen = true;
 
-                if ((gainRatioRes || lossRatioRes) &&
-                  lowLtPrevLow && prevLoss && highLtPrevOpen) {
+                if (
+                  (gainRatioRes || lossRatioRes) &&
+                    lowLtPrevLow && prevLoss && highLtPrevOpen &&
+                    lowerShadowRatio > upperShadowRatio &&
+                    volume > prevVolume
+                ) {
                     boolean success = nextClose > close;
                     if (success) {
                         successCount++;
@@ -80,7 +86,7 @@ public class Strategy6_1 {
                 }
             }
         }
-        //            System.out.println("ratio=" + ratio + ", successCount=" + successCount + ", failedCount=" + failedCount + ", rate=" + successCount / (successCount + failedCount));
+        System.out.println("ratio=" + ratio + ", successCount=" + successCount + ", failedCount=" + failedCount + ", rate=" + successCount / (successCount + failedCount));
         //        }
     }
 }
