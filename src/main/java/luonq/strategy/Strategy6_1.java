@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class Strategy6_1 {
 
-    public static String TEST_STOCK = "PENN";
+    public static String TEST_STOCK = "AAPL";
     public static String TEST_DATE = "";
 
 
@@ -74,7 +74,9 @@ public class Strategy6_1 {
                   (gainRatioRes || lossRatioRes) &&
                     lowLtPrevLow && prevLoss && highLtPrevOpen &&
                     lowerShadowRatio > upperShadowRatio &&
-                    volume > prevVolume
+                    lowerShadowRatio > 0.3 &&
+                    upperShadowRatio < 0.2
+//                    volume > prevVolume
                 ) {
                     boolean success = nextClose > close;
                     if (success) {
