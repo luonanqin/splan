@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class Strategy6_1 {
 
-    public static String TEST_STOCK = "AAPL";
+    public static String TEST_STOCK = "PENN";
     public static String TEST_DATE = "";
 
 
@@ -47,7 +47,7 @@ public class Strategy6_1 {
                 String[] split = dataList.get(i).split(",");
                 String date = split[0];
                 if (!date.endsWith("2022")) {
-                    continue;
+//                    continue;
                 }
                 double close = Double.parseDouble(split[2]);
                 double nextClose = Double.parseDouble(split[5]);
@@ -59,6 +59,7 @@ public class Strategy6_1 {
                 boolean prevLoss = Boolean.parseBoolean(split[16]);
                 boolean lowLtPrevLow = Boolean.parseBoolean(split[19]);
                 boolean highLtPrevOpen = Boolean.parseBoolean(split[20]);
+                boolean highLtPrevClose = Boolean.parseBoolean(split[22]);
                 //                    boolean gainRatioRes = gain && lowerShadowRatio > ratio;
                 //                boolean lossRatioRes = loss && upperShadowRatio > ratio;
                 double volume = Double.parseDouble(split[23]);
@@ -71,12 +72,14 @@ public class Strategy6_1 {
                 //                                highLtPrevOpen = true;
 
                 if (
-                  (gainRatioRes || lossRatioRes) &&
-                    lowLtPrevLow && prevLoss && highLtPrevOpen &&
-                    lowerShadowRatio > upperShadowRatio &&
-                    lowerShadowRatio > 0.3 &&
-                    upperShadowRatio < 0.2
-//                    volume > prevVolume
+                  (gainRatioRes || lossRatioRes)
+                    && lowLtPrevLow && prevLoss && highLtPrevOpen
+                    && lowerShadowRatio > upperShadowRatio
+//                    lowerShadowRatio > 0.3 &&
+//                    upperShadowRatio < 0.2
+                    && highLtPrevClose
+                  && loss
+//                    && volume > prevVolume
                 ) {
                     boolean success = nextClose > close;
                     if (success) {
