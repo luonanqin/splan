@@ -77,9 +77,11 @@ public class Strategy6 {
                 double prevOpen = prevKLine.getOpen();
                 double prevLow = prevKLine.getLow();
                 BigDecimal prevVolumeBig = prevKLine.getVolume();
+                double prevHigh = prevKLine.getHigh();
                 double closeLowDiff = close - low;
                 double openLowDiff = open - low;
                 double highLowDiff = high - low;
+                double prevHighLowDiff = prevHigh - prevLow;
                 double lossRatio = closeLowDiff / highLowDiff;
                 double gainRatio = openLowDiff / highLowDiff;
                 double upperShadowRatio = (high - Math.max(close, open)) / highLowDiff;
@@ -125,7 +127,8 @@ public class Strategy6 {
                       /*21*/highLtPrevLow,
                       /*22*/highLtPrevClose,
                       /*23 当日成交量*/volume,
-                      /*24 前日成交量*/prevVolume
+                      /*24 前日成交量*/prevVolume,
+                      /*25 前日最高和最低的差值*/prevHighLowDiff
                     );
                     dataList.add(StringUtils.join(list, ","));
                 }
