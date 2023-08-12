@@ -25,10 +25,9 @@ import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_UP;
-import static luonq.strategy.OverBollingerDN2023OpenFirst.filterStock;
 
 /**
- * 1.计算2021-2022年之间，当日开盘低于实时布林线下轨的比例（dn-open)/dn=>x，及当日收盘大于开盘的成功率=>y
+ * 1.计算2021-2022年之间，当日开盘低于收盘后布林线下轨的比例（dn-open)/dn=>x，及当日收盘大于开盘的成功率=>y
  * 2.x的百分比从0~6（大于6的统一为6）作为key，y作为value建立历史策略数据map
  * 3.计算2023年的数据，计算上面的x，取对应的y，与给定的hit进行比较
  * 4.指定lossRange，作为止损线
@@ -43,7 +42,8 @@ import static luonq.strategy.OverBollingerDN2023OpenFirst.filterStock;
  * <p>
  * 注：参与2023年计算的股票，一定要在开盘后5秒内有真实交易，否则会被过滤
  * <p>
- * 结果：截止六月底
+ * 结果：截止8月11日
+ * openRange=6, hit=0.9, loss=0.3, sum=1060511, gainCount=184, lossCount=74, successRatio=0.7131782945736435
  */
 public class Strategy7 {
 
@@ -132,13 +132,13 @@ public class Strategy7 {
 
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
-        double init = 100000 / exchange;
+        double init = 10000 / exchange;
         int beforeYear = 2023, afterYear = 2021, afterYear2 = 2022;
         double capital = init;
         Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio();
         Set<String> stockSet = Sets.newHashSet("BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
         stockSet.forEach(s -> originRatioMap.remove(s));
-        filterStock(originRatioMap.keySet());
+        BaseUtils.filterStock(originRatioMap.keySet());
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
 
@@ -200,7 +200,7 @@ public class Strategy7 {
         Collections.reverse(dateList);
         //        dateList = dateList.subList(0, 75);
 
-        // 根据open实时计算出低于dn比例最高的前十股票，然后再遍历计算收益
+        // 计算出open低于dn（收盘后的dn）比例最高的前十股票，然后再遍历计算收益
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
         for (String date : dateToStockBollMap.keySet()) {
             Map<String, StockKLine> stockToKlineMap = dateToStockLineMap.get(date);
@@ -307,16 +307,16 @@ public class Strategy7 {
             }
         }
 
-        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d);
-        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d);
+        List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d);
+        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.2d, 0.3d);
         List<Integer> openRange = Lists.newArrayList(6, 7);
         for (Integer openR : openRange) {
             for (Double lossRange : lossRatioRange) {
                 for (int i = 0; i < hitRatio.size(); i++) {
                     double hit = hitRatio.get(i);
 
-                    if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
-                        continue;
+                    if (hit != 0.5d || lossRange != 0.1d || openR != 6) {
+                                                continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -395,8 +395,11 @@ public class Strategy7 {
                                 continue;
                             }
                             // 根据开盘价算openDnDiffRatio
-                            double openDnDiffPnt = (dn - open) / dn;
+                            double openDnDiffPnt = (dn - open) / dn * 100;
                             int openDnDiffInt = (int) openDnDiffPnt;
+                            if (openDnDiffInt > 6) {
+                                openDnDiffInt = 6;
+                            }
                             BigDecimal volume = kLine.getVolume();
                             int avgVolume = (int) volume.doubleValue() / 360;
 
@@ -441,13 +444,13 @@ public class Strategy7 {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
+                                                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 lossCount++;
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
+                                                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
 
                                 if (gain >= 0) {
                                     //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));

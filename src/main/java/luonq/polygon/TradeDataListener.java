@@ -5,8 +5,8 @@ import bean.NodeList;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
+import luonq.strategy.Strategy7;
 import org.apache.commons.collections4.CollectionUtils;
-import luonq.strategy.OverBollingerDN2023OpenFirst;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -57,9 +57,9 @@ public class TradeDataListener {
         System.out.println(stock + " price=" + price + " dn=" + dn);
         double diff = (dn - price) / dn;
         int diffInt = (int) diff;
-        OverBollingerDN2023OpenFirst.StockRatio stockRatio = originRatioMap.get(stock);
-        Map<Integer, OverBollingerDN2023OpenFirst.RatioBean> ratioMap = stockRatio.getRatioMap();
-        OverBollingerDN2023OpenFirst.RatioBean ratioBean = ratioMap.get(diffInt);
+        Strategy7.StockRatio stockRatio = originRatioMap.get(stock);
+        Map<Integer, Strategy7.RatioBean> ratioMap = stockRatio.getRatioMap();
+        Strategy7.RatioBean ratioBean = ratioMap.get(diffInt);
         if (ratioBean == null || ratioBean.getRatio() < 0.5) {
             return;
         }
