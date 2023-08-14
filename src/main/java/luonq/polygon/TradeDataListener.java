@@ -5,7 +5,7 @@ import bean.NodeList;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
-import luonq.strategy.Strategy7;
+import luonq.strategy.Strategy8;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -55,12 +55,15 @@ public class TradeDataListener {
         }
 
         System.out.println(stock + " price=" + price + " dn=" + dn);
-        double diff = (dn - price) / dn;
+        double diff = (dn - price) / dn * 100;
         int diffInt = (int) diff;
-        Strategy7.StockRatio stockRatio = originRatioMap.get(stock);
-        Map<Integer, Strategy7.RatioBean> ratioMap = stockRatio.getRatioMap();
-        Strategy7.RatioBean ratioBean = ratioMap.get(diffInt);
-        if (ratioBean == null || ratioBean.getRatio() < 0.5) {
+        if (diffInt > 6) {
+            diffInt = 6;
+        }
+        Strategy8.StockRatio stockRatio = originRatioMap.get(stock);
+        Map<Integer, Strategy8.RatioBean> ratioMap = stockRatio.getRatioMap();
+        Strategy8.RatioBean ratioBean = ratioMap.get(diffInt);
+        if (ratioBean == null || ratioBean.getRatio() < RealTimeDataWS.HIT) {
             return;
         }
 
