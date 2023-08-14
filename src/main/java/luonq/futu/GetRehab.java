@@ -124,7 +124,7 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
 
             String value = time + " " + fwdFactorA + " " + companyActFlag;
             String stock = seqNoToStock.get(nSerialNo);
-//            System.out.println(stock + " " + value);
+            System.out.println(stock + " " + value);
 
             result.put(stock, value);
         }
