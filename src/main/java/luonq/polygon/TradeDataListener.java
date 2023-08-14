@@ -2,6 +2,7 @@ package luonq.polygon;
 
 import bean.Node;
 import bean.NodeList;
+import bean.StockEvent;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
@@ -25,13 +26,14 @@ public class TradeDataListener {
     private RealTimeDataWS client;
 
     @Subscribe
-    public void onMessageEvent(Map.Entry<String, Double> entry) {
-        String stock = entry.getKey();
-        Double price = entry.getValue();
-        cal(stock, price);
+    public void onMessageEvent(StockEvent event) {
+        cal(event);
     }
 
-    public void cal(String stock, double price) {
+    public void cal(StockEvent event) {
+        String stock = event.getStock();
+        Double price = event.getPrice();
+
         Double m19closeSum = RealTimeDataWS.stockToM19CloseSum.get(stock);
         List<Double> m19closeList = RealTimeDataWS.stockToM19Close.get(stock);
         if (m19closeSum == null || CollectionUtils.isEmpty(m19closeList)) {
@@ -54,7 +56,7 @@ public class TradeDataListener {
             return;
         }
 
-        System.out.println(stock + " price=" + price + " dn=" + dn);
+        System.out.println(event);
         double diff = (dn - price) / dn * 100;
         int diffInt = (int) diff;
         if (diffInt > 6) {
@@ -80,6 +82,6 @@ public class TradeDataListener {
 
         RealTimeDataWS.loadLatestMA20();
         TradeDataListener tradeDataListener = new TradeDataListener();
-        tradeDataListener.cal("CSTL", 17.82d);
+        tradeDataListener.cal(new StockEvent("CSTL", 7.82d, 1692027257000L));
     }
 }

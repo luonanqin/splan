@@ -4,6 +4,7 @@ import bean.BOLL;
 import bean.FrontReinstatement;
 import bean.NodeList;
 import bean.SplitStockInfo;
+import bean.StockEvent;
 import bean.StockKLine;
 import bean.StockPosition;
 import bean.StopLoss;
@@ -61,7 +62,7 @@ public class RealTimeDataWS {
     public static final int PRICE_LIMIT = 7; // 价格限制，用于限制这个价格下的股票不参与计算
     public static final double LOSS_RATIO = 0.3d; // 止损比例
     public static final int DELAY_MINUTE = 0;
-    public static final long LISTENING_TIME = 10000L; // 监听时长，毫秒
+    public static final long LISTENING_TIME = 30000L; // 监听时长，毫秒
     private static LocalDateTime dayLight_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
     private static LocalDateTime dayLight_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
 
@@ -276,7 +277,7 @@ public class RealTimeDataWS {
             if (kLines.size() < 19) {
                 continue;
             }
-//            kLines = kLines.subList(1, kLines.size());
+            //            kLines = kLines.subList(1, kLines.size());
             BigDecimal m20close = BigDecimal.ZERO;
             List<Double> _19Close = Lists.newArrayList();
             for (int i = 0; i < 19; i++) {
@@ -436,7 +437,7 @@ public class RealTimeDataWS {
 
                 //                System.out.println(msg);
                 List<Map> maps = JSON.parseArray(msg, Map.class);
-                Map<String, Double> stockToPrice = Maps.newHashMap();
+                Map<String, StockEvent> stockToEvent = Maps.newHashMap();
                 for (Map map : maps) {
                     String stock = MapUtils.getString(map, "sym", "");
 
@@ -456,7 +457,7 @@ public class RealTimeDataWS {
                     }
                     if (time > listenEndTime) {
                         subscribed = false;
-                        System.out.println("listen end!");
+                        System.out.println(stock + " time is " + time + ", price is " + price + ".listen end!");
                         unsubscribeAll();
                         listenEnd = true;
                         tradeExecutor.beginTrade();
@@ -468,12 +469,25 @@ public class RealTimeDataWS {
                         unsubscribe(stock);
                         continue;
                     }
-                    stockToPrice.put(stock, price);
+
+                    stockToEvent.put(stock, new StockEvent(stock, price, time));
                 }
-                for (Map.Entry<String, Double> entry : stockToPrice.entrySet()) {
-                    String stock = entry.getKey();
+
+                // 用当前时间判断是否超过监听时间，避免不活跃股票 或 接口延迟 导致监听超时，影响及时下单
+                long nowTime = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                if (nowTime > listenEndTime) {
+                    subscribed = false;
+                    System.out.println("now time is over! listen end!");
+                    unsubscribeAll();
+                    listenEnd = true;
+                    tradeExecutor.beginTrade();
+                    return;
+                }
+
+                // 发出事件待交易
+                for (String stock : stockToEvent.keySet()) {
                     if (unsubscribe(stock)) {
-                        tradeEventBus.post(entry);
+                        tradeEventBus.post(stockToEvent.get(stock));
                     }
                 }
             }

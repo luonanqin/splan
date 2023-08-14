@@ -51,7 +51,7 @@ public class TradeWS {
         TradeWS test = new TradeWS();
         WebSocketClient client = test.webSocketClient();
 //        client.send("{\"action\":\"auth\",\"params\":\"Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY\"}");
-        client.send("{\"action\":\"subscribe\", \"params\":\"T.FUTU\"}");
+        client.send("{\"action\":\"subscribe\", \"params\":\"T.AAPL\"}");
         System.out.println();
     }
 }
