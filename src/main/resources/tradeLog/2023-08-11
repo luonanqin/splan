@@ -294,11 +294,11 @@ unsubcribeStockSet size: 3200 1691760610938
 JYNT=0.13785671178549877,WWW=0.1237644151565074,MAXN=0.11874572525911513,BLFS=0.0811172188382113,OSPN=0.0781615164892236,FF=0.07658482960791496,FWRD=0.06896960828900796,PNAC=0.06462585034013593,HIPO=0.061920652576937435,TPR=0.05657562854275733
 remain cash: 7640.339999999967
 buy stock. stock=JYNT, count=756, price=10.0, orderPrice=10.1, orderId: 4198498419140078804
-update order: OrderFill(tradeSide=1, fillID=0, orderID=4198498419140078804, code=JYNT, name=The Joint, count=756.0, price=10.1, createTime=2023-08-11 09:30:11, updateTimestamp=1.691760615E9, status=0)
+update order: OrderFill(tradeSide=1, fillID=0, orderID=4198498419140078804, code=JYNT, name=The Joint, count=756.0, price=10.1, avgPrice=9.91, createTime=2023-08-11 09:30:11, updateTimestamp=1.691760615E9, status=0)
 JYNT order is successfully executed. orderId: 4198498419140078804
 buy stock. stock=WWW, count=16, price=8.51, orderPrice=8.59, orderId: 4198498423435046107
 WWW order is successfully executed. orderId: 4198498423435046107
-update order: OrderFill(tradeSide=1, fillID=0, orderID=4198498423435046107, code=WWW, name=沃尔弗林集团, count=16.0, price=8.59, createTime=2023-08-11 09:30:15, updateTimestamp=1.69176062E9, status=0)
+update order: OrderFill(tradeSide=1, fillID=0, orderID=4198498423435046107, code=WWW, name=沃尔弗林集团, count=16.0, price=8.59, avgPrice=8.36, createTime=2023-08-11 09:30:15, updateTimestamp=1.69176062E9, status=0)
 there is no cash to trade. trade finish
 trade end
 being listen stop loss: {WWW=StopLoss(stock=WWW, canSellQty=16.0, lossPrice=7.524), JYNT=StopLoss(stock=JYNT, canSellQty=756.0, lossPrice=8.919)}
@@ -340,7 +340,7 @@ before close sell stock. stock=JYNT, count=756.0, currentPrice=9.74, orderPrice=
 before close sell stock. stock=JYNT, orderId：4208001992028247744
 before close sell stock. stock=WWW, count=16.0, currentPrice=8.715, orderPrice=8.62
 before close sell stock. stock=WWW, orderId：4208002516014257736
-update order: OrderFill(tradeSide=2, fillID=0, orderID=4208001992028247744, code=JYNT, name=The Joint, count=756.0, price=9.64, createTime=2023-08-11 15:59:00, updateTimestamp=1.691783943E9, status=0)
-update order: OrderFill(tradeSide=2, fillID=0, orderID=4208002516014257736, code=WWW, name=沃尔弗林集团, count=16.0, price=8.62, createTime=2023-08-11 15:59:00, updateTimestamp=1.691783943E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4208001992028247744, code=JYNT, name=The Joint, count=756.0, price=9.64, avgPrice=10.03, createTime=2023-08-11 15:59:00, updateTimestamp=1.691783943E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4208002516014257736, code=WWW, name=沃尔弗林集团, count=16.0, price=8.62, avgPrice=8.78, createTime=2023-08-11 15:59:00, updateTimestamp=1.691783943E9, status=0)
 all stock has stop loss
 trade exit

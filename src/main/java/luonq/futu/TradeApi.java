@@ -9,6 +9,7 @@ import com.futu.openapi.FTSPI_Conn;
 import com.futu.openapi.FTSPI_Trd;
 import com.futu.openapi.pb.TrdCommon;
 import com.futu.openapi.pb.TrdGetFunds;
+import com.futu.openapi.pb.TrdGetHistoryOrderList;
 import com.futu.openapi.pb.TrdGetPositionList;
 import com.futu.openapi.pb.TrdModifyOrder;
 import com.futu.openapi.pb.TrdPlaceOrder;
@@ -18,6 +19,7 @@ import com.futu.openapi.pb.TrdUpdateOrder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AtomicDouble;
+import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -293,6 +295,25 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         }
     }
 
+    public void getHistoryOrderList(String code) {
+        TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
+          .setAccID(accountId)
+          .setTrdEnv(tradeEnv)
+          .setTrdMarket(tradeMarket)
+          .build();
+        TrdCommon.TrdFilterConditions filter = TrdCommon.TrdFilterConditions.newBuilder()
+          .addCodeList(code)
+          .setBeginTime("2023-08-11 00:00:00")
+          .setEndTime("2023-08-12 00:00:00")
+          .build();
+        TrdGetHistoryOrderList.C2S c2s = TrdGetHistoryOrderList.C2S.newBuilder()
+          .setHeader(header)
+          .setFilterConditions(filter)
+          .build();
+        TrdGetHistoryOrderList.Request req = TrdGetHistoryOrderList.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = trd.getHistoryOrderList(req);
+    }
+
     @Override
     public void onDisconnect(FTAPI_Conn client, long errCode) {
         System.out.printf("Qot onDisConnect: %d\n", errCode);
@@ -320,6 +341,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
                 fill.setCode(order.getCode());
                 fill.setName(order.getName());
                 fill.setPrice(order.getPrice());
+                fill.setAvgPrice(order.getFillAvgPrice());
                 fill.setCreateTime(order.getCreateTime());
                 fill.setUpdateTimestamp(order.getUpdateTimestamp());
                 fill.setCount(order.getQty());
@@ -439,6 +461,20 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         }
     }
 
+    @Override
+    public void onReply_GetHistoryOrderList(FTAPI_Conn client, int nSerialNo, TrdGetHistoryOrderList.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("TrdGetHistoryOrderLis failed: %s\n", rsp.getRetMsg());
+        } else {
+            try {
+                String json = JsonFormat.printer().print(rsp);
+                System.out.printf("Receive GetHistoryOrderList: %s\n", json);
+            } catch (Exception e) {
+                System.out.println("onReply_GetHistoryOrderList error. " + e.getMessage());
+            }
+        }
+    }
+
     public static List<String> readFile(String filePath) {
         List<String> lineList = Lists.newArrayList();
         BufferedReader br = null;
@@ -471,6 +507,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         //                trdDemo.getPositionList();
         //        trdDemo.placeOrder();
         //        trdDemo.modifyOrder();
+        //        trdDemo.getHistoryOrderList("WWW");
 
         while (true) {
             try {
