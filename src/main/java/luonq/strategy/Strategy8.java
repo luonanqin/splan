@@ -365,7 +365,7 @@ public class Strategy8 {
                 for (int i = 0; i < hitRatio.size(); i++) {
                     double hit = hitRatio.get(i);
 
-                    if (hit != 0.5d || lossRange != 0.3d || openR != 7) {
+                    if (hit != 0.6d || lossRange != 0.1d || openR != 6) {
                         continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
@@ -397,6 +397,10 @@ public class Strategy8 {
                             double open = kLine.getOpen();
                             double close = kLine.getClose();
                             double low = kLine.getLow();
+                            if (boll == null) {
+                                System.out.println(date+" "+stock+" boll is null");
+                                continue;
+                            }
                             double currMb = boll.getMb();
                             if (lastBoll != null) {
                                 double lastDn = lastBoll.getDn();

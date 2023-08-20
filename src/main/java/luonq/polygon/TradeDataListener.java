@@ -56,7 +56,7 @@ public class TradeDataListener {
             return;
         }
 
-        System.out.println(event);
+        System.out.println(event + " dn=" + dn);
         double diff = (dn - price) / dn * 100;
         int diffInt = (int) diff;
         if (diffInt > 6) {

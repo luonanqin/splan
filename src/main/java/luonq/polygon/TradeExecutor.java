@@ -14,7 +14,6 @@ import org.apache.commons.collections4.MapUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -71,7 +70,7 @@ public class TradeExecutor {
             System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId);
 
             /** 4.下单完成后，十秒后获取成交状态 */
-            OrderFill orderFill = tradeApi.getOrderFill(orderId, 10);
+            OrderFill orderFill = tradeApi.getOrderFill(orderId, 15);
             if (orderFill == null) {
                 /** 5.如果没有成交完成，则撤销剩下订单，并继续 */
                 int cancelResCode = tradeApi.cancelOrder(orderId);

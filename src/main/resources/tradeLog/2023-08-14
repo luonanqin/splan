@@ -1,0 +1,41 @@
+Console output is saving to: /Users/Luonanqin/study/intellij_idea_workspaces/splan/src/main/resources/tradeLog
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7096872692030131051
+trade api initialize finish start!
+unlock success
+stock latest close great 7 size: 3569
+stock overbolling hit great 0.500000 size: 3328
+filter merge stock, the stock set size is 3328
+filter split stock, the stock set size is 3320
+filter front reinstatement less 0.98 stock, the stock set size is 3150
+finish initialize many time. preTradeTime=1692019680000, openTime=1692019800000, closeCheckTime=Tue Aug 15 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+opening websocket
+connected
+auth_success
+being listen stop loss: {MGNI=StopLoss(stock=MGNI, canSellQty=944.0, lossPrice=5.62), JYNT=StopLoss(stock=JYNT, canSellQty=11.0, lossPrice=7.524)}
+{p=8.005, ev=T, q=2200898, s=100, t=1692027257000, sym=MGNI, x=12, i=2736, z=3}
+{p=8.515, ev=T, q=3529514, s=94, c=[37], t=1692034328000, sym=MGNI, x=15, i=393, z=3}
+{p=8.475, ev=T, q=4092085, s=1, c=[37], t=1692037572000, sym=MGNI, trfi=202, x=4, i=4071, z=3, trft=1692037572000}
+{p=8.475, ev=T, q=4099304, s=1, c=[37], t=1692037617000, sym=MGNI, trfi=202, x=4, i=4076, z=3, trft=1692037617000}
+{p=8.475, ev=T, q=4108521, s=1, c=[37], t=1692037667000, sym=MGNI, trfi=202, x=4, i=4084, z=3, trft=1692037667000}
+{p=8.585, ev=T, q=4805354, s=100, t=1692041211000, sym=MGNI, x=21, i=2302, z=3}
+{p=8.585, ev=T, q=4805355, s=100, t=1692041211000, sym=MGNI, x=21, i=2303, z=3}
+{p=8.58, ev=T, q=4805356, s=14, c=[37], t=1692041211000, sym=MGNI, x=21, i=2304, z=3}
+{p=8.58, ev=T, q=4805357, s=200, t=1692041211000, sym=MGNI, x=21, i=2305, z=3}
+{p=8.58, ev=T, q=4805358, s=86, c=[37], t=1692041211000, sym=MGNI, x=21, i=2306, z=3}
+{p=8.58, ev=T, q=4805359, s=100, c=[14,41], t=1692041211000, sym=MGNI, x=7, i=513, z=3}
+{p=8.58, ev=T, q=4805360, s=50, c=[14,37,41], t=1692041211000, sym=MGNI, x=7, i=514, z=3}
+{p=8.56, ev=T, q=4932668, s=100, t=1692041708000, sym=MGNI, x=7, i=529, z=3}
+{p=8.56, ev=T, q=4932669, s=1, c=[14,37,41], t=1692041708000, sym=MGNI, x=3, i=196, z=3}
+ready to sell before close market. position={MGNI=StockPosition(stock=MGNI, canSellQty=944.0, costPrice=8.03, currPrice=8.565), JYNT=StockPosition(stock=JYNT, canSellQty=11.0, costPrice=10.75, currPrice=10.615)}, time=2023-08-15T03:59:00.342
+before close sell stock. stock=MGNI, count=944.0, currentPrice=8.565, orderPrice=8.47
+before close sell stock. stock=MGNI, orderId：4227167218367156843
+before close sell stock. stock=JYNT, count=11.0, currentPrice=10.615, orderPrice=10.5
+before close sell stock. stock=JYNT, orderId：4227167222662124138
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4227167218367156843, code=MGNI, name=Magnite, count=944.0, price=8.47, avgPrice=8.6, createTime=2023-08-14 15:59:00, updateTimestamp=1.692043144E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4227167222662124138, code=JYNT, name=The Joint, count=11.0, price=10.5, avgPrice=10.67, createTime=2023-08-14 15:59:00, updateTimestamp=1.692043144E9, status=0)
+all stock has stop loss
+trade exit
