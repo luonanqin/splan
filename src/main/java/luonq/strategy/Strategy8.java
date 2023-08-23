@@ -239,10 +239,13 @@ public class Strategy8 {
                 if (kLine == null) {
                     continue;
                 }
+                if (date.equals("08/18/2023") && (stock.equals("RRGB")||stock.equals("MARA"))) {
+                    System.out.println();
+                }
                 double open = kLine.getOpen();
                 BigDecimal m20close = BigDecimal.valueOf(open);
                 List<String> _20day = dateToBefore20dayMap.get(date);
-                List<StockKLine> _20Kline = Lists.newArrayList(kLine);
+                List<Double> _20Kline = Lists.newArrayList(open);
                 boolean failed = false;
                 for (String day : _20day) {
                     StockKLine temp = dateToStockLineMap.get(day).get(stock);
@@ -250,7 +253,7 @@ public class Strategy8 {
                         failed = true;
                         break;
                     }
-                    _20Kline.add(temp);
+                    _20Kline.add(temp.getClose());
                     m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
                 }
                 if (failed) {
@@ -259,9 +262,8 @@ public class Strategy8 {
 
                 double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
                 BigDecimal avgDiffSum = BigDecimal.ZERO;
-                for (StockKLine temp : _20Kline) {
-                    double c = temp.getClose();
-                    avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
+                for (Double price : _20Kline) {
+                    avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(price - mb).pow(2));
                 }
 
                 double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
