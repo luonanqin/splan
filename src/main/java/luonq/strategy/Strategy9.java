@@ -245,7 +245,7 @@ public class Strategy9 {
                     continue;
                 }
                 if (date.equals("08/18/2023") && (stock.equals("RRGB")||stock.equals("MARA"))) {
-                    System.out.println();
+//                    System.out.println();
                 }
                 double open = kLine.getOpen();
                 BigDecimal m20close = BigDecimal.valueOf(open);
@@ -372,7 +372,7 @@ public class Strategy9 {
                 for (int i = 0; i < hitRatio.size(); i++) {
                     double hit = hitRatio.get(i);
 
-                    if (hit != 0.6d || lossRange != 0.1d || openR != 6) {
+                    if (hit != 0.8d || lossRange != 0.07d || openR != 6) {
                         continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
@@ -380,6 +380,9 @@ public class Strategy9 {
                     int gainCount = 0, lossCount = 0;
                     for (int j = 0; j < dateList.size(); j++) {
                         String date = dateList.get(j);
+                        if (date.equals("08/22/2023")) {
+//                            System.out.println();
+                        }
                         Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
                         String lastDate = "";
                         if (j > 0) {
@@ -468,20 +471,18 @@ public class Strategy9 {
                             StockRatio stockRatio = ratioMap.get(stock);
                             Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
                             if (MapUtils.isEmpty(ratioDetail)) {
-                                stockRatio.addBean(buildBean(kLine, boll));
+//                                stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
-                            if (date.equals("05/19/2023")) {
-                                //                                System.out.println();
-                            }
+
                             RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
                             if (ratioBean == null || ratioBean.getRatio() < hit) {
-                                stockRatio.addBean(buildBean(kLine, boll));
+//                                stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
 
                             if (hasCompute) {
-                                stockRatio.addBean(buildBean(kLine, boll));
+//                                stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
 
