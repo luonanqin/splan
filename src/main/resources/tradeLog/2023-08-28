@@ -1,0 +1,140 @@
+// 因为数据准备不及时，开盘时间定在21.42
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7101921849925959508
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3670
+stock overbolling hit great 0.600000 size: 3357
+filter merge stock, the stock set size is 3357
+filter split stock, the stock set size is 3349
+filter front reinstatement less 0.98 stock, the stock set size is 3172
+finish initialize many time. preTradeTime=1693229280000, openTime=1693230180000, closeCheckTime=Tue Aug 29 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Aug 28, 2023 9:42:37 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+begin subcribe stock at 21:42:42
+finish subcribe real time!
+time is early
+{p=35.16, ev=T, q=236356, s=100, t=1693230165000, sym=SDGR, trfi=202, x=4, i=131, z=3, trft=1693230165000}
+time is early
+{p=132.15, ev=T, q=399490, s=200, t=1693230167000, sym=GOOG, trfi=202, x=4, i=5003, z=3, trft=1693230167000}
+time is early
+{p=26.92, ev=T, q=107544, s=100, t=1693230168000, sym=JHG, trfi=202, x=4, i=71675558320194, z=1, trft=1693230168000}
+time is early
+{p=114.47, ev=T, q=170593, s=67, c=[14,37,41], t=1693230168000, sym=DKS, x=10, i=52983525232182, z=1}
+time is early
+{p=114.45, ev=T, q=170594, s=42, c=[14,37,41], t=1693230168000, sym=DKS, x=10, i=52983525232183, z=1}
+time is early
+{p=114.47, ev=T, q=170595, s=90, c=[14,37,41], t=1693230168000, sym=DKS, x=12, i=62879198563402, z=1}
+time is early
+{p=114.44, ev=T, q=170596, s=21, c=[14,37,41], t=1693230168000, sym=DKS, x=12, i=62879198563403, z=1}
+time is early
+{p=114.46, ev=T, q=170597, s=92, c=[14,37,41], t=1693230168000, sym=DKS, x=19, i=52983525038926, z=1}
+time is early
+{p=54.63, ev=T, q=170771, s=9, c=[14,37,41], t=1693230170000, sym=DOW, x=21, i=53006227230549, z=1}
+time is early
+{p=54.63, ev=T, q=170772, s=15, c=[14,37,41], t=1693230170000, sym=DOW, x=21, i=53006227230551, z=1}
+time is early
+{p=7.035, ev=T, q=137719, s=300, t=1693230171000, sym=YMM, x=15, i=53039850994251, z=1}
+time is early
+{p=147.99, ev=T, q=107813, s=5, c=[14,37,41], t=1693230171000, sym=JPM, x=7, i=52983525030464, z=1}
+time is early
+{p=147.99, ev=T, q=107814, s=10, c=[14,37,41], t=1693230171000, sym=JPM, x=7, i=52983525030465, z=1}
+time is early
+{p=147.99, ev=T, q=107815, s=100, t=1693230171000, sym=JPM, x=19, i=52983525040748, z=1}
+time is early
+{p=16.04, ev=T, q=92484, s=164, t=1693230171000, sym=CCL, x=15, i=53039850944888, z=1}
+time is early
+{p=45.94, ev=T, q=100926, s=1, c=[37], t=1693230173000, sym=THS, x=15, i=53039897391730, z=1}
+time is early
+{p=11.385, ev=T, q=145825, s=100, t=1693230173000, sym=RPT, trfi=202, x=4, i=71675558451277, z=1, trft=1693230173000}
+time is early
+{p=131.47, ev=T, q=400730, s=100, t=1693230173000, sym=GOOGL, x=12, i=8295, z=3}
+time is early
+{p=29.28, ev=T, q=101315, s=200, t=1693230177000, sym=TFC, trfi=202, x=4, i=71675558580278, z=1, trft=1693230176999}
+time is early
+{p=425.13, ev=T, q=200680, s=100, t=1693230178000, sym=MCK, x=15, i=53039997351499, z=1}
+StockEvent(stock=CNK, price=15.91, time=1693230180033) dn=15.94
+StockEvent(stock=NU, price=6.86, time=1693230180120) dn=6.872
+NU=0.17462165308497624
+unsubcribeStockSet size: 100 1693230180177
+StockEvent(stock=NVCR, price=20.77, time=1693230180185) dn=24.808
+NVCR=16.27700741696227,NU=0.17462165308497624
+unsubcribeStockSet size: 200 1693230180340
+unsubcribeStockSet size: 300 1693230180575
+StockEvent(stock=BURL, price=153.16, time=1693230180580) dn=154.849
+unsubcribeStockSet size: 400 1693230180690
+unsubcribeStockSet size: 500 1693230180910
+StockEvent(stock=AAP, price=64.77, time=1693230180952) dn=65.105
+NVCR=16.27700741696227,AAP=0.5145534137163167,NU=0.17462165308497624
+unsubcribeStockSet size: 600 1693230181368
+StockEvent(stock=WEST, price=10.011, time=1693230181855) dn=10.017
+StockEvent(stock=ULTA, price=412.25, time=1693230181948) dn=413.319
+NVCR=16.27700741696227,AAP=0.5145534137163167,ULTA=0.25863800115649577,NU=0.17462165308497624
+unsubcribeStockSet size: 700 1693230181997
+StockEvent(stock=DLTR, price=124.98, time=1693230182493) dn=125.702
+unsubcribeStockSet size: 800 1693230182553
+unsubcribeStockSet size: 900 1693230182814
+unsubcribeStockSet size: 1000 1693230183473
+StockEvent(stock=DOMO, price=10.65, time=1693230184158) dn=12.492
+NVCR=16.27700741696227,DOMO=14.74543707973103,AAP=0.5145534137163167,ULTA=0.25863800115649577,NU=0.17462165308497624
+unsubcribeStockSet size: 1100 1693230184326
+unsubcribeStockSet size: 1200 1693230184822
+unsubcribeStockSet size: 1300 1693230186079
+StockEvent(stock=IMNM, price=6.3899, time=1693230187710) dn=6.523
+unsubcribeStockSet size: 1400 1693230187879
+StockEvent(stock=DECK, price=522.46, time=1693230189198) dn=523.459
+NVCR=16.27700741696227,DOMO=14.74543707973103,AAP=0.5145534137163167,ULTA=0.25863800115649577,DECK=0.19084589241944644,NU=0.17462165308497624
+unsubcribeStockSet size: 1500 1693230189825
+StockEvent(stock=EGLE, price=41.755, time=1693230190399) dn=41.83
+NVCR=16.27700741696227,DOMO=14.74543707973103,AAP=0.5145534137163167,ULTA=0.25863800115649577,DECK=0.19084589241944644,EGLE=0.17929715515179473,NU=0.17462165308497624
+unsubcribeStockSet size: 1600 1693230191696
+unsubcribeStockSet size: 1700 1693230193874
+unsubcribeStockSet size: 1800 1693230196187
+unsubcribeStockSet size: 1900 1693230199954
+unsubcribeStockSet size: 2000 1693230205453
+HCM time is 1693230210030, price is 14.62.listen end!
+unsubcribeStockSet size: 2100 1693230210052
+unsubcribeStockSet size: 2200 1693230210052
+unsubcribeStockSet size: 2300 1693230210052
+unsubcribeStockSet size: 2400 1693230210053
+unsubcribeStockSet size: 2500 1693230210053
+unsubcribeStockSet size: 2600 1693230210053
+unsubcribeStockSet size: 2700 1693230210053
+unsubcribeStockSet size: 2800 1693230210053
+unsubcribeStockSet size: 2900 1693230210054
+unsubcribeStockSet size: 3000 1693230210054
+unsubcribeStockSet size: 3100 1693230210054
+=========== finish unsubscribe ===========
+NVCR=16.27700741696227,DOMO=14.74543707973103,AAP=0.5145534137163167,ULTA=0.25863800115649577,DECK=0.19084589241944644,EGLE=0.17929715515179473,NU=0.17462165308497624
+remain cash: 7818.430000000051
+buy stock. stock=NVCR, count=372, price=20.77, orderPrice=20.97, orderId: 5550484107607251746
+NVCR order is successfully executed. orderId: 5550484107607251746
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5550484107607251746, code=NVCR, name=Novocure, count=372.0, price=20.97, avgPrice=20.51, createTime=2023-08-28 09:43:30, updateTimestamp=1.693230213E9, status=0)
+buy stock. stock=DOMO, count=17, price=10.65, orderPrice=10.75, orderId: 5550484111902219043
+DOMO order is successfully executed. orderId: 5550484111902219043
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5550484111902219043, code=DOMO, name=Domo Inc, count=17.0, price=10.75, avgPrice=10.75, createTime=2023-08-28 09:43:33, updateTimestamp=1.693230218E9, status=0)
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {NVCR=StopLoss(stock=NVCR, canSellQty=372.0, lossPrice=18.459), DOMO=StopLoss(stock=DOMO, canSellQty=17.0, lossPrice=9.675)}
+{p=10.7301, ev=T, q=180662, s=400, t=1693230253000, sym=DOMO, trfi=202, x=4, i=996, z=3, trft=1693230253000}
+{p=20.1, ev=T, q=568542, s=100, t=1693230525000, sym=NVCR, x=12, i=4795, z=3}
+{p=20.1, ev=T, q=568543, s=50, c=[14,37,41], t=1693230525000, sym=NVCR, x=12, i=4796, z=3}
+{p=10.4, ev=T, q=255957, s=35, c=[37], t=1693230784000, sym=DOMO, trfi=202, x=4, i=1273, z=3, trft=1693230784000}
+{p=10.4, ev=T, q=255958, s=15, c=[37], t=1693230784000, sym=DOMO, trfi=202, x=4, i=1274, z=3, trft=1693230784000}
+{p=10.4, ev=T, q=255959, s=50, c=[37], t=1693230784000, sym=DOMO, trfi=202, x=4, i=1275, z=3, trft=1693230784000}
+{p=20.3549, ev=T, q=774679, s=100, t=1693231114000, sym=NVCR, trfi=201, x=4, i=378, z=3, trft=1693231113999}
+{p=19.72, ev=T, q=816519, s=12, c=[37], t=1693231256000, sym=NVCR, x=19, i=1431, z=3}
+{p=19.71, ev=T, q=816520, s=1, c=[37], t=1693231256000, sym=NVCR, x=11, i=5894, z=3}
+{p=19.71, ev=T, q=816521, s=12, c=[14,37,41], t=1693231256000, sym=NVCR, x=19, i=1432, z=3}
+{p=19.95, ev=T, q=841862, s=1, c=[14,37,41], t=1693231338000, sym=NVCR, x=12, i=5729, z=3}
+{p=20.385, ev=T, q=914369, s=100, t=1693231578000, sym=NVCR, x=12, i=6307, z=3}
+{p=10.51, ev=T, q=364300, s=100, t=1693231586000, sym=DOMO, trfi=201, x=4, i=233, z=3, trft=1693231586000}
+{p=20.06, ev=T, q=1080178, s=67, c=[14,37,41], t=1693232167000, sym=NVCR, x=12, i=7783, z=3}
+{p=20.06, ev=T, q=1080179, s=33, c=[14,37,41], t=1693232167000, sym=NVCR, x=12, i=7784, z=3}
+{p=19.976, ev=T, q=1111419, s=1, c=[37], t=1693232279000, sym=NVCR, trfi=202, x=4, i=7860, z=3, trft=1693232279000}

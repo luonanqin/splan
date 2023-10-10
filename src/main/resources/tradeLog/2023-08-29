@@ -1,0 +1,170 @@
+// 因为数据准备不及时，开盘时间定在21.33，并且前一晚忘记卖出，所以先卖出之前的再买入
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7102281716788033081
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3679
+stock overbolling hit great 0.600000 size: 3366
+filter merge stock, the stock set size is 3366
+filter split stock, the stock set size is 3358
+filter front reinstatement less 0.98 stock, the stock set size is 3182
+finish initialize many time. preTradeTime=1693315680000, openTime=1693315980000, closeCheckTime=Wed Aug 30 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Aug 29, 2023 9:32:36 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+begin subcribe stock at 21:32:38
+finish subcribe real time!
+time is early
+{p=56.2635, ev=T, q=55417, s=27, c=[10,37,41], t=1693315963000, sym=O, trfi=202, x=4, i=71675290075464, z=1, trft=1693315962999}
+time is early
+{p=56.26, ev=T, q=55418, s=20, c=[10,37,41], t=1693315963000, sym=O, trfi=202, x=4, i=71675290075465, z=1, trft=1693315962999}
+time is early
+{p=56.26, ev=T, q=55419, s=22, c=[10,37,41], t=1693315963000, sym=O, trfi=202, x=4, i=71675290075467, z=1, trft=1693315963000}
+time is early
+{p=56.2522, ev=T, q=55420, s=30, c=[10,37,41], t=1693315963000, sym=O, trfi=202, x=4, i=71675290075468, z=1, trft=1693315963000}
+time is early
+{p=56.2501, ev=T, q=55421, s=22, c=[10,37,41], t=1693315963000, sym=O, trfi=202, x=4, i=71675290075469, z=1, trft=1693315963000}
+time is early
+{p=56.25, ev=T, q=55422, s=21, c=[10,37,41], t=1693315963000, sym=O, trfi=202, x=4, i=71675290075470, z=1, trft=1693315963000}
+time is early
+{p=322.9, ev=T, q=172078, s=1, c=[14,37,41], t=1693315966000, sym=MSFT, x=12, i=2807, z=3}
+time is early
+{p=322.88, ev=T, q=172079, s=100, t=1693315966000, sym=MSFT, x=21, i=315, z=3}
+time is early
+{p=322.9, ev=T, q=172080, s=1, c=[14,37,41], t=1693315966000, sym=MSFT, x=7, i=121, z=3}
+time is early
+{p=322.91, ev=T, q=172081, s=46, c=[14,37,41], t=1693315966000, sym=MSFT, x=7, i=122, z=3}
+time is early
+{p=57.525, ev=T, q=54169, s=39, c=[37], t=1693315969000, sym=SLB, trfi=202, x=4, i=71675290209357, z=1, trft=1693315969000}
+time is early
+{p=467.4699, ev=T, q=173186, s=5, c=[37], t=1693315970000, sym=NVDA, trfi=202, x=4, i=9102, z=3, trft=1693315970000}
+time is early
+{p=467.4535, ev=T, q=173693, s=1, c=[37], t=1693315972000, sym=NVDA, trfi=202, x=4, i=9169, z=3, trft=1693315972000}
+time is early
+{p=41.71, ev=T, q=49431, s=100, t=1693315973000, sym=WFC, x=8, i=52983525033267, z=1}
+time is early
+{p=10.94, ev=T, q=147767, s=100, c=[14,41], t=1693315973000, sym=HBAN, x=7, i=50, z=3}
+time is early
+{p=41.71, ev=T, q=49432, s=200, c=[14,41], t=1693315973000, sym=WFC, x=10, i=52983525036345, z=1}
+time is early
+{p=41.71, ev=T, q=49433, s=100, c=[14,41], t=1693315973000, sym=WFC, x=19, i=52983525033793, z=1}
+time is early
+{p=41.71, ev=T, q=49434, s=46, c=[14,37,41], t=1693315973000, sym=WFC, x=12, i=62879165205330, z=1}
+time is early
+{p=41.71, ev=T, q=49435, s=100, c=[14,41], t=1693315973000, sym=WFC, x=12, i=62879165205331, z=1}
+time is early
+{p=6.415, ev=T, q=110332, s=77, c=[37], t=1693315974000, sym=CTOS, x=10, i=52983525037362, z=1}
+time is early
+{p=6.41, ev=T, q=110333, s=121, t=1693315974000, sym=CTOS, x=10, i=52983525037363, z=1}
+time is early
+{p=6.41, ev=T, q=110334, s=131, t=1693315974000, sym=CTOS, x=10, i=52983525037364, z=1}
+time is early
+{p=6.41, ev=T, q=110335, s=100, t=1693315974000, sym=CTOS, x=21, i=52992689008726, z=1}
+time is early
+{p=6.41, ev=T, q=110336, s=1, c=[14,37,41], t=1693315974000, sym=CTOS, x=7, i=52983525028955, z=1}
+time is early
+{p=6.415, ev=T, q=110337, s=100, t=1693315974000, sym=CTOS, x=12, i=62879165207378, z=1}
+time is early
+{p=6.41, ev=T, q=110338, s=48, c=[14,37,41], t=1693315974000, sym=CTOS, x=12, i=62879165207379, z=1}
+time is early
+{p=6.41, ev=T, q=110339, s=12, c=[14,37,41], t=1693315974000, sym=CTOS, x=12, i=62879165207380, z=1}
+time is early
+{p=6.41, ev=T, q=110340, s=12, c=[14,37,41], t=1693315974000, sym=CTOS, x=12, i=62879165207381, z=1}
+time is early
+{p=6.41, ev=T, q=110341, s=28, c=[14,37,41], t=1693315974000, sym=CTOS, x=12, i=62879165207382, z=1}
+time is early
+{p=6.415, ev=T, q=110342, s=100, t=1693315974000, sym=CTOS, x=12, i=62879165207383, z=1}
+time is early
+{p=6.41, ev=T, q=110343, s=1, c=[14,37,41], t=1693315974000, sym=CTOS, x=21, i=52992689008968, z=1}
+time is early
+{p=6.41, ev=T, q=110344, s=48, c=[14,37,41], t=1693315974000, sym=CTOS, x=12, i=62879165207384, z=1}
+time is early
+{p=6.41, ev=T, q=110345, s=52, c=[14,37,41], t=1693315974000, sym=CTOS, x=12, i=62879165207385, z=1}
+time is early
+{p=6.41, ev=T, q=110346, s=100, c=[14,41], t=1693315974000, sym=CTOS, x=12, i=62879165207387, z=1}
+time is early
+{p=6.41, ev=T, q=110347, s=24, c=[14,37,41], t=1693315974000, sym=CTOS, x=12, i=62879165207388, z=1}
+time is early
+{p=58.9923, ev=T, q=33003, s=37, c=[37], t=1693315975000, sym=ALSN, trfi=202, x=4, i=71675290400082, z=1, trft=1693315975000}
+time is early
+{p=49.318, ev=T, q=54852, s=1, c=[37], t=1693315976000, sym=SEAS, trfi=202, x=4, i=71675290405719, z=1, trft=1693315975999}
+time is early
+{p=60.4999, ev=T, q=40060, s=5, c=[37], t=1693315979000, sym=KO, trfi=202, x=4, i=71675290930778, z=1, trft=1693315979000}
+StockEvent(stock=NU, price=6.725, time=1693315980036) dn=6.762
+NU=0.5471753918958877
+StockEvent(stock=VRRM, price=17.675, time=1693315980051) dn=18.063
+unsubcribeStockSet size: 100 1693315980386
+unsubcribeStockSet size: 200 1693315980422
+unsubcribeStockSet size: 300 1693315980647
+StockEvent(stock=DOMO, price=10.84, time=1693315980553) dn=11.658
+DOMO=7.016640933264708,NU=0.5471753918958877
+unsubcribeStockSet size: 400 1693315980931
+unsubcribeStockSet size: 500 1693315981382
+unsubcribeStockSet size: 600 1693315981422
+unsubcribeStockSet size: 700 1693315981453
+StockEvent(stock=SCVL, price=20.29, time=1693315981664) dn=20.413
+DOMO=7.016640933264708,SCVL=0.6025571939450404,NU=0.5471753918958877
+StockEvent(stock=NVCR, price=18.83, time=1693315981722) dn=21.694
+NVCR=13.20180695123076,DOMO=7.016640933264708,SCVL=0.6025571939450404,NU=0.5471753918958877
+unsubcribeStockSet size: 800 1693315982230
+StockEvent(stock=SGML, price=30.08, time=1693315983076) dn=30.157
+unsubcribeStockSet size: 900 1693315983263
+StockEvent(stock=HEI, price=159.24, time=1693315983179) dn=159.472
+unsubcribeStockSet size: 1000 1693315984291
+unsubcribeStockSet size: 1100 1693315984389
+unsubcribeStockSet size: 1200 1693315984701
+unsubcribeStockSet size: 1300 1693315984719
+unsubcribeStockSet size: 1400 1693315985287
+unsubcribeStockSet size: 1500 1693315986679
+StockEvent(stock=SWBI, price=11.9118, time=1693315987547) dn=12.03
+NVCR=13.20180695123076,DOMO=7.016640933264708,SWBI=0.9825436408977545,SCVL=0.6025571939450404,NU=0.5471753918958877
+unsubcribeStockSet size: 1600 1693315989102
+unsubcribeStockSet size: 1700 1693315990964
+StockEvent(stock=UVE, price=12.32, time=1693315992936) dn=12.349
+unsubcribeStockSet size: 1800 1693315994407
+StockEvent(stock=DECK, price=516.4, time=1693315994372) dn=517.04
+StockEvent(stock=WEAV, price=8.66, time=1693315995892) dn=9.075
+unsubcribeStockSet size: 1900 1693315997785
+unsubcribeStockSet size: 2000 1693316002776
+now time is over! listen end!
+unsubcribeStockSet size: 2100 1693316010042
+unsubcribeStockSet size: 2200 1693316010042
+unsubcribeStockSet size: 2300 1693316010042
+unsubcribeStockSet size: 2400 1693316010042
+unsubcribeStockSet size: 2500 1693316010043
+unsubcribeStockSet size: 2600 1693316010043
+unsubcribeStockSet size: 2700 1693316010043
+unsubcribeStockSet size: 2800 1693316010044
+unsubcribeStockSet size: 2900 1693316010044
+unsubcribeStockSet size: 3000 1693316010044
+unsubcribeStockSet size: 3100 1693316010045
+=========== finish unsubscribe ===========
+NVCR=13.20180695123076,DOMO=7.016640933264708,SWBI=0.9825436408977545,SCVL=0.6025571939450404,NU=0.5471753918958877
+remain cash: 6988.579999999958
+buy stock. stock=NVCR, count=367, price=18.83, orderPrice=19.01, orderId: 6737959259491431284
+NVCR order is successfully executed. orderId: 6737959259491431284
+update order: OrderFill(tradeSide=1, fillID=0, orderID=6737959259491431284, code=NVCR, name=Novocure, count=367.0, price=19.01, avgPrice=18.98, createTime=2023-08-29 09:33:30, updateTimestamp=1.693316021E9, status=0)
+buy stock. stock=DOMO, count=1, price=10.84, orderPrice=10.94, orderId: 6737959263786398583
+DOMO order is successfully executed. orderId: 6737959263786398583
+update order: OrderFill(tradeSide=1, fillID=0, orderID=6737959263786398583, code=DOMO, name=Domo Inc, count=1.0, price=10.94, avgPrice=10.79, createTime=2023-08-29 09:33:41, updateTimestamp=1.693316026E9, status=0)
+there is no cash to trade. trade finish
+trade end
+beginListenStopLoss failed! DOMO position is not exist!
+being listen stop loss: {NVCR=StopLoss(stock=NVCR, canSellQty=367.0, lossPrice=17.082)}
+ready to sell before close market. position={NVCR=StockPosition(stock=NVCR, canSellQty=367.0, costPrice=18.98, currPrice=20.35), DOMO=StockPosition(stock=DOMO, canSellQty=1.0, costPrice=10.785, currPrice=10.915)}, time=2023-08-30T03:59:00.598
+before close sell stock. stock=NVCR, count=367.0, currentPrice=20.35, orderPrice=20.14
+before close sell stock. stock=NVCR, orderId：6747397578941203522
+before close sell stock. stock=DOMO, count=1.0, currentPrice=10.915, orderPrice=10.8
+before close sell stock. stock=DOMO, orderId：6747397583236170819
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6747397578941203522, code=NVCR, name=Novocure, count=367.0, price=20.14, avgPrice=20.23, createTime=2023-08-29 15:59:00, updateTimestamp=1.693339142E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6747397583236170819, code=DOMO, name=Domo Inc, count=1.0, price=10.8, avgPrice=10.87, createTime=2023-08-29 15:59:00, updateTimestamp=1.693339142E9, status=0)
+{p=20.21, ev=T, q=5670733, s=100, t=1693339196000, sym=NVCR, x=10, i=1931, z=3}
+{p=20.22, ev=T, q=5678927, s=600, t=1693339200000, sym=NVCR, x=12, i=26957, z=3}
+{p=20.22, ev=T, q=5678928, s=212, t=1693339200000, sym=NVCR, x=12, i=26958, z=3}
+all stock has stop loss
+trade exit
