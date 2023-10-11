@@ -260,7 +260,7 @@ public class Strategy10_4 {
                 if (kLine == null) {
                     continue;
                 }
-                if (earningStockSet.contains(stock) || lastEarningStockSet.contains(stock)) {
+                if (earningStockSet.contains(stock)) {
                                         continue;
                 }
                 if (date.equals("08/18/2023") && (stock.equals("RRGB")||stock.equals("MARA"))) {
@@ -317,7 +317,7 @@ public class Strategy10_4 {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<String> lineList = BaseUtils.readFile(Constants.TRADE_OPEN_PATH + "2023/" + stock);
+            List<String> lineList = BaseUtils.readFile(Constants.TRADE_OPEN_PATH + "2022/" + stock);
             for (String line : lineList) {
                 String[] split = line.split(",");
                 String date = split[0];
@@ -516,21 +516,21 @@ public class Strategy10_4 {
                             }
 
                             int count = (int) (sum / open);
-//                            if (stockRealOpenVolMap == null) {
-//                                continue;
-//                            }
-//                            SimpleTrade realOpenVol = stockRealOpenVolMap.get(stock);
-//                            if (realOpenVol == null || realOpenVol.getVolumn() == 0) {
-//                                continue;
-//                            }
-//                            avgVolume = (int) realOpenVol.getVolumn() / 2;
+                            if (stockRealOpenVolMap == null) {
+                                continue;
+                            }
+                            SimpleTrade realOpenVol = stockRealOpenVolMap.get(stock);
+                            if (realOpenVol == null || realOpenVol.getVolumn() == 0) {
+                                continue;
+                            }
+                            avgVolume = (int) realOpenVol.getVolumn() / 2;
                             if (count == 0) {
                                 break;
                             }
                             double lossRatio = (open - low) / open;
                             double v = lossRange;
                             if (avgVolume < count) {
-//                                count = avgVolume;
+                                count = avgVolume;
                             }
                             sum -= count * open;
                             if (lossRatio > v) {
@@ -572,6 +572,7 @@ public class Strategy10_4 {
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(mergePath);
 
+        int beforeYear = 2021, afterYear = 2019;
         Map<String, StockRatio> stockRatioMap = Maps.newHashMap();
         for (String stock : dailyFileMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
@@ -582,16 +583,16 @@ public class Strategy10_4 {
             }
 
             String filePath = dailyFileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2022, 2020);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, beforeYear, afterYear);
             Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2021, 2019);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, beforeYear, afterYear);
             Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
 
 //            List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 //                        List<Bean> result = strategy(kLines);
 
-            List<BOLL> bollWithOpen = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, 2021, 2019);
+            List<BOLL> bollWithOpen = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, beforeYear, afterYear);
             Map<String, BOLL> dateToOpenBollMap = bollWithOpen.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
             List<Bean> result = strategy2(kLines, dateToOpenBollMap);
 
