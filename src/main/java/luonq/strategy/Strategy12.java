@@ -137,9 +137,14 @@ public class Strategy12 {
         private String stock;
         private List<StockKLine> riseList;
         private StockKLine prev;
+        private BOLL currBoll;
 
-        public String getDate() {
+        public String getFirstDate() {
             return riseList.get(0).getDate();
+        }
+
+        public String getBuyDate() {
+            return riseList.get(2).getDate();
         }
 
         public boolean getResult(int n) {
@@ -163,12 +168,12 @@ public class Strategy12 {
         public String toString() {
             String closeDetail = riseList.stream().map(k -> String.valueOf(k.getClose())).collect(Collectors.joining("\t"));
             String volDetail = riseList.stream().map(k -> String.valueOf(k.getVolume())).collect(Collectors.joining("\t"));
-            return getDate() + "\tstock=" + stock + "\t, close=\t" + closeDetail + "\tvolume=" + volDetail + ",\t" + getResult(riseList.size() - 1);
+            return getFirstDate() + "\tstock=" + stock + "\t, close=\t" + closeDetail + "\tvolume=" + volDetail + ",\t" + getResult(riseList.size() - 1);
         }
     }
 
     public static void main(String[] args) throws Exception {
-        double test = 10000 * Math.pow(1.009, 200);
+        double test = 10000 * Math.pow(1.004, 200);
         System.out.println(test);
         double exchange = 6.94;
         double init = 10000 / exchange;
@@ -183,6 +188,7 @@ public class Strategy12 {
 
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(mergePath);
+        Map<String, String> bollFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "mergeBoll/");
         double amount = 10000;
 
         Set<String> stockSet = dailyFileMap.keySet();
@@ -202,6 +208,9 @@ public class Strategy12 {
             String filePath = dailyFileMap.get(stock);
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(filePath, beforeYear, afterYear);
 
+            String bollFilePath = bollFileMap.get(stock);
+            List<BOLL> bolls = BaseUtils.readBollFile(bollFilePath, beforeYear, afterYear);
+
             List<ContinueRise> resultList = Lists.newLinkedList();
             boolean reset = true;
             List<StockKLine> riseList = Lists.newArrayList();
@@ -215,6 +224,7 @@ public class Strategy12 {
                 if (i > 2) {
                     nextKLine = stockKLines.get(i - 3);
                 }
+                BOLL currBoll = bolls.get(i - 2);
 
                 double lastLastClose = lastLastKLine.getClose();
                 double lastClose = lastKLine.getClose();
@@ -232,7 +242,7 @@ public class Strategy12 {
                     riseList = Lists.newArrayList();
                 }
 
-                if (lastLastKLine.getDate().equals("11/25/2022")) {
+                if (lastLastKLine.getDate().equals("03/21/2022")) {
                     //                    System.out.println();
                 }
                 if (reset && lastClose > lastLastClose) {
@@ -248,6 +258,7 @@ public class Strategy12 {
                         continueRise.setStock(stock);
                         continueRise.setRiseList(riseList);
                         continueRise.setPrev(prev);
+                        continueRise.setCurrBoll(currBoll);
                         resultList.add(continueRise);
 
                         //                        System.out.println(continueRise);
@@ -265,7 +276,7 @@ public class Strategy12 {
 
             double avgVol = allVol / (stockKLines.size() - 3);
             if (avgVol < 100000) {
-                System.out.println(stock + " vol invalid");
+                //                System.out.println(stock + " vol invalid");
                 continue;
             }
 
@@ -280,9 +291,9 @@ public class Strategy12 {
                 } else if (filter1(continueRise)) {
                     filter1List.add(continueRise);
                     continue;
-                } else if (filter2(continueRise)) {
-                    filter2List.add(continueRise);
-                    continue;
+//                } else if (filter2(continueRise)) {
+//                    filter2List.add(continueRise);
+//                    continue;
                 } else if (filter3(continueRise)) {
                     filter3List.add(continueRise);
                     continue;
@@ -292,9 +303,14 @@ public class Strategy12 {
                 } else if (filter5(continueRise)) {
                     filter5List.add(continueRise);
                     continue;
+//                } else if (filter6(continueRise)) {
+//                    filter5List.add(continueRise);
+//                    continue;
+//                } else if (filter7(continueRise)) {
+//                    filter5List.add(continueRise);
+//                    continue;
                 } else {
-                    List<StockKLine> rises = continueRise.getRiseList();
-                    String buyDate = rises.get(2).getDate();
+                    String buyDate = continueRise.getBuyDate();
                     if (!buyDateToListMap.containsKey(buyDate)) {
                         buyDateToListMap.put(buyDate, Lists.newArrayList());
                     }
@@ -303,15 +319,14 @@ public class Strategy12 {
                 }
             }
 
-            insertFilter(filter1List, buyDateToListMap, afterFilter);
-            insertFilter(filter2List, buyDateToListMap, afterFilter);
-            insertFilter(filter3List, buyDateToListMap, afterFilter);
-            insertFilter(filter4List, buyDateToListMap, afterFilter);
-            insertFilter(filter5List, buyDateToListMap, afterFilter);
+            //            insertFilter(filter1List, buyDateToListMap, afterFilter);
+            //            insertFilter(filter2List, buyDateToListMap, afterFilter);
+            //            insertFilter(filter3List, buyDateToListMap, afterFilter);
+            //            insertFilter(filter4List, buyDateToListMap, afterFilter);
+            //            insertFilter(filter5List, buyDateToListMap, afterFilter);
 
-            stockToListMap.put(stock, afterFilter);
-            System.out.println(stock + " finish");
-
+            stockToListMap.put(stock, resultList);
+            //            System.out.println(stock + " finish");
         }
 
         // 2023年的交易日期
@@ -322,6 +337,9 @@ public class Strategy12 {
         List<Double> ratioList = Lists.newArrayList();
         for (int i = 0; i < dateList.size(); i++) {
             String date = dateList.get(i);
+            if (date.equals("02/02/2023")) {
+//                System.out.println();
+            }
             int currDateInt = BaseUtils.dateToInt(date);
 
             List<ContinueRise> canBuyList = buyDateToListMap.get(date);
@@ -329,41 +347,106 @@ public class Strategy12 {
                 System.out.println(date + " has no stock to buy");
                 continue;
             }
-            canBuyList = canBuyList.stream().filter(b -> {
-                StockKLine kLine = b.getRiseList().get(2);
-                boolean priceFlag = kLine.getClose() > 7;
-                boolean volFlag = kLine.getVolume().doubleValue() > 200000;
-                return priceFlag && volFlag;
-            }).collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(canBuyList)) {
-                System.out.println(date + " has no stock to buy");
+            if (canBuyList.size() == 1) {
+                System.out.println(date + " has only one stock to buy");
                 continue;
             }
+            //            canBuyList = canBuyList.stream().filter(b -> {
+            //                StockKLine kLine = b.getRiseList().get(2);
+            //                boolean priceFlag = kLine.getClose() > 7;
+            //                boolean volFlag = kLine.getVolume().doubleValue() > 200000;
+            //                return priceFlag && volFlag;
+            //            }).collect(Collectors.toList());
+            //            if (CollectionUtils.isEmpty(canBuyList)) {
+            //                System.out.println(date + " has no stock to buy");
+            //                continue;
+            //            }
 
             double maxSuccessRatio = Double.MIN_VALUE;
+            double maxAvgGain = Double.MIN_VALUE;
             String maxStock = null;
             ContinueRise maxBuy = null;
+            int maxCount = 0;
             for (ContinueRise canBuy : canBuyList) {
                 String stock = canBuy.getStock();
+                if (filter1(canBuy) || filter2(canBuy) || filter3(canBuy) || filter4(canBuy) || filter5(canBuy) || filter6(canBuy)||filter7(canBuy) || filter8(canBuy)) {
+//                    continue;
+                }
+                if (stock.equals("HOMB") || stock.equals("CACI")) {
+//                    System.out.println();
+                }
 
                 List<ContinueRise> riseList = stockToListMap.get(stock);
                 List<ContinueRise> hisRiseList = riseList.stream().filter(r -> {
-                    int hisBuyDateInt = BaseUtils.dateToInt(r.getDate()) + 3;
+                    int hisBuyDateInt = BaseUtils.dateToInt(r.getBuyDate());
                     //                    return BaseUtils.dateToInt("01/01/2019") < hisBuyDateInt && hisBuyDateInt < currDateInt;
                     return hisBuyDateInt < currDateInt;
                 }).collect(Collectors.toList());
 
-                List<ContinueRise> successList = hisRiseList.stream().filter(h -> h.getResult(riseTimes)).collect(Collectors.toList());
+                List<ContinueRise> filter1List = Lists.newArrayList();
+                List<ContinueRise> filter2List = Lists.newArrayList();
+                List<ContinueRise> filter3List = Lists.newArrayList();
+                List<ContinueRise> filter4List = Lists.newArrayList();
+                List<ContinueRise> filter5List = Lists.newArrayList();
+                List<ContinueRise> filter6List = Lists.newArrayList();
+                List<ContinueRise> filter7List = Lists.newArrayList();
+                List<ContinueRise> afterFilter = Lists.newArrayList();
+                for (ContinueRise continueRise : hisRiseList) {
+                    if (false) {
+                    } else if (filter1(continueRise)) {
+                        filter1List.add(continueRise);
+                        continue;
+                    } else if (filter2(continueRise)) {
+                        filter2List.add(continueRise);
+                        continue;
+                    } else if (filter3(continueRise)) {
+                        filter3List.add(continueRise);
+                        continue;
+                    } else if (filter4(continueRise)) {
+                        filter4List.add(continueRise);
+                        continue;
+                    } else if (filter5(continueRise)) {
+                        filter5List.add(continueRise);
+                        continue;
+                    } else if (filter6(continueRise)) {
+                        filter6List.add(continueRise);
+                        continue;
+                    } else if (filter7(continueRise)) {
+                        filter7List.add(continueRise);
+                        continue;
+                    } else {
+                        afterFilter.add(continueRise);
+                    }
+                }
+                insertFilter(filter1List, afterFilter);
+                insertFilter(filter2List, afterFilter);
+                insertFilter(filter3List, afterFilter);
+                insertFilter(filter4List, afterFilter);
+                insertFilter(filter5List, afterFilter);
+//                                insertFilter(filter6List, afterFilter);
+//                                insertFilter(filter7List, afterFilter);
+
+                List<ContinueRise> computeList = hisRiseList;
+                List<ContinueRise> successList = computeList.stream().filter(h -> h.getResult(riseTimes)).collect(Collectors.toList());
+                if (successList.size() <= 1) {
+                    continue;
+                }
                 int successCount = successList.size();
-                double successRatio = (double) successCount / (double) hisRiseList.size();
-                if (successRatio > maxSuccessRatio) {
+                double successRatio = (double) successCount / (double) computeList.size();
+                double successAvgGain = computeList.stream().collect(Collectors.averagingDouble(c -> c.getRatio()));
+                //                System.out.println(stock + " " + successRatio + "\n" + successList);
+                if (successRatio> 0.8 && (successRatio > maxSuccessRatio || successRatio == maxSuccessRatio && successAvgGain > maxAvgGain)) {
+//                if (successRatio == 1.0d || successRatio == maxSuccessRatio && successAvgGain > maxAvgGain) {
+//                if (successRatio > maxSuccessRatio) {
                     maxSuccessRatio = successRatio;
+                    maxAvgGain = successAvgGain;
                     maxStock = stock;
                     maxBuy = canBuy;
+                    maxCount++;
                 }
                 //                System.out.println(maxSuccessRatio);
 
-                //                                Double avgRatio = hisRiseList.stream().map(ContinueRise::getRatio).collect(Collectors.averagingDouble(d -> d));
+                //                                Double avgRatio = afterFilter.stream().map(ContinueRise::getRatio).collect(Collectors.averagingDouble(d -> d));
                 //                                if (avgRatio > maxSuccessRatio) {
                 //                                    maxSuccessRatio = avgRatio;
                 //                                    maxStock = stock;
@@ -371,6 +454,10 @@ public class Strategy12 {
                 //                                }
             }
 
+            if (maxBuy == null) {
+                System.out.println(date + " has no stock to max buy");
+                continue;
+            }
             List<StockKLine> riseList = maxBuy.getRiseList();
             StockKLine next = riseList.get(3);
             StockKLine curr = riseList.get(2);
@@ -384,11 +471,16 @@ public class Strategy12 {
         System.out.println("avgRatio" + ratioList.stream().collect(Collectors.averagingDouble(d -> d)));
     }
 
+    public static void insertFilter(List<ContinueRise> filterList, List<ContinueRise> afterFilter) {
+        if (computeFilter(filterList)) {
+            afterFilter.addAll(filterList);
+        }
+    }
+
     public static void insertFilter(List<ContinueRise> filterList, Map<String, List<ContinueRise>> buyDateToListMap, List<ContinueRise> afterFilter) {
         if (computeFilter(filterList)) {
             for (ContinueRise continueRise : filterList) {
-                List<StockKLine> rises = continueRise.getRiseList();
-                String buyDate = rises.get(2).getDate();
+                String buyDate = continueRise.getBuyDate();
                 if (!buyDateToListMap.containsKey(buyDate)) {
                     buyDateToListMap.put(buyDate, Lists.newArrayList());
                 }
@@ -429,7 +521,7 @@ public class Strategy12 {
         double vol2 = kLine2.getVolume().doubleValue();
         double vol3 = kLine3.getVolume().doubleValue();
 
-        return vol1 > vol2 && vol2 < vol3 && vol3 < vol1;
+        return vol1 > vol2 && vol2 < vol3;
     }
 
     // 成交量先增后减
@@ -473,6 +565,39 @@ public class Strategy12 {
         double ratio3 = kLine3.getClose() / kLine2.getClose() - 1;
 
         return (ratio1 + ratio2 + ratio3) / 3 < 0.02d;
+    }
+
+    // 第三天收盘超上轨
+    public static boolean filter6(ContinueRise continueRise) {
+        List<StockKLine> riseList = continueRise.getRiseList();
+        StockKLine kLine3 = riseList.get(2);
+        StockKLine prev = continueRise.getPrev();
+        BOLL currBoll = continueRise.getCurrBoll();
+
+        return kLine3.getClose() > currBoll.getUp();
+    }
+
+    // 第三天长上影线
+    public static boolean filter7(ContinueRise continueRise) {
+        List<StockKLine> riseList = continueRise.getRiseList();
+        StockKLine kLine3 = riseList.get(2);
+        double high = kLine3.getHigh();
+        double close = kLine3.getClose();
+        double low = kLine3.getLow();
+        double ratio = (high - close) / (high - low);
+
+        return ratio > 0.3;
+    }
+
+    // 第三天最高低于第二天最高
+    public static boolean filter8(ContinueRise continueRise) {
+        List<StockKLine> riseList = continueRise.getRiseList();
+        StockKLine kLine2 = riseList.get(1);
+        StockKLine kLine3 = riseList.get(2);
+        double high_2 = kLine2.getHigh();
+        double high_3 = kLine3.getHigh();
+
+        return high_2 > high_3;
     }
 
     public static Map<String, StockRatio> computeHistoricalOverBollingerRatio() throws Exception {
