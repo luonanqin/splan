@@ -1,0 +1,137 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7103360210329376179
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3690
+stock overbolling hit great 0.600000 size: 3377
+filter merge stock, the stock set size is 3377
+filter split stock, the stock set size is 3369
+filter front reinstatement less 0.98 stock, the stock set size is 3196
+finish initialize many time. preTradeTime=1693574880000, openTime=1693575000000, closeCheckTime=Sat Sep 02 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Sep 01, 2023 8:58:10 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:26:52
+wait pre trade time. now is 21:26:57
+wait pre trade time. now is 21:27:02
+wait pre trade time. now is 21:27:07
+wait pre trade time. now is 21:27:12
+wait pre trade time. now is 21:27:17
+wait pre trade time. now is 21:27:22
+wait pre trade time. now is 21:27:27
+wait pre trade time. now is 21:27:32
+wait pre trade time. now is 21:27:37
+wait pre trade time. now is 21:27:42
+wait pre trade time. now is 21:27:47
+wait pre trade time. now is 21:27:52
+wait pre trade time. now is 21:27:57
+begin subcribe stock at 21:28:02
+finish subcribe real time!
+time is early
+{p=33.37, ev=T, q=157752, s=301, c=[14,12,41], t=1693574925000, sym=ADTX, x=11, i=10418, z=3}
+time is early
+{p=20.98, ev=T, q=157751, s=50, c=[12,37], t=1693574925000, sym=AFRM, x=11, i=340, z=3}
+time is early
+{p=33.37, ev=T, q=157753, s=10, c=[14,12,37,41], t=1693574925000, sym=ADTX, x=11, i=10419, z=3}
+time is early
+{p=63.99, ev=T, q=96579, s=100, c=[12], t=1693574990000, sym=DELL, trfi=202, x=4, i=71675241051732, z=1, trft=1693574990000}
+time is early
+{p=165.25, ev=T, q=18971, s=1200, c=[12], t=1693574994000, sym=VMW, x=11, i=52983525100882, z=1}
+time is early
+{p=165.25, ev=T, q=18972, s=80, c=[12,37], t=1693574994000, sym=VMW, x=11, i=52983525100883, z=1}
+time is early
+{p=165, ev=T, q=18973, s=100, c=[12], t=1693574994000, sym=VMW, x=11, i=52983525100884, z=1}
+time is early
+{p=165, ev=T, q=18974, s=22, c=[12,37], t=1693574994000, sym=VMW, x=11, i=52983525100885, z=1}
+time is early
+{p=165, ev=T, q=18975, s=3, c=[12,37], t=1693574994000, sym=VMW, x=11, i=52983525100886, z=1}
+time is early
+{p=165, ev=T, q=18976, s=100, c=[12], t=1693574994000, sym=VMW, x=11, i=52983525101104, z=1}
+time is early
+{p=165, ev=T, q=18977, s=275, c=[12], t=1693574994000, sym=VMW, x=11, i=52983525101105, z=1}
+time is early
+{p=165, ev=T, q=18978, s=100, c=[12], t=1693574994000, sym=VMW, x=11, i=52983525101106, z=1}
+time is early
+{p=165, ev=T, q=18979, s=400, c=[12], t=1693574994000, sym=VMW, x=11, i=52983525101107, z=1}
+time is early
+{p=23.99, ev=T, q=97174, s=8, c=[12,37], t=1693574999000, sym=DOCS, x=12, i=62879133812563, z=1}
+time is early
+{p=24, ev=T, q=97175, s=3, c=[12,37], t=1693574999000, sym=DOCS, x=12, i=62879133812564, z=1}
+time is early
+{p=24, ev=T, q=97176, s=1, c=[12,37], t=1693574999000, sym=DOCS, x=12, i=62879133812565, z=1}
+StockEvent(stock=DG, price=136.54, time=1693575000001) dn=142.418
+DG=4.1272872811021175
+unsubcribeStockSet size: 100 1693575000611
+unsubcribeStockSet size: 200 1693575000618
+unsubcribeStockSet size: 300 1693575000621
+unsubcribeStockSet size: 400 1693575000632
+unsubcribeStockSet size: 500 1693575000635
+unsubcribeStockSet size: 600 1693575000932
+unsubcribeStockSet size: 700 1693575000943
+unsubcribeStockSet size: 800 1693575000960
+unsubcribeStockSet size: 900 1693575000983
+StockEvent(stock=PAHC, price=14.02, time=1693575000254) dn=14.255
+StockEvent(stock=MDWD, price=8.25, time=1693575000392) dn=8.284
+unsubcribeStockSet size: 1000 1693575001097
+unsubcribeStockSet size: 1100 1693575001110
+StockEvent(stock=PD, price=22.64, time=1693575000532) dn=22.795
+unsubcribeStockSet size: 1200 1693575001122
+StockEvent(stock=OLN, price=52.86, time=1693575000656) dn=54.115
+unsubcribeStockSet size: 1300 1693575001186
+StockEvent(stock=WWE, price=97.85, time=1693575000670) dn=100.476
+StockEvent(stock=PDCO, price=30.1, time=1693575000646) dn=30.669
+unsubcribeStockSet size: 1400 1693575001198
+unsubcribeStockSet size: 1500 1693575001207
+unsubcribeStockSet size: 1600 1693575001218
+unsubcribeStockSet size: 1700 1693575001239
+unsubcribeStockSet size: 1800 1693575001251
+StockEvent(stock=BOX, price=26.47, time=1693575000800) dn=27.104
+unsubcribeStockSet size: 1900 1693575001263
+unsubcribeStockSet size: 2000 1693575001271
+StockEvent(stock=EDR, price=21.85, time=1693575000853) dn=22.344
+unsubcribeStockSet size: 2100 1693575001284
+unsubcribeStockSet size: 2200 1693575001295
+unsubcribeStockSet size: 2300 1693575001305
+unsubcribeStockSet size: 2400 1693575001317
+StockEvent(stock=MBCN, price=25.93, time=1693575001047) dn=26.025
+StockEvent(stock=MPX, price=14.06, time=1693575001068) dn=14.126
+StockEvent(stock=OXM, price=96.01, time=1693575001090) dn=97.69
+unsubcribeStockSet size: 2500 1693575001328
+StockEvent(stock=MBUU, price=49.04, time=1693575000975) dn=49.152
+StockEvent(stock=HUM, price=464.83, time=1693575001162) dn=466.126
+unsubcribeStockSet size: 2600 1693575001343
+StockEvent(stock=DLTH, price=6.42, time=1693575001230) dn=6.695
+StockEvent(stock=ZIP, price=15.15, time=1693575001305) dn=15.227
+StockEvent(stock=MLTX, price=52.55, time=1693575001284) dn=52.675
+StockEvent(stock=LE, price=7.85, time=1693575001358) dn=8.192
+LE=4.174804687500006,DG=4.1272872811021175
+unsubcribeStockSet size: 2700 1693575001507
+StockEvent(stock=RDY, price=67.85, time=1693575001940) dn=68.012
+unsubcribeStockSet size: 2800 1693575002235
+StockEvent(stock=ESCA, price=14.3601, time=1693575004367) dn=14.461
+CVRX time is 1693575031151, price is 17.4.listen end!
+unsubcribeStockSet size: 2900 1693575031272
+unsubcribeStockSet size: 3000 1693575031273
+unsubcribeStockSet size: 3100 1693575031273
+=========== finish unsubscribe ===========
+LE=4.174804687500006,DG=4.1272872811021175
+remain cash: 7433.810000000056
+buy stock. stock=LE, count=938, price=7.85, orderPrice=7.92, orderId: 6795451592730541964
+LE order is successfully executed. orderId: 6795451592730541964
+update order: OrderFill(tradeSide=1, fillID=0, orderID=6795451592730541964, code=LE, name=Lands'End, count=938.0, price=7.92, avgPrice=7.85, createTime=2023-09-01 09:30:31, updateTimestamp=1.693575031E9, status=0)
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {LE=StopLoss(stock=LE, canSellQty=938.0, lossPrice=7.064)}
+{p=7.65, ev=T, q=511877, s=5, c=[14,37,41], t=1693576140000, sym=LE, x=12, i=106, z=3}
+{p=7.65, ev=T, q=511878, s=5, c=[14,37,41], t=1693576140000, sym=LE, x=19, i=39, z=3}
+{p=7.65, ev=T, q=511879, s=62, c=[14,37,41], t=1693576140000, sym=LE, x=11, i=54, z=3}
+{p=7.65, ev=T, q=511880, s=17, c=[14,37,41], t=1693576140000, sym=LE, x=11, i=55, z=3}
+ready to sell before close market. position={LE=StockPosition(stock=LE, canSellQty=938.0, costPrice=7.85, currPrice=7.66)}, time=2023-09-02T03:59:10.684
+before close sell stock. stock=LE, count=938.0, currentPrice=7.66, orderPrice=7.58
+before close sell stock. stock=LE, orderId：6795892715936074113
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6795892715936074113, code=LE, name=Lands'End, count=938.0, price=7.58, avgPrice=7.65, createTime=2023-09-01 15:59:10, updateTimestamp=1.693598355E9, status=0)

@@ -2,6 +2,7 @@ package util;
 
 import barchart.DownloadStockHistory;
 import bean.BOLL;
+import bean.EarningDate;
 import bean.FrontReinstatement;
 import bean.SplitStockInfo;
 import bean.StockKLine;
@@ -45,7 +46,7 @@ public class BaseUtils {
             try {
                 driver.get(url);
                 //                driver.findElement(checkBy);
-                new WebDriverWait(driver, Duration.ofSeconds(5).getSeconds()).until(d -> driver.findElement(checkBy));
+                new WebDriverWait(driver, Duration.ofSeconds(5)).until(d -> driver.findElement(checkBy));
                 return;
             } catch (Exception e) {
                 try {
@@ -231,18 +232,17 @@ public class BaseUtils {
     }
 
     public static Map<String, String> getFileMap(String dirPath) throws Exception {
-        Map<String, String> stockFileMap = Maps.newHashMap();
+        Map<String, String> fileMap = Maps.newHashMap();
         File dir = new File(dirPath);
         for (File file : dir.listFiles()) {
             String fileName = file.getName();
             if (fileName.endsWith(".DS_Store")) {
                 continue;
             }
-            String stock = fileName;
-            stockFileMap.put(stock.toUpperCase(), file.getAbsolutePath());
+            fileMap.put(fileName.toUpperCase(), file.getAbsolutePath());
         }
 
-        return stockFileMap;
+        return fileMap;
     }
 
     public static List<StockKLine> loadDataToKline(String filePath) throws Exception {
@@ -637,4 +637,73 @@ public class BaseUtils {
         System.out.println(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
     }
 
+    public static Map<String, List<EarningDate>> getEarningDate(String date) throws Exception {
+        Map<String, List<EarningDate>> map = Maps.newHashMap();
+        if (StringUtils.isNotBlank(date)) {
+            String filePath = Constants.HIS_BASE_PATH + "earning/" + date;
+            LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            date = dateParse.format(Constants.FORMATTER);
+            LocalDate nextLocalDate = dateParse.plusDays(1);
+            if (nextLocalDate.getDayOfWeek().getValue() > 5) {
+                nextLocalDate = nextLocalDate.plusDays(2);
+            }
+            String nextDate = nextLocalDate.format(Constants.FORMATTER);
+            List<EarningDate> list = getEarningDateData(date, nextDate, filePath);
+
+            for (EarningDate earningDate : list) {
+                String actualDate = earningDate.getActualDate();
+                if (!map.containsKey(actualDate)) {
+                    map.put(actualDate, Lists.newArrayList());
+                }
+                map.get(actualDate).add(earningDate);
+            }
+        } else {
+            Map<String, String> fileMap = getFileMap(Constants.HIS_BASE_PATH + "earning/");
+            for (String fileName : fileMap.keySet()) {
+                String filePath = fileMap.get(fileName);
+                LocalDate dateParse = LocalDate.parse(fileName, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                date = dateParse.format(Constants.FORMATTER);
+                LocalDate nextLocalDate = dateParse.plusDays(1);
+                if (nextLocalDate.getDayOfWeek().getValue() > 5) {
+                    nextLocalDate = nextLocalDate.plusDays(2);
+                }
+                String nextDate = nextLocalDate.format(Constants.FORMATTER);
+
+                List<EarningDate> list = getEarningDateData(date, nextDate, filePath);
+                for (EarningDate earningDate : list) {
+                    String actualDate = earningDate.getActualDate();
+                    if (!map.containsKey(actualDate)) {
+                        map.put(actualDate, Lists.newArrayList());
+                    }
+                    map.get(actualDate).add(earningDate);
+                }
+            }
+        }
+
+        return map;
+    }
+
+    private static List<EarningDate> getEarningDateData(String date, String nextDate, String filePath) throws Exception {
+        List<String> lines = readFile(filePath);
+        List<EarningDate> list = Lists.newArrayList();
+        for (String line : lines) {
+            int index = line.indexOf(" ");
+            String stock = line.substring(0, index);
+            String earningType = line.substring(index + 1);
+            String actualDate;
+            if (StringUtils.equals(EarningDate.AFTER_MARKET_CLOSE, earningType)) {
+                actualDate = nextDate;
+            } else {
+                actualDate = date;
+            }
+            list.add(new EarningDate(stock, date, earningType, actualDate));
+        }
+
+        return list;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Map<String, List<EarningDate>> map = getEarningDate(null);
+        System.out.println(map);
+    }
 }

@@ -1,0 +1,278 @@
+Console output is saving to: /Users/Luonanqin/study/intellij_idea_workspaces/splan/src/main/resources/tradeLog
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7099375733375351858
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3686
+stock overbolling hit great 0.600000 size: 3371
+filter merge stock, the stock set size is 3371
+filter split stock, the stock set size is 3363
+filter front reinstatement less 0.98 stock, the stock set size is 3188
+finish initialize many time. preTradeTime=1692624480000, openTime=1692624600000, closeCheckTime=Tue Aug 22 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Aug 21, 2023 9:05:16 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:27:36
+wait pre trade time. now is 21:27:41
+wait pre trade time. now is 21:27:46
+wait pre trade time. now is 21:27:51
+wait pre trade time. now is 21:27:56
+begin subcribe stock at 21:28:01
+finish subcribe real time!
+time is early
+{p=79.14, ev=T, q=63796, s=10, c=[14,12,37,41], t=1692624497000, sym=ROKU, x=12, i=238, z=3}
+time is early
+{p=79.15, ev=T, q=63797, s=2, c=[12,37], t=1692624497000, sym=ROKU, x=19, i=39, z=3}
+time is early
+{p=444.85, ev=T, q=203990, s=1, c=[12,37], t=1692624503000, sym=NVDA, x=12, i=7828, z=3}
+time is early
+{p=8.68, ev=T, q=64563, s=50, c=[12,37], t=1692624563000, sym=PLUG, x=12, i=510, z=3}
+time is early
+{p=8.68, ev=T, q=64564, s=25, c=[14,12,37,41], t=1692624563000, sym=PLUG, x=17, i=3, z=3}
+time is early
+{p=15.95, ev=T, q=24768, s=332, c=[12], t=1692624594000, sym=XPEV, x=8, i=52983525039971, z=1}
+time is early
+{p=9.29, ev=T, q=28491, s=1414, c=[12], t=1692624599000, sym=SNAP, x=8, i=52983525168983, z=1}
+StockEvent(stock=KEYS, price=128.91, time=1692624600005) dn=135.615
+StockEvent(stock=EL, price=155.5, time=1692624600007) dn=155.531
+StockEvent(stock=MARA, price=11.37, time=1692624600013) dn=11.578
+MARA=1.7965106235964776
+unsubcribeStockSet size: 100 1692624600484
+StockEvent(stock=FDBC, price=46.6, time=1692624600011) dn=46.6
+StockEvent(stock=JD, price=32.99, time=1692624600015) dn=33.098
+StockEvent(stock=EMBC, price=18.05, time=1692624600011) dn=18.213
+StockEvent(stock=OMCL, price=58.41, time=1692624600013) dn=58.948
+StockEvent(stock=TTEK, price=158.03, time=1692624600015) dn=158.793
+StockEvent(stock=COST, price=544.16, time=1692624600003) dn=544.994
+StockEvent(stock=NGMS, price=26.84, time=1692624600002) dn=26.846
+unsubcribeStockSet size: 200 1692624600537
+StockEvent(stock=JMSB, price=17.7, time=1692624600013) dn=17.754
+StockEvent(stock=MCBS, price=19.34, time=1692624600014) dn=19.391
+StockEvent(stock=HOLI, price=16.62, time=1692624600040) dn=16.671
+StockEvent(stock=NSSC, price=22.55, time=1692624600014) dn=29.783
+NSSC=24.285666319712586,MARA=1.7965106235964776
+unsubcribeStockSet size: 300 1692624600545
+StockEvent(stock=MDWT, price=26.26, time=1692624600067) dn=26.327
+StockEvent(stock=IOVA, price=6.12, time=1692624600113) dn=6.229
+unsubcribeStockSet size: 400 1692624600555
+StockEvent(stock=JKHY, price=154.79, time=1692624600171) dn=154.93
+StockEvent(stock=WBA, price=26.57, time=1692624600172) dn=26.76
+StockEvent(stock=CTKB, price=8.28, time=1692624600163) dn=8.32
+StockEvent(stock=ZTO, price=23.19, time=1692624600178) dn=23.938
+NSSC=24.285666319712586,ZTO=3.124738908847847,MARA=1.7965106235964776
+StockEvent(stock=PZZA, price=76.23, time=1692624600195) dn=76.385
+unsubcribeStockSet size: 500 1692624600564
+StockEvent(stock=ASUR, price=11.88, time=1692624600197) dn=11.891
+StockEvent(stock=ROIC, price=13.36, time=1692624600190) dn=13.404
+unsubcribeStockSet size: 600 1692624600573
+StockEvent(stock=LBTYA, price=17.64, time=1692624600217) dn=17.664
+StockEvent(stock=FYBR, price=15.47, time=1692624600181) dn=15.5
+StockEvent(stock=TVTX, price=13.5, time=1692624600232) dn=13.539
+unsubcribeStockSet size: 700 1692624600588
+StockEvent(stock=WEN, price=20.67, time=1692624600235) dn=20.743
+StockEvent(stock=VIR, price=12.23, time=1692624600237) dn=12.257
+StockEvent(stock=POOL, price=352.03, time=1692624600170) dn=352.08
+StockEvent(stock=AHCO, price=11.48, time=1692624600212) dn=11.669
+unsubcribeStockSet size: 800 1692624600614
+StockEvent(stock=PINC, price=25.37, time=1692624600225) dn=25.378
+unsubcribeStockSet size: 900 1692624600629
+StockEvent(stock=DOLE, price=12.53, time=1692624600364) dn=12.714
+StockEvent(stock=EXPI, price=19.49, time=1692624600354) dn=19.626
+StockEvent(stock=FWONA, price=57.01, time=1692624600429) dn=57.916
+StockEvent(stock=VMC, price=212.405, time=1692624600430) dn=212.795
+unsubcribeStockSet size: 1000 1692624600648
+StockEvent(stock=DE, price=396.07, time=1692624600486) dn=403.886
+NSSC=24.285666319712586,ZTO=3.124738908847847,DE=1.935199536502882,MARA=1.7965106235964776
+StockEvent(stock=TGNA, price=16.42, time=1692624600495) dn=16.459
+StockEvent(stock=LGIH, price=118.18, time=1692624600493) dn=119.641
+unsubcribeStockSet size: 1100 1692624600689
+StockEvent(stock=FERG, price=155.08, time=1692624600520) dn=155.4
+StockEvent(stock=CAH, price=86.075, time=1692624600578) dn=86.595
+StockEvent(stock=FBIZ, price=31.26, time=1692624600534) dn=31.441
+StockEvent(stock=BWFG, price=25.76, time=1692624600569) dn=25.786
+unsubcribeStockSet size: 1200 1692624600784
+StockEvent(stock=KRNL, price=10.37, time=1692624600606) dn=10.408
+StockEvent(stock=BORR, price=7.43, time=1692624600684) dn=7.507
+StockEvent(stock=SCCO, price=77.54, time=1692624600693) dn=77.68
+StockEvent(stock=BRX, price=21.5, time=1692624600700) dn=21.528
+StockEvent(stock=HOUS, price=6.27, time=1692624600703) dn=6.275
+StockEvent(stock=MSGS, price=179.235, time=1692624600707) dn=179.81
+unsubcribeStockSet size: 1300 1692624600818
+unsubcribeStockSet size: 1400 1692624600852
+StockEvent(stock=TOL, price=76.14, time=1692624600734) dn=76.445
+unsubcribeStockSet size: 1500 1692624600890
+StockEvent(stock=DCI, price=60.45, time=1692624600759) dn=60.766
+StockEvent(stock=NMM, price=22.75, time=1692624600748) dn=22.778
+unsubcribeStockSet size: 1600 1692624600944
+unsubcribeStockSet size: 1700 1692624600956
+StockEvent(stock=NX, price=25.97, time=1692624600785) dn=26.082
+StockEvent(stock=BBU, price=15.98, time=1692624600780) dn=15.987
+StockEvent(stock=SHAK, price=69.39, time=1692624600775) dn=69.583
+StockEvent(stock=STZ, price=256.86, time=1692624600759) dn=257.64
+unsubcribeStockSet size: 1800 1692624600970
+StockEvent(stock=HRL, price=39.215, time=1692624600782) dn=39.279
+StockEvent(stock=RGEN, price=158.0, time=1692624600788) dn=160.116
+unsubcribeStockSet size: 1900 1692624600994
+StockEvent(stock=DPZ, price=377.66, time=1692624600828) dn=380.654
+StockEvent(stock=BBUC, price=18.79, time=1692624600843) dn=18.948
+unsubcribeStockSet size: 2000 1692624601046
+unsubcribeStockSet size: 2100 1692624601062
+StockEvent(stock=TTC, price=98.155, time=1692624600823) dn=98.294
+StockEvent(stock=PBFS, price=9.21, time=1692624600859) dn=9.249
+StockEvent(stock=UNB, price=20.88, time=1692624600858) dn=20.977
+unsubcribeStockSet size: 2200 1692624601102
+StockEvent(stock=GHRS, price=9.68, time=1692624600831) dn=9.846
+unsubcribeStockSet size: 2300 1692624601169
+StockEvent(stock=PRU, price=91.85, time=1692624600918) dn=91.957
+StockEvent(stock=AC, price=35.47, time=1692624600815) dn=35.608
+StockEvent(stock=LINK, price=8.825, time=1692624600959) dn=8.934
+unsubcribeStockSet size: 2400 1692624601183
+unsubcribeStockSet size: 2500 1692624601211
+StockEvent(stock=PBH, price=59.14, time=1692624601050) dn=59.154
+StockEvent(stock=TLIS, price=6.43, time=1692624601018) dn=6.559
+NSSC=24.285666319712586,ZTO=3.124738908847847,TLIS=1.9667632261015466,DE=1.935199536502882,MARA=1.7965106235964776
+StockEvent(stock=OMI, price=16.45, time=1692624601001) dn=16.75
+StockEvent(stock=MCY, price=28.79, time=1692624600997) dn=29.066
+StockEvent(stock=AVNW, price=28.5, time=1692624601019) dn=28.539
+unsubcribeStockSet size: 2600 1692624601268
+StockEvent(stock=AVO, price=10.31, time=1692624601088) dn=10.355
+StockEvent(stock=ABOS, price=6.29, time=1692624601073) dn=6.348
+StockEvent(stock=MLM, price=432.14, time=1692624600996) dn=432.712
+StockEvent(stock=FCAP, price=34.19, time=1692624601079) dn=34.41
+StockEvent(stock=CVS, price=66.77, time=1692624601071) dn=67.562
+unsubcribeStockSet size: 2700 1692624601354
+StockEvent(stock=WOLF, price=42.49, time=1692624601100) dn=43.294
+NSSC=24.285666319712586,ZTO=3.124738908847847,TLIS=1.9667632261015466,DE=1.935199536502882,WOLF=1.8570702637778793,MARA=1.7965106235964776
+StockEvent(stock=PCYG, price=8.86, time=1692624601052) dn=8.937
+unsubcribeStockSet size: 2800 1692624601548
+StockEvent(stock=CVCO, price=270.47, time=1692624601357) dn=271.15
+StockEvent(stock=BBCP, price=7.8, time=1692624601399) dn=7.813
+StockEvent(stock=CELC, price=9.13, time=1692624601385) dn=9.23
+StockEvent(stock=FSRX, price=10.19, time=1692624601413) dn=10.21
+unsubcribeStockSet size: 2900 1692624601714
+StockEvent(stock=HAE, price=84.7, time=1692624606053) dn=85.589
+TEL time is 1692624637148, price is 127.38.listen end!
+unsubcribeStockSet size: 3000 1692624637260
+unsubcribeStockSet size: 3100 1692624637267
+=========== finish unsubscribe ===========
+NSSC=24.285666319712586,ZTO=3.124738908847847,TLIS=1.9667632261015466,DE=1.935199536502882,WOLF=1.8570702637778793,MARA=1.7965106235964776
+remain cash: 8099.530000000028
+buy stock. stock=NSSC, count=355, price=22.55, orderPrice=22.77, orderId: 5473241950903847819
+NSSC order is successfully executed. orderId: 5473241950903847819
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5473241950903847819, code=NSSC, name=Napco Security Technologies, count=355.0, price=22.77, avgPrice=22.5, createTime=2023-08-21 09:30:37, updateTimestamp=1.69262464E9, status=0)
+buy stock. stock=ZTO, count=4, price=23.19, orderPrice=23.42, orderId: 5473241955198815114
+ZTO order is successfully executed. orderId: 5473241955198815114
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5473241955198815114, code=ZTO, name=中通快递, count=4.0, price=23.42, avgPrice=23.37, createTime=2023-08-21 09:30:40, updateTimestamp=1.692624645E9, status=0)
+buy stock. stock=TLIS, count=1, price=6.43, orderPrice=6.49, orderId: 5473241959493782409
+TLIS order has been canceled. orderId: 5473241959493782409, cancel res code: 0
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {NSSC=StopLoss(stock=NSSC, canSellQty=355.0, lossPrice=20.25), ZTO=StopLoss(stock=ZTO, canSellQty=4.0, lossPrice=21.033)}
+{p=20.415, ev=T, q=4505896, s=1, c=[37], t=1692642478000, sym=NSSC, x=12, i=23465, z=3}
+{p=23.595, ev=T, q=1910470, s=3, c=[37], t=1692643474000, sym=ZTO, x=19, i=52983525946982, z=1}
+NSSC touch the stop loss. current price=20.24, lossPrice=20.25, orderPrice=20.04
+NSSC placeStopLoss limit order. qty=355.0, price=20.04, orderId: 5482600358189661885
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+NSSC don't need stop loss. it'll be unsubscribe
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5482600358189661885, code=NSSC, name=Napco Security Technologies, count=355.0, price=20.04, avgPrice=20.25, createTime=2023-08-21 14:49:51, updateTimestamp=1.692643792E9, status=0)
+{p=23.675, ev=T, q=2016730, s=4, c=[37], t=1692644582000, sym=ZTO, trfi=202, x=4, i=71697118081098, z=1, trft=1692644582000}
+{p=23.675, ev=T, q=2017226, s=2, c=[37], t=1692644587000, sym=ZTO, trfi=202, x=4, i=71697118212912, z=1, trft=1692644587000}
+{p=23.645, ev=T, q=2040481, s=100, t=1692644821000, sym=ZTO, trfi=202, x=4, i=71697152628289, z=1, trft=1692644820999}
+{p=23.63, ev=T, q=2155368, s=100, t=1692645899000, sym=ZTO, x=10, i=52983577856306, z=1}
+{p=23.56, ev=T, q=2479210, s=1, c=[37], t=1692647664000, sym=ZTO, x=15, i=56330044469323, z=1}
+{p=23.59, ev=T, q=2536556, s=300, c=[14,41], t=1692647799000, sym=ZTO, x=12, i=62880002617951, z=1}
+ready to sell before close market. position={ZTO=StockPosition(stock=ZTO, canSellQty=4.0, costPrice=23.37, currPrice=23.595)}, time=2023-08-22T03:59:00.632
+closeCheckPosition failed! NSSC position is not exist!
+before close sell stock. stock=ZTO, count=4.0, currentPrice=23.595, orderPrice=23.35
+before close sell stock. stock=ZTO, orderId：5482601492061027769
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5482601492061027769, code=ZTO, name=中通快递, count=4.0, price=23.35, avgPrice=23.57, createTime=2023-08-21 15:59:00, updateTimestamp=1.692647942E9, status=0)
+all stock has stop loss
+trade exit
