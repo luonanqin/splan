@@ -1,19 +1,22 @@
 package luonq.polygon;
 
 import bean.BOLL;
+import bean.EarningDate;
 import bean.FrontReinstatement;
 import bean.NodeList;
+import bean.RatioBean;
 import bean.SplitStockInfo;
 import bean.StockEvent;
 import bean.StockKLine;
 import bean.StockPosition;
+import bean.StockRatio;
 import bean.StopLoss;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
-import luonq.strategy.Strategy8;
+import luonq.strategy.backup.Strategy10_3;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,9 +61,9 @@ public class RealTimeDataWS {
     public static final String TEST_STOCK = "";
     public static final String TEST_SUBSCRIBE_STOCK = "T.CXAI,T.SLV,T.DRMA,T.FMS,T.SOXS,T.GFAI,T.APPH,T.TNA,T.IWM,T.TZA,T.TWM,T.SRTY,T.NFLX,T.JEPI,T.META,T.AUD,T.IONQ,T.TIVC,T.TSLA,T.CYTO,T.FFIE,T.GPRO,T.TMF,T.MO,T.BBIG,T.SOXL,T.BBLN,T.MINM,T.MSFT,T.UVXY,T.GOOG,T.MVST,T.NVDA,T.TQQQ,T.GETR,T.ATNF,T.IBRX,T.AMZN,T.PLX,T.UPRO,T.UCO,T.PACW,T.SPY,T.MARA,T.AGBA,T.ZFOX,T.INTC,T.DIS,T.PYPL,T.CDTX,T.INBS,T.LICN,T.SPXU,T.SRTS,T.SBFM,T.TSLL,T.NRGU,T.SOFI,T.SQQQ,T.AIG,T.U,T.O,T.EGIO,T.MTC,T.IEF,T.TLT,T.CWEB,T.TCBP,T.SVFD,T.GDC,T.TRKA,T.AAPL,T.SSO,T.IDEX,T.VRM,T.SNDL,T.NTEST,T.GMDA,T.ABNB,T.TMV,T.SDOW,T.VCIG,T.XLI,T.CRKN,T.GDXD,T.VSSYW,T.KNTE,T.ASML,T.NKLA,T.AMD,T.OPK,T.UVIX,T.SBSW,T.JD,T.LABU,T.BABA,T.PTGX,T.CS,T.BITO,T.NIO,T.TCRX,T.XPEV,T.SFWL,T.OPEN,T.BNTX,T.GOOGL,T.INDA,T.ZURA,T.LILM,T.PBTS,T.ADMP,T.Z,T.RYAAY,T.WMT,T.CISO,T.USO,T.CCL,T.BOIL,T.TUP,T.AFRM,T.SLGG,T.OPFI,T.BNKU,T.F,T.BE,T.SURG,T.MWG,T.LCID,T.RIVN,T.NVO,T.SOS,T.CNEY,T.SNTG,T.POLA,T.IZM,T.OXY,T.QBTS,T.GFI,T.GOEV,T.EPAM,T.HOUR,T.BLBD,T.GOLD,T.JAGX,T.GLD,T.TWLO,T.EURN,T.JOBY,T.CVX,T.VIXY,T.ALLR,T.SMX,T.MRNA,T.HYZN,T.BFRG,T.ZIM,T.NOBL,T.ORGO,T.VATE,T.IAU,T.SCHD,T.AGQ,T.VOO,T.XLF,T.SOUN,T.GETY,T.UAVS,T.CRSP,T.KO,T.PTEST,T.CVNA,T.CI,T.KOLD,T.WFC,T.BLUE,T.CJJD,T.GDX,T.LABD,T.BLNK,T.BAC,T.MULN,T.LUNR,T.IMGN,T.IONM,T.FUTU,T.SHFS,T.SONO,T.STSS,T.CEI,T.CMCSA,T.CYTK,T.HLN,T.IREN,T.SBUX,T.ZOM,T.TCJH,T.C,T.QQQ,T.TOP,T.UFAB,T.RACE,T.HKD,T.AMPE,T.QQQM,T.DDL,T.YINN,T.ASTI,T.UBS,T.TCMD,T.FNGU,T.SPXS,T.LAC,T.PLUG,T.TRVN,T.QCOM,T.NVTA,T.JEPQ,T.ICUCW,T.BULZ,T.BRDS,T.GRVY,T.CLRO,T.SHOP,T.MOBQ,T.LI,T.VALE,T.GCTK,T.BB,T.DRN,T.HUBS,T.DNA,T.IQ,T.PLTR,T.FSLR,T.QLD,T.PAAS,T.PBLA,T.BIOL,T.HSBC,T.PEP,T.AUGX,T.MFH,T.CPE,T.DOG,T.HUDI,T.COSM,T.WDAY,T.XELA,T.DB,T.INPX,T.SNN,T.PDD,T.FXI,T.SSRM,T.TSLQ,T.HMPT,T.BYND,T.QID,T.GRIL,T.GSK,T.BNKD,T.HSTO,T.CTLT,T.ZION,T.HCDI,T.WETG,T.VXX,T.SAVA,T.SVXY,T.AKAN,T.BFLY,T.CARR,T.CLSK,T.IBM,T.DWAC,T.NKE,T.NVDS,T.INCR,T.MSTR,T.T,T.TSM,T.CSCO,T.DADA,T.SQ,T.ZSL,T.SARK,T.IVV,T.SDS,T.SPLG,T.UDOW,T.HMY,T.DXF,T.PFE,T.OMH,T.MHNC,T.SIGA,T.ATXG,T.NOGN,T.LYFT,T.RIOT,T.BMY,T.FAS,T.TECL,T.SPG,T.NDAQ,T.GNS,T.SPXL,T.WAL,T.SVIX,T.UNG,T.NOK,T.SAI,T.ARKK,T.AKLI,T.RKLB,T.AGFY,T.DDOG,T.RBLX,T.NBTX,T.MCRB,T.SNAP,T.TIO,T.HGEN,T.TAL,T.WOOF,T.DIA,T.BTBT,T.MGAM,T.UPWK,T.TWOU,T.AMC,T.YANG,T.WISA,T.ABBV,T.TCOM,T.SMTC,T.MAXN,T.UPST,T.CMND,T.ARR,T.ROKU,T.FISV,T.TSLS,T.MU,T.RELI,T.AI,T.AZN,T.NU,T.ZVZZT,T.TLRY,T.BURU,T.XLP,T.EEFT,T.CROX,T.ADXN,T.PBR,T.CXAIW,T.BITI,T.APE,T.ABB,T.FNGD,T.XLV,T.SENS,T.APLD,T.HOLO,T.TSP,T.HUIZ,T.ATEST,T.NVS,T.TLTW,T.MOS,T.DPST,T.EJH,T.BPT,T.SHEL,T.SPRO,T.SVOL,T.COIN,T.NCMI,T.TMC,T.MGIH,T.DHY,T.FOXA,T.TRUP,T.WPM,T.NVAX,T.SQM,T.KWEB,T.ZH,T.EVA,T.SNGX,T.LICY,T.HIMX,T.SPYG,T.RWM,T.VXRT,T.CTVA,T.MS,T.SPCE,T.ADBE,T.ING,T.FLNC,T.TDOC,T.NNOX,T.ENPH,T.NCLH,T.MCD,T.GDXU";
     public static final URI uri = URI.create("wss://socket.polygon.io/stocks");
-    public static final double HIT = 0.6d; // 策略成功率
-    public static final int PRICE_LIMIT = 6; // 价格限制，用于限制这个价格下的股票不参与计算
-    public static final double LOSS_RATIO = 0.1d; // 止损比例
+    public static final double HIT = 0.5d; // 策略成功率
+    public static final int PRICE_LIMIT = 7; // 价格限制，用于限制这个价格下的股票不参与计算
+    public static final double LOSS_RATIO = 0.07d; // 止损比例
     public static final int DELAY_MINUTE = 0;
     public static final long LISTENING_TIME = 30000L; // 监听时长，毫秒
     private static LocalDateTime dayLight_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
@@ -72,7 +75,9 @@ public class RealTimeDataWS {
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
     public static Map<String, List<Double>> stockToM19Close = Maps.newHashMap();
-    public static Map<String, Strategy8.StockRatio> originRatioMap;
+    public static Map<String, StockRatio> originRatioMap;
+    public static Set<String> todayEarningStockSet = Sets.newHashSet();
+    public static Set<String> lastEarningStockSet = Sets.newHashSet();
     private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
     private Executor executor;
@@ -129,7 +134,8 @@ public class RealTimeDataWS {
         try {
             String mergePath = Constants.HIS_BASE_PATH + "merge/";
             fileMap = BaseUtils.getFileMap(mergePath);
-            originRatioMap = Strategy8.computeHistoricalOverBollingerRatio();
+            originRatioMap = Strategy10_3.computeHistoricalOverBollingerRatio();
+            loadEarningInfo();
             stockSet = buildStockSet(fileMap);
             //            stockSet.clear();
             //            stockSet.add("AAPL");
@@ -206,10 +212,31 @@ public class RealTimeDataWS {
         executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
     }
 
+    private static void loadEarningInfo() throws Exception{
+        LocalDate now = LocalDate.now();
+        String today = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        Map<String, List<EarningDate>> todayEaring = BaseUtils.getEarningDate(today);
+        if (MapUtils.isNotEmpty(todayEaring) && todayEaring.containsKey(today)) {
+            todayEarningStockSet = todayEaring.get(today).stream().map(EarningDate::getStock).collect(Collectors.toSet());
+        }
+
+        List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2022);
+        String date = kLines.get(0).getDate();
+        String lastDay = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        Map<String, List<EarningDate>> lastEarning = BaseUtils.getEarningDate(lastDay);
+        if (MapUtils.isNotEmpty(lastEarning) && lastEarning.containsKey(lastDay)) {
+            lastEarningStockSet = lastEarning.get(lastDay).stream().map(EarningDate::getStock).collect(Collectors.toSet());
+        }
+    }
+
     private Set<String> buildStockSet(Map<String, String> fileMap) throws Exception {
         // 过滤前日收盘价低于CLOSE_PRICE
         Set<String> set = Sets.newHashSet();
         for (String stock : fileMap.keySet()) {
+            // 财报当天和财报后一天都不进行交易
+            if (todayEarningStockSet.contains(stock) || lastEarningStockSet.contains(stock)) {
+                continue;
+            }
             String filePath = fileMap.get(stock);
             StockKLine first = BaseUtils.getLatestKLine(filePath);
             if (first.getClose() > PRICE_LIMIT) {
@@ -220,10 +247,10 @@ public class RealTimeDataWS {
 
         // 过滤所有OverBolling策略命中率低于HIT
         for (String stock : originRatioMap.keySet()) {
-            Strategy8.StockRatio stockRatio = originRatioMap.get(stock);
-            Map<Integer, Strategy8.RatioBean> ratioMap = stockRatio.getRatioMap();
+            StockRatio stockRatio = originRatioMap.get(stock);
+            Map<Integer, RatioBean> ratioMap = stockRatio.getRatioMap();
             boolean hitFailed = true;
-            for (Strategy8.RatioBean ratio : ratioMap.values()) {
+            for (RatioBean ratio : ratioMap.values()) {
                 double ratioVal = ratio.getRatio();
                 if (ratioVal > HIT) {
                     hitFailed = false;

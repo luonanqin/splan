@@ -289,10 +289,12 @@ public class Strategy10_3 {
 //                            System.out.println();
                         }
                         Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
+                        Map<String, StockKLine> lastStockKLineMap = Maps.newHashMap();
                         String lastDate = "";
                         if (j > 0) {
                             lastDate = dateList.get(j - 1);
                             lastStockBollMap = dateToStockBollMap.get(lastDate);
+                            lastStockKLineMap = dateToStockLineMap.get(lastDate);
                         }
                         Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                         Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
@@ -306,8 +308,13 @@ public class Strategy10_3 {
                         int size = 0;
                         for (String stock : stocks) {
                             StockKLine kLine = stockKLineMap.get(stock);
+                            StockKLine lastKLine = lastStockKLineMap.get(stock);
                             BOLL boll = stockBollMap.get(stock);
                             BOLL lastBoll = lastStockBollMap.get(lastDate);
+
+                            if (lastKLine != null && lastKLine.getClose()>lastKLine.getOpen()) {
+//                                                                continue;
+                            }
 
                             double open = kLine.getOpen();
                             double close = kLine.getClose();
@@ -409,7 +416,7 @@ public class Strategy10_3 {
                             double lossRatio = (open - low) / open;
                             double v = lossRange;
                             if (avgVolume < count) {
-//                                count = avgVolume;
+                                count = avgVolume;
                             }
                             sum -= count * open;
                             if (lossRatio > v) {
@@ -462,10 +469,10 @@ public class Strategy10_3 {
 
             String filePath = dailyFileMap.get(stock);
             List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2022, 2020);
-            Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
+//            Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2022, 2020);
-            Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
+//            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2022, 2020);
+//            Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
 
 //            List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 //                        List<Bean> result = strategy(kLines);
