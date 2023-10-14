@@ -517,3 +517,14 @@ HRMY don't need stop loss. it'll be unsubscribe
 HRMY don't need stop loss. it'll be unsubscribe
 HRMY don't need stop loss. it'll be unsubscribe
 update order: OrderFill(tradeSide=2, fillID=0, orderID=99934205621701515, code=HRMY, name=Harmony Biosciences, count=1.0, price=21.08, avgPrice=21.11, createTime=2023-10-13 09:32:44, updateTimestamp=1.697203966E9, status=0)
+ready to sell before close market. position={SAVA=StockPosition(stock=SAVA, canSellQty=552.0, costPrice=12.72, currPrice=14.889)}, time=2023-10-14T03:59:00.436
+before close sell stock. stock=SAVA, count=552.0, currentPrice=14.889, orderPrice=14.74
+before close sell stock. stock=SAVA, orderId：100377033927185418
+closeCheckPosition failed! HRMY position is not exist!
+update order: OrderFill(tradeSide=2, fillID=0, orderID=100377033927185418, code=SAVA, name=Cassava Sciences, count=552.0, price=14.74, avgPrice=14.86, createTime=2023-10-13 15:59:00, updateTimestamp=1.697227141E9, status=0)
+{p=14.86, ev=T, q=5412016, s=23, c=[14,37,41], t=1697227185000, sym=SAVA, x=12, i=14950, z=3}
+{p=14.86, ev=T, q=5412017, s=10, c=[14,37,41], t=1697227185000, sym=SAVA, x=12, i=14951, z=3}
+{p=14.86, ev=T, q=5412018, s=6, c=[14,37,41], t=1697227185000, sym=SAVA, x=12, i=14952, z=3}
+{p=14.86, ev=T, q=5412019, s=486, c=[14,41], t=1697227185000, sym=SAVA, x=12, i=14953, z=3}
+all stock has stop loss
+trade exit
