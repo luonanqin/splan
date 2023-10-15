@@ -1,13 +1,16 @@
 package luonq.strategy.backup;
 
 import bean.BOLL;
+import bean.Bean;
 import bean.EarningDate;
+import bean.RatioBean;
+import bean.RealOpenVol;
 import bean.SimpleTrade;
 import bean.StockKLine;
+import bean.StockRatio;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -15,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
 import util.Constants;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,96 +52,6 @@ public class Strategy10_2 {
 
     public static final String TEST_STOCK = "";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
-
-    @Data
-    public static class Bean implements Serializable {
-        String date;
-        private double open;
-        private double close;
-        private double high;
-        private double low;
-        private double dn;
-        private double changePnt;
-        private double lowDnDiffPnt;
-        private double highCloseDiffPnt;
-        private double openDnDiffPnt;
-        private double closeUpDiffPnt;
-        private int closeLessOpen; // true=1 false=0
-
-        public String toString() {
-            return String.format("%s\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", date, open, close, high, low, dn, lowDnDiffPnt, highCloseDiffPnt);
-        }
-    }
-
-    @Data
-    public static class RatioBean implements Serializable {
-        List<Bean> beanList = Lists.newArrayList();
-        double ratio;
-
-        public void add(Bean bean) {
-            beanList.add(bean);
-            long trueCount = beanList.stream().filter(c -> c.getCloseLessOpen() == 1).count();
-            int count = beanList.size();
-            ratio = (double) trueCount / count;
-        }
-    }
-
-    @Data
-    public static class StockRatio implements Serializable {
-        Map<Integer, RatioBean> ratioMap = Maps.newHashMap();
-
-        public void addBean(Bean bean) {
-            double dn = bean.getDn();
-            double low = bean.getLow();
-            double open = bean.getOpen();
-            if (!(low < dn && open < dn)) {
-                return;
-            }
-
-            double openDnDiffPnt = bean.getOpenDnDiffPnt();
-            int openDnDiffRange = (int) openDnDiffPnt;
-            if (openDnDiffRange < 0) {
-                return;
-            }
-            if (openDnDiffRange > 6) {
-                if (!ratioMap.containsKey(6)) {
-                    ratioMap.put(6, new RatioBean());
-                }
-                ratioMap.get(6).add(bean);
-//            if (openDnDiffRange > 6 && openDnDiffRange < 10) {
-//                if (!ratioMap.containsKey(6)) {
-//                    ratioMap.put(6, new RatioBean());
-//                }
-//                ratioMap.get(6).add(bean);
-//            } else if (openDnDiffRange > 10) {
-//                if (!ratioMap.containsKey(10)) {
-//                    ratioMap.put(10, new RatioBean());
-//                }
-//                ratioMap.get(10).add(bean);
-            } else if (ratioMap.containsKey(openDnDiffRange)) {
-                ratioMap.get(openDnDiffRange).add(bean);
-            } else {
-                RatioBean ratioBean = new RatioBean();
-                ratioBean.add(bean);
-                ratioMap.put(openDnDiffRange, ratioBean);
-            }
-        }
-
-        public String toString() {
-            List<String> s = Lists.newArrayList();
-            for (Integer ratio : ratioMap.keySet()) {
-                s.add(String.format("%d=%.3f", ratio, ratioMap.get(ratio).getRatio()));
-            }
-            return StringUtils.join(s, ",");
-        }
-    }
-
-    @Data
-    public static class RealOpenVol {
-        private String date;
-        private double volumn;
-        private double avgPrice;
-    }
 
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
@@ -214,31 +126,6 @@ public class Strategy10_2 {
 
         // 计算出open低于dn（收盘后的dn）比例最高的前十股票，然后再遍历计算收益
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
-        //        for (String date : dateToStockBollMap.keySet()) {
-        //            Map<String, StockKLine> stockToKlineMap = dateToStockLineMap.get(date);
-        //            Map<String, BOLL> stockToBollMap = dateToStockBollMap.get(date);
-        //            Map<String, Double> stockToRatioMap = Maps.newHashMap();
-        //            for (String stock : stockToKlineMap.keySet()) {
-        //                StockKLine kline = stockToKlineMap.get(stock);
-        //                BOLL boll = stockToBollMap.get(stock);
-        //                if (boll != null && boll.getDn() > 0) {
-        //                    double dn = boll.getDn();
-        //                    double open = kline.getOpen();
-        //                    double ratio = (dn - open) / dn;
-        //                    if (ratio < 0) {
-        //                        continue;
-        //                    }
-        //                    stockToRatioMap.put(stock, ratio);
-        //                }
-        //            }
-        //            List<String> stocks = stockToRatioMap.entrySet().stream().sorted((o1, o2) -> {
-        //                if (o1.getValue() < o2.getValue()) {
-        //                    return 1;
-        //                }
-        //                return -1;
-        //            }).map(o -> o.getKey()).collect(Collectors.toList());
-        //            dateToStocksMap.put(date, stocks);
-        //        }
 
         Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
         Map<String, Map<String, Double>> dateToStockRatioMap = Maps.newHashMap();
@@ -384,8 +271,8 @@ public class Strategy10_2 {
         }
 
         List<Double> hitRatio = Lists.newArrayList(0.5d, 0.6d, 0.7d, 0.8d, 0.9d);
-        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d, 0.2d, 0.3d);
-        List<Integer> openRange = Lists.newArrayList(6, 7);
+        List<Double> lossRatioRange = Lists.newArrayList(0.07d, 0.08d, 0.09d, 0.1d);
+        List<Integer> openRange = Lists.newArrayList(6,7,8,9,10);
         for (Integer openR : openRange) {
             for (Double lossRange : lossRatioRange) {
                 for (int i = 0; i < hitRatio.size(); i++) {
