@@ -11,28 +11,28 @@ public final class Constants {
     public static final String DAY_FORMATTER = "MM/dd/yyyy";
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(Constants.DAY_FORMATTER);
 
-    public static final String HIS_BASE_PATH = System.getProperty("os.name").equals("Windows 7")?"E:\\splan\\src\\main\\resources\\historicalData\\":"src/main/resources/historicalData/";
+    public static final String HIS_BASE_PATH = System.getProperty("os.name").equals("Windows 7") ? "E:\\splan\\src\\main\\resources\\historicalData\\" : "src/main/resources/historicalData/";
     public static final String GRAB_PATH = HIS_BASE_PATH + "grab/";
     public static final String GRAB_ONE_YEAR_PATH = "src/main/resources/historicalData/graboneyear/";
     public static final String DAILY_PATH = HIS_BASE_PATH + "daily/";
     public static final String WEEKLY_PATH = HIS_BASE_PATH + "weekly/";
     public static final String FIX_WEEKLY_PATH = "src/main/resources/historicalData/fixWeekly/";
 
-    public static final String STD_BASE_PATH = "src/main/resources/standardData/";
+    public static final String STD_BASE_PATH = System.getProperty("os.name").equals("Windows 7") ? "E:\\splan\\src\\main\\resources\\standardData\\" : "src/main/resources/standardData/";
     public static final String STD_DAILY_PATH = STD_BASE_PATH + "daily/";
     public static final String STD_WEEKLY_PATH = STD_BASE_PATH + "weekly/";
     public static final String STD_MONTHLY_PATH = STD_BASE_PATH + "monthly/";
     public static final String STD_QUARTERLY_PATH = STD_BASE_PATH + "quarterly/";
     public static final String STD_YEARLY_PATH = STD_BASE_PATH + "yearly/";
 
-    public static final String INDICATOR_BASE_PATH = "src/main/resources/indicatorData/";
+    public static final String INDICATOR_BASE_PATH = System.getProperty("os.name").equals("Windows 7") ? "E:\\splan\\src\\main\\resources\\indicatorData\\" : "src/main/resources/indicatorData/";
     public static final String INDICATOR_MA_PATH = INDICATOR_BASE_PATH + "MA/";
     public static final String INDICATOR_BOLL_PATH = INDICATOR_BASE_PATH + "BOLL/";
 
-    public static final String TRADE_PATH = "src/main/resources/tradeData/";
+    public static final String TRADE_PATH = System.getProperty("os.name").equals("Windows 7") ? "E:\\splan\\src\\main\\resources\\tradeData\\" : "src/main/resources/tradeData/";
     public static final String TRADE_OPEN_PATH = TRADE_PATH + "open/";
 
-    public static final String TEST_PATH = "src/main/resources/testData/";
+    public static final String TEST_PATH = System.getProperty("os.name").equals("Windows 7") ? "E:\\splan\\src\\main\\resources\\testData\\" : "src/main/resources/testData/";
 
-    public static final String SPLIT_PATH = "src/main/resources/splitData/";
+    public static final String SPLIT_PATH = System.getProperty("os.name").equals("Windows 7") ? "E:\\splan\\src\\main\\resources\\splitData\\" : "src/main/resources/splitData/";
 }

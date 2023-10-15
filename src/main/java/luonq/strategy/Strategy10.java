@@ -44,7 +44,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
  * 注：参与2023年计算的股票，一定要在开盘后5秒内有真实交易，否则会被过滤
  * <p>
  */
-public class Strategy9 {
+public class Strategy10 {
 
     public static final String TEST_STOCK = "";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
