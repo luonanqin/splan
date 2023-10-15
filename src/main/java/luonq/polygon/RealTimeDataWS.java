@@ -55,6 +55,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static util.Constants.SEPARATOR;
+
 @ClientEndpoint
 public class RealTimeDataWS {
 
@@ -132,7 +134,7 @@ public class RealTimeDataWS {
 
     public void init() {
         try {
-            String mergePath = Constants.HIS_BASE_PATH + "merge/";
+            String mergePath = Constants.HIS_BASE_PATH + "merge" + SEPARATOR;
             fileMap = BaseUtils.getFileMap(mergePath);
             originRatioMap = Strategy10_3.computeHistoricalOverBollingerRatio();
             loadEarningInfo();
@@ -300,7 +302,7 @@ public class RealTimeDataWS {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, beforeYear, afterYear);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge" + SEPARATOR + stock, beforeYear, afterYear);
             if (kLines.size() < 19) {
                 continue;
             }
@@ -324,7 +326,7 @@ public class RealTimeDataWS {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2023, 2022);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll" + SEPARATOR + stock, 2023, 2022);
             if (CollectionUtils.isEmpty(bolls)) {
                 continue;
             }
