@@ -87,11 +87,14 @@ public class GetHistoricalOpenFirstTrade {
                     continue;
                 }
                 List<String> lines = BaseUtils.readFile(file);
-                String[] split = lines.get(0).split(",");
-                if (split.length < 3) {
-                    continue;
+                String latestDate = "01/01/2000";
+                if (CollectionUtils.isNotEmpty(lines)) {
+                    String[] split = lines.get(0).split(",");
+                    if (split.length < 3) {
+                        continue;
+                    }
+                    latestDate = split[0];
                 }
-                String latestDate = split[0];
 
                 List<String> dateList = Lists.newArrayList();
                 LocalDate latestDay = LocalDate.parse(latestDate, Constants.FORMATTER);
