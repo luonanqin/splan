@@ -277,7 +277,7 @@ public class Strategy10_3 {
                 for (int i = 0; i < hitRatio.size(); i++) {
                     double hit = hitRatio.get(i);
 
-                    if (hit != 0.8d || lossRange != 0.07d || openR != 6) {
+                    if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
 //                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
@@ -312,8 +312,8 @@ public class Strategy10_3 {
                             BOLL boll = stockBollMap.get(stock);
                             BOLL lastBoll = lastStockBollMap.get(lastDate);
 
-                            if (lastKLine != null && lastKLine.getClose()>lastKLine.getOpen()) {
-//                                                                continue;
+                            if (lastKLine != null && (lastKLine.getVolume().doubleValue()<100000 || lastKLine.getClose()>lastKLine.getOpen())) {
+                                                                continue;
                             }
 
                             double open = kLine.getOpen();
@@ -339,43 +339,9 @@ public class Strategy10_3 {
                                 continue;
                             }
 
-                            // 根据开盘价实时算布林上轨
-                            //                            BigDecimal m20close = BigDecimal.valueOf(open);
-                            //                            List<String> _20day = dateToBefore20dayMap.get(date);
-                            //                            List<StockKLine> _20Kline = Lists.newArrayList(kLine);
-                            //                            boolean failed = false;
-                            //                            for (String day : _20day) {
-                            //                                StockKLine temp = dateToStockLineMap.get(day).get(stock);
-                            //                                if (temp == null) {
-                            //                                    failed = true;
-                            //                                    break;
-                            //                                }
-                            //                                _20Kline.add(temp);
-                            //                                m20close = m20close.add(BigDecimal.valueOf(temp.getClose()));
-                            //                            }
-                            //                            if (failed) {
-                            //                                continue;
-                            //                            }
-                            //
-                            //                            double mb = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
-                            //                            BigDecimal avgDiffSum = BigDecimal.ZERO;
-                            //                            for (StockKLine temp : _20Kline) {
-                            //                                double c = temp.getClose();
-                            //                                avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - mb).pow(2));
-                            //                            }
-                            //
-                            //                            double md = Math.sqrt(avgDiffSum.doubleValue() / 20);
-                            //                            BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
-                            //                            double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
-
                             // 根据开盘价算openDnDiffRatio
                             double openDnDiffPnt = stockToRatioMap.get(stock);
                             int openDnDiffInt = (int) openDnDiffPnt;
-//                            if (openDnDiffInt > 6 && openDnDiffInt < 10) {
-//                                openDnDiffInt = 6;
-//                            } else if (openDnDiffInt > 10) {
-//                                openDnDiffInt = 10;
-//                            }
                             if (openDnDiffInt > 6) {
                                 openDnDiffInt = 6;
                             }
@@ -431,11 +397,9 @@ public class Strategy10_3 {
 //                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
 
                                 if (gain >= 0) {
-                                    //                                System.out.println(String.format("gain openLowDiff=%d", openLowDiff));
                                     gainCount++;
                                 } else {
                                     lossCount++;
-                                    //                                System.out.println(String.format("loss openLowDiff=%d, closeOpenDiff=%d", openLowDiff, (int) ((close - open) / open * 100)));
                                 }
                             }
                             stockRatio.addBean(buildBean(kLine, boll));
@@ -489,82 +453,6 @@ public class Strategy10_3 {
         return stockRatioMap;
     }
 
-    private static List<Bean> strategy(List<StockKLine> stockKLines) {
-        List<Bean> result = Lists.newArrayList();
-        BigDecimal m20close = BigDecimal.ZERO;
-        int ma20count = 0;
-        double md = 0, mb = 0, dn = 0;
-        for (int i = stockKLines.size() - 1; i >= 0; i--) {
-            StockKLine kLine = stockKLines.get(i);
-
-            BigDecimal open = BigDecimal.valueOf(kLine.getOpen());
-            BigDecimal close = BigDecimal.valueOf(kLine.getClose());
-            m20close = m20close.add(close);
-            ma20count++;
-
-            if (ma20count == 20) {
-                m20close = m20close.subtract(close).add(open);
-                double ma20 = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
-                mb = ma20;
-                BigDecimal avgDiffSum = BigDecimal.ZERO;
-                int j = i, times = 20;
-                while (times > 0) {
-                    double c;
-                    if (j == i) {
-                        c = stockKLines.get(j).getOpen();
-                    } else {
-                        c = stockKLines.get(j).getClose();
-                    }
-                    j++;
-                    avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - ma20).pow(2));
-                    times--;
-                }
-
-                md = Math.sqrt(avgDiffSum.doubleValue() / 20);
-                BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
-                dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
-
-                ma20count--;
-                m20close = m20close.subtract(BigDecimal.valueOf(stockKLines.get(i + 20 - 1).getClose()));
-                m20close = m20close.subtract(open).add(close);
-
-                double low = kLine.getLow();
-                if (low < dn && kLine.getOpen() < dn) {
-                    result.add(buildBean(kLine, dn));
-                }
-            }
-            if (md == 0) {
-                continue;
-            }
-        }
-
-        return result;
-    }
-
-    private static List<Bean> strategy1(Map<String, StockKLine> dateToKLineMap, Map<String, BOLL> dateToBollMap) {
-        List<Bean> result = Lists.newArrayList();
-        for (String date : dateToKLineMap.keySet()) {
-            if (!dateToBollMap.containsKey(date)) {
-                continue;
-            }
-
-            BOLL boll = dateToBollMap.get(date);
-            double dn = boll.getDn();
-            if (dn == 0) {
-                continue;
-            }
-
-            StockKLine kLine = dateToKLineMap.get(date);
-            double open = kLine.getOpen();
-            double low = kLine.getLow();
-            if (low < dn && open < dn) {
-                result.add(buildBean(kLine, boll));
-            }
-        }
-        //        Collections.sort(result, ((Comparator<Bean>) (o1, o2) -> BaseUtils.dateToInt(o1.getDate()) - BaseUtils.dateToInt(o2.getDate())).reversed());
-        return result;
-    }
-
     private static List<Bean> strategy2(List<StockKLine> stockKLines, Map<String, BOLL> bollWithOpen) {
         List<Bean> result = Lists.newArrayList();
         for (int i = 0; i < stockKLines.size(); i++) {
@@ -587,28 +475,6 @@ public class Strategy10_3 {
 
     private static Bean buildBean(StockKLine kLine, BOLL boll) {
         double dn = boll.getDn();
-        String date = kLine.getDate();
-        double high = kLine.getHigh();
-        double close = kLine.getClose();
-        double open = kLine.getOpen();
-        double low = kLine.getLow();
-
-        Bean bean = new Bean();
-        bean.setDate(date);
-        bean.setOpen(open);
-        bean.setClose(close);
-        bean.setHigh(high);
-        bean.setLow(low);
-        bean.setDn(dn);
-
-        double openDnDiffPnt = BigDecimal.valueOf((dn - open) / dn).setScale(4, ROUND_DOWN).multiply(BigDecimal.valueOf(100)).doubleValue();
-        bean.setOpenDnDiffPnt(openDnDiffPnt);
-
-        bean.setCloseLessOpen(close > open ? 1 : 0);
-        return bean;
-    }
-
-    private static Bean buildBean(StockKLine kLine, double dn) {
         String date = kLine.getDate();
         double high = kLine.getHigh();
         double close = kLine.getClose();

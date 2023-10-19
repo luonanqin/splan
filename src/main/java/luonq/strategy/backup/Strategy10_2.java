@@ -290,10 +290,12 @@ public class Strategy10_2 {
 //                            System.out.println();
                         }
                         Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
+                        Map<String, StockKLine> lastStockKLinelMap = Maps.newHashMap();
                         String lastDate = "";
                         if (j > 0) {
                             lastDate = dateList.get(j - 1);
                             lastStockBollMap = dateToStockBollMap.get(lastDate);
+                            lastStockKLinelMap = dateToStockLineMap.get(lastDate);
                         }
                         Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                         Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
@@ -307,8 +309,12 @@ public class Strategy10_2 {
                         int size = 0;
                         for (String stock : stocks) {
                             StockKLine kLine = stockKLineMap.get(stock);
+                            StockKLine lastKLine = lastStockKLinelMap.get(stock);
                             BOLL boll = stockBollMap.get(stock);
                             BOLL lastBoll = lastStockBollMap.get(lastDate);
+                            if (lastKLine!=null && (lastKLine.getVolume().doubleValue()<100000 || lastKLine.getClose()>lastKLine.getOpen())) {
+                                continue;
+                            }
 
                             double open = kLine.getOpen();
                             double close = kLine.getClose();
