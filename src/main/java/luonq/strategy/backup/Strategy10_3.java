@@ -312,8 +312,8 @@ public class Strategy10_3 {
                             BOLL boll = stockBollMap.get(stock);
                             BOLL lastBoll = lastStockBollMap.get(lastDate);
 
-                            if (lastKLine != null && lastKLine.getClose()>lastKLine.getOpen()) {
-//                                                                continue;
+                            if (lastKLine != null && (lastKLine.getVolume().doubleValue()<100000 || lastKLine.getClose()>lastKLine.getOpen())) {
+                                                                continue;
                             }
 
                             double open = kLine.getOpen();
