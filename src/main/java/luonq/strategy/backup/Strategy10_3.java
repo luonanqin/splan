@@ -402,7 +402,7 @@ public class Strategy10_3 {
                                     lossCount++;
                                 }
                             }
-                            stockRatio.addBean(buildBean(kLine, boll));
+//                            stockRatio.addBean(buildBean(kLine, boll));
                             size++;
                         }
                         capital += income;

@@ -113,7 +113,7 @@ public class GetHistoricalDaily {
         Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily/");
         for (String stock : stockMap.keySet()) {
             if (invalidStock.contains(stock)) {
-                System.out.println("invalid stock: " + stock);
+//                System.out.println("invalid stock: " + stock);
                 continue;
             }
             if (!stock.equals("AAPL")) {
