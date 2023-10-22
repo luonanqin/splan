@@ -81,6 +81,11 @@ public class GetHistoricalTrade {
             String openLine = openLines.get(0);
             String openDate = openLine.split(",")[0];
 
+            if (openDate.length() > 10) {
+                System.out.println(stock + " " + openLine);
+                continue;
+            }
+
             LocalDate dateParse = LocalDate.parse(openDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
 
             List<String> dateList = Lists.newArrayList();

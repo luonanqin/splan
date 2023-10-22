@@ -278,7 +278,7 @@ public class Strategy10_3 {
                     double hit = hitRatio.get(i);
 
                     if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
-//                        continue;
+                        continue;
                     }
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
@@ -388,13 +388,13 @@ public class Strategy10_3 {
                             if (lossRatio > v) {
                                 double loss = -count * open * v;
                                 income += loss;
-//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
+                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 lossCount++;
                             } else {
                                 double gain = count * (close - open);
                                 income += gain;
-//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
+                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
 
                                 if (gain >= 0) {
                                     gainCount++;

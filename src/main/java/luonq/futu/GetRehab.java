@@ -140,7 +140,7 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
         Map<String, String> stockFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
         for (String stock : stockFileMap.keySet()) {
             quote.getRehab(stock);
-            Thread.sleep(500);
+            Thread.sleep(600);
         }
         Map<String, String> result = quote.getResult();
         System.out.println(result);

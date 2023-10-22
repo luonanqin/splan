@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
  */
 public class Strategy11 {
 
-    public static final String TEST_STOCK = "PDD";
+    public static final String TEST_STOCK = "FUTU";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
 
     @Data
@@ -132,10 +133,22 @@ public class Strategy11 {
         private double avgPrice;
     }
 
+    @Data
+    public static class TestBean {
+        private double highOpenDiffRatio;
+        private double gainRatio;
+        private double open;
+        private double close;
+        private double low;
+        private String date;
+    }
+
     public static void main(String[] args) throws Exception {
+        double test = 10000 * Math.pow(1.01, 400);
+        System.out.println(test);
         double exchange = 6.94;
         double init = 10000 / exchange;
-        int beforeYear = 2023, afterYear = 2021, afterYear2 = 2022;
+        int beforeYear = 2022, afterYear = 2021, afterYear2 = 2022;
         double capital = init;
         Set<String> invalidStockSet = Sets.newHashSet("FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
         Set<String> stockSet = Sets.newHashSet();
@@ -150,25 +163,179 @@ public class Strategy11 {
 
             String filePath = dailyFileMap.get(stock);
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(filePath, beforeYear, afterYear);
+
+            List<TestBean> list = Lists.newLinkedList();
             for (StockKLine stockKLine : stockKLines) {
                 double open = stockKLine.getOpen();
                 double close = stockKLine.getClose();
                 double high = stockKLine.getHigh();
+                double low = stockKLine.getLow();
                 String date = stockKLine.getDate();
 
-                double gain = close - open;
-                if (gain < 0) {
+                if (open < 7) {
                     continue;
                 }
-                double gainRatio = BigDecimal.valueOf(gain / open).multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+                double gain = close - open;
+                double gainRatio = 0;
+                if (gain > 0) {
+                    gainRatio = BigDecimal.valueOf(gain / open).multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    System.out.println(date + " true");
+                } else {
+                    System.out.println(date + " false");
+                }
 
                 double retrace = high - close;
                 double highOpenDiff = high - open;
 
-                double retraceRatio = BigDecimal.valueOf(retrace / highOpenDiff).multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                //                double retraceRatio = BigDecimal.valueOf(retrace / highOpenDiff).multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 double highOpenDiffRatio = BigDecimal.valueOf(highOpenDiff / open).multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-                System.out.println(date + "\t" + highOpenDiffRatio + "\t" + gainRatio + "\t" + retraceRatio);
+                //                System.out.println(date + "\t" + highOpenDiffRatio + "\t" + gainRatio + "\t" + retraceRatio);
+                TestBean testBean = new TestBean();
+                testBean.setHighOpenDiffRatio(highOpenDiffRatio);
+                testBean.setGainRatio(gainRatio);
+                testBean.setLow(low);
+                testBean.setOpen(open);
+                testBean.setClose(close);
+                testBean.setDate(date);
+                list.add(testBean);
+            }
+
+            boolean showDetail = true;
+            //            boolean showDetail = false;
+            List<Integer> gainRatioRange = Lists.newArrayList(1, 2, 3, 5, 7, 10);
+            //            List<Double> upLimitRange = Lists.newArrayList(1d, 2d, 3d, 5d, 7d, 10d);
+            List<Double> upLimitRange = Lists.newArrayList(5d);
+            for (Integer range : gainRatioRange) {
+                if (range != 1) {
+                    continue;
+                }
+
+                double lossLimit = 0.97;
+                Random random = new Random(System.currentTimeMillis());
+                for (double upLimit : upLimitRange) {
+                    double sum = 0, gainCount = 0;
+                    double upRatio = 1 + upLimit / 100;
+                    double amount = 10000;
+                    for (TestBean testBean : list) {
+                        double gainRatio = testBean.getGainRatio();
+                        double highOpenDiffRatio = testBean.getHighOpenDiffRatio();
+                        double low = testBean.getLow();
+                        double close = testBean.getClose();
+                        double open = testBean.getOpen();
+                        String date = testBean.getDate();
+
+                        if (highOpenDiffRatio > range) {
+                            sum++;
+                        } else {
+                            //                            continue;
+                        }
+
+                        // 假设最低价出现早于止盈点
+                        // 1.如果止损价高于最低价，则止损卖出
+                        //   否则
+                        //      如果止盈价低于最高价，则止盈卖出
+                        //      否则
+                        //      收盘卖出（可能盈利可能亏损）
+
+                        // 假设最低价出现晚于止盈点
+                        // 2.如果止盈价低于最高价，则止盈卖出
+                        //   否则
+                        //      如果止损价高于最低价，则止损卖出
+                        //      否则
+                        //      收盘卖出（可能盈利可能亏损）
+
+                        if (open * lossLimit > low) {
+                            amount *= lossLimit;
+                            if (showDetail) {
+                                System.out.println("date=" + date + " gainRatio=" + gainRatio + " highOpenDiffRatio=" + highOpenDiffRatio + " lossLimit");
+                            }
+                        } else {
+                            double count = amount / open;
+                            double sellPrice = open * upRatio;
+                            if (highOpenDiffRatio < upLimit) {
+                                sellPrice = close;
+                            }
+                            sellPrice = close;
+                            amount = count * sellPrice;
+                            if (open < sellPrice) {
+                                gainCount++;
+                                if (showDetail) {
+                                    System.out.println("date=" + date + " gainRatio=" + gainRatio + " highOpenDiffRatio=" + highOpenDiffRatio + " gain=" + (close - open) / open * 100);
+                                }
+                            } else {
+                                System.out.println("date=" + date + " gainRatio=" + gainRatio + " highOpenDiffRatio=" + highOpenDiffRatio + " loss=" + (open - close) / open * 100);
+                            }
+                        }
+
+                        //                        int rand = random.nextInt(100);
+                        //                        boolean case1 = rand > 50;
+                        //                        double buyPrice = open * upRatio;
+                        //                        if (case1) {
+                        //                            if (buyPrice * lossLimit > low) {
+                        //                                amount *= lossLimit;
+                        //                            } else {
+                        //                                if (gainRatio > range) {
+                        //                                    gainCount++;
+                        //                                    amount *= upRatio;
+                        //                                } else {
+                        //                                    double count = amount / buyPrice;
+                        //                                    amount = count * close;
+                        //                                    if (buyPrice < close) {
+                        //                                        gainCount++;
+                        //                                    }
+                        //                                }
+                        //                            }
+                        //                        } else {
+                        //                            if (gainRatio > range) {
+                        //                                gainCount++;
+                        //                                amount *= upRatio;
+                        //                            } else {
+                        //                                if (buyPrice * lossLimit > low) {
+                        //                                    amount *= lossLimit;
+                        //                                } else {
+                        //                                    double count = amount / buyPrice;
+                        //                                    amount = count * close;
+                        //                                    if (buyPrice < close) {
+                        //                                        gainCount++;
+                        //                                    }
+                        //                                }
+                        //                            }
+                        //                        }
+
+                        //                        if (gainRatio > range) {
+                        //                            if (showDetail) {
+                        //                                System.out.println("date=" + date + " gainRatio=" + gainRatio + " highOpenDiffRatio=" + highOpenDiffRatio + " gain=" + (gainRatio - range));
+                        //                            }
+                        //
+                        //                            if (open * upRatio * lossLimit > low) {
+                        //                                amount *= lossLimit;
+                        //                            } else {
+                        //                                gainCount++;
+                        //                                amount *= 1 + Math.min(gainRatio - range, upLimit) / 100;
+                        //                            }
+                        //                            //                            amount *= 1 + (gainRatio - range) / 100;
+                        //                        } else {
+                        //                            if (highOpenDiffRatio > (range + upLimit)) {
+                        //                                if (showDetail) {
+                        //                                    System.out.println("date=" + date + " gainRatio=" + gainRatio + " highOpenDiffRatio=" + highOpenDiffRatio + " gain2");
+                        //                                }
+                        //
+                        //                                gainCount++;
+                        //                                amount *= upRatio;
+                        //                            } else {
+                        //                                if (showDetail) {
+                        //                                    System.out.println("date=" + date + " gainRatio=" + gainRatio + " highOpenDiffRatio=" + highOpenDiffRatio + " loss");
+                        //                                }
+                        //
+                        //                                amount *= lossLimit; // todo 要看最低点是否低于止损线，如果低于止损线则会提前止损
+                        //                            }
+                        //                        }
+                    }
+
+                    System.out.println("stock=" + stock + " upLimit=" + upLimit + " gainCount=" + gainCount + " sum=" + sum + " ratio=" + gainCount / sum + " amount=" + amount);
+                }
             }
         }
     }
