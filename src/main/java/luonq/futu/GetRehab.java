@@ -10,6 +10,7 @@ import com.futu.openapi.pb.QotGetSubInfo;
 import com.futu.openapi.pb.QotRequestRehab;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
@@ -18,6 +19,7 @@ import util.Constants;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * Created by Luonanqin on 2023/5/5.
@@ -138,7 +140,11 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
         //        quote.getRehab("DPST");
 
         Map<String, String> stockFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
+        Set<String> invalidSet = Sets.newHashSet("SDC","SEV","STSA","BSAQ","DHHC","STRE","HLBZ","MSDA","BBBY","FWAC","KDNY","WPCB","SJR","RIDE","SLGG","SCUA","APEN","APGN","CEMI","YELL","KAL","SQZ","JATT","BBLN","VMGA","CNCE","APMI","SDAC","BTB","GRAY","GRCY","MBSC","RAAS","BWC","RADI","FOCS","SLVR","PTRA","GRIL","DICE","SUMO","LYLT","GRNA","MTAC","TGR","OIIM","TIG","RJAC","FORG","CIH","VVNT","AHRN","KVSC","SMIH","ZING","EUCR","CFMS","PDCE","ORCC","LCI","PLXP","TYDE","HMPT","HVBC","ORIA","MLAC","FGMC","IPVI","CVT","FPAC","SVFB","AQUA","MTVC","EMBK","UTAA","DALS","PDOT","VNTR","UBA","SVNA","BLNG","AIMC","LSI","DRTT","DCP","CORS","DCT","HERA","GSQB","GSRM","SESN","AZRE","LION","UTME","CS","GBRG","HEXO","IQMD","LITT","MLVF","PEAR","DMS","AZYO","CPAA","MCG","USX","DSEY","ARNC","CGRN","SNRH","MURF","RKTA","SI","EVOJ","EVOP","VORB","PNAC","HWKZ","MMP","WAVC","ARYE","OBNK","XM","CYAD","TRAQ","MMMB","AAWW","TIOA","ZT","JUGG","RCLF","OBSV","MTP","CPUH","AJRD","ENOB","NHIC","JMAC","NYMX","JUPW","VPCB","MEKA","PNTM","VQS","ENTF","DTEA","CHRA","ESM","TRTN","GLOP","NGC","CYXT","SGFY","METX","FISV","FACT","BVXV","ABST","SGHL","EOCW","BNNR","BWAC","ISEE","CIDM","FRON","SPCM","ATAQ","ATCO","MNTV","VHNA","RUTH","SGTX","CIIG","SPKB","JNCE","CINC","FRC","FRG","ATNX","SPPI","OFC","CREC","WWE","ALBO","GVCI","ACQR","ATTO","FZT","JWAC","GEEX","GMVD","PGRW","SYNH","TTCF","OSH","ITCB","GENQ","RENN","UNVR","GET","ALPA","TCFC","GFX","BGCP","ALPS","ADAL","RETA","BOXD","REVE","ADER","GLS","REUN","FSTX","LDHA","ICNC","PHCF","BPAC","XPAX","ADMP","DMYS","BGRY","TLGA","AURC","TCVA","CSII","MGTA","PKI","GFGD","FTEV","GNUS","DNAB","DNAD","QTEK","HILS","ONCS","IDBA","PTE","LMNL","NBRV","ZEST","AVAC","AMOV","AMOT","LVAC","FTPA","GFOR","SIRE","MPRA","HHC","ROCG","SRGA","AMRS","ROCC","LMST","FCRD","SIVB","PIAI","HMA","GOGN","IMBI","AMYT","CCAI","HAPP","TMDI","HSC","RONI","MYOV","WEJO","YVR","DFFN","LVRA","GGAA","CTIC","RXDX","TMKR","VBOC","ANGN","PRBM","PRDS","ERES","IBA","CLBR","UPTD","YTPG","ZEV","QTT","ANPC","QUOT","LFAC","PANA","HSKA","IMV","PRTK","OXAC","RAM","PRVB","FMIV","ANZU","CDAK","INDT","ISO","TETC","ERYP","INKA","CLXT","VLAT","BRIV","AFTR","ALR","DGNU","ROC","AMV","BRMK","TWCB","RTL","ATY","NUVA","AUY","SCAQ","UIHC","HTGM","AGAC","STET","PSPC","VLON","OPNT","SKYA","TWNI","AGFS","SCHN","VLTA","AGGR","MAXR","SAL","HCNE","TOAC");
         for (String stock : stockFileMap.keySet()) {
+            if (invalidSet.contains(stock)) {
+                continue;
+            }
             quote.getRehab(stock);
             Thread.sleep(600);
         }
