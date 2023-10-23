@@ -33,7 +33,7 @@ public class GrabEarningHistory {
         driver.manage().window().setSize(new Dimension(1280, 1027));
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
 
-        List<String> dayList = Lists.newArrayList("2023-10-16", "2023-10-17", "2023-10-19", "2023-10-19", "2023-10-20");
+        List<String> dayList = Lists.newArrayList("2023-10-23", "2023-10-24", "2023-10-25", "2023-10-26", "2023-10-27");
 
         for (String day : dayList) {
             By tableXpath = By.xpath("//div[@id='cal-res-table']");
