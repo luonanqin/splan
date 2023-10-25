@@ -59,7 +59,7 @@ public class TradeExecutor {
                 continue;
             }
             double price = RealTimeDataWS.realtimeQuoteMap.get(code);
-            double orderPrice = BigDecimal.valueOf(price * 1.005).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+            double orderPrice = BigDecimal.valueOf(price * 1.01).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
             /** 2.用剩余可用现金计算可买数量 */
             int count = (int) (remainCash / orderPrice);
 
@@ -71,7 +71,7 @@ public class TradeExecutor {
 
             /** 3.用可买数量下市价单 */
             long orderId = tradeApi.placeOrder(code, count, orderPrice);
-            System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId);
+            System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId + " " + System.currentTimeMillis());
 
             /** 4.下单完成后，十秒后获取成交状态 */
             OrderFill orderFill = tradeApi.getOrderFill(orderId, 15);

@@ -109,11 +109,11 @@ public class RealTimeDataWS {
             init();
             connect();
             waitAuth();
-            if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
-                listenExistPosition();
-            } else {
-                subcribeStock();
-            }
+            //            if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
+            //                listenExistPosition();
+            //            } else {
+            subcribeStock();
+            //            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -144,8 +144,8 @@ public class RealTimeDataWS {
             originRatioMap = Strategy10_3.computeHistoricalOverBollingerRatio();
             loadEarningInfo();
             stockSet = buildStockSet(fileMap);
-            //            stockSet.clear();
-            //            stockSet.add("AAPL");
+            stockSet.clear();
+            stockSet.add("RNST");
 
             initManyTime();
             readyUnsubscribeExecutor();
@@ -199,7 +199,7 @@ public class RealTimeDataWS {
 
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
             preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(21).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(23).withMinute(5).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         } else {
             preTradeTime = preTrade.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
@@ -474,9 +474,21 @@ public class RealTimeDataWS {
     public void sendToTradeDataListener() {
         try {
             while (true) {
-                String msg = subscribeBQ.take();
+                String msg = subscribeBQ.poll(2, TimeUnit.SECONDS);
                 if (listenEnd) {
                     return;
+                }
+                if (StringUtils.isBlank(msg)) {
+                    if (System.currentTimeMillis() > listenEndTime) {
+                        beginTrade("time over. listen end!");
+                        return;
+                    } else if (stockSet.size() - unsubcribeStockSet.size() < 100) {
+                        beginTrade("many stock has received data. listen end!");
+                        return;
+                    } else {
+                        System.out.println("there is no msg. continue");
+                        continue;
+                    }
                 }
 
                 //                System.out.println(msg);
@@ -494,18 +506,13 @@ public class RealTimeDataWS {
                     //                    System.out.println(map);
                     if (time < openTime) {
                         if (time % 1000 == 0) {
-                            System.out.println("time is early");
+                            System.out.println("time is early. " + map);
                             System.out.println(map);
                         }
                         continue;
                     }
                     if (time > listenEndTime) {
-                        subscribed = false;
-                        System.out.println(stock + " time is " + time + ", price is " + price + ".listen end!");
-                        unsubscribeAll();
-                        listenEnd = true;
-                        getRealtimeQuote();
-                        tradeExecutor.beginTrade();
+                        beginTrade(stock + " time is " + time + ", price is " + price + ".listen end!");
                         return;
                     }
                     // 当前价大于前一天的下轨则直接过滤
@@ -519,14 +526,8 @@ public class RealTimeDataWS {
                 }
 
                 // 用当前时间判断是否超过监听时间，避免不活跃股票 或 接口延迟 导致监听超时，影响及时下单
-                long nowTime = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
-                if (nowTime > listenEndTime) {
-                    subscribed = false;
-                    System.out.println("now time is over! listen end!");
-                    unsubscribeAll();
-                    listenEnd = true;
-                    getRealtimeQuote();
-                    tradeExecutor.beginTrade();
+                if (System.currentTimeMillis() > listenEndTime) {
+                    beginTrade("now time is over! listen end!");
                     return;
                 }
 
@@ -539,17 +540,22 @@ public class RealTimeDataWS {
 
                 // 所有股票都收到了开盘价，停止监听开始交易
                 if (stockSet.size() == unsubcribeStockSet.size()) {
-                    subscribed = false;
-                    System.out.println("receive all open price! start trade!");
-                    listenEnd = true;
-                    getRealtimeQuote();
-                    tradeExecutor.beginTrade();
+                    beginTrade("receive all open price! start trade!");
                     return;
                 }
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             System.out.println("sendToTradeDataListener error. " + e.getMessage());
         }
+    }
+
+    public void beginTrade(String msg) throws Exception {
+        subscribed = false;
+        System.out.println(msg);
+        unsubscribeAll();
+        listenEnd = true;
+        getRealtimeQuote();
+        tradeExecutor.beginTrade();
     }
 
     // 成交前获取实时报价
@@ -563,8 +569,8 @@ public class RealTimeDataWS {
 
         executor.execute(() -> {
             try {
-                while (!getRealtimeQuote) {
-                    String msg = realtimeQuoteBQ.poll(10, TimeUnit.SECONDS);
+                while (getRealtimeQuote) {
+                    String msg = realtimeQuoteBQ.poll(1, TimeUnit.SECONDS);
                     if (StringUtils.isBlank(msg)) {
                         continue;
                     }
@@ -583,7 +589,7 @@ public class RealTimeDataWS {
 
                 // 退出前反订阅
                 for (String stock : stockList) {
-                    unsubscribe(stock);
+                    sendMessage("{\"action\":\"unsubscribe\", \"params\":\"T." + stock + "\"}");
                 }
                 System.out.println("unsubscribe real-time quote");
             } catch (Exception e) {
