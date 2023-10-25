@@ -78,6 +78,8 @@ public class TradeDataListener {
         if (success) {
             list.show();
         }
+
+        RealTimeDataWS.realtimeQuoteMap.put(stock, price);
     }
 
     public static void main(String[] args) throws Exception {

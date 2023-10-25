@@ -54,8 +54,12 @@ public class TradeExecutor {
         for (int i = 0; i < nodes.size(); i++) {
             Node node = nodes.get(i);
             String code = node.getName();
-            double price = node.getPrice();
-            double orderPrice = BigDecimal.valueOf(price * 1.01).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+            if (!RealTimeDataWS.realtimeQuoteMap.containsKey(code)) {
+                System.out.println("can't find real-time quote: " + code);
+                continue;
+            }
+            double price = RealTimeDataWS.realtimeQuoteMap.get(code);
+            double orderPrice = BigDecimal.valueOf(price * 1.005).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
             /** 2.用剩余可用现金计算可买数量 */
             int count = (int) (remainCash / orderPrice);
 
@@ -87,6 +91,10 @@ public class TradeExecutor {
             remainCash -= cut;
         }
         System.out.println("trade end");
+
+        // 停止监听实时报价
+        RealTimeDataWS.getRealtimeQuote = false;
+        System.out.println("stop get real-time quote");
 
         /** 6.建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */
         closeCheckPosition();

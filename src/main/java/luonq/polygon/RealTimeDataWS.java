@@ -3,6 +3,7 @@ package luonq.polygon;
 import bean.BOLL;
 import bean.EarningDate;
 import bean.FrontReinstatement;
+import bean.Node;
 import bean.NodeList;
 import bean.RatioBean;
 import bean.SplitStockInfo;
@@ -81,8 +82,11 @@ public class RealTimeDataWS {
     public static Map<String, StockRatio> originRatioMap;
     public static Set<String> todayEarningStockSet = Sets.newHashSet();
     public static Set<String> lastEarningStockSet = Sets.newHashSet();
+    public static boolean getRealtimeQuote = false;
+    public static Map<String, Double> realtimeQuoteMap = Maps.newHashMap();
     private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
+    private BlockingQueue<String> realtimeQuoteBQ = new LinkedBlockingQueue<>(1000);
     private Executor executor;
     private long preTradeTime;
     private long openTime;
@@ -215,7 +219,7 @@ public class RealTimeDataWS {
         executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
     }
 
-    private static void loadEarningInfo() throws Exception{
+    private static void loadEarningInfo() throws Exception {
         LocalDate now = LocalDate.now();
         String today = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         Map<String, List<EarningDate>> todayEaring = BaseUtils.getEarningDate(today);
@@ -406,6 +410,8 @@ public class RealTimeDataWS {
                 subscribeBQ.offer(message);
             } else if (listenStopLoss) {
                 stopLossBQ.offer(message);
+            } else if (getRealtimeQuote) {
+                realtimeQuoteBQ.offer(message);
             } else {
                 List<Map> maps = JSON.parseArray(message, Map.class);
                 Map map = maps.get(0);
@@ -498,6 +504,7 @@ public class RealTimeDataWS {
                         System.out.println(stock + " time is " + time + ", price is " + price + ".listen end!");
                         unsubscribeAll();
                         listenEnd = true;
+                        getRealtimeQuote();
                         tradeExecutor.beginTrade();
                         return;
                     }
@@ -518,6 +525,7 @@ public class RealTimeDataWS {
                     System.out.println("now time is over! listen end!");
                     unsubscribeAll();
                     listenEnd = true;
+                    getRealtimeQuote();
                     tradeExecutor.beginTrade();
                     return;
                 }
@@ -534,6 +542,7 @@ public class RealTimeDataWS {
                     subscribed = false;
                     System.out.println("receive all open price! start trade!");
                     listenEnd = true;
+                    getRealtimeQuote();
                     tradeExecutor.beginTrade();
                     return;
                 }
@@ -543,6 +552,47 @@ public class RealTimeDataWS {
         }
     }
 
+    // 成交前获取实时报价
+    public void getRealtimeQuote() throws InterruptedException {
+        getRealtimeQuote = true;
+        List<String> stockList = list.getNodes().stream().map(Node::getName).collect(Collectors.toList());
+        System.out.println("get real-time quote: " + stockList);
+        for (String stock : stockList) {
+            sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
+        }
+
+        executor.execute(() -> {
+            try {
+                while (!getRealtimeQuote) {
+                    String msg = realtimeQuoteBQ.poll(10, TimeUnit.SECONDS);
+                    if (StringUtils.isBlank(msg)) {
+                        continue;
+                    }
+
+                    List<Map> maps = JSON.parseArray(msg, Map.class);
+                    for (Map map : maps) {
+                        String stock = MapUtils.getString(map, "sym", "");
+                        if (StringUtils.isBlank(stock)) {
+                            continue;
+                        }
+
+                        Double price = MapUtils.getDouble(map, "p");
+                        realtimeQuoteMap.put(stock, price);
+                    }
+                }
+
+                // 退出前反订阅
+                for (String stock : stockList) {
+                    unsubscribe(stock);
+                }
+                System.out.println("unsubscribe real-time quote");
+            } catch (Exception e) {
+                System.out.println("getRealtimeQuote error. " + e.getMessage());
+            }
+        });
+        Thread.sleep(1000);
+    }
+
     public boolean unsubscribe(String stock) {
         if (unsubcribeStockSet.contains(stock)) {
             return false;
@@ -550,7 +600,7 @@ public class RealTimeDataWS {
         executor.execute(() -> sendMessage("{\"action\":\"unsubscribe\", \"params\":\"T." + stock + "\"}"));
         unsubcribeStockSet.add(stock);
         if (unsubcribeStockSet.size() % 100 == 0) {
-            System.out.println("unsubcribeStockSet size: " + unsubcribeStockSet.size() + " " + System.currentTimeMillis());
+            System.out.println("unsubscribeStockSet size: " + unsubcribeStockSet.size() + " " + System.currentTimeMillis());
         }
         return true;
     }

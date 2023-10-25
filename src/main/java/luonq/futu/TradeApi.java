@@ -4,9 +4,14 @@ import bean.OrderFill;
 import bean.StockPosition;
 import com.futu.openapi.FTAPI;
 import com.futu.openapi.FTAPI_Conn;
+import com.futu.openapi.FTAPI_Conn_Qot;
 import com.futu.openapi.FTAPI_Conn_Trd;
 import com.futu.openapi.FTSPI_Conn;
+import com.futu.openapi.FTSPI_Qot;
 import com.futu.openapi.FTSPI_Trd;
+import com.futu.openapi.pb.QotCommon;
+import com.futu.openapi.pb.QotGetBasicQot;
+import com.futu.openapi.pb.QotSub;
 import com.futu.openapi.pb.TrdCommon;
 import com.futu.openapi.pb.TrdGetFunds;
 import com.futu.openapi.pb.TrdGetHistoryOrderList;
@@ -28,6 +33,7 @@ import util.MD5Util;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +48,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Luonanqin on 2022/12/22.
  */
-public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
+public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     public static String pwd = MD5Util.calcMD5("134931");
     public static long simulateUsAccountId = 7681786L;
@@ -54,11 +60,13 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
     private AtomicDouble remainCash = new AtomicDouble(0);
     private AtomicLong orderId = new AtomicLong(0);
     private AtomicInteger cancelResCode = new AtomicInteger(1);
+    private AtomicDouble quote = new AtomicDouble(0);
     private Map<Long, LinkedBlockingQueue<OrderFill>> orderFillMap = Maps.newHashMap();
     private BlockingQueue<Map<String, StockPosition>> stockPositionBlock = new LinkedBlockingQueue<>();
     private BlockingQueue<Long> stopLossOrder = new LinkedBlockingQueue<>();
 
     FTAPI_Conn_Trd trd = new FTAPI_Conn_Trd();
+    FTAPI_Conn_Qot qot = new FTAPI_Conn_Qot();
 
     public FTAPI_Conn_Trd getTrd() {
         return trd;
@@ -68,6 +76,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         trd.setClientInfo("javaclient", 1);  //设置客户端信息
         trd.setConnSpi(this);  //设置连接回调
         trd.setTrdSpi(this);   //设置交易回调
+        //        qot.setClientInfo("javaclient", 1);  //设置客户端信息
+        //        qot.setConnSpi(this);  //设置连接回调
+        //        qot.setQotSpi(this);   //设置行情回调
     }
 
     public void setAccountId(long accountId) {
@@ -93,6 +104,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
 
     public void start() {
         trd.initConnect("127.0.0.1", (short) 11111, false);
+        //        qot.initConnect("127.0.0.1", (short) 11111, false);
         System.out.println("trade api initialize staring...");
         try {
             Thread.sleep(3000);
@@ -295,6 +307,44 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         }
     }
 
+    // 订阅报价
+    public void subBasicQuote(String stock) {
+        List<Integer> subTypeList = new ArrayList<>();
+        subTypeList.add(QotCommon.SubType.SubType_Basic_VALUE);
+
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setCode(stock)
+          .build();
+        QotSub.C2S c2s = QotSub.C2S.newBuilder()
+          .addSecurityList(sec)
+          .addAllSubTypeList(subTypeList)
+          .setIsSubOrUnSub(true)
+          .build();
+        QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.sub(req);
+        System.out.println("subcribe quote: " + stock);
+    }
+
+    // 获取报价
+    public double getBasicQot(String stock) {
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setCode(stock)
+          .build();
+        QotGetBasicQot.C2S c2s = QotGetBasicQot.C2S.newBuilder()
+          .addSecurityList(sec)
+          .build();
+        QotGetBasicQot.Request req = QotGetBasicQot.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.getBasicQot(req);
+        System.out.println("try to get basic qot: " + stock);
+        while (true) {
+            if (quote.get() != 0) {
+                return quote.getAndSet(0);
+            }
+        }
+    }
+
     public void getHistoryOrderList(String code) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
@@ -461,6 +511,35 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         }
     }
 
+    // 订阅报价回调
+    @Override
+    public void onReply_Sub(FTAPI_Conn client, int nSerialNo, QotSub.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("Subcribe qot failed: %s\n", rsp.getRetMsg());
+        } else {
+            System.out.println("Subcribe qot success");
+        }
+    }
+
+    // 获取报价回调
+    @Override
+    public void onReply_GetBasicQot(FTAPI_Conn client, int nSerialNo, QotGetBasicQot.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("get basic qot failed: %s\n", rsp.getRetMsg());
+            quote.set(-1);
+        } else {
+            QotGetBasicQot.S2C s2C = rsp.getS2C();
+            List<QotCommon.BasicQot> basicQotListList = s2C.getBasicQotListList();
+            for (QotCommon.BasicQot basicQot : basicQotListList) {
+                String stock = basicQot.getSecurity().getCode();
+                double curPrice = basicQot.getCurPrice();
+                System.out.println("get basic qot. stock=" + stock + " price=" + curPrice);
+                quote.set(curPrice);
+                return;
+            }
+        }
+    }
+
     @Override
     public void onReply_GetHistoryOrderList(FTAPI_Conn client, int nSerialNo, TrdGetHistoryOrderList.Response rsp) {
         if (rsp.getRetType() != 0) {
@@ -508,6 +587,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Conn {
         //        trdDemo.placeOrder();
         //        trdDemo.modifyOrder();
         //        trdDemo.getHistoryOrderList("WWW");
+        //        trdDemo.subBasicQuote("AAPL");
+        //        double aapl = trdDemo.getBasicQot("AAPL");
+        //        System.out.println(aapl);
 
         while (true) {
             try {
