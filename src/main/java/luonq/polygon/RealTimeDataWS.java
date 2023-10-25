@@ -109,11 +109,11 @@ public class RealTimeDataWS {
             init();
             connect();
             waitAuth();
-            //            if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
-            //                listenExistPosition();
-            //            } else {
-            subcribeStock();
-            //            }
+            if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
+                listenExistPosition();
+            } else {
+                subcribeStock();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -144,8 +144,8 @@ public class RealTimeDataWS {
             originRatioMap = Strategy10_3.computeHistoricalOverBollingerRatio();
             loadEarningInfo();
             stockSet = buildStockSet(fileMap);
-            stockSet.clear();
-            stockSet.add("RNST");
+            //            stockSet.clear();
+            //            stockSet.add("RNST");
 
             initManyTime();
             readyUnsubscribeExecutor();
@@ -199,7 +199,7 @@ public class RealTimeDataWS {
 
         if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
             preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(23).withMinute(5).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            openTime = now.withHour(21).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         } else {
             preTradeTime = preTrade.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
