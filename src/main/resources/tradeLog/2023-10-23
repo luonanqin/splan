@@ -1,0 +1,429 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7122208329612048764
+trade api initialize finish start!
+unlock success
+stock latest close great 7 size: 2004
+stock overbolling hit great 0.500000 size: 1675
+filter merge stock, the stock set size is 1675
+filter split stock, the stock set size is 1672
+filter front reinstatement less 0.98 stock, the stock set size is 1588
+filter earning and lastEarning stock, the stock set size is 1588
+finish initialize many time. preTradeTime=1698067680000, openTime=1698067800000, closeCheckTime=Tue Oct 24 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Oct 23, 2023 9:13:46 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:26:46
+wait pre trade time. now is 21:26:51
+wait pre trade time. now is 21:26:56
+wait pre trade time. now is 21:27:01
+wait pre trade time. now is 21:27:06
+wait pre trade time. now is 21:27:11
+wait pre trade time. now is 21:27:16
+wait pre trade time. now is 21:27:21
+wait pre trade time. now is 21:27:26
+wait pre trade time. now is 21:27:31
+wait pre trade time. now is 21:27:36
+wait pre trade time. now is 21:27:41
+wait pre trade time. now is 21:27:46
+wait pre trade time. now is 21:27:51
+wait pre trade time. now is 21:27:56
+begin subcribe stock at 21:28:01
+finish subcribe real time!
+time is early
+{p=412.2, ev=T, q=306352, s=10, c=[12,37], t=1698067694000, sym=NVDA, x=11, i=4831, z=3}
+time is early
+{p=82.3, ev=T, q=79873, s=15, c=[14,12,37,41], t=1698067740000, sym=DIS, x=11, i=52983526216787, z=1}
+time is early
+{p=26.15, ev=T, q=24254, s=21, c=[14,12,37,41], t=1698067740000, sym=BAC, x=8, i=52983525102648, z=1}
+time is early
+{p=33.92, ev=T, q=79986, s=400, c=[14,12,41], t=1698067783000, sym=MOS, x=3, i=52983525028425, z=1}
+StockEvent(stock=FTNT, price=56.02, time=1698067800001) dn=56.321
+FTNT=0.5344365334422237
+StockEvent(stock=ACI, price=22.2, time=1698067800001) dn=22.202
+StockEvent(stock=TSLA, price=209.99, time=1698067800002) dn=216.157
+TSLA=2.853018870543171,FTNT=0.5344365334422237
+StockEvent(stock=NVT, price=47.0, time=1698067800002) dn=47.478
+StockEvent(stock=PNC, price=111.37, time=1698067800002) dn=112.781
+TSLA=2.853018870543171,PNC=1.2510972592901297,FTNT=0.5344365334422237
+StockEvent(stock=AKAM, price=103.84, time=1698067800004) dn=104.22
+StockEvent(stock=TWLO, price=52.8, time=1698067800001) dn=53.577
+TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,FTNT=0.5344365334422237
+StockEvent(stock=BKNG, price=2757.64, time=1698067800004) dn=2769.319
+StockEvent(stock=CAT, price=247.1, time=1698067800002) dn=250.151
+StockEvent(stock=SHW, price=235.31, time=1698067800001) dn=237.379
+TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,SHW=0.8716019529949947,FTNT=0.5344365334422237
+StockEvent(stock=EVBG, price=19.57, time=1698067800005) dn=19.615
+StockEvent(stock=BRZE, price=43.28, time=1698067800004) dn=43.701
+StockEvent(stock=JCI, price=48.4, time=1698067800008) dn=48.764
+StockEvent(stock=IDCC, price=77.05, time=1698067800005) dn=77.368
+StockEvent(stock=COGT, price=8.79, time=1698067800003) dn=8.805
+StockEvent(stock=BLFS, price=10.13, time=1698067800004) dn=10.389
+StockEvent(stock=ADI, price=165.85, time=1698067800004) dn=166.961
+TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,SHW=0.8716019529949947,ADI=0.6654248596977848,FTNT=0.5344365334422237
+StockEvent(stock=ENPH, price=97.27, time=1698067800005) dn=102.655
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,SHW=0.8716019529949947,ADI=0.6654248596977848,FTNT=0.5344365334422237
+StockEvent(stock=NFBK, price=8.75, time=1698067800007) dn=8.767
+StockEvent(stock=DOMO, price=8.45, time=1698067800005) dn=8.451
+unsubcribeStockSet size: 100 1698067800147
+StockEvent(stock=JBHT, price=175.26, time=1698067800006) dn=175.287
+StockEvent(stock=PRAA, price=14.97, time=1698067800008) dn=15.408
+StockEvent(stock=OKTA, price=69.23, time=1698067800007) dn=72.829
+StockEvent(stock=CYRX, price=10.79, time=1698067800005) dn=10.839
+StockEvent(stock=QCOM, price=107.79, time=1698067800003) dn=108.083
+StockEvent(stock=PNFP, price=61.18, time=1698067800008) dn=61.894
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,PNFP=1.1535851617281137,SHW=0.8716019529949947,ADI=0.6654248596977848,FTNT=0.5344365334422237
+StockEvent(stock=DNLI, price=18.34, time=1698067800005) dn=18.505
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,PNFP=1.1535851617281137,DNLI=0.8916509051607627,SHW=0.8716019529949947,ADI=0.6654248596977848,FTNT=0.5344365334422237
+StockEvent(stock=MA, price=382.77, time=1698067800060) dn=384.83
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,PNFP=1.1535851617281137,DNLI=0.8916509051607627,SHW=0.8716019529949947,ADI=0.6654248596977848,MA=0.5353013018735552,FTNT=0.5344365334422237
+StockEvent(stock=KE, price=25.15, time=1698067800011) dn=25.205
+StockEvent(stock=ZION, price=29.64, time=1698067800009) dn=30.366
+StockEvent(stock=ALLE, price=97.16, time=1698067800072) dn=97.687
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,PNFP=1.1535851617281137,DNLI=0.8916509051607627,SHW=0.8716019529949947,ADI=0.6654248596977848,ALLE=0.5394781291267016,MA=0.5353013018735552
+StockEvent(stock=UFPI, price=94.38, time=1698067800001) dn=94.618
+StockEvent(stock=PEGA, price=39.16, time=1698067800047) dn=39.384
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,PNC=1.2510972592901297,PNFP=1.1535851617281137,DNLI=0.8916509051607627,SHW=0.8716019529949947,ADI=0.6654248596977848,PEGA=0.5687588868576167,ALLE=0.5394781291267016
+StockEvent(stock=PYPL, price=52.98, time=1698067800022) dn=53.718
+StockEvent(stock=AZN, price=62.86, time=1698067800060) dn=63.704
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,DNLI=0.8916509051607627,SHW=0.8716019529949947,ADI=0.6654248596977848,PEGA=0.5687588868576167
+StockEvent(stock=HSBC, price=37.64, time=1698067800084) dn=37.919
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,DNLI=0.8916509051607627,SHW=0.8716019529949947,HSBC=0.7357788971228049,ADI=0.6654248596977848
+unsubcribeStockSet size: 200 1698067800209
+StockEvent(stock=DOCU, price=39.96, time=1698067800088) dn=40.026
+StockEvent(stock=QRVO, price=89.61, time=1698067800067) dn=89.709
+StockEvent(stock=MRVL, price=49.12, time=1698067800088) dn=49.58
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,MRVL=0.9277934651068998,DNLI=0.8916509051607627,SHW=0.8716019529949947,HSBC=0.7357788971228049
+StockEvent(stock=OCFC, price=13.31, time=1698067800087) dn=13.435
+ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,OCFC=0.9304056568663936,MRVL=0.9277934651068998,DNLI=0.8916509051607627,SHW=0.8716019529949947
+StockEvent(stock=AAL, price=11.01, time=1698067800100) dn=11.013
+StockEvent(stock=RVMD, price=18.83, time=1698067800008) dn=20.574
+RVMD=8.476718188004293,ENPH=5.245725975354347,TSLA=2.853018870543171,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,OCFC=0.9304056568663936,MRVL=0.9277934651068998,DNLI=0.8916509051607627
+StockEvent(stock=TRUP, price=22.25, time=1698067800094) dn=22.983
+RVMD=8.476718188004293,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,OCFC=0.9304056568663936,MRVL=0.9277934651068998
+StockEvent(stock=SWKS, price=91.83, time=1698067800065) dn=92.278
+StockEvent(stock=CMI, price=219.33, time=1698067800143) dn=219.94
+StockEvent(stock=NTAP, price=73.56, time=1698067800049) dn=73.901
+StockEvent(stock=FFIN, price=23.05, time=1698067800082) dn=23.305
+RVMD=8.476718188004293,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,FFIN=1.0941857970392577,OCFC=0.9304056568663936
+StockEvent(stock=BOKF, price=72.87, time=1698067800101) dn=73.408
+StockEvent(stock=GFS, price=54.34, time=1698067800098) dn=54.368
+StockEvent(stock=SKYW, price=37.09, time=1698067800097) dn=37.111
+StockEvent(stock=CAMT, price=51.82, time=1698067800097) dn=53.008
+RVMD=8.476718188004293,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,CAMT=2.241171143978272,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137,FFIN=1.0941857970392577
+StockEvent(stock=OTEX, price=33.12, time=1698067800102) dn=33.148
+StockEvent(stock=MNDY, price=130.32, time=1698067800127) dn=131.095
+StockEvent(stock=ETN, price=194.83, time=1698067800177) dn=195.901
+StockEvent(stock=MCRI, price=58.72, time=1698067800140) dn=58.918
+StockEvent(stock=IRDM, price=38.38, time=1698067800110) dn=38.96
+RVMD=8.476718188004293,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,CAMT=2.241171143978272,IRDM=1.4887063655030757,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297,PNFP=1.1535851617281137
+StockEvent(stock=HOPE, price=8.21, time=1698067800120) dn=8.331
+RVMD=8.476718188004293,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,CAMT=2.241171143978272,IRDM=1.4887063655030757,HOPE=1.4524066738686674,TWLO=1.4502491740858972,AZN=1.3248775587090311,PNC=1.2510972592901297
+StockEvent(stock=VICR, price=51.21, time=1698067800083) dn=51.444
+StockEvent(stock=ON, price=84.07, time=1698067800114) dn=84.88
+StockEvent(stock=TER, price=91.01, time=1698067800125) dn=91.431
+unsubcribeStockSet size: 300 1698067800334
+StockEvent(stock=STER, price=12.22, time=1698067800077) dn=12.249
+StockEvent(stock=EXTR, price=20.81, time=1698067800102) dn=20.92
+StockEvent(stock=MRNA, price=79.17, time=1698067800100) dn=79.544
+StockEvent(stock=EBAY, price=40.71, time=1698067800141) dn=40.772
+StockEvent(stock=EFSC, price=35.48, time=1698067800206) dn=35.783
+StockEvent(stock=IONQ, price=12.34, time=1698067800236) dn=12.483
+StockEvent(stock=CERT, price=13.4, time=1698067800083) dn=13.439
+StockEvent(stock=UPST, price=24.3, time=1698067800172) dn=24.695
+RVMD=8.476718188004293,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,CAMT=2.241171143978272,UPST=1.5995140716744263,IRDM=1.4887063655030757,HOPE=1.4524066738686674,TWLO=1.4502491740858972,AZN=1.3248775587090311
+StockEvent(stock=NXPI, price=185.09, time=1698067800183) dn=186.341
+StockEvent(stock=FCX, price=33.6, time=1698067800244) dn=34.076
+StockEvent(stock=AZPN, price=180.52, time=1698067800230) dn=184.484
+StockEvent(stock=GPC, price=128.78, time=1698067800221) dn=130.331
+StockEvent(stock=UCBI, price=22.7, time=1698067800171) dn=22.977
+StockEvent(stock=ANSS, price=279.08, time=1698067800075) dn=280.294
+StockEvent(stock=SFNC, price=15.45, time=1698067800098) dn=15.6
+StockEvent(stock=INDB, price=45.21, time=1698067800140) dn=45.976
+RVMD=8.476718188004293,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,CAMT=2.241171143978272,INDB=1.666086653906382,UPST=1.5995140716744263,IRDM=1.4887063655030757,HOPE=1.4524066738686674,TWLO=1.4502491740858972
+StockEvent(stock=FLEX, price=24.0, time=1698067800133) dn=24.211
+StockEvent(stock=SPSC, price=159.31, time=1698067800162) dn=160.913
+StockEvent(stock=WRK, price=34.07, time=1698067800259) dn=34.362
+StockEvent(stock=ORCL, price=102.05, time=1698067800261) dn=102.248
+StockEvent(stock=TCBI, price=53.29, time=1698067800173) dn=54.424
+StockEvent(stock=JD, price=24.23, time=1698067800180) dn=24.36
+StockEvent(stock=ACLS, price=143.6, time=1698067800187) dn=145.49
+StockEvent(stock=RF, price=14.25, time=1698067800295) dn=14.915
+StockEvent(stock=WSFS, price=34.09, time=1698067800137) dn=34.337
+unsubcribeStockSet size: 400 1698067800479
+StockEvent(stock=DVAX, price=13.94, time=1698067800150) dn=13.96
+StockEvent(stock=POOL, price=320.07, time=1698067800166) dn=321.224
+StockEvent(stock=MXL, price=19.95, time=1698067800328) dn=20.204
+StockEvent(stock=EPAM, price=222.91, time=1698067800352) dn=222.912
+StockEvent(stock=AMAM, price=7.34, time=1698067800348) dn=7.808
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,CAMT=2.241171143978272,INDB=1.666086653906382,UPST=1.5995140716744263,IRDM=1.4887063655030757,HOPE=1.4524066738686674
+StockEvent(stock=ROKU, price=59.65, time=1698067800216) dn=60.096
+StockEvent(stock=IQV, price=182.7, time=1698067800396) dn=184.045
+StockEvent(stock=VTRS, price=9.01, time=1698067800373) dn=9.109
+StockEvent(stock=DIOD, price=74.0, time=1698067800348) dn=74.088
+StockEvent(stock=AGNC, price=8.11, time=1698067800368) dn=8.153
+StockEvent(stock=DX, price=10.375, time=1698067800392) dn=10.65
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,DX=2.5821596244131486,CAMT=2.241171143978272,INDB=1.666086653906382,UPST=1.5995140716744263,IRDM=1.4887063655030757
+StockEvent(stock=RNST, price=24.06, time=1698067800430) dn=24.347
+StockEvent(stock=TRIP, price=14.79, time=1698067800183) dn=14.944
+StockEvent(stock=NTLA, price=26.28, time=1698067800367) dn=26.309
+StockEvent(stock=NTRS, price=63.87, time=1698067800396) dn=64.107
+StockEvent(stock=HALO, price=35.0, time=1698067800247) dn=35.046
+StockEvent(stock=WSC, price=38.19, time=1698067800362) dn=38.408
+StockEvent(stock=MC, price=40.58, time=1698067800446) dn=41.001
+StockEvent(stock=HPE, price=15.19, time=1698067800437) dn=15.583
+StockEvent(stock=THFF, price=31.82, time=1698067800362) dn=32.188
+StockEvent(stock=CTLT, price=41.63, time=1698067800435) dn=41.721
+unsubcribeStockSet size: 500 1698067800587
+StockEvent(stock=ZG, price=37.48, time=1698067800391) dn=37.56
+StockEvent(stock=GABC, price=25.96, time=1698067800394) dn=25.978
+StockEvent(stock=HTLF, price=28.19, time=1698067800315) dn=28.238
+StockEvent(stock=TXN, price=147.162, time=1698067800362) dn=148.253
+StockEvent(stock=PPBI, price=20.38, time=1698067800426) dn=20.486
+StockEvent(stock=SBCF, price=19.93, time=1698067800414) dn=20.021
+StockEvent(stock=FHI, price=31.53, time=1698067800334) dn=31.583
+StockEvent(stock=BEAM, price=17.59, time=1698067800432) dn=17.986
+StockEvent(stock=ALB, price=137.1, time=1698067800539) dn=139.912
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,DX=2.5821596244131486,CAMT=2.241171143978272,ALB=2.0098347532734944,INDB=1.666086653906382,UPST=1.5995140716744263
+StockEvent(stock=ECPG, price=42.4, time=1698067800434) dn=42.866
+StockEvent(stock=SHYF, price=11.42, time=1698067800437) dn=12.076
+StockEvent(stock=EXR, price=108.73, time=1698067800562) dn=110.493
+StockEvent(stock=KLIC, price=42.83, time=1698067800415) dn=43.275
+StockEvent(stock=UAL, price=34.99, time=1698067800471) dn=35.122
+StockEvent(stock=Z, price=38.54, time=1698067800390) dn=38.697
+StockEvent(stock=ICHR, price=25.55, time=1698067800431) dn=26.278
+StockEvent(stock=BCYC, price=16.19, time=1698067800360) dn=16.627
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,BCYC=2.6282552474890095,DX=2.5821596244131486,CAMT=2.241171143978272,ALB=2.0098347532734944,INDB=1.666086653906382
+StockEvent(stock=BRKR, price=58.985, time=1698067800490) dn=59.17
+StockEvent(stock=STAG, price=32.455, time=1698067800572) dn=32.571
+StockEvent(stock=EXPE, price=94.24, time=1698067800469) dn=94.539
+StockEvent(stock=FVRR, price=22.41, time=1698067800488) dn=22.488
+StockEvent(stock=VICI, price=27.48, time=1698067800581) dn=27.565
+StockEvent(stock=GLOB, price=179.51, time=1698067800592) dn=181.193
+unsubcribeStockSet size: 600 1698067800730
+StockEvent(stock=STEP, price=28.16, time=1698067800439) dn=28.275
+StockEvent(stock=HWC, price=33.35, time=1698067800533) dn=33.49
+StockEvent(stock=OSK, price=88.565, time=1698067800593) dn=88.653
+StockEvent(stock=FR, price=42.0, time=1698067800571) dn=42.128
+StockEvent(stock=COF, price=89.9, time=1698067800547) dn=90.106
+StockEvent(stock=TRNO, price=51.89, time=1698067800611) dn=52.143
+StockEvent(stock=ATI, price=35.33, time=1698067800546) dn=35.455
+StockEvent(stock=LTHM, price=15.525, time=1698067800613) dn=15.634
+StockEvent(stock=SWI, price=8.965, time=1698067800647) dn=8.998
+StockEvent(stock=MTSI, price=75.15, time=1698067800515) dn=75.451
+StockEvent(stock=WSBF, price=9.94, time=1698067800487) dn=10.009
+StockEvent(stock=HAFC, price=14.84, time=1698067800458) dn=15.031
+StockEvent(stock=BV, price=7.27, time=1698067800648) dn=7.291
+StockEvent(stock=WDC, price=42.54, time=1698067800594) dn=42.772
+StockEvent(stock=MITK, price=9.67, time=1698067800507) dn=9.777
+unsubcribeStockSet size: 700 1698067800803
+StockEvent(stock=POWI, price=70.44, time=1698067800635) dn=71.304
+StockEvent(stock=MAIN, price=39.0, time=1698067800669) dn=39.05
+StockEvent(stock=WLK, price=114.72, time=1698067800605) dn=116.29
+StockEvent(stock=PPG, price=123.93, time=1698067800694) dn=124.096
+StockEvent(stock=ENS, price=88.855, time=1698067800666) dn=89.252
+StockEvent(stock=APH, price=79.42, time=1698067800556) dn=79.835
+StockEvent(stock=TTMI, price=12.0, time=1698067800481) dn=12.047
+StockEvent(stock=DEI, price=11.27, time=1698067800667) dn=11.291
+StockEvent(stock=ST, price=35.43, time=1698067800698) dn=35.491
+StockEvent(stock=DAL, price=32.03, time=1698067800502) dn=32.035
+StockEvent(stock=CTVA, price=47.475, time=1698067800556) dn=48.568
+StockEvent(stock=CASY, price=261.03, time=1698067800508) dn=261.675
+StockEvent(stock=CNOB, price=16.75, time=1698067800676) dn=16.835
+StockEvent(stock=MELI, price=1141.04, time=1698067800660) dn=1163.18
+StockEvent(stock=AUB, price=27.61, time=1698067800689) dn=27.673
+StockEvent(stock=IIIN, price=29.13, time=1698067800680) dn=29.551
+StockEvent(stock=CFR, price=85.9, time=1698067800720) dn=86.277
+StockEvent(stock=ARE, price=94.24, time=1698067800665) dn=94.447
+StockEvent(stock=AMWD, price=67.23, time=1698067800341) dn=67.872
+StockEvent(stock=U, price=25.94, time=1698067800595) dn=26.425
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,BCYC=2.6282552474890095,DX=2.5821596244131486,CAMT=2.241171143978272,ALB=2.0098347532734944,U=1.8353831598864687
+unsubcribeStockSet size: 800 1698067800893
+StockEvent(stock=RS, price=243.99, time=1698067800680) dn=246.79
+StockEvent(stock=BRC, price=52.77, time=1698067800707) dn=52.979
+StockEvent(stock=BLK, price=611.44, time=1698067800712) dn=612.884
+StockEvent(stock=SSTK, price=35.23, time=1698067800707) dn=35.337
+StockEvent(stock=CRL, price=184.09, time=1698067800644) dn=184.341
+StockEvent(stock=CUBE, price=35.22, time=1698067800681) dn=35.621
+StockEvent(stock=ATR, price=121.72, time=1698067800713) dn=121.758
+StockEvent(stock=SNEX, price=87.22, time=1698067800708) dn=87.843
+StockEvent(stock=EL, price=135.815, time=1698067800711) dn=136.007
+StockEvent(stock=TSCO, price=195.895, time=1698067800727) dn=196.285
+StockEvent(stock=HUBS, price=426.49, time=1698067800726) dn=427.701
+StockEvent(stock=CE, price=114.16, time=1698067800736) dn=114.874
+StockEvent(stock=RLJ, price=9.42, time=1698067800692) dn=9.473
+StockEvent(stock=LRN, price=44.36, time=1698067800684) dn=44.434
+StockEvent(stock=GPK, price=20.21, time=1698067800684) dn=20.297
+StockEvent(stock=STBA, price=25.77, time=1698067800709) dn=25.807
+StockEvent(stock=APAM, price=33.18, time=1698067800720) dn=33.391
+StockEvent(stock=HLIO, price=51.58, time=1698067800710) dn=51.58
+StockEvent(stock=ALSN, price=56.77, time=1698067800687) dn=57.02
+StockEvent(stock=ECL, price=159.105, time=1698067800677) dn=159.62
+StockEvent(stock=AMP, price=310.42, time=1698067800766) dn=311.788
+StockEvent(stock=CSQ, price=13.29, time=1698067800767) dn=13.345
+unsubcribeStockSet size: 900 1698067800969
+StockEvent(stock=KKR, price=54.73, time=1698067800712) dn=55.263
+StockEvent(stock=MMI, price=27.32, time=1698067800751) dn=27.499
+StockEvent(stock=ZTS, price=166.58, time=1698067800741) dn=166.787
+StockEvent(stock=DEA, price=10.57, time=1698067800728) dn=10.587
+StockEvent(stock=CBU, price=39.52, time=1698067800732) dn=40.213
+StockEvent(stock=TPH, price=24.6, time=1698067800734) dn=24.655
+StockEvent(stock=FLT, price=237.65, time=1698067800732) dn=238.664
+StockEvent(stock=VVV, price=30.53, time=1698067800710) dn=30.606
+StockEvent(stock=CBRE, price=66.76, time=1698067800716) dn=67.643
+StockEvent(stock=EME, price=191.865, time=1698067800814) dn=192.647
+StockEvent(stock=IRT, price=13.07, time=1698067800809) dn=13.181
+StockEvent(stock=BHE, price=23.25, time=1698067800803) dn=23.253
+StockEvent(stock=CFG, price=23.87, time=1698067800729) dn=24.146
+StockEvent(stock=APO, price=82.36, time=1698067800752) dn=82.948
+StockEvent(stock=TOWN, price=21.86, time=1698067800612) dn=21.962
+unsubcribeStockSet size: 1000 1698067801002
+StockEvent(stock=ZYXI, price=7.36, time=1698067800839) dn=7.469
+StockEvent(stock=PB, price=50.45, time=1698067800674) dn=50.744
+StockEvent(stock=IBTX, price=36.08, time=1698067800801) dn=36.397
+StockEvent(stock=APP, price=37.05, time=1698067800806) dn=37.43
+StockEvent(stock=SNV, price=25.42, time=1698067800831) dn=25.581
+StockEvent(stock=RYI, price=26.28, time=1698067800789) dn=26.496
+StockEvent(stock=IOT, price=22.57, time=1698067800817) dn=22.606
+StockEvent(stock=NABL, price=12.61, time=1698067800842) dn=12.614
+StockEvent(stock=LOB, price=26.81, time=1698067800870) dn=26.846
+StockEvent(stock=TMHC, price=38.46, time=1698067800704) dn=38.499
+StockEvent(stock=PJT, price=73.7, time=1698067800779) dn=74.134
+StockEvent(stock=AYX, price=33.82, time=1698067800783) dn=34.382
+StockEvent(stock=HTH, price=27.07, time=1698067800848) dn=27.31
+StockEvent(stock=PAR, price=33.43, time=1698067800867) dn=34.07
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,BCYC=2.6282552474890095,DX=2.5821596244131486,CAMT=2.241171143978272,ALB=2.0098347532734944,PAR=1.878485471088936
+StockEvent(stock=PCH, price=43.66, time=1698067800509) dn=43.796
+StockEvent(stock=MFC, price=17.345, time=1698067800848) dn=17.359
+StockEvent(stock=LNC, price=21.82, time=1698067800868) dn=22.109
+StockEvent(stock=BHLB, price=18.51, time=1698067800773) dn=18.855
+unsubcribeStockSet size: 1100 1698067801054
+StockEvent(stock=ROL, price=33.01, time=1698067800900) dn=33.252
+StockEvent(stock=PINE, price=14.4, time=1698067800862) dn=14.921
+StockEvent(stock=CXM, price=13.17, time=1698067800794) dn=13.261
+StockEvent(stock=PLYM, price=19.69, time=1698067800810) dn=19.785
+StockEvent(stock=CMCO, price=32.07, time=1698067800881) dn=32.395
+StockEvent(stock=SSNC, price=49.76, time=1698067800876) dn=50.07
+StockEvent(stock=VSH, price=22.89, time=1698067800914) dn=22.97
+StockEvent(stock=RAMP, price=28.04, time=1698067800797) dn=28.058
+StockEvent(stock=LII, price=349.01, time=1698067800856) dn=349.64
+StockEvent(stock=KAR, price=13.65, time=1698067800858) dn=13.666
+StockEvent(stock=ARIS, price=8.25, time=1698067800939) dn=8.477
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,TSLA=2.853018870543171,ARIS=2.6778341394361247,BCYC=2.6282552474890095,DX=2.5821596244131486,CAMT=2.241171143978272,ALB=2.0098347532734944
+StockEvent(stock=AFG, price=106.87, time=1698067800916) dn=107.176
+StockEvent(stock=ESI, price=18.26, time=1698067800700) dn=18.318
+StockEvent(stock=IEX, price=192.66, time=1698067800858) dn=193.391
+StockEvent(stock=ONB, price=13.82, time=1698067800861) dn=13.834
+unsubcribeStockSet size: 1200 1698067801163
+StockEvent(stock=SBSI, price=27.39, time=1698067800657) dn=27.557
+StockEvent(stock=PDFS, price=28.67, time=1698067800795) dn=28.761
+StockEvent(stock=CTS, price=38.9, time=1698067800867) dn=38.916
+StockEvent(stock=PUK, price=20.01, time=1698067800885) dn=20.24
+StockEvent(stock=AMG, price=122.92, time=1698067800861) dn=123.207
+StockEvent(stock=NXRT, price=29.43, time=1698067800861) dn=29.56
+StockEvent(stock=FBMS, price=25.67, time=1698067800933) dn=25.771
+StockEvent(stock=GPN, price=109.8, time=1698067800787) dn=110.557
+StockEvent(stock=GNRC, price=88.0, time=1698067800749) dn=89.592
+StockEvent(stock=TT, price=187.205, time=1698067800754) dn=187.486
+StockEvent(stock=ATKR, price=125.28, time=1698067800763) dn=125.903
+StockEvent(stock=MTB, price=113.64, time=1698067800993) dn=115.373
+StockEvent(stock=TYL, price=365.48, time=1698067800984) dn=368.474
+StockEvent(stock=SON, price=50.66, time=1698067800909) dn=51.298
+StockEvent(stock=AGIO, price=21.05, time=1698067800954) dn=21.091
+StockEvent(stock=EXP, price=153.89, time=1698067800865) dn=155.067
+StockEvent(stock=VMW, price=147.8, time=1698067800930) dn=149.65
+StockEvent(stock=BAND, price=9.88, time=1698067800643) dn=9.901
+StockEvent(stock=PIPR, price=134.63, time=1698067800969) dn=135.464
+StockEvent(stock=FIBK, price=22.07, time=1698067800858) dn=22.438
+StockEvent(stock=MAS, price=49.15, time=1698067800828) dn=49.504
+unsubcribeStockSet size: 1300 1698067801286
+StockEvent(stock=EMR, price=91.53, time=1698067800782) dn=91.845
+StockEvent(stock=ACN, price=294.0, time=1698067800799) dn=296.031
+StockEvent(stock=ASB, price=15.4, time=1698067800774) dn=15.599
+StockEvent(stock=GRBK, price=38.0, time=1698067800768) dn=38.128
+StockEvent(stock=JBT, price=97.02, time=1698067800680) dn=97.823
+StockEvent(stock=NVMI, price=96.16, time=1698067800883) dn=97.125
+StockEvent(stock=BRDG, price=7.61, time=1698067800963) dn=7.632
+StockEvent(stock=JLL, price=125.57, time=1698067800973) dn=125.679
+StockEvent(stock=AON, price=314.315, time=1698067800702) dn=315.318
+StockEvent(stock=FOXF, price=85.57, time=1698067800904) dn=86.633
+StockEvent(stock=PD, price=19.32, time=1698067800816) dn=19.422
+StockEvent(stock=FRME, price=26.57, time=1698067800983) dn=26.733
+StockEvent(stock=COHU, price=32.55, time=1698067800985) dn=32.71
+StockEvent(stock=GGAL, price=10.905, time=1698067800924) dn=10.96
+StockEvent(stock=TRS, price=23.45, time=1698067800818) dn=23.529
+StockEvent(stock=MSCI, price=487.18, time=1698067800708) dn=488.01
+StockEvent(stock=CARR, price=48.175, time=1698067800724) dn=48.427
+StockEvent(stock=AVY, price=172.94, time=1698067800720) dn=174.801
+StockEvent(stock=TMO, price=461.84, time=1698067801039) dn=462.503
+StockEvent(stock=MLI, price=35.3, time=1698067801013) dn=54.641
+StockEvent(stock=UCTT, price=23.5, time=1698067800970) dn=24.273
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,UCTT=3.184608412639557,TSLA=2.853018870543171,ARIS=2.6778341394361247,BCYC=2.6282552474890095,DX=2.5821596244131486,CAMT=2.241171143978272
+StockEvent(stock=AOSL, price=25.91, time=1698067801029) dn=26.069
+StockEvent(stock=DAVA, price=53.96, time=1698067800948) dn=54.375
+StockEvent(stock=PFS, price=14.0, time=1698067800877) dn=14.069
+StockEvent(stock=RNG, price=26.68, time=1698067800691) dn=27.379
+StockEvent(stock=AME, price=141.54, time=1698067800703) dn=142.063
+unsubcribeStockSet size: 1400 1698067801489
+StockEvent(stock=DBI, price=11.17, time=1698067800722) dn=11.215
+StockEvent(stock=SFBS, price=46.57, time=1698067800745) dn=47.149
+StockEvent(stock=SIX, price=18.83, time=1698067800867) dn=18.982
+StockEvent(stock=LPLA, price=221.56, time=1698067801076) dn=222.165
+StockEvent(stock=GRFS, price=7.85, time=1698067801013) dn=7.988
+StockEvent(stock=KEYS, price=122.46, time=1698067800749) dn=123.29
+StockEvent(stock=IHG, price=70.2, time=1698067800748) dn=71.529
+StockEvent(stock=NPO, price=116.0, time=1698067801026) dn=116.565
+StockEvent(stock=CBSH, price=45.28, time=1698067801140) dn=45.323
+StockEvent(stock=SPT, price=44.51, time=1698067800941) dn=44.803
+StockEvent(stock=DFH, price=18.55, time=1698067800970) dn=18.626
+StockEvent(stock=SITE, price=136.74, time=1698067800835) dn=138.064
+StockEvent(stock=REVG, price=14.66, time=1698067800811) dn=14.763
+StockEvent(stock=NYCB, price=10.04, time=1698067800826) dn=10.095
+StockEvent(stock=PKG, price=144.83, time=1698067800857) dn=146.245
+StockEvent(stock=PK, price=11.52, time=1698067800991) dn=11.526
+StockEvent(stock=ATSG, price=19.7, time=1698067800964) dn=19.741
+StockEvent(stock=CHH, price=112.075, time=1698067801180) dn=112.354
+StockEvent(stock=FFIC, price=11.92, time=1698067801055) dn=11.93
+StockEvent(stock=APOG, price=41.74, time=1698067801138) dn=41.994
+StockEvent(stock=HLI, price=100.68, time=1698067800804) dn=101.519
+StockEvent(stock=DCOM, price=17.93, time=1698067801235) dn=18.305
+StockEvent(stock=VECO, price=25.06, time=1698067800905) dn=25.292
+StockEvent(stock=COCO, price=24.16, time=1698067801019) dn=24.192
+StockEvent(stock=MIDD, price=115.44, time=1698067801021) dn=115.89
+StockEvent(stock=AEIS, price=90.17, time=1698067801217) dn=90.946
+unsubcribeStockSet size: 1500 1698067801562
+StockEvent(stock=CASH, price=43.55, time=1698067801079) dn=43.637
+StockEvent(stock=MKSI, price=73.31, time=1698067801203) dn=74.024
+StockEvent(stock=CVLT, price=66.1, time=1698067801141) dn=66.146
+StockEvent(stock=LBAI, price=11.16, time=1698067801220) dn=11.238
+StockEvent(stock=RTO, price=27.73, time=1698067802582) dn=29.569
+WAB time is 1698067890894, price is 99.45.listen end!
+=========== finish unsubscribe ===========
+RVMD=8.476718188004293,AMAM=5.993852459016393,ENPH=5.245725975354347,TRUP=3.1893138406648416,UCTT=3.184608412639557,TSLA=2.853018870543171,ARIS=2.6778341394361247,BCYC=2.6282552474890095,DX=2.5821596244131486,CAMT=2.241171143978272
+remain cash: 8676.430000000051
+buy stock. stock=RVMD, count=456, price=18.83, orderPrice=19.01, orderId: 1355218868413046089
+RVMD order is successfully executed. orderId: 1355218868413046089
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1355218868413046089, code=RVMD, name=Revolution Medicines, count=456.0, price=19.01, avgPrice=17.91, createTime=2023-10-23 09:31:31, updateTimestamp=1.698067892E9, status=0)
+buy stock. stock=AMAM, count=67, price=7.34, orderPrice=7.41, orderId: 1355219392399056321
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1355219392399056321, code=AMAM, name=Ambrx Biopharma, count=67.0, price=7.41, avgPrice=7.39, createTime=2023-10-23 09:31:32, updateTimestamp=1.698067897E9, status=0)
+AMAM order is successfully executed. orderId: 1355219392399056321
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {AMAM=StopLoss(stock=AMAM, canSellQty=67.0, lossPrice=6.872), RVMD=StopLoss(stock=RVMD, canSellQty=456.0, lossPrice=16.656)}
+RVMD touch the stop loss. current price=16.64, lossPrice=16.656, orderPrice=16.48
+RVMD placeStopLoss limit order. qty=456.0, price=16.48, orderId: 1355219405283958210
+RVMD don't need stop loss. it'll be unsubscribe
+RVMD don't need stop loss. it'll be unsubscribe
+RVMD don't need stop loss. it'll be unsubscribe
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1355219405283958210, code=RVMD, name=Revolution Medicines, count=456.0, price=16.48, avgPrice=16.6, createTime=2023-10-23 09:33:41, updateTimestamp=1.698068022E9, status=0)
+{p=7.5, ev=T, q=506370, s=100, t=1698068811000, sym=AMAM, trfi=202, x=4, i=636, z=3, trft=1698068811000}
+{p=7.2801, ev=T, q=918390, s=500, t=1698069940000, sym=AMAM, trfi=202, x=4, i=1122, z=3, trft=1698069940000}
+AMAM touch the stop loss. current price=6.85, lossPrice=6.872, orderPrice=6.8
+AMAM placeStopLoss limit order. qty=67.0, price=6.8, orderId: 1355294799140661193
+AMAM don't need stop loss. it'll be unsubscribe
+listen stop loss end!
+trade exit
