@@ -219,3 +219,13 @@ there is no cash to trade. trade finish
 trade end
 stop get real-time quote
 being listen stop loss: {TDOC=StopLoss(stock=TDOC, canSellQty=468.0, lossPrice=15.475), TRST=StopLoss(stock=TRST, canSellQty=8.0, lossPrice=23.082)}
+ready to sell before close market. position={TDOC=StockPosition(stock=TDOC, canSellQty=468.0, costPrice=16.64, currPrice=17.425), TRST=StockPosition(stock=TRST, canSellQty=8.0, costPrice=24.82, currPrice=24.93)}, time=2023-10-26T03:59:00.470
+before close sell stock. stock=TDOC, count=468.0, currentPrice=17.425, orderPrice=17.25
+before close sell stock. stock=TDOC, orderId：1384628643984122895
+before close sell stock. stock=TRST, count=8.0, currentPrice=24.93, orderPrice=24.68
+before close sell stock. stock=TRST, orderId：1384628648279090188
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1384628643984122895, code=TDOC, name=Teladoc Health, count=468.0, price=17.25, avgPrice=17.43, createTime=2023-10-25 15:59:00, updateTimestamp=1.698263943E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1384628648279090188, code=TRST, name=TrustCo Bank, count=8.0, price=24.68, avgPrice=24.79, createTime=2023-10-25 15:59:01, updateTimestamp=1.698263943E9, status=0)
+{p=17.435, ev=T, q=3102498, s=24, c=[37], t=1698263945000, sym=TDOC, trfi=202, x=4, i=71705793351235, z=1, trft=1698263945000}
+all stock has stop loss
+trade exit
