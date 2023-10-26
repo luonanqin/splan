@@ -106,12 +106,16 @@ public class RealTimeDataWS {
 
     public RealTimeDataWS() {
         try {
-            init();
+            initManyTime();
             connect();
             waitAuth();
+
             if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
+                initTrade();
                 listenExistPosition();
             } else {
+                initHistoricalData();
+                initTrade();
                 subcribeStock();
             }
         } catch (Exception e) {
@@ -137,7 +141,7 @@ public class RealTimeDataWS {
         }
     }
 
-    public void init() {
+    public void initHistoricalData() {
         try {
             String mergePath = Constants.HIS_BASE_PATH + "merge" + SEPARATOR;
             fileMap = BaseUtils.getFileMap(mergePath);
@@ -147,11 +151,18 @@ public class RealTimeDataWS {
             //            stockSet.clear();
             //            stockSet.add("RNST");
 
-            initManyTime();
             readyUnsubscribeExecutor();
             loadLastDn();
             loadLatestMA20();
 
+            System.out.println("finish init historical data");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initTrade() {
+        try {
             TradeDataListener tradeDataListener = new TradeDataListener();
             tradeDataListener.setClient(this);
             tradeDataListener.setList(list);
@@ -159,7 +170,7 @@ public class RealTimeDataWS {
 
             tradeExecutor.setList(list);
             tradeExecutor.setClient(this);
-            System.out.println("finish init method");
+            System.out.println("finish init trade");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -221,18 +232,19 @@ public class RealTimeDataWS {
 
     private static void loadEarningInfo() throws Exception {
         LocalDate now = LocalDate.now();
+        String todayDate = now.format(Constants.FORMATTER);
         String today = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         Map<String, List<EarningDate>> todayEaring = BaseUtils.getEarningDate(today);
-        if (MapUtils.isNotEmpty(todayEaring) && todayEaring.containsKey(today)) {
-            todayEarningStockSet = todayEaring.get(today).stream().map(EarningDate::getStock).collect(Collectors.toSet());
+        if (MapUtils.isNotEmpty(todayEaring) && todayEaring.containsKey(todayDate)) {
+            todayEarningStockSet = todayEaring.get(todayDate).stream().map(EarningDate::getStock).collect(Collectors.toSet());
         }
 
         List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2022);
-        String date = kLines.get(0).getDate();
-        String lastDay = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/dd/yyyy")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String lastDate = kLines.get(0).getDate();
+        String lastDay = LocalDate.parse(lastDate, Constants.FORMATTER).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         Map<String, List<EarningDate>> lastEarning = BaseUtils.getEarningDate(lastDay);
-        if (MapUtils.isNotEmpty(lastEarning) && lastEarning.containsKey(lastDay)) {
-            lastEarningStockSet = lastEarning.get(lastDay).stream().map(EarningDate::getStock).collect(Collectors.toSet());
+        if (MapUtils.isNotEmpty(lastEarning) && lastEarning.containsKey(lastDate)) {
+            lastEarningStockSet = lastEarning.get(lastDate).stream().map(EarningDate::getStock).collect(Collectors.toSet());
         }
     }
 
