@@ -1,5 +1,6 @@
 package luonq.stock;
 
+import barchart.GrabEarningHistory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import luonq.futu.GetRehab;
@@ -57,7 +58,13 @@ public class Processor {
         long s7 = System.currentTimeMillis();
         BollingerWithOpen.calculate();
         long e7 = System.currentTimeMillis();
-        System.out.println("BollingerWithOpen.getData end. cost: " + (e7 - s7) / 1000 + "s\n");
+        System.out.println("BollingerWithOpen.calculate end. cost: " + (e7 - s7) / 1000 + "s\n");
+
+        System.out.println("GrabEarningHistory.getData start");
+        long s8 = System.currentTimeMillis();
+        GrabEarningHistory.getData();
+        long e8 = System.currentTimeMillis();
+        System.out.println("GrabEarningHistory.getData end. cost: " + (e8 - s8) / 1000 + "s\n");
 
         System.out.println("get data finish");
     }

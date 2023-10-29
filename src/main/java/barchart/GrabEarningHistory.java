@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -21,19 +26,39 @@ import java.util.concurrent.TimeUnit;
 public class GrabEarningHistory {
 
     public static void main(String[] args) throws Exception {
+        getData();
+    }
+
+    public static void getData() throws Exception {
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("io.netty").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.asynchttpclient").setLevel(Level.ERROR);
-        System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
 
+        LocalDate nowDate = LocalDate.now();
+        int dayOfWeek = nowDate.getDayOfWeek().get(ChronoField.DAY_OF_WEEK);
+        if (dayOfWeek != 1) {
+            System.out.println("today is the " + dayOfWeek + "'s day. don't need to get earning calendar");
+            return;
+        }
+
+        List<String> dayList = Lists.newArrayList();
+        while (dayOfWeek <= 5) {
+            String day = nowDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            nowDate = nowDate.plusDays(1);
+            dayOfWeek = nowDate.getDayOfWeek().get(ChronoField.DAY_OF_WEEK);
+            dayList.add(day);
+        }
+
+        System.getProperties().setProperty("webdriver.chrome.driver", "chromedriver");
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--remote-allow-origins=*");
-        //        chromeOptions.addArguments("--whitelisted-ips=*");
         ChromeDriver driver = new ChromeDriver(chromeOptions);
         driver.manage().window().setSize(new Dimension(1280, 1027));
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
-        List<String> dayList = Lists.newArrayList("2023-10-23", "2023-10-24", "2023-10-25", "2023-10-26", "2023-10-27");
+        Thread.sleep(10000);
+        driver.quit();
 
         for (String day : dayList) {
             By tableXpath = By.xpath("//div[@id='cal-res-table']");
@@ -56,6 +81,8 @@ public class GrabEarningHistory {
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "earning/" + day, resList);
             System.out.println("finish " + day);
         }
+
+        driver.quit();
     }
 
     private static List<String> print(ChromeDriver driver) {
