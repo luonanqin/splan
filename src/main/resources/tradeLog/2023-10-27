@@ -1,0 +1,669 @@
+/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/bin/java -Didea.launcher.port=7535 "-Didea.launcher.bin.path=/Applications/IntelliJ IDEA.app/Contents/bin" -Dfile.encoding=UTF-8 -classpath "/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/deploy.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/cldrdata.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/dnsns.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/jaccess.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/jfxrt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/localedata.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/nashorn.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunec.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunjce_provider.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunpkcs11.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/zipfs.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/javaws.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jfxswt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/management-agent.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/plugin.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/ant-javafx.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/dt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/javafx-mx.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/jconsole.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/packager.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/sa-jdi.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/tools.jar:/Users/Luonanqin/study/intellij_idea_workspaces/splan/target/classes:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-java/4.7.2/selenium-java-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-api/4.7.2/selenium-api-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-chrome-driver/4.7.2/selenium-chrome-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/service/auto-service-annotations/1.0.1/auto-service-annotations-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/service/auto-service/1.0.1/auto-service-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/auto-common/1.2/auto-common-1.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-chromium-driver/4.7.2/selenium-chromium-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-json/4.7.2/selenium-json-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v106/4.7.2/selenium-devtools-v106-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v107/4.7.2/selenium-devtools-v107-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v108/4.7.2/selenium-devtools-v108-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v85/4.7.2/selenium-devtools-v85-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-edge-driver/4.7.2/selenium-edge-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-firefox-driver/4.7.2/selenium-firefox-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-http/4.7.2/selenium-http-4.7.2.jar:/Users/Luonanqin/study/maven/repository/dev/failsafe/failsafe/3.3.0/failsafe-3.3.0.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-ie-driver/4.7.2/selenium-ie-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-remote-driver/4.7.2/selenium-remote-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/com/beust/jcommander/1.82/jcommander-1.82.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-buffer/4.1.84.Final/netty-buffer-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec-http/4.1.84.Final/netty-codec-http-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec/4.1.84.Final/netty-codec-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-handler/4.1.84.Final/netty-handler-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-common/4.1.84.Final/netty-common-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-classes-epoll/4.1.84.Final/netty-transport-classes-epoll-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-classes-kqueue/4.1.84.Final/netty-transport-classes-kqueue-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-epoll/4.1.84.Final/netty-transport-native-epoll-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-kqueue/4.1.84.Final/netty-transport-native-kqueue-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-unix-common/4.1.84.Final/netty-transport-native-unix-common-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport/4.1.84.Final/netty-transport-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-resolver/4.1.84.Final/netty-resolver-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-api/1.19.0/opentelemetry-api-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-context/1.19.0/opentelemetry-context-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-exporter-logging/1.19.0/opentelemetry-exporter-logging-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-metrics/1.19.0/opentelemetry-sdk-metrics-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-logs/1.19.0-alpha/opentelemetry-sdk-logs-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-api-logs/1.19.0-alpha/opentelemetry-api-logs-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-common/1.19.0/opentelemetry-sdk-common-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.19.0/opentelemetry-sdk-extension-autoconfigure-spi-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.19.0-alpha/opentelemetry-sdk-extension-autoconfigure-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-trace/1.19.0/opentelemetry-sdk-trace-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk/1.19.0/opentelemetry-sdk-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-semconv/1.19.0-alpha/opentelemetry-semconv-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar:/Users/Luonanqin/study/maven/repository/net/bytebuddy/byte-buddy/1.12.18/byte-buddy-1.12.18.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar:/Users/Luonanqin/study/maven/repository/org/asynchttpclient/async-http-client/2.12.3/async-http-client-2.12.3.jar:/Users/Luonanqin/study/maven/repository/org/asynchttpclient/async-http-client-netty-utils/2.12.3/async-http-client-netty-utils-2.12.3.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec-socks/4.1.60.Final/netty-codec-socks-4.1.60.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-epoll/4.1.60.Final/netty-transport-native-epoll-4.1.60.Final-linux-x86_64.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-kqueue/4.1.60.Final/netty-transport-native-kqueue-4.1.60.Final-osx-x86_64.jar:/Users/Luonanqin/study/maven/repository/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar:/Users/Luonanqin/study/maven/repository/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar:/Users/Luonanqin/study/maven/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-manager/4.7.2/selenium-manager-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-safari-driver/4.7.2/selenium-safari-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-support/4.7.2/selenium-support-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar:/Users/Luonanqin/study/maven/repository/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar:/Users/Luonanqin/study/maven/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar:/Users/Luonanqin/study/maven/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar:/Users/Luonanqin/study/maven/repository/com/futunn/openapi/futu-api/7.1.3308/futu-api-7.1.3308.jar:/Users/Luonanqin/study/maven/repository/com/google/protobuf/protobuf-java/3.5.1/protobuf-java-3.5.1.jar:/Users/Luonanqin/study/maven/repository/org/bouncycastle/bcprov-jdk15on/1.68/bcprov-jdk15on-1.68.jar:/Users/Luonanqin/study/maven/repository/org/bouncycastle/bcpkix-jdk15on/1.68/bcpkix-jdk15on-1.68.jar:/Users/Luonanqin/study/maven/repository/com/alibaba/fastjson/1.2.53/fastjson-1.2.53.jar:/Users/Luonanqin/study/maven/repository/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-collections4/4.2/commons-collections4-4.2.jar:/Users/Luonanqin/study/maven/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar:/Users/Luonanqin/study/maven/repository/com/google/protobuf/protobuf-java-util/3.5.1/protobuf-java-util-3.5.1.jar:/Users/Luonanqin/study/maven/repository/com/google/code/gson/gson/2.7/gson-2.7.jar:/Users/Luonanqin/study/maven/repository/org/java-websocket/Java-WebSocket/1.3.5/Java-WebSocket-1.3.5.jar:/Users/Luonanqin/study/maven/repository/javax/websocket/javax.websocket-api/1.1/javax.websocket-api-1.1.jar:/Users/Luonanqin/study/maven/repository/org/glassfish/tyrus/bundles/tyrus-standalone-client/1.9/tyrus-standalone-client-1.9.jar:/Users/Luonanqin/study/maven/repository/com/huaban/jieba-analysis/1.0.2/jieba-analysis-1.0.2.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/guava/31.0.1-jre/guava-31.0.1-jre.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/Luonanqin/study/maven/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/Luonanqin/study/maven/repository/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar:/Users/Luonanqin/study/maven/repository/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar:/Users/Luonanqin/study/maven/repository/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-web/2.4.1/spring-boot-starter-web-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter/2.4.1/spring-boot-starter-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-logging/2.4.1/spring-boot-starter-logging-2.4.1.jar:/Users/Luonanqin/study/maven/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar:/Users/Luonanqin/study/maven/repository/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/logging/log4j/log4j-to-slf4j/2.13.3/log4j-to-slf4j-2.13.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/logging/log4j/log4j-api/2.13.3/log4j-api-2.13.3.jar:/Users/Luonanqin/study/maven/repository/org/slf4j/jul-to-slf4j/1.7.30/jul-to-slf4j-1.7.30.jar:/Users/Luonanqin/study/maven/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar:/Users/Luonanqin/study/maven/repository/org/yaml/snakeyaml/1.27/snakeyaml-1.27.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-json/2.4.1/spring-boot-starter-json-2.4.1.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-databind/2.11.3/jackson-databind-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-annotations/2.11.3/jackson-annotations-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-core/2.11.3/jackson-core-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.11.3/jackson-datatype-jdk8-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.11.3/jackson-datatype-jsr310-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.11.3/jackson-module-parameter-names-2.11.3.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-tomcat/2.4.1/spring-boot-starter-tomcat-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.41/tomcat-embed-core-9.0.41.jar:/Users/Luonanqin/study/maven/repository/org/glassfish/jakarta.el/3.0.3/jakarta.el-3.0.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.41/tomcat-embed-websocket-9.0.41.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-web/5.3.2/spring-web-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-beans/5.3.2/spring-beans-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-webmvc/5.3.2/spring-webmvc-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-aop/5.3.2/spring-aop-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-context/5.3.2/spring-context-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-expression/5.3.2/spring-expression-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-configuration-processor/2.4.1/spring-boot-configuration-processor-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-devtools/2.4.1/spring-boot-devtools-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot/2.4.1/spring-boot-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-autoconfigure/2.4.1/spring-boot-autoconfigure-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-core/5.3.2/spring-core-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-jcl/5.3.2/spring-jcl-5.3.2.jar:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar" com.intellij.rt.execution.application.AppMain luonq.polygon.RealTimeDataWS
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7123651509842299137
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1698413280000, openTime=1698413400000, closeCheckTime=Sat Oct 28 03:59:00 CST 2023
+unlock success
+Oct 27, 2023 8:47:54 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+stock latest close great 7 size: 1218
+stock overbolling hit great 0.500000 size: 1033
+filter merge stock, the stock set size is 1033
+filter split stock, the stock set size is 1029
+filter front reinstatement less 0.98 stock, the stock set size is 994
+filter earning and lastEarning stock, the stock set size is 885
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+finish init trade
+wait pre trade time. now is 20:48:30
+wait pre trade time. now is 20:48:35
+wait pre trade time. now is 20:48:40
+wait pre trade time. now is 20:48:45
+wait pre trade time. now is 20:48:50
+wait pre trade time. now is 20:48:55
+wait pre trade time. now is 20:49:00
+wait pre trade time. now is 20:49:05
+wait pre trade time. now is 20:49:10
+wait pre trade time. now is 20:49:15
+wait pre trade time. now is 20:49:20
+wait pre trade time. now is 20:49:25
+wait pre trade time. now is 20:49:30
+wait pre trade time. now is 20:49:35
+wait pre trade time. now is 20:49:40
+wait pre trade time. now is 20:49:45
+wait pre trade time. now is 20:49:50
+wait pre trade time. now is 20:49:55
+wait pre trade time. now is 20:50:00
+wait pre trade time. now is 20:50:05
+wait pre trade time. now is 20:50:10
+wait pre trade time. now is 20:50:15
+wait pre trade time. now is 20:50:20
+wait pre trade time. now is 20:50:25
+wait pre trade time. now is 20:50:30
+wait pre trade time. now is 20:50:35
+wait pre trade time. now is 20:50:40
+wait pre trade time. now is 20:50:45
+wait pre trade time. now is 20:50:50
+wait pre trade time. now is 20:50:55
+wait pre trade time. now is 20:51:00
+wait pre trade time. now is 20:51:05
+wait pre trade time. now is 20:51:10
+wait pre trade time. now is 20:51:15
+wait pre trade time. now is 20:51:20
+wait pre trade time. now is 20:51:25
+wait pre trade time. now is 20:51:30
+wait pre trade time. now is 20:51:35
+wait pre trade time. now is 20:51:40
+wait pre trade time. now is 20:51:45
+wait pre trade time. now is 20:51:50
+wait pre trade time. now is 20:51:55
+wait pre trade time. now is 20:52:00
+wait pre trade time. now is 20:52:05
+wait pre trade time. now is 20:52:10
+wait pre trade time. now is 20:52:15
+wait pre trade time. now is 20:52:20
+wait pre trade time. now is 20:52:25
+wait pre trade time. now is 20:52:30
+wait pre trade time. now is 20:52:35
+wait pre trade time. now is 20:52:40
+wait pre trade time. now is 20:52:45
+wait pre trade time. now is 20:52:50
+wait pre trade time. now is 20:52:55
+wait pre trade time. now is 20:53:00
+wait pre trade time. now is 20:53:05
+wait pre trade time. now is 20:53:10
+wait pre trade time. now is 20:53:15
+wait pre trade time. now is 20:53:20
+wait pre trade time. now is 20:53:25
+wait pre trade time. now is 20:53:30
+wait pre trade time. now is 20:53:35
+wait pre trade time. now is 20:53:40
+wait pre trade time. now is 20:53:45
+wait pre trade time. now is 20:53:50
+wait pre trade time. now is 20:53:55
+wait pre trade time. now is 20:54:00
+wait pre trade time. now is 20:54:05
+wait pre trade time. now is 20:54:10
+wait pre trade time. now is 20:54:15
+wait pre trade time. now is 20:54:20
+wait pre trade time. now is 20:54:25
+wait pre trade time. now is 20:54:30
+wait pre trade time. now is 20:54:35
+wait pre trade time. now is 20:54:40
+wait pre trade time. now is 20:54:45
+wait pre trade time. now is 20:54:50
+wait pre trade time. now is 20:54:55
+wait pre trade time. now is 20:55:00
+wait pre trade time. now is 20:55:05
+wait pre trade time. now is 20:55:10
+wait pre trade time. now is 20:55:15
+wait pre trade time. now is 20:55:20
+wait pre trade time. now is 20:55:25
+wait pre trade time. now is 20:55:30
+wait pre trade time. now is 20:55:35
+wait pre trade time. now is 20:55:40
+wait pre trade time. now is 20:55:45
+wait pre trade time. now is 20:55:50
+wait pre trade time. now is 20:55:55
+wait pre trade time. now is 20:56:00
+wait pre trade time. now is 20:56:05
+wait pre trade time. now is 20:56:10
+wait pre trade time. now is 20:56:15
+wait pre trade time. now is 20:56:20
+wait pre trade time. now is 20:56:25
+wait pre trade time. now is 20:56:30
+wait pre trade time. now is 20:56:35
+wait pre trade time. now is 20:56:40
+wait pre trade time. now is 20:56:45
+wait pre trade time. now is 20:56:50
+wait pre trade time. now is 20:56:55
+wait pre trade time. now is 20:57:00
+wait pre trade time. now is 20:57:05
+wait pre trade time. now is 20:57:10
+wait pre trade time. now is 20:57:15
+wait pre trade time. now is 20:57:20
+wait pre trade time. now is 20:57:25
+wait pre trade time. now is 20:57:30
+wait pre trade time. now is 20:57:35
+wait pre trade time. now is 20:57:40
+wait pre trade time. now is 20:57:45
+wait pre trade time. now is 20:57:50
+wait pre trade time. now is 20:57:55
+wait pre trade time. now is 20:58:00
+wait pre trade time. now is 20:58:05
+wait pre trade time. now is 20:58:10
+wait pre trade time. now is 20:58:15
+wait pre trade time. now is 20:58:20
+wait pre trade time. now is 20:58:25
+wait pre trade time. now is 20:58:30
+wait pre trade time. now is 20:58:35
+wait pre trade time. now is 20:58:40
+wait pre trade time. now is 20:58:45
+wait pre trade time. now is 20:58:50
+wait pre trade time. now is 20:58:55
+wait pre trade time. now is 20:59:00
+wait pre trade time. now is 20:59:05
+wait pre trade time. now is 20:59:10
+wait pre trade time. now is 20:59:15
+wait pre trade time. now is 20:59:20
+wait pre trade time. now is 20:59:25
+wait pre trade time. now is 20:59:30
+wait pre trade time. now is 20:59:35
+wait pre trade time. now is 20:59:40
+wait pre trade time. now is 20:59:45
+wait pre trade time. now is 20:59:50
+wait pre trade time. now is 20:59:55
+wait pre trade time. now is 21:00:00
+wait pre trade time. now is 21:00:05
+wait pre trade time. now is 21:00:10
+wait pre trade time. now is 21:00:15
+wait pre trade time. now is 21:00:20
+wait pre trade time. now is 21:00:25
+wait pre trade time. now is 21:00:30
+wait pre trade time. now is 21:00:36
+wait pre trade time. now is 21:00:41
+wait pre trade time. now is 21:00:46
+wait pre trade time. now is 21:00:51
+wait pre trade time. now is 21:00:56
+wait pre trade time. now is 21:01:01
+wait pre trade time. now is 21:01:06
+wait pre trade time. now is 21:01:11
+wait pre trade time. now is 21:01:16
+wait pre trade time. now is 21:01:21
+wait pre trade time. now is 21:01:26
+wait pre trade time. now is 21:01:31
+wait pre trade time. now is 21:01:36
+wait pre trade time. now is 21:01:41
+wait pre trade time. now is 21:01:46
+wait pre trade time. now is 21:01:51
+wait pre trade time. now is 21:01:56
+wait pre trade time. now is 21:02:01
+wait pre trade time. now is 21:02:06
+wait pre trade time. now is 21:02:11
+wait pre trade time. now is 21:02:16
+wait pre trade time. now is 21:02:21
+wait pre trade time. now is 21:02:26
+wait pre trade time. now is 21:02:31
+wait pre trade time. now is 21:02:36
+wait pre trade time. now is 21:02:41
+wait pre trade time. now is 21:02:46
+wait pre trade time. now is 21:02:51
+wait pre trade time. now is 21:02:56
+wait pre trade time. now is 21:03:01
+wait pre trade time. now is 21:03:06
+wait pre trade time. now is 21:03:11
+wait pre trade time. now is 21:03:16
+wait pre trade time. now is 21:03:21
+wait pre trade time. now is 21:03:26
+wait pre trade time. now is 21:03:31
+wait pre trade time. now is 21:03:36
+wait pre trade time. now is 21:03:41
+wait pre trade time. now is 21:03:46
+wait pre trade time. now is 21:03:51
+wait pre trade time. now is 21:03:56
+wait pre trade time. now is 21:04:01
+wait pre trade time. now is 21:04:06
+wait pre trade time. now is 21:04:11
+wait pre trade time. now is 21:04:16
+wait pre trade time. now is 21:04:21
+wait pre trade time. now is 21:04:26
+wait pre trade time. now is 21:04:31
+wait pre trade time. now is 21:04:36
+wait pre trade time. now is 21:04:41
+wait pre trade time. now is 21:04:46
+wait pre trade time. now is 21:04:51
+wait pre trade time. now is 21:04:56
+wait pre trade time. now is 21:05:01
+wait pre trade time. now is 21:05:06
+wait pre trade time. now is 21:05:11
+wait pre trade time. now is 21:05:16
+wait pre trade time. now is 21:05:21
+wait pre trade time. now is 21:05:26
+wait pre trade time. now is 21:05:31
+wait pre trade time. now is 21:05:36
+wait pre trade time. now is 21:05:41
+wait pre trade time. now is 21:05:46
+wait pre trade time. now is 21:05:51
+wait pre trade time. now is 21:05:56
+wait pre trade time. now is 21:06:01
+wait pre trade time. now is 21:06:06
+wait pre trade time. now is 21:06:11
+wait pre trade time. now is 21:06:16
+wait pre trade time. now is 21:06:21
+wait pre trade time. now is 21:06:26
+wait pre trade time. now is 21:06:31
+wait pre trade time. now is 21:06:36
+wait pre trade time. now is 21:06:41
+wait pre trade time. now is 21:06:46
+wait pre trade time. now is 21:06:51
+wait pre trade time. now is 21:06:56
+wait pre trade time. now is 21:07:01
+wait pre trade time. now is 21:07:06
+wait pre trade time. now is 21:07:11
+wait pre trade time. now is 21:07:16
+wait pre trade time. now is 21:07:21
+wait pre trade time. now is 21:07:26
+wait pre trade time. now is 21:07:31
+wait pre trade time. now is 21:07:36
+wait pre trade time. now is 21:07:41
+wait pre trade time. now is 21:07:46
+wait pre trade time. now is 21:07:51
+wait pre trade time. now is 21:07:56
+wait pre trade time. now is 21:08:01
+wait pre trade time. now is 21:08:06
+wait pre trade time. now is 21:08:11
+wait pre trade time. now is 21:08:16
+wait pre trade time. now is 21:08:21
+wait pre trade time. now is 21:08:26
+wait pre trade time. now is 21:08:31
+wait pre trade time. now is 21:08:36
+wait pre trade time. now is 21:08:41
+wait pre trade time. now is 21:08:46
+wait pre trade time. now is 21:08:51
+wait pre trade time. now is 21:08:56
+wait pre trade time. now is 21:09:01
+wait pre trade time. now is 21:09:06
+wait pre trade time. now is 21:09:11
+wait pre trade time. now is 21:09:16
+wait pre trade time. now is 21:09:21
+wait pre trade time. now is 21:09:26
+wait pre trade time. now is 21:09:31
+wait pre trade time. now is 21:09:36
+wait pre trade time. now is 21:09:41
+wait pre trade time. now is 21:09:46
+wait pre trade time. now is 21:09:51
+wait pre trade time. now is 21:09:56
+wait pre trade time. now is 21:10:01
+wait pre trade time. now is 21:10:06
+wait pre trade time. now is 21:10:11
+wait pre trade time. now is 21:10:16
+wait pre trade time. now is 21:10:21
+wait pre trade time. now is 21:10:26
+wait pre trade time. now is 21:10:31
+wait pre trade time. now is 21:10:36
+wait pre trade time. now is 21:10:41
+wait pre trade time. now is 21:10:46
+wait pre trade time. now is 21:10:51
+wait pre trade time. now is 21:10:56
+wait pre trade time. now is 21:11:01
+wait pre trade time. now is 21:11:06
+wait pre trade time. now is 21:11:11
+wait pre trade time. now is 21:11:16
+wait pre trade time. now is 21:11:21
+wait pre trade time. now is 21:11:26
+wait pre trade time. now is 21:11:31
+wait pre trade time. now is 21:11:36
+wait pre trade time. now is 21:11:41
+wait pre trade time. now is 21:11:46
+wait pre trade time. now is 21:11:51
+wait pre trade time. now is 21:11:57
+wait pre trade time. now is 21:12:02
+wait pre trade time. now is 21:12:07
+wait pre trade time. now is 21:12:12
+wait pre trade time. now is 21:12:17
+wait pre trade time. now is 21:12:22
+wait pre trade time. now is 21:12:27
+wait pre trade time. now is 21:12:32
+wait pre trade time. now is 21:12:37
+wait pre trade time. now is 21:12:42
+wait pre trade time. now is 21:12:47
+wait pre trade time. now is 21:12:52
+wait pre trade time. now is 21:12:57
+wait pre trade time. now is 21:13:02
+wait pre trade time. now is 21:13:07
+wait pre trade time. now is 21:13:12
+wait pre trade time. now is 21:13:17
+wait pre trade time. now is 21:13:22
+wait pre trade time. now is 21:13:27
+wait pre trade time. now is 21:13:32
+wait pre trade time. now is 21:13:37
+wait pre trade time. now is 21:13:42
+wait pre trade time. now is 21:13:47
+wait pre trade time. now is 21:13:52
+wait pre trade time. now is 21:13:57
+wait pre trade time. now is 21:14:02
+wait pre trade time. now is 21:14:07
+wait pre trade time. now is 21:14:12
+wait pre trade time. now is 21:14:17
+wait pre trade time. now is 21:14:22
+wait pre trade time. now is 21:14:27
+wait pre trade time. now is 21:14:32
+wait pre trade time. now is 21:14:37
+wait pre trade time. now is 21:14:42
+wait pre trade time. now is 21:14:47
+wait pre trade time. now is 21:14:52
+wait pre trade time. now is 21:14:57
+wait pre trade time. now is 21:15:02
+wait pre trade time. now is 21:15:07
+wait pre trade time. now is 21:15:12
+wait pre trade time. now is 21:15:17
+wait pre trade time. now is 21:15:22
+wait pre trade time. now is 21:15:27
+wait pre trade time. now is 21:15:32
+wait pre trade time. now is 21:15:37
+wait pre trade time. now is 21:15:42
+wait pre trade time. now is 21:15:47
+wait pre trade time. now is 21:15:52
+wait pre trade time. now is 21:15:57
+wait pre trade time. now is 21:16:02
+wait pre trade time. now is 21:16:07
+wait pre trade time. now is 21:16:12
+wait pre trade time. now is 21:16:17
+wait pre trade time. now is 21:16:22
+wait pre trade time. now is 21:16:27
+wait pre trade time. now is 21:16:32
+wait pre trade time. now is 21:16:37
+wait pre trade time. now is 21:16:42
+wait pre trade time. now is 21:16:47
+wait pre trade time. now is 21:16:52
+wait pre trade time. now is 21:16:57
+wait pre trade time. now is 21:17:02
+wait pre trade time. now is 21:17:07
+wait pre trade time. now is 21:17:12
+wait pre trade time. now is 21:17:17
+wait pre trade time. now is 21:17:22
+wait pre trade time. now is 21:17:27
+wait pre trade time. now is 21:17:32
+wait pre trade time. now is 21:17:37
+wait pre trade time. now is 21:17:42
+wait pre trade time. now is 21:17:47
+wait pre trade time. now is 21:17:52
+wait pre trade time. now is 21:17:57
+wait pre trade time. now is 21:18:02
+wait pre trade time. now is 21:18:07
+wait pre trade time. now is 21:18:12
+wait pre trade time. now is 21:18:17
+wait pre trade time. now is 21:18:22
+wait pre trade time. now is 21:18:27
+wait pre trade time. now is 21:18:32
+wait pre trade time. now is 21:18:37
+wait pre trade time. now is 21:18:42
+wait pre trade time. now is 21:18:47
+wait pre trade time. now is 21:18:52
+wait pre trade time. now is 21:18:57
+wait pre trade time. now is 21:19:02
+wait pre trade time. now is 21:19:07
+wait pre trade time. now is 21:19:12
+wait pre trade time. now is 21:19:17
+wait pre trade time. now is 21:19:22
+wait pre trade time. now is 21:19:27
+wait pre trade time. now is 21:19:32
+wait pre trade time. now is 21:19:37
+wait pre trade time. now is 21:19:42
+wait pre trade time. now is 21:19:47
+wait pre trade time. now is 21:19:52
+wait pre trade time. now is 21:19:57
+wait pre trade time. now is 21:20:02
+wait pre trade time. now is 21:20:07
+wait pre trade time. now is 21:20:12
+wait pre trade time. now is 21:20:17
+wait pre trade time. now is 21:20:22
+wait pre trade time. now is 21:20:27
+wait pre trade time. now is 21:20:32
+wait pre trade time. now is 21:20:37
+wait pre trade time. now is 21:20:42
+wait pre trade time. now is 21:20:47
+wait pre trade time. now is 21:20:52
+wait pre trade time. now is 21:20:57
+wait pre trade time. now is 21:21:02
+wait pre trade time. now is 21:21:07
+wait pre trade time. now is 21:21:12
+wait pre trade time. now is 21:21:17
+wait pre trade time. now is 21:21:22
+wait pre trade time. now is 21:21:27
+wait pre trade time. now is 21:21:32
+wait pre trade time. now is 21:21:37
+wait pre trade time. now is 21:21:42
+wait pre trade time. now is 21:21:47
+wait pre trade time. now is 21:21:52
+wait pre trade time. now is 21:21:57
+wait pre trade time. now is 21:22:02
+wait pre trade time. now is 21:22:07
+wait pre trade time. now is 21:22:12
+wait pre trade time. now is 21:22:17
+wait pre trade time. now is 21:22:22
+wait pre trade time. now is 21:22:27
+wait pre trade time. now is 21:22:32
+wait pre trade time. now is 21:22:37
+wait pre trade time. now is 21:22:42
+wait pre trade time. now is 21:22:47
+wait pre trade time. now is 21:22:52
+wait pre trade time. now is 21:22:57
+wait pre trade time. now is 21:23:02
+wait pre trade time. now is 21:23:07
+wait pre trade time. now is 21:23:12
+wait pre trade time. now is 21:23:17
+wait pre trade time. now is 21:23:22
+wait pre trade time. now is 21:23:27
+wait pre trade time. now is 21:23:32
+wait pre trade time. now is 21:23:37
+wait pre trade time. now is 21:23:42
+wait pre trade time. now is 21:23:47
+wait pre trade time. now is 21:23:52
+wait pre trade time. now is 21:23:57
+wait pre trade time. now is 21:24:03
+wait pre trade time. now is 21:24:08
+wait pre trade time. now is 21:24:13
+wait pre trade time. now is 21:24:18
+wait pre trade time. now is 21:24:23
+wait pre trade time. now is 21:24:28
+wait pre trade time. now is 21:24:33
+wait pre trade time. now is 21:24:38
+wait pre trade time. now is 21:24:43
+wait pre trade time. now is 21:24:48
+wait pre trade time. now is 21:24:53
+wait pre trade time. now is 21:24:58
+wait pre trade time. now is 21:25:03
+wait pre trade time. now is 21:25:08
+wait pre trade time. now is 21:25:13
+wait pre trade time. now is 21:25:18
+wait pre trade time. now is 21:25:23
+wait pre trade time. now is 21:25:28
+wait pre trade time. now is 21:25:33
+wait pre trade time. now is 21:25:38
+wait pre trade time. now is 21:25:43
+wait pre trade time. now is 21:25:48
+wait pre trade time. now is 21:25:53
+wait pre trade time. now is 21:25:58
+wait pre trade time. now is 21:26:03
+wait pre trade time. now is 21:26:08
+wait pre trade time. now is 21:26:13
+wait pre trade time. now is 21:26:18
+wait pre trade time. now is 21:26:23
+wait pre trade time. now is 21:26:28
+wait pre trade time. now is 21:26:33
+wait pre trade time. now is 21:26:38
+wait pre trade time. now is 21:26:43
+wait pre trade time. now is 21:26:48
+wait pre trade time. now is 21:26:53
+wait pre trade time. now is 21:26:58
+wait pre trade time. now is 21:27:03
+wait pre trade time. now is 21:27:08
+wait pre trade time. now is 21:27:13
+wait pre trade time. now is 21:27:18
+wait pre trade time. now is 21:27:23
+wait pre trade time. now is 21:27:28
+wait pre trade time. now is 21:27:33
+wait pre trade time. now is 21:27:38
+wait pre trade time. now is 21:27:43
+wait pre trade time. now is 21:27:48
+wait pre trade time. now is 21:27:53
+wait pre trade time. now is 21:27:58
+begin subcribe stock at 21:28:03
+finish subcribe real time!
+time is early. {p=583.66, ev=T, q=139446, s=3, c=[14,12,37,41], t=1698413365000, sym=LRCX, x=12, i=116, z=3}
+{p=583.66, ev=T, q=139446, s=3, c=[14,12,37,41], t=1698413365000, sym=LRCX, x=12, i=116, z=3}
+time is early. {p=18.83, ev=T, q=74170, s=50, c=[14,12,37,41], t=1698413370000, sym=PENN, x=2, i=1, z=3}
+{p=18.83, ev=T, q=74170, s=50, c=[14,12,37,41], t=1698413370000, sym=PENN, x=2, i=1, z=3}
+StockEvent(stock=GOOG, price=124.03, time=1698413400000) dn=125.723
+GOOG=1.3466112008144873
+StockEvent(stock=AAPL, price=166.91, time=1698413400000) dn=167.391
+StockEvent(stock=GOOGL, price=122.88, time=1698413400000) dn=124.657
+GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=LBTYK, price=16.58, time=1698413400023) dn=16.636
+StockEvent(stock=EBAY, price=38.4, time=1698413400002) dn=38.585
+StockEvent(stock=ERII, price=15.18, time=1698413400081) dn=15.325
+StockEvent(stock=RDNT, price=25.82, time=1698413400081) dn=26.136
+StockEvent(stock=RMBS, price=49.17, time=1698413400100) dn=49.616
+unsubscribeStockSet size: 100 1698413400385
+StockEvent(stock=CAR, price=161.21, time=1698413400162) dn=161.267
+StockEvent(stock=PRTA, price=34.12, time=1698413400118) dn=35.851
+StockEvent(stock=SLP, price=33.33, time=1698413400172) dn=35.052
+StockEvent(stock=HOLX, price=65.79, time=1698413400194) dn=65.815
+StockEvent(stock=MU, price=64.94, time=1698413400179) dn=65.136
+StockEvent(stock=CERT, price=12.49, time=1698413400167) dn=12.627
+StockEvent(stock=RXST, price=21.07, time=1698413400305) dn=21.502
+RXST=2.0091154311226798,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+unsubscribeStockSet size: 200 1698413400531
+StockEvent(stock=CSCO, price=51.64, time=1698413400225) dn=51.686
+StockEvent(stock=RGEN, price=122.59, time=1698413400319) dn=124.743
+RXST=2.0091154311226798,RGEN=1.7259485502192442,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=IRBT, price=33.61, time=1698413400321) dn=33.657
+StockEvent(stock=JNJ, price=148.36, time=1698413400430) dn=148.499
+StockEvent(stock=WDC, price=38.56, time=1698413400401) dn=39.406
+StockEvent(stock=WSM, price=144.87, time=1698413400475) dn=145.21
+StockEvent(stock=ZTS, price=158.47, time=1698413400490) dn=159.55
+StockEvent(stock=TTD, price=67.15, time=1698413400426) dn=67.276
+StockEvent(stock=EWCZ, price=14.51, time=1698413400415) dn=14.569
+unsubscribeStockSet size: 300 1698413400676
+StockEvent(stock=TYRA, price=11.0, time=1698413400387) dn=11.17
+RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=ANET, price=172.935, time=1698413400525) dn=175.03
+StockEvent(stock=FOUR, price=45.15, time=1698413400544) dn=45.329
+StockEvent(stock=ALGN, price=193.0, time=1698413400478) dn=212.885
+ALGN=9.34072386499753,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=TDOC, price=16.26, time=1698413400478) dn=16.613
+StockEvent(stock=OPCH, price=27.99, time=1698413400457) dn=28.355
+unsubscribeStockSet size: 400 1698413400822
+StockEvent(stock=RUSHA, price=34.89, time=1698413400609) dn=35.367
+ALGN=9.34072386499753,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+StockEvent(stock=WU, price=11.775, time=1698413400604) dn=12.132
+StockEvent(stock=AKAM, price=101.59, time=1698413400609) dn=101.666
+StockEvent(stock=TTWO, price=133.76, time=1698413400645) dn=134.172
+StockEvent(stock=CSQ, price=12.7, time=1698413400680) dn=12.715
+StockEvent(stock=CHX, price=29.76, time=1698413400696) dn=30.426
+ALGN=9.34072386499753,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+StockEvent(stock=PINS, price=24.33, time=1698413400650) dn=24.397
+StockEvent(stock=IGT, price=25.84, time=1698413400722) dn=26.837
+ALGN=9.34072386499753,IGT=3.715020307784029,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+unsubscribeStockSet size: 500 1698413400969
+StockEvent(stock=XENE, price=31.04, time=1698413400682) dn=31.18
+StockEvent(stock=CTVA, price=47.53, time=1698413400559) dn=47.851
+StockEvent(stock=TRU, price=44.705, time=1698413400770) dn=45.573
+StockEvent(stock=DT, price=44.15, time=1698413400723) dn=44.212
+StockEvent(stock=LTH, price=11.87, time=1698413400731) dn=12.165
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+StockEvent(stock=MBUU, price=45.28, time=1698413400723) dn=45.863
+StockEvent(stock=BOOT, price=68.93, time=1698413400692) dn=68.974
+unsubscribeStockSet size: 600 1698413401093
+StockEvent(stock=AAC, price=9.75, time=1698413400792) dn=10.067
+StockEvent(stock=GPN, price=104.78, time=1698413400769) dn=105.146
+StockEvent(stock=GIB, price=94.71, time=1698413400714) dn=94.781
+StockEvent(stock=FIS, price=47.91, time=1698413400659) dn=47.91
+StockEvent(stock=CNNE, price=16.19, time=1698413400873) dn=16.232
+StockEvent(stock=ALSN, price=51.23, time=1698413400857) dn=53.01
+StockEvent(stock=NTAP, price=71.51, time=1698413400891) dn=71.727
+StockEvent(stock=HAE, price=83.06, time=1698413400837) dn=83.589
+StockEvent(stock=RDY, price=64.39, time=1698413400901) dn=64.764
+unsubscribeStockSet size: 700 1698413401259
+StockEvent(stock=EVH, price=23.87, time=1698413400803) dn=24.199
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,EVH=1.3595603124096063,RUSHA=1.3487149037238013
+StockEvent(stock=LBTYA, price=15.19, time=1698413400982) dn=15.278
+StockEvent(stock=MCFT, price=20.5, time=1698413400854) dn=20.676
+StockEvent(stock=RXO, price=17.62, time=1698413400814) dn=17.658
+StockEvent(stock=CSGS, price=48.2, time=1698413400902) dn=48.299
+StockEvent(stock=DAVA, price=49.36, time=1698413400971) dn=49.475
+StockEvent(stock=CCCS, price=10.94, time=1698413400922) dn=11.037
+unsubscribeStockSet size: 800 1698413401418
+StockEvent(stock=GBX, price=33.21, time=1698413400928) dn=33.741
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,GBX=1.5737530008002099,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,EVH=1.3595603124096063
+StockEvent(stock=IDXX, price=398.05, time=1698413401054) dn=401.765
+StockEvent(stock=DUOL, price=141.54, time=1698413401077) dn=142.636
+StockEvent(stock=GSHD, price=66.43, time=1698413401323) dn=66.469
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [ALGN, IGT, LTH, CHX, RXST, RGEN, GBX, TYRA, GOOGL, EVH]
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,GBX=1.5737530008002099,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,EVH=1.3595603124096063
+remain cash: 8019.910000000033
+buy stock. stock=ALGN, count=41, price=193.19, orderPrice=195.12, orderId: 1413374520697030974 1698413406531
+ALGN order is successfully executed. orderId: 1413374520697030974
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1413374520697030974, code=ALGN, name=艾利科技, count=41.0, price=195.12, avgPrice=193.18, createTime=2023-10-27 09:30:06, updateTimestamp=1.698413411E9, status=0)
+buy stock. stock=IGT, count=3, price=25.84, orderPrice=26.09, orderId: 1413374524991998269 1698413411877
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1413374524991998269, code=IGT, name=国际博彩科技, count=3.0, price=26.09, avgPrice=26.0, createTime=2023-10-27 09:30:11, updateTimestamp=1.698413416E9, status=0)
+IGT order is successfully executed. orderId: 1413374524991998269
+buy stock. stock=LTH, count=8, price=11.87, orderPrice=11.98, orderId: 1413374529286965564 1698413417504
+LTH order is successfully executed. orderId: 1413374529286965564
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1413374529286965564, code=LTH, name=Life Time, count=8.0, price=11.98, avgPrice=11.93, createTime=2023-10-27 09:30:16, updateTimestamp=1.698413421E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+being listen stop loss: {LTH=StopLoss(stock=LTH, canSellQty=8.0, lossPrice=11.094), IGT=StopLoss(stock=IGT, canSellQty=3.0, lossPrice=24.18), ALGN=StopLoss(stock=ALGN, canSellQty=41.0, lossPrice=179.657)}
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+unsubscribe real-time quote
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+GOOGL don't need stop loss. it'll be unsubscribe
+ready to sell before close market. position={LTH=StockPosition(stock=LTH, canSellQty=8.0, costPrice=11.93, currPrice=11.28), IGT=StockPosition(stock=IGT, canSellQty=3.0, costPrice=25.998, currPrice=26.955), ALGN=StockPosition(stock=ALGN, canSellQty=41.0, costPrice=193.18, currPrice=190.87)}, time=2023-10-28T03:59:00.485
+before close sell stock. stock=ALGN, count=41.0, currentPrice=190.87, orderPrice=188.96
+before close sell stock. stock=ALGN, orderId：1422735187672567667
+before close sell stock. stock=IGT, count=3.0, currentPrice=26.955, orderPrice=26.68
+before close sell stock. stock=IGT, orderId：1422735191967534962
+before close sell stock. stock=LTH, count=8.0, currentPrice=11.28, orderPrice=11.16
+before close sell stock. stock=LTH, orderId：1422735715953543413
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1422735187672567667, code=ALGN, name=艾利科技, count=41.0, price=188.96, avgPrice=190.6, createTime=2023-10-27 15:59:00, updateTimestamp=1.698436744E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1422735191967534962, code=IGT, name=国际博彩科技, count=3.0, price=26.68, avgPrice=26.95, createTime=2023-10-27 15:59:00, updateTimestamp=1.698436744E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1422735715953543413, code=LTH, name=Life Time, count=8.0, price=11.16, avgPrice=11.44, createTime=2023-10-27 15:59:00, updateTimestamp=1.698436744E9, status=0)
+all stock has stop loss
+trade exit
