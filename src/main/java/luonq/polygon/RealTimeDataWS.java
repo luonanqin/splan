@@ -230,22 +230,18 @@ public class RealTimeDataWS {
         executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MINUTES, workQueue);
     }
 
-    private static void loadEarningInfo() throws Exception {
+    public static void loadEarningInfo() throws Exception {
         LocalDate now = LocalDate.now();
         String todayDate = now.format(Constants.FORMATTER);
-        String today = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        Map<String, List<EarningDate>> todayEaring = BaseUtils.getEarningDate(today);
-        if (MapUtils.isNotEmpty(todayEaring) && todayEaring.containsKey(todayDate)) {
-            todayEarningStockSet = todayEaring.get(todayDate).stream().map(EarningDate::getStock).collect(Collectors.toSet());
-        }
-
         List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2022);
         String lastDate = kLines.get(0).getDate();
-        String lastDay = LocalDate.parse(lastDate, Constants.FORMATTER).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        Map<String, List<EarningDate>> lastEarning = BaseUtils.getEarningDate(lastDay);
-        if (MapUtils.isNotEmpty(lastEarning) && lastEarning.containsKey(lastDate)) {
-            lastEarningStockSet = lastEarning.get(lastDate).stream().map(EarningDate::getStock).collect(Collectors.toSet());
-        }
+
+        Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
+        List<EarningDate> earningDates = MapUtils.getObject(earningDateMap, todayDate, Lists.newArrayList());
+        todayEarningStockSet = earningDates.stream().map(EarningDate::getStock).collect(Collectors.toSet());
+
+        List<EarningDate> lastEarningDates = MapUtils.getObject(earningDateMap, lastDate, Lists.newArrayList());
+        lastEarningStockSet = lastEarningDates.stream().map(EarningDate::getStock).collect(Collectors.toSet());
     }
 
     private Set<String> buildStockSet(Map<String, String> fileMap) throws Exception {
@@ -714,10 +710,9 @@ public class RealTimeDataWS {
         tradeExecutor.reListenStopLoss();
     }
 
-    public static void main(String[] args) throws Exception {
-//        RealTimeDataWS client = new RealTimeDataWS();
-//        client.sendToTradeDataListener();
-        loadEarningInfo();
+    public static void main(String[] args) throws InterruptedException {
+        RealTimeDataWS client = new RealTimeDataWS();
+        client.sendToTradeDataListener();
 
         while (true) {
             Thread.sleep(1000);
