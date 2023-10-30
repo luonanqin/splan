@@ -57,9 +57,6 @@ public class GrabEarningHistory {
         driver.manage().window().setSize(new Dimension(1280, 1027));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
-        Thread.sleep(10000);
-        driver.quit();
-
         for (String day : dayList) {
             By tableXpath = By.xpath("//div[@id='cal-res-table']");
             BaseUtils.viewloadPage(driver, "https://finance.yahoo.com/calendar/earnings?day=" + day, tableXpath);

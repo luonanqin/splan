@@ -109,6 +109,7 @@ public class RealTimeDataWS {
             initManyTime();
             connect();
             waitAuth();
+            readyUnsubscribeExecutor();
 
             if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
                 initTrade();
@@ -151,7 +152,6 @@ public class RealTimeDataWS {
             //            stockSet.clear();
             //            stockSet.add("RNST");
 
-            readyUnsubscribeExecutor();
             loadLastDn();
             loadLatestMA20();
 
@@ -227,7 +227,7 @@ public class RealTimeDataWS {
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
-        executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
+        executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MINUTES, workQueue);
     }
 
     private static void loadEarningInfo() throws Exception {
@@ -714,9 +714,10 @@ public class RealTimeDataWS {
         tradeExecutor.reListenStopLoss();
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        RealTimeDataWS client = new RealTimeDataWS();
-        client.sendToTradeDataListener();
+    public static void main(String[] args) throws Exception {
+//        RealTimeDataWS client = new RealTimeDataWS();
+//        client.sendToTradeDataListener();
+        loadEarningInfo();
 
         while (true) {
             Thread.sleep(1000);
