@@ -59,7 +59,7 @@ public class TradeDataListener {
             return;
         }
 
-        System.out.println(event + " dn=" + dn);
+        System.out.println(event + " dn=" + dn + " current=" + System.currentTimeMillis());
         double diff = (dn - price) / dn * 100;
         int diffInt = (int) diff;
         if (diffInt > 6) {

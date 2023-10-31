@@ -92,7 +92,9 @@ public class GrabEarningHistory {
         for (int i = 0; i < symbolList.size(); i++) {
             String symbol = symbolList.get(i).getText();
             String time = timeList.get(i).getText();
-            res.add(symbol + " " + time);
+            String result = symbol + " " + time;
+            res.add(result);
+            System.out.println(result);
         }
 
         return res;

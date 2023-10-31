@@ -44,7 +44,7 @@ public class TradeExecutor {
         tradeStock = stocks;
     }
 
-    public void beginTrade() {
+    public void beginTrade() throws InterruptedException {
         list.show();
         List<Node> nodes = list.getNodes();
         /** 1.获取剩余可用现金 */
@@ -99,6 +99,7 @@ public class TradeExecutor {
         /** 6.建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */
         closeCheckPosition();
 
+        Thread.sleep(10000);
         /** 7.计算之前已成交的止损价格，并设置止损市价单（模拟盘不支持） */
         /** 7*.（只用于模拟盘，实盘需注释掉）计算止损价格临时存储，然后让主进程监听这些股票，发现低于止损价则触发止损限价单 */
         beginListenStopLoss();

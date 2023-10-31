@@ -110,13 +110,12 @@ public class RealTimeDataWS {
             connect();
             waitAuth();
             readyUnsubscribeExecutor();
+            initTrade();
 
             if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
-                initTrade();
                 listenExistPosition();
             } else {
                 initHistoricalData();
-                initTrade();
                 subcribeStock();
             }
         } catch (Exception e) {
@@ -486,11 +485,16 @@ public class RealTimeDataWS {
                 if (listenEnd) {
                     return;
                 }
+                long currentTime = System.currentTimeMillis();
                 if (StringUtils.isBlank(msg)) {
-                    if (System.currentTimeMillis() > listenEndTime) {
+                    if (currentTime > listenEndTime) {
                         beginTrade("time over. listen end!");
                         return;
                     } else if (stockSet.size() - unsubcribeStockSet.size() < 100) {
+                        if (listenEndTime - currentTime > 10000) {
+                            System.out.println("many stock has received data. keep listening");
+                            continue;
+                        }
                         beginTrade("many stock has received data. listen end!");
                         return;
                     } else {
@@ -534,7 +538,7 @@ public class RealTimeDataWS {
                 }
 
                 // 用当前时间判断是否超过监听时间，避免不活跃股票 或 接口延迟 导致监听超时，影响及时下单
-                if (System.currentTimeMillis() > listenEndTime) {
+                if (currentTime > listenEndTime) {
                     beginTrade("now time is over! listen end!");
                     return;
                 }
