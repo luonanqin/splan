@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import lombok.Data;
 import luonq.futu.TradeApi;
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.TimerTask;
 /**
  * Created by Luonanqin on 2023/5/9.
  */
+@Component
 @Data
 public class TradeExecutor {
 

@@ -1,0 +1,136 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7124744420637091014
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1698672480000, openTime=1698672600000, closeCheckTime=Tue Oct 31 03:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+stock latest close great 7 size: 1974
+stock overbolling hit great 0.500000 size: 1660
+filter merge stock, the stock set size is 1660
+filter split stock, the stock set size is 1657
+filter front reinstatement less 0.98 stock, the stock set size is 1570
+filter earning and lastEarning stock, the stock set size is 1473
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+finish init trade
+wait pre trade time. now is 21:27:39
+wait pre trade time. now is 21:27:44
+wait pre trade time. now is 21:27:49
+wait pre trade time. now is 21:27:54
+wait pre trade time. now is 21:27:59
+begin subcribe stock at 21:28:04
+finish subcribe real time!
+time is early. {p=87.22, ev=T, q=94146, s=14, c=[14,12,37,41], t=1698672540000, sym=QRVO, x=12, i=10, z=3}
+{p=87.22, ev=T, q=94146, s=14, c=[14,12,37,41], t=1698672540000, sym=QRVO, x=12, i=10, z=3}
+time is early. {p=87.21, ev=T, q=94147, s=6, c=[14,12,37,41], t=1698672540000, sym=QRVO, x=12, i=11, z=3}
+{p=87.21, ev=T, q=94147, s=6, c=[14,12,37,41], t=1698672540000, sym=QRVO, x=12, i=11, z=3}
+time is early. {p=231.95, ev=T, q=14831, s=1, c=[12,37], t=1698672544000, sym=V, x=2, i=62879130077039, z=1}
+{p=231.95, ev=T, q=14831, s=1, c=[12,37], t=1698672544000, sym=V, x=2, i=62879130077039, z=1}
+time is early. {p=139.5, ev=T, q=14949, s=100, c=[12], t=1698672576000, sym=VMW, x=11, i=52983525100104, z=1}
+{p=139.5, ev=T, q=14949, s=100, c=[12], t=1698672576000, sym=VMW, x=11, i=52983525100104, z=1}
+time is early. {p=139.5, ev=T, q=14950, s=100, c=[12], t=1698672576000, sym=VMW, x=11, i=52983525100105, z=1}
+{p=139.5, ev=T, q=14950, s=100, c=[12], t=1698672576000, sym=VMW, x=11, i=52983525100105, z=1}
+time is early. {p=139.5, ev=T, q=14951, s=800, c=[12], t=1698672576000, sym=VMW, x=11, i=52983525100106, z=1}
+{p=139.5, ev=T, q=14951, s=800, c=[12], t=1698672576000, sym=VMW, x=11, i=52983525100106, z=1}
+StockEvent(stock=WHR, price=102.11, time=1698672600003) dn=106.048
+unsubscribeStockSet size: 100 1698672600137
+WHR=3.7134127942063992
+unsubscribeStockSet size: 200 1698672600153
+StockEvent(stock=MAT, price=18.59, time=1698672600005) dn=18.6
+StockEvent(stock=CSCO, price=51.39, time=1698672600001) dn=51.404
+StockEvent(stock=OSIS, price=107.84, time=1698672600005) dn=108.474
+StockEvent(stock=CSGS, price=47.05, time=1698672600003) dn=47.209
+StockEvent(stock=HTZ, price=8.69, time=1698672600004) dn=8.918
+unsubscribeStockSet size: 300 1698672600176
+StockEvent(stock=ALGN, price=192.76, time=1698672600009) dn=200.018
+StockEvent(stock=RGNX, price=14.53, time=1698672600006) dn=14.603
+StockEvent(stock=ACMR, price=14.07, time=1698672600035) dn=14.808
+StockEvent(stock=ADP, price=215.94, time=1698672600038) dn=216.147
+StockEvent(stock=BRKL, price=8.15, time=1698672600002) dn=8.181
+StockEvent(stock=ADI, price=157.65, time=1698672600002) dn=157.822
+StockEvent(stock=O, price=47.54, time=1698672600003) dn=48.162
+StockEvent(stock=KALU, price=55.5, time=1698672600004) dn=56.224
+StockEvent(stock=UPS, price=136.06, time=1698672600160) dn=137.59
+StockEvent(stock=BMY, price=51.62, time=1698672600280) dn=52.388
+StockEvent(stock=JNJ, price=146.0, time=1698672600296) dn=146.34
+unsubscribeStockSet size: 400 1698672600381
+StockEvent(stock=UVSP, price=16.34, time=1698672600229) dn=16.355
+StockEvent(stock=PRGO, price=27.255, time=1698672600368) dn=27.544
+StockEvent(stock=WU, price=11.495, time=1698672600472) dn=11.716
+unsubscribeStockSet size: 500 1698672600573
+StockEvent(stock=HAS, price=46.515, time=1698672600447) dn=47.146
+StockEvent(stock=WST, price=323.46, time=1698672600571) dn=327.337
+unsubscribeStockSet size: 600 1698672600700
+StockEvent(stock=EGLE, price=41.0, time=1698672600640) dn=41.05
+StockEvent(stock=SKT, price=21.5, time=1698672600649) dn=21.567
+StockEvent(stock=BBY, price=64.83, time=1698672600619) dn=64.909
+StockEvent(stock=TNET, price=104.67, time=1698672600649) dn=105.312
+unsubscribeStockSet size: 700 1698672600807
+StockEvent(stock=CABO, price=546.22, time=1698672600718) dn=549.762
+StockEvent(stock=XPRO, price=16.01, time=1698672600676) dn=16.669
+StockEvent(stock=VRSN, price=194.01, time=1698672600683) dn=195.862
+unsubscribeStockSet size: 800 1698672600857
+StockEvent(stock=RCUS, price=14.49, time=1698672600714) dn=14.746
+StockEvent(stock=VRE, price=13.52, time=1698672600743) dn=13.788
+StockEvent(stock=LKQ, price=43.9, time=1698672600728) dn=43.957
+unsubscribeStockSet size: 900 1698672600902
+StockEvent(stock=SAVE, price=14.67, time=1698672600732) dn=15.083
+StockEvent(stock=DRH, price=7.48, time=1698672600751) dn=7.492
+StockEvent(stock=TDOC, price=15.74, time=1698672600741) dn=15.971
+StockEvent(stock=EL, price=123.61, time=1698672600812) dn=127.344
+StockEvent(stock=RLJ, price=9.25, time=1698672600698) dn=9.273
+StockEvent(stock=WEX, price=164.25, time=1698672600694) dn=165.93
+StockEvent(stock=PK, price=11.27, time=1698672600745) dn=11.303
+unsubscribeStockSet size: 1000 1698672600941
+StockEvent(stock=LBRDA, price=77.935, time=1698672600836) dn=80.315
+StockEvent(stock=OPCH, price=26.65, time=1698672600853) dn=27.11
+StockEvent(stock=HOG, price=26.53, time=1698672600816) dn=26.738
+StockEvent(stock=NXRT, price=27.05, time=1698672600827) dn=27.109
+StockEvent(stock=EW, price=61.96, time=1698672600829) dn=62.722
+StockEvent(stock=ULBI, price=7.12, time=1698672600834) dn=7.43
+ULBI=4.172274562584113,WHR=3.7134127942063992
+unsubscribeStockSet size: 1100 1698672600993
+StockEvent(stock=KEX, price=75.0, time=1698672600851) dn=76.066
+StockEvent(stock=NYCB, price=9.37, time=1698672600837) dn=9.44
+StockEvent(stock=ENFN, price=8.28, time=1698672600873) dn=8.305
+StockEvent(stock=VMI, price=191.77, time=1698672600929) dn=197.597
+unsubscribeStockSet size: 1200 1698672601068
+StockEvent(stock=KB, price=38.04, time=1698672600959) dn=38.54
+unsubscribeStockSet size: 1300 1698672601184
+StockEvent(stock=MYRG, price=112.92, time=1698672601131) dn=113.696
+StockEvent(stock=IART, price=34.57, time=1698672601214) dn=34.728
+StockEvent(stock=THRM, price=41.44, time=1698672601279) dn=43.42
+THRM=4.560110548134509,ULBI=4.172274562584113,WHR=3.7134127942063992
+unsubscribeStockSet size: 1400 1698672601487
+StockEvent(stock=HIBB, price=45.0, time=1698672601279) dn=45.029
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [THRM, ULBI, WHR]
+THRM=4.560110548134509,ULBI=4.172274562584113,WHR=3.7134127942063992
+remain cash: 7962.189999999944
+buy stock. stock=THRM, count=190, price=41.44, orderPrice=41.85, orderId: 1432684921762931436 1698672607859
+THRM order is successfully executed. orderId: 1432684921762931436
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1432684921762931436, code=THRM, name=Gentherm, count=190.0, price=41.85, avgPrice=41.44, createTime=2023-10-30 09:30:07, updateTimestamp=1.698672614E9, status=0)
+buy stock. stock=ULBI, count=11, price=7.12, orderPrice=7.19, orderId: 1432684930352866018 1698672615063
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1432684930352866018, code=ULBI, name=Ultralife, count=11.0, price=7.19, avgPrice=7.12, createTime=2023-10-30 09:30:15, updateTimestamp=1.698672621E9, status=0)
+ULBI order is successfully executed. orderId: 1432684930352866018
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+being listen stop loss: {THRM=StopLoss(stock=THRM, canSellQty=190.0, lossPrice=38.539), ULBI=StopLoss(stock=ULBI, canSellQty=11.0, lossPrice=6.621)}
+unsubscribe real-time quote
+{p=41.38, ev=T, q=4569761, s=100, c=[14,41], t=1698688646000, sym=THRM, x=20, i=46, z=3}
+{p=41.38, ev=T, q=4569762, s=2472, c=[14,41], t=1698688646000, sym=THRM, x=20, i=47, z=3}
+{p=41.43, ev=T, q=4569763, s=1, c=[14,37,41], t=1698688646000, sym=THRM, x=12, i=1608, z=3}
+ready to sell before close market. position={THRM=StockPosition(stock=THRM, canSellQty=190.0, costPrice=41.44, currPrice=41.69), ULBI=StockPosition(stock=ULBI, canSellQty=11.0, costPrice=7.12, currPrice=7.2)}, time=2023-10-31T03:59:00.098
+before close sell stock. stock=THRM, count=190.0, currentPrice=41.69, orderPrice=41.27
+before close sell stock. stock=THRM, orderId：2610429193910489421
+before close sell stock. stock=ULBI, count=11.0, currentPrice=7.2, orderPrice=7.12
+before close sell stock. stock=ULBI, orderId：2610429198205456716
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2610429193910489421, code=THRM, name=Gentherm, count=190.0, price=41.27, avgPrice=41.29, createTime=2023-10-30 15:59:00, updateTimestamp=1.698695942E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2610429198205456716, code=ULBI, name=Ultralife, count=11.0, price=7.12, avgPrice=7.2, createTime=2023-10-30 15:59:00, updateTimestamp=1.698695942E9, status=0)
+all stock has stop loss
+trade exit

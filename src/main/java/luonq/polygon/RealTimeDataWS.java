@@ -21,6 +21,8 @@ import luonq.strategy.backup.Strategy10_3;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
 
@@ -58,6 +60,7 @@ import java.util.stream.Collectors;
 
 import static util.Constants.SEPARATOR;
 
+@Component
 @ClientEndpoint
 public class RealTimeDataWS {
 
@@ -76,6 +79,7 @@ public class RealTimeDataWS {
     private boolean subscribed = false;
     private boolean listenStopLoss = false;
     private boolean reconnect = false;
+    private boolean manualClose = false;
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
     public static Map<String, List<Double>> stockToM19Close = Maps.newHashMap();
@@ -100,16 +104,19 @@ public class RealTimeDataWS {
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private static Map<String, String> fileMap;
     private static AsyncEventBus tradeEventBus = asyncEventBus();
+
+    @Autowired
     private TradeExecutor tradeExecutor = new TradeExecutor();
 
     Session userSession = null;
 
-    public RealTimeDataWS() {
+    public void init() {
         try {
+            initVariable();
             initManyTime();
             connect();
             waitAuth();
-            readyUnsubscribeExecutor();
+            initUnsubscribeExecutor();
             initTrade();
 
             if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
@@ -121,6 +128,28 @@ public class RealTimeDataWS {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void initVariable() {
+        subscribed = false;
+        listenStopLoss = false;
+        reconnect = false;
+        manualClose = false;
+        stockToLastDn = Maps.newHashMap();
+        stockToM19CloseSum = Maps.newHashMap();
+        stockToM19Close = Maps.newHashMap();
+        todayEarningStockSet = Sets.newHashSet();
+        lastEarningStockSet = Sets.newHashSet();
+        getRealtimeQuote = false;
+        realtimeQuoteMap = Maps.newHashMap();
+        subscribeBQ = new LinkedBlockingQueue<>(1000);
+        stopLossBQ = new LinkedBlockingQueue<>(1000);
+        realtimeQuoteBQ = new LinkedBlockingQueue<>(1000);
+        listenEnd = false;
+        list = new NodeList(10);
+        hasAuth = new AtomicBoolean(false);
+        unsubcribeStockSet = Sets.newHashSet();
+        tradeEventBus = asyncEventBus();
     }
 
     private void waitAuth() {
@@ -220,7 +249,7 @@ public class RealTimeDataWS {
         System.out.println("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
     }
 
-    private void readyUnsubscribeExecutor() {
+    private void initUnsubscribeExecutor() {
         int threadCount = 100;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
@@ -400,8 +429,19 @@ public class RealTimeDataWS {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
         }
+        if (manualClose) {
+            System.out.println("manual close websocket");
+            return;
+        }
         reconnect();
         this.userSession = userSession;
+    }
+
+    public void close() throws Exception {
+        if (userSession != null) {
+            manualClose = true;
+            userSession.close();
+        }
     }
 
     /**
@@ -638,7 +678,7 @@ public class RealTimeDataWS {
         }
         listenStopLoss = true;
         unsubcribeStockSet.removeAll(stockToStopLoss.keySet());
-        System.out.println("being listen stop loss: " + stockToStopLoss);
+        System.out.println("begin listen stop loss: " + stockToStopLoss);
         for (String stock : stockToStopLoss.keySet()) {
             sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
         }
@@ -716,6 +756,7 @@ public class RealTimeDataWS {
 
     public static void main(String[] args) throws InterruptedException {
         RealTimeDataWS client = new RealTimeDataWS();
+        client.init();
         client.sendToTradeDataListener();
 
         while (true) {

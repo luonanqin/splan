@@ -1,0 +1,136 @@
+/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=55074:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/deploy.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/cldrdata.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/dnsns.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/jaccess.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/jfxrt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/localedata.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/nashorn.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunec.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunjce_provider.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunpkcs11.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/zipfs.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/javaws.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jfxswt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/management-agent.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/plugin.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/ant-javafx.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/dt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/javafx-mx.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/jconsole.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/packager.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/sa-jdi.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/tools.jar:/Users/Luonanqin/study/intellij_idea_workspaces/splan/target/classes:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-java/4.7.2/selenium-java-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-api/4.7.2/selenium-api-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-chrome-driver/4.7.2/selenium-chrome-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/service/auto-service-annotations/1.0.1/auto-service-annotations-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/service/auto-service/1.0.1/auto-service-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/auto-common/1.2/auto-common-1.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-chromium-driver/4.7.2/selenium-chromium-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-json/4.7.2/selenium-json-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v106/4.7.2/selenium-devtools-v106-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v107/4.7.2/selenium-devtools-v107-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v108/4.7.2/selenium-devtools-v108-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v85/4.7.2/selenium-devtools-v85-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-edge-driver/4.7.2/selenium-edge-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-firefox-driver/4.7.2/selenium-firefox-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-http/4.7.2/selenium-http-4.7.2.jar:/Users/Luonanqin/study/maven/repository/dev/failsafe/failsafe/3.3.0/failsafe-3.3.0.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-ie-driver/4.7.2/selenium-ie-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-remote-driver/4.7.2/selenium-remote-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/com/beust/jcommander/1.82/jcommander-1.82.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-buffer/4.1.84.Final/netty-buffer-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec-http/4.1.84.Final/netty-codec-http-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec/4.1.84.Final/netty-codec-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-handler/4.1.84.Final/netty-handler-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-common/4.1.84.Final/netty-common-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-classes-epoll/4.1.84.Final/netty-transport-classes-epoll-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-classes-kqueue/4.1.84.Final/netty-transport-classes-kqueue-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-epoll/4.1.84.Final/netty-transport-native-epoll-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-kqueue/4.1.84.Final/netty-transport-native-kqueue-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-unix-common/4.1.84.Final/netty-transport-native-unix-common-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport/4.1.84.Final/netty-transport-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-resolver/4.1.84.Final/netty-resolver-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-api/1.19.0/opentelemetry-api-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-context/1.19.0/opentelemetry-context-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-exporter-logging/1.19.0/opentelemetry-exporter-logging-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-metrics/1.19.0/opentelemetry-sdk-metrics-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-logs/1.19.0-alpha/opentelemetry-sdk-logs-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-api-logs/1.19.0-alpha/opentelemetry-api-logs-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-common/1.19.0/opentelemetry-sdk-common-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.19.0/opentelemetry-sdk-extension-autoconfigure-spi-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.19.0-alpha/opentelemetry-sdk-extension-autoconfigure-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-trace/1.19.0/opentelemetry-sdk-trace-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk/1.19.0/opentelemetry-sdk-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-semconv/1.19.0-alpha/opentelemetry-semconv-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar:/Users/Luonanqin/study/maven/repository/net/bytebuddy/byte-buddy/1.12.18/byte-buddy-1.12.18.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar:/Users/Luonanqin/study/maven/repository/org/asynchttpclient/async-http-client/2.12.3/async-http-client-2.12.3.jar:/Users/Luonanqin/study/maven/repository/org/asynchttpclient/async-http-client-netty-utils/2.12.3/async-http-client-netty-utils-2.12.3.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec-socks/4.1.60.Final/netty-codec-socks-4.1.60.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-epoll/4.1.60.Final/netty-transport-native-epoll-4.1.60.Final-linux-x86_64.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-kqueue/4.1.60.Final/netty-transport-native-kqueue-4.1.60.Final-osx-x86_64.jar:/Users/Luonanqin/study/maven/repository/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar:/Users/Luonanqin/study/maven/repository/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar:/Users/Luonanqin/study/maven/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-manager/4.7.2/selenium-manager-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-safari-driver/4.7.2/selenium-safari-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-support/4.7.2/selenium-support-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar:/Users/Luonanqin/study/maven/repository/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar:/Users/Luonanqin/study/maven/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar:/Users/Luonanqin/study/maven/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar:/Users/Luonanqin/study/maven/repository/com/futunn/openapi/futu-api/7.1.3308/futu-api-7.1.3308.jar:/Users/Luonanqin/study/maven/repository/com/google/protobuf/protobuf-java/3.5.1/protobuf-java-3.5.1.jar:/Users/Luonanqin/study/maven/repository/org/bouncycastle/bcprov-jdk15on/1.68/bcprov-jdk15on-1.68.jar:/Users/Luonanqin/study/maven/repository/org/bouncycastle/bcpkix-jdk15on/1.68/bcpkix-jdk15on-1.68.jar:/Users/Luonanqin/study/maven/repository/com/alibaba/fastjson/1.2.53/fastjson-1.2.53.jar:/Users/Luonanqin/study/maven/repository/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-collections4/4.2/commons-collections4-4.2.jar:/Users/Luonanqin/study/maven/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar:/Users/Luonanqin/study/maven/repository/com/google/protobuf/protobuf-java-util/3.5.1/protobuf-java-util-3.5.1.jar:/Users/Luonanqin/study/maven/repository/com/google/code/gson/gson/2.7/gson-2.7.jar:/Users/Luonanqin/study/maven/repository/org/java-websocket/Java-WebSocket/1.3.5/Java-WebSocket-1.3.5.jar:/Users/Luonanqin/study/maven/repository/javax/websocket/javax.websocket-api/1.1/javax.websocket-api-1.1.jar:/Users/Luonanqin/study/maven/repository/org/glassfish/tyrus/bundles/tyrus-standalone-client/1.9/tyrus-standalone-client-1.9.jar:/Users/Luonanqin/study/maven/repository/com/huaban/jieba-analysis/1.0.2/jieba-analysis-1.0.2.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/guava/31.0.1-jre/guava-31.0.1-jre.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/Luonanqin/study/maven/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/Luonanqin/study/maven/repository/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar:/Users/Luonanqin/study/maven/repository/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar:/Users/Luonanqin/study/maven/repository/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-web/2.4.1/spring-boot-starter-web-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter/2.4.1/spring-boot-starter-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-logging/2.4.1/spring-boot-starter-logging-2.4.1.jar:/Users/Luonanqin/study/maven/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar:/Users/Luonanqin/study/maven/repository/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/logging/log4j/log4j-to-slf4j/2.13.3/log4j-to-slf4j-2.13.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/logging/log4j/log4j-api/2.13.3/log4j-api-2.13.3.jar:/Users/Luonanqin/study/maven/repository/org/slf4j/jul-to-slf4j/1.7.30/jul-to-slf4j-1.7.30.jar:/Users/Luonanqin/study/maven/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar:/Users/Luonanqin/study/maven/repository/org/yaml/snakeyaml/1.27/snakeyaml-1.27.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-json/2.4.1/spring-boot-starter-json-2.4.1.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-databind/2.11.3/jackson-databind-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-annotations/2.11.3/jackson-annotations-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-core/2.11.3/jackson-core-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.11.3/jackson-datatype-jdk8-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.11.3/jackson-datatype-jsr310-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.11.3/jackson-module-parameter-names-2.11.3.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-tomcat/2.4.1/spring-boot-starter-tomcat-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.41/tomcat-embed-core-9.0.41.jar:/Users/Luonanqin/study/maven/repository/org/glassfish/jakarta.el/3.0.3/jakarta.el-3.0.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.41/tomcat-embed-websocket-9.0.41.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-web/5.3.2/spring-web-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-beans/5.3.2/spring-beans-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-webmvc/5.3.2/spring-webmvc-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-aop/5.3.2/spring-aop-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-context/5.3.2/spring-context-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-expression/5.3.2/spring-expression-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-configuration-processor/2.4.1/spring-boot-configuration-processor-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-devtools/2.4.1/spring-boot-devtools-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot/2.4.1/spring-boot-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-autoconfigure/2.4.1/spring-boot-autoconfigure-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-core/5.3.2/spring-core-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-jcl/5.3.2/spring-jcl-5.3.2.jar luonq.polygon.RealTimeDataWS
+objc[80438]: Class JavaLaunchHelper is implemented in both /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/bin/java (0x1049094c0) and /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/libinstrument.dylib (0x10d0354e0). One of the two will be used. Which one is undefined.
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7125110031795907967
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1698758880000, openTime=1698759000000, closeCheckTime=Wed Nov 01 03:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1214
+stock overbolling hit great 0.500000 size: 1035
+filter merge stock, the stock set size is 1035
+filter split stock, the stock set size is 1032
+filter front reinstatement less 0.98 stock, the stock set size is 974
+filter earning and lastEarning stock, the stock set size is 906
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+wait pre trade time. now is 21:24:11
+wait pre trade time. now is 21:24:16
+wait pre trade time. now is 21:24:21
+wait pre trade time. now is 21:24:26
+wait pre trade time. now is 21:24:31
+wait pre trade time. now is 21:24:36
+wait pre trade time. now is 21:24:41
+wait pre trade time. now is 21:24:46
+wait pre trade time. now is 21:24:51
+wait pre trade time. now is 21:24:56
+wait pre trade time. now is 21:25:01
+wait pre trade time. now is 21:25:06
+wait pre trade time. now is 21:25:11
+wait pre trade time. now is 21:25:16
+wait pre trade time. now is 21:25:21
+wait pre trade time. now is 21:25:26
+wait pre trade time. now is 21:25:31
+wait pre trade time. now is 21:25:36
+wait pre trade time. now is 21:25:41
+wait pre trade time. now is 21:25:46
+wait pre trade time. now is 21:25:51
+wait pre trade time. now is 21:25:56
+wait pre trade time. now is 21:26:01
+wait pre trade time. now is 21:26:06
+wait pre trade time. now is 21:26:11
+wait pre trade time. now is 21:26:16
+wait pre trade time. now is 21:26:21
+wait pre trade time. now is 21:26:26
+wait pre trade time. now is 21:26:31
+wait pre trade time. now is 21:26:36
+wait pre trade time. now is 21:26:41
+wait pre trade time. now is 21:26:46
+wait pre trade time. now is 21:26:51
+wait pre trade time. now is 21:26:56
+wait pre trade time. now is 21:27:01
+wait pre trade time. now is 21:27:06
+wait pre trade time. now is 21:27:11
+wait pre trade time. now is 21:27:16
+wait pre trade time. now is 21:27:21
+wait pre trade time. now is 21:27:26
+wait pre trade time. now is 21:27:31
+wait pre trade time. now is 21:27:36
+wait pre trade time. now is 21:27:41
+wait pre trade time. now is 21:27:46
+wait pre trade time. now is 21:27:51
+wait pre trade time. now is 21:27:56
+begin subcribe stock at 21:28:01
+finish subcribe real time!
+StockEvent(stock=SRPT, price=57.58, time=1698759000002) dn=85.283 1698759000567
+StockEvent(stock=RGNX, price=13.59, time=1698759000014) dn=14.121 1698759000570
+StockEvent(stock=HAS, price=44.3, time=1698759000013) dn=45.052 1698759000616
+HAS=1.6691822782562427
+StockEvent(stock=GOGL, price=7.23, time=1698759000013) dn=7.297 1698759000836
+StockEvent(stock=THRM, price=41.63, time=1698759000014) dn=41.684 1698759000838
+unsubscribeStockSet size: 100 1698759000913
+StockEvent(stock=ACLS, price=126.1, time=1698759000048) dn=126.768 1698759001114
+StockEvent(stock=CCB, price=37.08, time=1698759000013) dn=37.492 1698759001134
+StockEvent(stock=OSIS, price=104.97, time=1698759000093) dn=105.76 1698759001307
+StockEvent(stock=DAN, price=11.7, time=1698759000147) dn=11.746 1698759001343
+StockEvent(stock=FNV, price=125.0, time=1698759000155) dn=126.256 1698759001407
+StockEvent(stock=WALD, price=7.92, time=1698759000050) dn=8.144 1698759001582
+WALD=2.7504911591355623,HAS=1.6691822782562427
+StockEvent(stock=O, price=46.51, time=1698759000179) dn=47.152 1698759001678
+unsubscribeStockSet size: 200 1698759001848
+StockEvent(stock=OLED, price=138.66, time=1698759000321) dn=138.903 1698759002119
+StockEvent(stock=ACMR, price=13.145, time=1698759000325) dn=13.642 1698759002119
+ACMR=3.643160826858231,WALD=2.7504911591355623,HAS=1.6691822782562427
+StockEvent(stock=BMY, price=51.265, time=1698759000348) dn=51.522 1698759002204
+unsubscribeStockSet size: 300 1698759003576
+StockEvent(stock=PEB, price=11.82, time=1698759000602) dn=11.888 1698759003608
+StockEvent(stock=ALGM, price=26.34, time=1698759000594) dn=26.358 1698759004185
+StockEvent(stock=SAVE, price=13.13, time=1698759000626) dn=13.861 1698759004186
+StockEvent(stock=GFS, price=50.0, time=1698759000618) dn=50.006 1698759004306
+StockEvent(stock=CODI, price=16.92, time=1698759000644) dn=16.955 1698759004306
+StockEvent(stock=AVTR, price=17.2, time=1698759000644) dn=17.61 1698759004402
+StockEvent(stock=XPRO, price=15.79, time=1698759000653) dn=15.918 1698759004643
+unsubscribeStockSet size: 400 1698759004793
+StockEvent(stock=WU, price=10.99, time=1698759000652) dn=11.214 1698759004917
+StockEvent(stock=ALSN, price=50.76, time=1698759000659) dn=50.877 1698759005119
+StockEvent(stock=KNSL, price=332.98, time=1698759000661) dn=346.785 1698759005359
+StockEvent(stock=AZTA, price=44.35, time=1698759000640) dn=44.957 1698759006526
+StockEvent(stock=ELME, price=12.77, time=1698759000641) dn=12.774 1698759006527
+unsubscribeStockSet size: 500 1698759006526
+StockEvent(stock=EVTC, price=32.01, time=1698759000756) dn=32.178 1698759007701
+unsubscribeStockSet size: 600 1698759007899
+StockEvent(stock=VRE, price=13.3, time=1698759000697) dn=13.357 1698759008326
+StockEvent(stock=PRVA, price=20.77, time=1698759000745) dn=20.788 1698759008365
+StockEvent(stock=AZUL, price=7.1, time=1698759000682) dn=7.108 1698759008955
+StockEvent(stock=HOG, price=26.0, time=1698759000769) dn=26.032 1698759009194
+StockEvent(stock=KEX, price=74.09, time=1698759000815) dn=74.604 1698759009308
+unsubscribeStockSet size: 700 1698759009775
+StockEvent(stock=MPX, price=10.07, time=1698759000890) dn=10.309 1698759009778
+StockEvent(stock=PNM, price=42.49, time=1698759000848) dn=42.562 1698759010121
+StockEvent(stock=KRUS, price=57.25, time=1698759000926) dn=57.609 1698759011132
+unsubscribeStockSet size: 800 1698759012274
+StockEvent(stock=EXPO, price=73.8, time=1698759001185) dn=74.399 1698759015273
+now time is over! listen end!
+unsubscribeStockSet size: 900 1698759030034
+=========== finish unsubscribe ===========
+get real-time quote: [ACMR, WALD, HAS]
+ACMR=3.643160826858231,WALD=2.7504911591355623,HAS=1.6691822782562427
+remain cash: 7925.270000000019
+buy stock. stock=ACMR, count=597, price=13.145, orderPrice=13.27, orderId: 2620089193800982100 1698759031244
+ACMR order is successfully executed. orderId: 2620089193800982100
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2620089193800982100, code=ACMR, name=ACM Research, count=597.0, price=13.27, avgPrice=13.16, createTime=2023-10-31 09:30:31, updateTimestamp=1.698759031E9, status=0)
+buy stock. stock=WALD, count=7, price=7.92, orderPrice=7.99, orderId: 2620089198095949399 1698759031845
+WALD order is successfully executed. orderId: 2620089198095949399
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2620089198095949399, code=WALD, name=Waldencast, count=7.0, price=7.99, avgPrice=7.9399999999999995, createTime=2023-10-31 09:30:31, updateTimestamp=1.698759036E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+being listen stop loss: {ACMR=StopLoss(stock=ACMR, canSellQty=597.0, lossPrice=12.238), WALD=StopLoss(stock=WALD, canSellQty=7.0, lossPrice=7.384)}
+{p=13.23, ev=T, q=284675, s=20, c=[37], t=1698759379000, sym=ACMR, trfi=202, x=4, i=256, z=3, trft=1698759379000}
+{p=13.23, ev=T, q=284676, s=20, c=[37], t=1698759379000, sym=ACMR, trfi=202, x=4, i=257, z=3, trft=1698759379000}
+{p=13.08, ev=T, q=403458, s=100, t=1698759696000, sym=ACMR, trfi=202, x=4, i=421, z=3, trft=1698759696000}
