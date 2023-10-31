@@ -134,3 +134,16 @@ being listen stop loss: {ACMR=StopLoss(stock=ACMR, canSellQty=597.0, lossPrice=1
 {p=13.23, ev=T, q=284675, s=20, c=[37], t=1698759379000, sym=ACMR, trfi=202, x=4, i=256, z=3, trft=1698759379000}
 {p=13.23, ev=T, q=284676, s=20, c=[37], t=1698759379000, sym=ACMR, trfi=202, x=4, i=257, z=3, trft=1698759379000}
 {p=13.08, ev=T, q=403458, s=100, t=1698759696000, sym=ACMR, trfi=202, x=4, i=421, z=3, trft=1698759696000}
+WALD touch the stop loss. current price=7.3515, lossPrice=7.384, orderPrice=7.31
+WALD placeStopLoss limit order. qty=7.0, price=7.31, orderId: 2629520718610931552
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2629520718610931552, code=WALD, name=Waldencast, count=7.0, price=7.31, avgPrice=7.35, createTime=2023-10-31 15:45:42, updateTimestamp=1.698781544E9, status=0)
+WALD don't need stop loss. it'll be unsubscribe
+ready to sell before close market. position={ACMR=StockPosition(stock=ACMR, canSellQty=597.0, costPrice=13.16, currPrice=13.61)}, time=2023-11-01T03:59:00.012
+before close sell stock. stock=ACMR, count=597.0, currentPrice=13.61, orderPrice=13.47
+before close sell stock. stock=ACMR, orderId：2629521848187330147
+closeCheckPosition failed! WALD position is not exist!
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2629521848187330147, code=ACMR, name=ACM Research, count=597.0, price=13.47, avgPrice=13.59, createTime=2023-10-31 15:59:00, updateTimestamp=1.698782345E9, status=0)
+{p=13.595, ev=T, q=5590506, s=21, c=[37], t=1698782382000, sym=ACMR, trfi=202, x=4, i=6052, z=3, trft=1698782382000}
+{p=13.57, ev=T, q=5640918, s=1355, t=1698782400000, sym=ACMR, x=12, i=5448, z=3}
+all stock has stop loss
+trade exit
