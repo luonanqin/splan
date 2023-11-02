@@ -168,7 +168,7 @@ public class Strategy12_6 {
         public String toString() {
             String closeDetail = riseList.stream().map(k -> String.valueOf(k.getClose())).collect(Collectors.joining("\t"));
             String volDetail = riseList.stream().map(k -> String.valueOf(k.getVolume())).collect(Collectors.joining("\t"));
-            return getFirstDate() + "\tstock=" + stock + "\t, close=\t" + closeDetail + "\tvolume=" + volDetail + ",\t" + getResult(riseList.size() - 1);
+            return getBuyDate() + "\tstock=" + stock + "\t, close=\t" + closeDetail + "\tvolume=" + volDetail + ",\t" + getResult(riseList.size() - 1);
         }
     }
 
@@ -309,6 +309,10 @@ public class Strategy12_6 {
 //                } else if (filter7(continueRise)) {
 //                    filter5List.add(continueRise);
 //                    continue;
+                } else if (filter9(continueRise)) {
+                    continue;
+                } else if (filter10(continueRise)) {
+                    continue;
                 } else {
                     String buyDate = continueRise.getBuyDate();
                     if (!buyDateToListMap.containsKey(buyDate)) {
@@ -337,8 +341,8 @@ public class Strategy12_6 {
         List<Double> ratioList = Lists.newArrayList();
         for (int i = 0; i < dateList.size(); i++) {
             String date = dateList.get(i);
-            if (date.equals("02/02/2023")) {
-//                System.out.println();
+            if (date.equals("10/31/2023")) {
+                System.out.println();
             }
             int currDateInt = BaseUtils.dateToInt(date);
 
@@ -369,11 +373,14 @@ public class Strategy12_6 {
             int maxCount = 0;
             for (ContinueRise canBuy : canBuyList) {
                 String stock = canBuy.getStock();
+                if (stock.equals("ALPN")) {
+                    System.out.println();
+                }
                 if (filter1(canBuy) || filter2(canBuy) || filter3(canBuy) || filter4(canBuy) || filter5(canBuy) || filter6(canBuy)||filter7(canBuy) || filter8(canBuy)) {
 //                    continue;
                 }
-                if (stock.equals("HOMB") || stock.equals("CACI")) {
-//                    System.out.println();
+                if (filter9(canBuy)) {
+//                    continue;
                 }
 
                 List<ContinueRise> riseList = stockToListMap.get(stock);
@@ -465,7 +472,7 @@ public class Strategy12_6 {
             double currClose = curr.getClose();
 
             amount = amount / currClose * nextClose;
-            System.out.println(maxBuy + "\t" + amount);
+            System.out.println(maxBuy + "\tamount=" + amount);
             ratioList.add(nextClose / currClose);
         }
         System.out.println("avgRatio" + ratioList.stream().collect(Collectors.averagingDouble(d -> d)));
@@ -598,6 +605,22 @@ public class Strategy12_6 {
         double high_3 = kLine3.getHigh();
 
         return high_2 > high_3;
+    }
+
+    // 第三天的最高和收盘boll的中轨差值比例小于0.005
+    public static boolean filter9(ContinueRise continueRise) {
+        BOLL currBoll = continueRise.getCurrBoll();
+        List<StockKLine> riseList = continueRise.getRiseList();
+        StockKLine currKLine = riseList.get(2);
+        return Math.abs((currKLine.getHigh() - currBoll.getMb()) / currBoll.getMb()) < 0.005d;
+    }
+
+    // 第三天的最高和收盘boll的上轨差值比例小于0.01
+    public static boolean filter10(ContinueRise continueRise) {
+        BOLL currBoll = continueRise.getCurrBoll();
+        List<StockKLine> riseList = continueRise.getRiseList();
+        StockKLine currKLine = riseList.get(2);
+        return Math.abs((currKLine.getHigh() - currBoll.getUp()) / currBoll.getUp()) < 0.01d;
     }
 
     public static Map<String, StockRatio> computeHistoricalOverBollingerRatio() throws Exception {

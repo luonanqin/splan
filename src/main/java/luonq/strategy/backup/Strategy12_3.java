@@ -168,7 +168,7 @@ public class Strategy12_3 {
         public String toString() {
             String closeDetail = riseList.stream().map(k -> String.valueOf(k.getClose())).collect(Collectors.joining("\t"));
             String volDetail = riseList.stream().map(k -> String.valueOf(k.getVolume())).collect(Collectors.joining("\t"));
-            return getFirstDate() + "\tstock=" + stock + "\t, close=\t" + closeDetail + "\tvolume=" + volDetail + ",\t" + getResult(riseList.size() - 1);
+            return getBuyDate() + "\tstock=" + stock + "\t, close=\t" + closeDetail + "\tvolume=" + volDetail + ",\t" + getResult(riseList.size() - 1);
         }
     }
 
