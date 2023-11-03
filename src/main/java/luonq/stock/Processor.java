@@ -17,12 +17,6 @@ public class Processor {
 
     @Scheduled(cron = "0 0 13 * * ?")
     public static void getData() throws Exception {
-        System.out.println("GetRehab.getData start");
-        long s1 = System.currentTimeMillis();
-        GetRehab.getData();
-        long e1 = System.currentTimeMillis();
-        System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
-
         System.out.println("GetHistoricalDaily.getData start");
         long s2 = System.currentTimeMillis();
         GetHistoricalDaily.getData();
@@ -65,6 +59,12 @@ public class Processor {
         GrabEarningHistory.getData();
         long e8 = System.currentTimeMillis();
         System.out.println("GrabEarningHistory.getData end. cost: " + (e8 - s8) / 1000 + "s\n");
+
+        System.out.println("GetRehab.getData start");
+        long s1 = System.currentTimeMillis();
+        GetRehab.getData();
+        long e1 = System.currentTimeMillis();
+        System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
 
         System.out.println("get data finish");
     }
