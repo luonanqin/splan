@@ -1,0 +1,51 @@
+finish initialize many time. preTradeTime=1699018080000, openTime=1699018200000, closeCheckTime=Sat Nov 04 03:59:00 CST 2023
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 668
+stock overbolling hit great 0.500000 size: 580
+filter merge stock, the stock set size is 580
+filter split stock, the stock set size is 580
+filter front reinstatement less 0.98 stock, the stock set size is 564
+filter earning and lastEarning stock, the stock set size is 421
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 21:28:03
+finish subcribe real time!
+there is no msg. continue
+StockEvent(stock=HQY, price=66.38, time=1699018200056) dn=67.041 current=1699018200255
+unsubscribeStockSet size: 100 1699018200283
+StockEvent(stock=ASTE, price=30.96, time=1699018200547) dn=31.248 current=1699018200718
+ASTE=0.9216589861751161
+unsubscribeStockSet size: 200 1699018200761
+StockEvent(stock=HUM, price=478.46, time=1699018200778) dn=480.723 current=1699018200965
+StockEvent(stock=CTG, price=10.15, time=1699018200760) dn=10.234 current=1699018200989
+unsubscribeStockSet size: 300 1699018201018
+StockEvent(stock=UNM, price=43.2, time=1699018200816) dn=43.314 current=1699018201021
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+unsubscribeStockSet size: 400 1699018220331
+=========== finish unsubscribe ===========
+get real-time quote: [ASTE]
+ASTE=0.9216589861751161
+remain cash: 7525.130000000005
+buy stock. stock=ASTE, count=240, price=30.96, orderPrice=31.26, orderId: 2668582629989581872 1699018221509
+ASTE order is successfully executed. orderId: 2668582629989581872
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2668582629989581872, code=ASTE, name=Astec Industries, count=240.0, price=31.26, avgPrice=30.97, createTime=2023-11-03 09:30:21, updateTimestamp=1.699018224E9, status=0)
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {ASTE=StopLoss(stock=ASTE, canSellQty=240.0, lossPrice=28.802)}
+TrdGetPositionList failed: 网络中断
+ready to sell before close market. position={ASTE=StockPosition(stock=ASTE, canSellQty=240.0, costPrice=30.97, currPrice=31.38)}, time=2023-11-04T03:59:10.020
+before close sell stock. stock=ASTE, count=240.0, currentPrice=31.38, orderPrice=31.06
+before close sell stock. stock=ASTE, orderId：2678165526626325668
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2678165526626325668, code=ASTE, name=Astec Industries, count=240.0, price=31.06, avgPrice=31.16, createTime=2023-11-03 15:59:10, updateTimestamp=1.69904155E9, status=0)
