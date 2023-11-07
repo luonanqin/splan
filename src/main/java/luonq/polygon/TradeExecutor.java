@@ -162,7 +162,7 @@ public class TradeExecutor {
 
         if (MapUtils.isEmpty(stockToStopLoss)) {
             System.out.println("there is no position that need to be listened");
-            System.exit(0);
+//            System.exit(0);
             return;
         }
         client.listenStopLoss(stockToStopLoss);
@@ -192,6 +192,10 @@ public class TradeExecutor {
 
     public StockPosition getPosition(String stock) {
         Map<String, StockPosition> positionMap = tradeApi.getPositionMap(stock);
+        if (positionMap == null) {
+            System.out.println("get " + stock + "position is null");
+            return null;
+        }
         return positionMap.get(stock);
     }
 

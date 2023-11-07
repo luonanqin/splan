@@ -36,6 +36,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class GetHistoricalTrade {
 
+    public static boolean retry = false;
+
     public static void getData() throws Exception {
         String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
         String api = "https://api.polygon.io/v3/trades/";
@@ -45,7 +47,7 @@ public class GetHistoricalTrade {
         int limit = 100;
         // 2023
         LocalDateTime dayLight1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
-        LocalDateTime dayLight2 = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        LocalDateTime dayLight2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
         int year = 2023;
 
         // 2022
@@ -65,8 +67,8 @@ public class GetHistoricalTrade {
         Map<String, String> openMap = BaseUtils.getFileMap(Constants.TRADE_OPEN_PATH + year);
         Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
         for (String stock : stockMap.keySet()) {
-            if (!stock.equals("FUTU")) {
-                //                continue;
+            if (!stock.equals("RGR")) {
+//                                continue;
             }
             String stockFile = stockMap.get(stock);
             String openFile = openMap.get(stock);
@@ -92,6 +94,11 @@ public class GetHistoricalTrade {
             for (int i = 0; i < stockKLines.size(); i++) {
                 String latestDate = stockKLines.get(i).getDate();
                 LocalDate latestDateParse = LocalDate.parse(latestDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+                if (dateParse.isEqual(latestDateParse) && retry) {
+                    dateList.add(latestDate);
+                    openLines.remove(0);
+                    continue;
+                }
                 if (dateParse.isBefore(latestDateParse)) {
                     dateList.add(latestDate);
                 } else {
@@ -101,7 +108,7 @@ public class GetHistoricalTrade {
 
             if (CollectionUtils.isEmpty(dateList)) {
                 System.out.println("has get " + stock);
-                continue;
+//                continue;
             }
 
             List<String> result = Collections.synchronizedList(Lists.newArrayListWithExpectedSize(20));
