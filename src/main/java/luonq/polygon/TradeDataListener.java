@@ -77,9 +77,8 @@ public class TradeDataListener {
         boolean success = list.add(node);
         if (success) {
             list.show();
+            RealTimeDataWS.realtimeQuoteMap.put(stock, price);
         }
-
-        RealTimeDataWS.realtimeQuoteMap.put(stock, price);
     }
 
     public static void main(String[] args) throws Exception {

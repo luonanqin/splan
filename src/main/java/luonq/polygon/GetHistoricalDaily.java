@@ -99,7 +99,7 @@ public class GetHistoricalDaily {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
 
-        int threadCount = 50;
+        int threadCount = 100;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
@@ -136,7 +136,7 @@ public class GetHistoricalDaily {
             }
 
             if (CollectionUtils.isEmpty(addDate)) {
-//                System.out.println("has get " + stock);
+                System.out.println("has get " + stock);
                 continue;
             }
             HttpClient httpClient = queue.take();
