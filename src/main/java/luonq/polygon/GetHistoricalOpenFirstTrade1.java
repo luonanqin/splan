@@ -7,7 +7,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Luonanqin on 2023/5/14.
  */
-public class GetHistoricalOpenFirstTrade {
+public class GetHistoricalOpenFirstTrade1 {
 
     public static void getData() throws Exception {
         String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
@@ -76,11 +76,10 @@ public class GetHistoricalOpenFirstTrade {
         LocalDateTime dayLight2023_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
         LocalDateTime dayLight2023_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
 
-        Set<String> test = Sets.newHashSet("AACI", "AAWW", "ABB", "ABC", "ABST", "ACAB");
         for (String stock : stockSet) {
             try {
-                if (!test.contains(stock)) {
-//                    continue;
+                if (!stock.equals("AAPL")) {
+                    //                continue;
                 }
 
                 String file = stockOpenFirstMap.get(stock);
@@ -112,56 +111,59 @@ public class GetHistoricalOpenFirstTrade {
                     continue;
                 }
 
-                HttpClient httpClient = clients.take();
-                cachedThread.execute(() -> {
-                    long begin = System.currentTimeMillis();
-                    List<String> result = Lists.newLinkedList();
-                    List<String> sync = Collections.synchronizedList(result);
-                    try {
-                        for (String date : dateList) {
-                            LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
-                            int year = day.get(ChronoField.YEAR);
-                            int hour, minute = 30, seconds = 0;
+                long begin = System.currentTimeMillis();
+                List<String> result = Lists.newLinkedList();
+                List<String> sync = Collections.synchronizedList(result);
+                CountDownLatch cdl = new CountDownLatch(dateList.size());
+                for (String date : dateList) {
+                    LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
+                    int year = day.get(ChronoField.YEAR);
+                    int hour, minute = 30, seconds = 0;
 
-                            if (year == 2022 && day.isAfter(dayLight2022_1) && day.isBefore(dayLight2022_2)) {
-                                hour = 21;
-                            } else if (year == 2023 && (day.isAfter(dayLight2023_1) && day.isBefore(dayLight2023_2))) {
-                                hour = 21;
-                            } else {
-                                hour = 22;
-                            }
+                    if (year == 2022 && day.isAfter(dayLight2022_1) && day.isBefore(dayLight2022_2)) {
+                        hour = 21;
+                    } else if (year == 2023 && (day.isAfter(dayLight2023_1) && day.isBefore(dayLight2023_2))) {
+                        hour = 21;
+                    } else {
+                        hour = 22;
+                    }
 
-                            LocalDateTime open = day.withHour(hour).withMinute(minute).withSecond(seconds);
-                            LocalDateTime openFirstLte = day.withHour(hour).withMinute(minute + 29).withSecond(seconds);
-                            long openTS = open.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-                            long openFirstLteTS = openFirstLte.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                    LocalDateTime open = day.withHour(hour).withMinute(minute).withSecond(seconds);
+                    LocalDateTime openFirstLte = day.withHour(hour).withMinute(minute + 29).withSecond(seconds);
+                    long openTS = open.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                    long openFirstLteTS = openFirstLte.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
-                            String preUrl = api + stock + "?order=asc&" + timeGte + openTS + "000000&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
-                            String preTrade = getTrade(preUrl, httpClient);
+                    String preUrl = api + stock + "?order=asc&" + timeGte + openTS + "000000&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
+                    HttpClient client = clients.take();
+                    cachedThread.execute(() -> {
+                        try {
+                            String preTrade = getTrade(preUrl, client);
                             String str = date + "," + preTrade;
                             sync.add(str);
+                        } finally {
+                            cdl.countDown();
+                            clients.offer(client);
                         }
-                    } finally {
-                        clients.offer(httpClient);
-                    }
-
-                    Collections.sort(sync, (o1, o2) -> {
-                        String date1 = o1.split(",")[0];
-                        String date2 = o2.split(",")[0];
-                        return BaseUtils.dateToInt(date2) - BaseUtils.dateToInt(date1);
                     });
+                }
 
-                    try {
-                        lines.addAll(0, sync);
-                        BaseUtils.writeFile(Constants.TRADE_PATH + "openFirstTrade/" + stock, lines);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    long cost = System.currentTimeMillis() - begin;
-                    System.out.println("finish " + stock + " " + cost / 1000);
+                cdl.await();
+                Collections.sort(sync, (o1, o2) -> {
+                    String date1 = o1.split(",")[0];
+                    String date2 = o2.split(",")[0];
+                    return BaseUtils.dateToInt(date2) - BaseUtils.dateToInt(date1);
                 });
-            } catch (Exception e) {
-                System.out.println("error stock: " + stock);
+
+                try {
+                    lines.addAll(0, sync);
+                    BaseUtils.writeFile(Constants.TRADE_PATH + "openFirstTrade/" + stock, lines);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                long cost = System.currentTimeMillis() - begin;
+                System.out.println("finish " + stock + " " + cost / 1000);
+            } catch (Exception e){
+                System.out.println("error stock: "+ stock);
                 e.printStackTrace();
             }
         }
