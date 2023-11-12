@@ -12,13 +12,11 @@ import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Luonanqin on 2023/2/5.
@@ -30,6 +28,11 @@ public class GrabEarningHistory {
     }
 
     public static void getData() throws Exception {
+//        Logger logger = Logger.getLogger("");
+//        logger.setLevel(java.util.logging.Level.FINE);
+//        Arrays.stream(logger.getHandlers()).forEach(handler -> {
+//            handler.setLevel(java.util.logging.Level.FINE);
+//        });
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("io.netty").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);

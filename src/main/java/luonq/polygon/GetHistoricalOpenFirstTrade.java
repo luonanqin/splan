@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
  */
 public class GetHistoricalOpenFirstTrade {
 
+    public static boolean retry = false;
+
     public static void getData() throws Exception {
         String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
         String api = "https://api.polygon.io/v3/trades/";
@@ -76,11 +78,11 @@ public class GetHistoricalOpenFirstTrade {
         LocalDateTime dayLight2023_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
         LocalDateTime dayLight2023_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
 
-        Set<String> test = Sets.newHashSet("AACI", "AAWW", "ABB", "ABC", "ABST", "ACAB");
+        Set<String> test = Sets.newHashSet("ARRY");
         for (String stock : stockSet) {
             try {
                 if (!test.contains(stock)) {
-//                    continue;
+                    //                    continue;
                 }
 
                 String file = stockOpenFirstMap.get(stock);
@@ -101,6 +103,11 @@ public class GetHistoricalOpenFirstTrade {
                 LocalDate latestDay = LocalDate.parse(latestDate, Constants.FORMATTER);
                 for (String tradeDate : tradeDateList) {
                     LocalDate tradeDay = LocalDate.parse(tradeDate, Constants.FORMATTER);
+                    if (latestDay.isEqual(tradeDay) && retry) {
+                        dateList.add(latestDate);
+                        lines.remove(0);
+                        continue;
+                    }
                     if (latestDay.isBefore(tradeDay)) {
                         dateList.add(tradeDate);
                     } else {
