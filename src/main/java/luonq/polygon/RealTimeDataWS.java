@@ -23,7 +23,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
 
@@ -61,7 +60,7 @@ import java.util.stream.Collectors;
 
 import static util.Constants.SEPARATOR;
 
-@Component
+//@Component
 @ClientEndpoint
 public class RealTimeDataWS {
 
@@ -625,9 +624,9 @@ public class RealTimeDataWS {
     // 成交前获取实时报价
     public void getRealtimeQuote() throws InterruptedException {
         getRealtimeQuote = true;
-        List<String> stockList = list.getNodes().stream().map(Node::getName).collect(Collectors.toList());
-        System.out.println("get real-time quote: " + stockList);
-        for (String stock : stockList) {
+        Set<String> stockSet = list.getNodes().stream().map(Node::getName).collect(Collectors.toSet());
+        System.out.println("get real-time quote: " + stockSet);
+        for (String stock : stockSet) {
             sendMessage("{\"action\":\"subscribe\", \"params\":\"Q." + stock + "\"}");
         }
 
@@ -642,7 +641,7 @@ public class RealTimeDataWS {
                     List<Map> maps = JSON.parseArray(msg, Map.class);
                     for (Map map : maps) {
                         String stock = MapUtils.getString(map, "sym", "");
-                        if (StringUtils.isBlank(stock)) {
+                        if (StringUtils.isBlank(stock) || !stockSet.contains(stock)) {
                             continue;
                         }
 
@@ -653,7 +652,7 @@ public class RealTimeDataWS {
                 }
 
                 // 退出前反订阅
-                for (String stock : stockList) {
+                for (String stock : stockSet) {
                     sendMessage("{\"action\":\"unsubscribe\", \"params\":\"Q." + stock + "\"}");
                 }
                 System.out.println("unsubscribe real-time quote");
