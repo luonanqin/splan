@@ -1,0 +1,111 @@
+finish initialize many time. preTradeTime=1699885680000, openTime=1699885800000, closeCheckTime=Tue Nov 14 04:59:00 CST 2023
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 739
+stock overbolling hit great 0.500000 size: 608
+filter merge stock, the stock set size is 608
+filter split stock, the stock set size is 607
+filter front reinstatement less 0.98 stock, the stock set size is 569
+filter earning and lastEarning stock, the stock set size is 553
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:00
+finish subcribe real time!
+time is early. {p=15.5, ev=T, q=13802, s=50, c=[14,12,37,41], t=1699885686000, sym=XPEV, x=12, i=62879133617237, z=1}
+{p=15.5, ev=T, q=13802, s=50, c=[14,12,37,41], t=1699885686000, sym=XPEV, x=12, i=62879133617237, z=1}
+time is early. {p=15.5, ev=T, q=13803, s=7, c=[14,12,37,41], t=1699885686000, sym=XPEV, x=12, i=62879133617238, z=1}
+{p=15.5, ev=T, q=13803, s=7, c=[14,12,37,41], t=1699885686000, sym=XPEV, x=12, i=62879133617238, z=1}
+there is no msg. continue
+there is no msg. continue
+unsubscribeStockSet size: 100 1699885800444
+StockEvent(stock=AMLX, price=12.53, time=1699885800002) dn=12.667 current=1699885800449
+StockEvent(stock=DNLI, price=15.96, time=1699885800289) dn=16.145 current=1699885800450
+DNLI=1.1458655930628598
+StockEvent(stock=CPSI, price=10.96, time=1699885800038) dn=11.482 current=1699885800453
+StockEvent(stock=AXSM, price=57.21, time=1699885800003) dn=57.93 current=1699885800454
+StockEvent(stock=SWTX, price=18.77, time=1699885800007) dn=18.968 current=1699885800454
+StockEvent(stock=ASLE, price=13.37, time=1699885800319) dn=13.504 current=1699885800466
+StockEvent(stock=PAAS, price=13.285, time=1699885800470) dn=13.39 current=1699885800516
+StockEvent(stock=WEST, price=7.18, time=1699885800431) dn=7.567 current=1699885800920
+StockEvent(stock=EWCZ, price=12.09, time=1699885800477) dn=12.364 current=1699885800958
+StockEvent(stock=MODG, price=10.03, time=1699885800539) dn=10.272 current=1699885800972
+StockEvent(stock=VEEV, price=167.555, time=1699885800514) dn=167.844 current=1699885800972
+unsubscribeStockSet size: 200 1699885801021
+StockEvent(stock=RCUS, price=13.38, time=1699885800697) dn=13.597 current=1699885801032
+RCUS=1.595940280944317,DNLI=1.1458655930628598
+unsubscribeStockSet size: 300 1699885801033
+StockEvent(stock=TFPM, price=11.9, time=1699885800771) dn=12.079 current=1699885801033
+RCUS=1.595940280944317,TFPM=1.4819107542015089,DNLI=1.1458655930628598
+StockEvent(stock=IPI, price=17.96, time=1699885800767) dn=18.303 current=1699885801034
+StockEvent(stock=EB, price=7.2, time=1699885800746) dn=7.254 current=1699885801040
+StockEvent(stock=TH, price=11.23, time=1699885800793) dn=11.614 current=1699885801040
+unsubscribeStockSet size: 400 1699885801215
+StockEvent(stock=WRBY, price=9.912, time=1699885800846) dn=10.007 current=1699885801235
+StockEvent(stock=LAZ, price=26.85, time=1699885800916) dn=26.857 current=1699885801273
+StockEvent(stock=PBH, price=57.31, time=1699885801002) dn=57.415 current=1699885801697
+StockEvent(stock=ASH, price=72.36, time=1699885800688) dn=72.703 current=1699885801698
+StockEvent(stock=SIBN, price=15.75, time=1699885800998) dn=15.822 current=1699885801698
+StockEvent(stock=JRVR, price=9.41, time=1699885801212) dn=9.714 current=1699885801708
+JRVR=3.1295038089355596,RCUS=1.595940280944317,TFPM=1.4819107542015089,DNLI=1.1458655930628598
+unsubscribeStockSet size: 500 1699885801708
+StockEvent(stock=KRUS, price=51.19, time=1699885801273) dn=52.295 current=1699885801708
+StockEvent(stock=CTVA, price=43.415, time=1699885801660) dn=43.996 current=1699885802035
+JRVR=3.1295038089355596,RCUS=1.595940280944317,TFPM=1.4819107542015089,CTVA=1.320574597690706,DNLI=1.1458655930628598
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [JRVR, RCUS, TFPM, CTVA, DNLI]
+JRVR=3.1295038089355596,RCUS=1.595940280944317,TFPM=1.4819107542015089,CTVA=1.320574597690706,DNLI=1.1458655930628598
+remain cash: 7602.489999999991
+buy stock. stock=JRVR, count=800, price=9.41, orderPrice=9.5, orderId: 3933230733770582339 1699885822281
+JRVR order is successfully executed. orderId: 3933230733770582339
+update order: OrderFill(tradeSide=1, fillID=0, orderID=3933230733770582339, code=JRVR, name=James River, count=800.0, price=9.5, avgPrice=9.47, createTime=2023-11-13 09:30:21, updateTimestamp=1.699885827E9, status=0)
+buy stock. stock=RCUS, count=1, price=13.38, orderPrice=13.51, orderId: 3933230742360516929 1699885829118
+RCUS order is successfully executed. orderId: 3933230742360516929
+update order: OrderFill(tradeSide=1, fillID=0, orderID=3933230742360516929, code=RCUS, name=Arcus Biosciences, count=1.0, price=13.51, avgPrice=13.4, createTime=2023-11-13 09:30:28, updateTimestamp=1.699885833E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {JRVR=StopLoss(stock=JRVR, canSellQty=800.0, lossPrice=8.807), RCUS=StopLoss(stock=RCUS, canSellQty=1.0, lossPrice=12.462)}
+TFPM don't need stop loss. it'll be unsubscribe
+DNLI don't need stop loss. it'll be unsubscribe
+DNLI don't need stop loss. it'll be unsubscribe
+DNLI don't need stop loss. it'll be unsubscribe
+DNLI don't need stop loss. it'll be unsubscribe
+DNLI don't need stop loss. it'll be unsubscribe
+DNLI don't need stop loss. it'll be unsubscribe
+CTVA don't need stop loss. it'll be unsubscribe
+CTVA don't need stop loss. it'll be unsubscribe
+JRVR touch the stop loss. current price=8.78, lossPrice=8.807, orderPrice=8.71
+JRVR placeStopLoss limit order. qty=800.0, price=8.71, orderId: 3933233001513315147
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+JRVR don't need stop loss. it'll be unsubscribe
+update order: OrderFill(tradeSide=2, fillID=0, orderID=3933233001513315147, code=JRVR, name=James River, count=800.0, price=8.71, avgPrice=8.76, createTime=2023-11-13 09:45:08, updateTimestamp=1.699886713E9, status=0)
+{p=13.36, ev=T, q=1275550, s=100, t=1699895031000, sym=RCUS, trfi=202, x=4, i=71684401681465, z=1, trft=1699895030999}
+{p=13.525, ev=T, q=2930267, s=50, c=[37], t=1699908600000, sym=RCUS, trfi=202, x=4, i=71701027245395, z=1, trft=1699908599999}
+{p=13.455, ev=T, q=3056583, s=20, c=[37], t=1699908894000, sym=RCUS, x=12, i=62879951841101, z=1}
+ready to sell before close market. position={RCUS=StockPosition(stock=RCUS, canSellQty=1.0, costPrice=13.4, currPrice=13.48)}, time=2023-11-14T04:59:00.045
+before close sell stock. stock=RCUS, count=1.0, currentPrice=13.48, orderPrice=13.34
+before close sell stock. stock=RCUS, orderId：3933528920466082379
+update order: OrderFill(tradeSide=2, fillID=0, orderID=3933528920466082379, code=RCUS, name=Arcus Biosciences, count=1.0, price=13.34, avgPrice=13.43, createTime=2023-11-13 15:59:00, updateTimestamp=1.699909143E9, status=0)
+all stock has stop loss
+trade exit
+closing websocket. reason=CloseReason[1000]
+manual close websocket
