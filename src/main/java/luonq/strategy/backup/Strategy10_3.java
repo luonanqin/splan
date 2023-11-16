@@ -146,11 +146,11 @@ public class Strategy10_3 {
                 if (kLine == null) {
                     continue;
                 }
+                if (date.equals("10/27/2023") && (stock.equals("ALGN")||stock.equals("MARA"))) {
+//                                        System.out.println();
+                }
                 if (earningStockSet.contains(stock) || lastEarningStockSet.contains(stock)) {
                                         continue;
-                }
-                if (date.equals("08/18/2023") && (stock.equals("RRGB")||stock.equals("MARA"))) {
-//                    System.out.println();
                 }
                 double open = kLine.getOpen();
                 BigDecimal m20close = BigDecimal.valueOf(open);
@@ -285,7 +285,7 @@ public class Strategy10_3 {
                     int gainCount = 0, lossCount = 0;
                     for (int j = 0; j < dateList.size(); j++) {
                         String date = dateList.get(j);
-                        if (date.equals("08/22/2023")) {
+                        if (date.equals("11/09/2023")) {
 //                            System.out.println();
                         }
                         Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
@@ -406,7 +406,7 @@ public class Strategy10_3 {
                             size++;
                         }
                         capital += income;
-                        //                        System.out.println("date=" + date + ", income=" + income + ", capital=" + capital * exchange);
+                        System.out.println("date=" + date + ", income=" + income + ", sum=" + capital * exchange);
                         //                        System.out.println(date+" "+size);
                     }
                     double successRatio = (double) gainCount / (gainCount + lossCount);
@@ -422,6 +422,8 @@ public class Strategy10_3 {
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(mergePath);
 
+
+        int beforeYear = 2022, afterYear = 2020;
         Map<String, StockRatio> stockRatioMap = Maps.newHashMap();
         for (String stock : dailyFileMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
@@ -432,7 +434,7 @@ public class Strategy10_3 {
             }
 
             String filePath = dailyFileMap.get(stock);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, 2022, 2020);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, beforeYear, afterYear);
 //            Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
 //            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2022, 2020);
@@ -441,7 +443,7 @@ public class Strategy10_3 {
 //            List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
 //                        List<Bean> result = strategy(kLines);
 
-            List<BOLL> bollWithOpen = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, 2022, 2020);
+            List<BOLL> bollWithOpen = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, beforeYear, afterYear);
             Map<String, BOLL> dateToOpenBollMap = bollWithOpen.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
             List<Bean> result = strategy2(kLines, dateToOpenBollMap);
 
