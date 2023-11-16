@@ -1,6 +1,5 @@
 package luonq.stock;
 
-import barchart.GrabEarningHistory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import luonq.futu.GetRehab;
@@ -8,6 +7,7 @@ import luonq.indicator.BollingerWithOpen;
 import luonq.polygon.GetHistoricalDaily;
 import luonq.polygon.GetHistoricalOpenFirstTrade;
 import luonq.polygon.GetHistoricalTrade;
+import luonq.polygon.GrabEarning;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -54,12 +54,6 @@ public class Processor {
         long e7 = System.currentTimeMillis();
         System.out.println("BollingerWithOpen.calculate end. cost: " + (e7 - s7) / 1000 + "s\n");
 
-        System.out.println("GrabEarningHistory.getData start");
-        long s8 = System.currentTimeMillis();
-        GrabEarningHistory.getData();
-        long e8 = System.currentTimeMillis();
-        System.out.println("GrabEarningHistory.getData end. cost: " + (e8 - s8) / 1000 + "s\n");
-
         System.out.println("GetRehab.getData start");
         long s1 = System.currentTimeMillis();
         GetRehab.getData();
@@ -67,6 +61,15 @@ public class Processor {
         System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
 
         System.out.println("get data finish");
+    }
+
+    @Scheduled(cron = "0 0 21 * * ?")
+    public static void getEarning() throws Exception {
+        System.out.println("GrabEarning.getData start");
+        long s8 = System.currentTimeMillis();
+        GrabEarning.getData();
+        long e8 = System.currentTimeMillis();
+        System.out.println("GrabEarning.getData end. cost: " + (e8 - s8) / 1000 + "s\n");
     }
 
     public static void main(String[] args) throws Exception {
