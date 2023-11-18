@@ -1,0 +1,265 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7131288481878358313
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1700231280000, openTime=1700231760000, closeCheckTime=Sat Nov 18 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1708
+stock overbolling hit great 0.500000 size: 1427
+filter merge stock, the stock set size is 1427
+filter split stock, the stock set size is 1424
+filter front reinstatement less 0.98 stock, the stock set size is 1347
+filter earning and lastEarning stock, the stock set size is 1321
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:35:09
+finish subcribe real time!
+there is no msg. continue
+time is early. {p=21.9399, ev=T, q=215360, s=100, t=1700231715000, sym=INMD, trfi=202, x=4, i=113, z=3, trft=1700231715000}
+{p=21.9399, ev=T, q=215360, s=100, t=1700231715000, sym=INMD, trfi=202, x=4, i=113, z=3, trft=1700231715000}
+time is early. {p=228.76, ev=T, q=354448, s=25, c=[37], t=1700231717000, sym=TSLA, trfi=201, x=4, i=4110, z=3, trft=1700231716999}
+{p=228.76, ev=T, q=354448, s=25, c=[37], t=1700231717000, sym=TSLA, trfi=201, x=4, i=4110, z=3, trft=1700231716999}
+time is early. {p=23.66, ev=T, q=83685, s=100, t=1700231719000, sym=PUK, x=21, i=52997601249608, z=1}
+{p=23.66, ev=T, q=83685, s=100, t=1700231719000, sym=PUK, x=21, i=52997601249608, z=1}
+time is early. {p=23.66, ev=T, q=83686, s=100, t=1700231719000, sym=PUK, x=21, i=52997601249610, z=1}
+{p=23.66, ev=T, q=83686, s=100, t=1700231719000, sym=PUK, x=21, i=52997601249610, z=1}
+time is early. {p=12.6049, ev=T, q=73624, s=260, t=1700231723000, sym=IONQ, trfi=202, x=4, i=71675325991502, z=1, trft=1700231723000}
+{p=12.6049, ev=T, q=73624, s=260, t=1700231723000, sym=IONQ, trfi=202, x=4, i=71675325991502, z=1, trft=1700231723000}
+time is early. {p=16.7197, ev=T, q=73623, s=100, t=1700231723000, sym=GPS, trfi=202, x=4, i=71675325991501, z=1, trft=1700231723000}
+{p=16.7197, ev=T, q=73623, s=100, t=1700231723000, sym=GPS, trfi=202, x=4, i=71675325991501, z=1, trft=1700231723000}
+time is early. {p=96.87, ev=T, q=161626, s=20, c=[37], t=1700231726000, sym=COIN, trfi=202, x=4, i=880, z=3, trft=1700231726000}
+{p=96.87, ev=T, q=161626, s=20, c=[37], t=1700231726000, sym=COIN, trfi=202, x=4, i=880, z=3, trft=1700231726000}
+time is early. {p=228.78, ev=T, q=361959, s=300, t=1700231733000, sym=TSLA, trfi=202, x=4, i=30619, z=3, trft=1700231733000}
+{p=228.78, ev=T, q=361959, s=300, t=1700231733000, sym=TSLA, trfi=202, x=4, i=30619, z=3, trft=1700231733000}
+time is early. {p=32.94, ev=T, q=73530, s=20, c=[14,37,41], t=1700231744000, sym=SU, x=8, i=52983525034835, z=1}
+{p=32.94, ev=T, q=73530, s=20, c=[14,37,41], t=1700231744000, sym=SU, x=8, i=52983525034835, z=1}
+time is early. {p=131, ev=T, q=93751, s=100, t=1700231744000, sym=OC, trfi=202, x=4, i=71675340608085, z=1, trft=1700231743999}
+{p=131, ev=T, q=93751, s=100, t=1700231744000, sym=OC, trfi=202, x=4, i=71675340608085, z=1, trft=1700231743999}
+time is early. {p=103, ev=T, q=85246, s=30, c=[14,37,41], t=1700231744000, sym=XOM, x=18, i=52983525030233, z=1}
+{p=103, ev=T, q=85246, s=30, c=[14,37,41], t=1700231744000, sym=XOM, x=18, i=52983525030233, z=1}
+time is early. {p=103, ev=T, q=85247, s=3, c=[14,37,41], t=1700231744000, sym=XOM, x=10, i=52983525159750, z=1}
+{p=103, ev=T, q=85247, s=3, c=[14,37,41], t=1700231744000, sym=XOM, x=10, i=52983525159750, z=1}
+time is early. {p=103, ev=T, q=85248, s=30, c=[14,37,41], t=1700231744000, sym=XOM, x=10, i=52983525159751, z=1}
+{p=103, ev=T, q=85248, s=30, c=[14,37,41], t=1700231744000, sym=XOM, x=10, i=52983525159751, z=1}
+time is early. {p=103, ev=T, q=85249, s=3, c=[14,37,41], t=1700231744000, sym=XOM, x=10, i=52983525159752, z=1}
+{p=103, ev=T, q=85249, s=3, c=[14,37,41], t=1700231744000, sym=XOM, x=10, i=52983525159752, z=1}
+time is early. {p=103, ev=T, q=85250, s=14, c=[14,37,41], t=1700231744000, sym=XOM, x=12, i=62879182447413, z=1}
+{p=103, ev=T, q=85250, s=14, c=[14,37,41], t=1700231744000, sym=XOM, x=12, i=62879182447413, z=1}
+time is early. {p=16.775, ev=T, q=85366, s=100, t=1700231745000, sym=XPEV, x=15, i=53018373143142, z=1}
+{p=16.775, ev=T, q=85366, s=100, t=1700231745000, sym=XPEV, x=15, i=53018373143142, z=1}
+time is early. {p=16.77, ev=T, q=85367, s=100, t=1700231745000, sym=XPEV, x=11, i=52983526608945, z=1}
+{p=16.77, ev=T, q=85367, s=100, t=1700231745000, sym=XPEV, x=11, i=52983526608945, z=1}
+time is early. {p=16.77, ev=T, q=85368, s=32, c=[37], t=1700231745000, sym=XPEV, trfi=202, x=4, i=71675340667217, z=1, trft=1700231745000}
+{p=16.77, ev=T, q=85368, s=32, c=[37], t=1700231745000, sym=XPEV, trfi=202, x=4, i=71675340667217, z=1, trft=1700231745000}
+time is early. {p=16.77, ev=T, q=85369, s=100, c=[14,41], t=1700231745000, sym=XPEV, x=11, i=52983526608946, z=1}
+{p=16.77, ev=T, q=85369, s=100, c=[14,41], t=1700231745000, sym=XPEV, x=11, i=52983526608946, z=1}
+time is early. {p=228.6, ev=T, q=366422, s=7, c=[37], t=1700231746000, sym=TSLA, trfi=202, x=4, i=31313, z=3, trft=1700231746000}
+{p=228.6, ev=T, q=366422, s=7, c=[37], t=1700231746000, sym=TSLA, trfi=202, x=4, i=31313, z=3, trft=1700231746000}
+time is early. {p=152.48, ev=T, q=366423, s=1, c=[37], t=1700231746000, sym=TXN, x=12, i=664, z=3}
+{p=152.48, ev=T, q=366423, s=1, c=[37], t=1700231746000, sym=TXN, x=12, i=664, z=3}
+time is early. {p=152.48, ev=T, q=366424, s=2, c=[37], t=1700231746000, sym=TXN, x=12, i=665, z=3}
+{p=152.48, ev=T, q=366424, s=2, c=[37], t=1700231746000, sym=TXN, x=12, i=665, z=3}
+time is early. {p=152.48, ev=T, q=366425, s=23, c=[37], t=1700231746000, sym=TXN, x=12, i=666, z=3}
+{p=152.48, ev=T, q=366425, s=23, c=[37], t=1700231746000, sym=TXN, x=12, i=666, z=3}
+time is early. {p=228.57, ev=T, q=367175, s=5, c=[14,37,41], t=1700231748000, sym=TSLA, x=8, i=18842, z=3}
+{p=228.57, ev=T, q=367175, s=5, c=[14,37,41], t=1700231748000, sym=TSLA, x=8, i=18842, z=3}
+time is early. {p=228.57, ev=T, q=367176, s=48, c=[14,37,41], t=1700231748000, sym=TSLA, x=8, i=18843, z=3}
+{p=228.57, ev=T, q=367176, s=48, c=[14,37,41], t=1700231748000, sym=TSLA, x=8, i=18843, z=3}
+time is early. {p=228.57, ev=T, q=367177, s=2, c=[14,37,41], t=1700231748000, sym=TSLA, x=8, i=18844, z=3}
+{p=228.57, ev=T, q=367177, s=2, c=[14,37,41], t=1700231748000, sym=TSLA, x=8, i=18844, z=3}
+time is early. {p=11.85, ev=T, q=88290, s=2100, t=1700231750000, sym=SNAP, trfi=202, x=4, i=71675341256770, z=1, trft=1700231749999}
+{p=11.85, ev=T, q=88290, s=2100, t=1700231750000, sym=SNAP, trfi=202, x=4, i=71675341256770, z=1, trft=1700231749999}
+time is early. {p=171.175, ev=T, q=86545, s=1, c=[37], t=1700231755000, sym=WM, x=15, i=53018574811762, z=1}
+{p=171.175, ev=T, q=86545, s=1, c=[37], t=1700231755000, sym=WM, x=15, i=53018574811762, z=1}
+StockEvent(stock=WMT, price=156.1, time=1700231760000) dn=157.028 current=1700231760619
+unsubscribeStockSet size: 100 1700231760625
+WMT=0.5909774053035111
+StockEvent(stock=KR, price=42.4195, time=1700231760349) dn=42.61 current=1700231760635
+StockEvent(stock=NAPA, price=10.08, time=1700231760581) dn=10.128 current=1700231760653
+unsubscribeStockSet size: 200 1700231760925
+unsubscribeStockSet size: 300 1700231761593
+unsubscribeStockSet size: 400 1700231762997
+StockEvent(stock=MTRX, price=9.8073, time=1700231763091) dn=9.925 current=1700231763228
+unsubscribeStockSet size: 500 1700231764302
+unsubscribeStockSet size: 600 1700231765644
+unsubscribeStockSet size: 700 1700231768158
+unsubscribeStockSet size: 800 1700231770445
+unsubscribeStockSet size: 900 1700231775941
+unsubscribeStockSet size: 1000 1700231782575
+now time is over! listen end!
+unsubscribeStockSet size: 1100 1700231790071
+unsubscribeStockSet size: 1200 1700231790072
+unsubscribeStockSet size: 1300 1700231790073
+=========== finish unsubscribe ===========
+get real-time quote: [WMT]
+quote price(time=1700231790095): {WMT=156.1}
+quote price(time=1700231790096): {WMT=156.1}
+quote price(time=1700231790319): {WMT=156.1}
+quote price(time=1700231790321): {WMT=156.1}
+quote price(time=1700231790405): {WMT=156.1}
+quote price(time=1700231790414): {WMT=156.1}
+quote price(time=1700231790441): {WMT=156.1}
+quote price(time=1700231791096): {WMT=156.1}
+WMT=0.5909774053035111
+quote price(time=1700231791103): {WMT=156.1}
+remain cash: 7355.020000000019
+quote price(time=1700231791109): {WMT=156.1}
+quote price(time=1700231791112): {WMT=156.1}
+quote price(time=1700231791119): {WMT=156.1}
+quote price(time=1700231791119): {WMT=156.1}
+quote price(time=1700231791119): {WMT=156.1}
+quote price(time=1700231791119): {WMT=156.1}
+quote price(time=1700231791119): {WMT=156.1}
+quote price(time=1700231791127): {WMT=156.1}
+quote price(time=1700231791132): {WMT=156.1}
+quote price(time=1700231791163): {WMT=156.1}
+quote price(time=1700231791163): {WMT=156.1}
+quote price(time=1700231791182): {WMT=156.1}
+buy stock. stock=WMT, count=46, price=156.1, orderPrice=157.66, orderId: 5169206649627474377 1700231791248
+quote price(time=1700231791333): {WMT=156.1}
+quote price(time=1700231791354): {WMT=156.1}
+quote price(time=1700231791373): {WMT=156.1}
+quote price(time=1700231791493): {WMT=156.1}
+quote price(time=1700231791553): {WMT=156.1}
+quote price(time=1700231791644): {WMT=156.1}
+quote price(time=1700231791679): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231791957): {WMT=156.1}
+quote price(time=1700231792018): {WMT=156.1}
+quote price(time=1700231792044): {WMT=156.1}
+quote price(time=1700231792163): {WMT=156.1}
+quote price(time=1700231792293): {WMT=156.1}
+quote price(time=1700231792296): {WMT=156.1}
+quote price(time=1700231792376): {WMT=156.1}
+quote price(time=1700231792677): {WMT=156.1}
+quote price(time=1700231792724): {WMT=156.1}
+quote price(time=1700231792760): {WMT=156.1}
+quote price(time=1700231792789): {WMT=156.1}
+quote price(time=1700231792814): {WMT=156.1}
+quote price(time=1700231793037): {WMT=156.1}
+quote price(time=1700231793044): {WMT=156.1}
+quote price(time=1700231793048): {WMT=156.1}
+quote price(time=1700231793053): {WMT=156.1}
+quote price(time=1700231793061): {WMT=156.1}
+quote price(time=1700231793067): {WMT=156.1}
+quote price(time=1700231793073): {WMT=156.1}
+quote price(time=1700231793080): {WMT=156.1}
+quote price(time=1700231793087): {WMT=156.1}
+quote price(time=1700231793100): {WMT=156.1}
+quote price(time=1700231793146): {WMT=156.1}
+quote price(time=1700231793167): {WMT=156.1}
+quote price(time=1700231793176): {WMT=156.1}
+quote price(time=1700231793187): {WMT=156.1}
+quote price(time=1700231793219): {WMT=156.1}
+quote price(time=1700231793425): {WMT=156.1}
+quote price(time=1700231793432): {WMT=156.1}
+quote price(time=1700231793440): {WMT=156.1}
+quote price(time=1700231793446): {WMT=156.1}
+quote price(time=1700231793453): {WMT=156.1}
+quote price(time=1700231793460): {WMT=156.1}
+quote price(time=1700231793465): {WMT=156.1}
+quote price(time=1700231793470): {WMT=156.1}
+quote price(time=1700231793475): {WMT=156.1}
+quote price(time=1700231793482): {WMT=156.1}
+quote price(time=1700231793485): {WMT=156.1}
+quote price(time=1700231793846): {WMT=156.1}
+quote price(time=1700231793850): {WMT=156.1}
+quote price(time=1700231793861): {WMT=156.1}
+quote price(time=1700231793861): {WMT=156.1}
+quote price(time=1700231793864): {WMT=156.1}
+quote price(time=1700231793968): {WMT=156.1}
+quote price(time=1700231794055): {WMT=156.1}
+quote price(time=1700231794055): {WMT=156.1}
+quote price(time=1700231794098): {WMT=156.1}
+quote price(time=1700231794106): {WMT=156.1}
+quote price(time=1700231794121): {WMT=156.1}
+quote price(time=1700231794121): {WMT=156.1}
+quote price(time=1700231794126): {WMT=156.1}
+quote price(time=1700231794130): {WMT=156.1}
+quote price(time=1700231794134): {WMT=156.1}
+quote price(time=1700231794136): {WMT=156.1}
+quote price(time=1700231794137): {WMT=156.1}
+quote price(time=1700231794141): {WMT=156.1}
+quote price(time=1700231794142): {WMT=156.1}
+quote price(time=1700231794166): {WMT=156.1}
+quote price(time=1700231794166): {WMT=156.1}
+quote price(time=1700231794166): {WMT=156.1}
+quote price(time=1700231794166): {WMT=156.1}
+quote price(time=1700231794166): {WMT=156.1}
+quote price(time=1700231794166): {WMT=156.1}
+quote price(time=1700231794166): {WMT=156.1}
+quote price(time=1700231794171): {WMT=156.1}
+quote price(time=1700231794185): {WMT=156.1}
+quote price(time=1700231794196): {WMT=156.1}
+quote price(time=1700231794201): {WMT=156.1}
+quote price(time=1700231794208): {WMT=156.1}
+quote price(time=1700231794216): {WMT=156.1}
+quote price(time=1700231794320): {WMT=156.1}
+quote price(time=1700231794422): {WMT=156.1}
+quote price(time=1700231794467): {WMT=156.1}
+quote price(time=1700231794649): {WMT=156.1}
+quote price(time=1700231795232): {WMT=156.1}
+quote price(time=1700231795277): {WMT=156.1}
+quote price(time=1700231795487): {WMT=156.1}
+quote price(time=1700231795790): {WMT=156.1}
+WMT order is successfully executed. orderId: 5169206649627474377
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5169206649627474377, code=WMT, name=沃尔玛, count=46.0, price=157.66, avgPrice=156.41, createTime=2023-11-17 09:36:31, updateTimestamp=1.700231796E9, status=0)
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {WMT=StopLoss(stock=WMT, canSellQty=46.0, lossPrice=145.461)}
+{p=155.48, ev=T, q=117013, s=100, t=1700231949000, sym=WMT, x=10, i=52983525232715, z=1}
+{p=155.48, ev=T, q=117014, s=1, c=[37], t=1700231949000, sym=WMT, x=11, i=52983525495353, z=1}
+{p=155.48, ev=T, q=117015, s=36, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354375, z=1}
+{p=155.48, ev=T, q=117016, s=36, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354384, z=1}
+{p=155.48, ev=T, q=117017, s=2, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354393, z=1}
+{p=155.48, ev=T, q=117018, s=2, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354404, z=1}
+{p=155.48, ev=T, q=117019, s=1, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354413, z=1}
+{p=155.48, ev=T, q=117021, s=1, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354422, z=1}
+{p=155.48, ev=T, q=117022, s=1, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354612, z=1}
+{p=155.48, ev=T, q=117023, s=64, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354621, z=1}
+{p=155.48, ev=T, q=117024, s=64, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354630, z=1}
+{p=155.48, ev=T, q=117025, s=36, c=[14,37,41], t=1700231949000, sym=WMT, x=20, i=52984364354640, z=1}
+{p=155.36, ev=T, q=121978, s=56, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166112, z=1}
+{p=155.36, ev=T, q=121979, s=44, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166113, z=1}
+{p=155.36, ev=T, q=121980, s=6, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166114, z=1}
+{p=155.36, ev=T, q=121981, s=50, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166115, z=1}
+{p=155.36, ev=T, q=121982, s=24, c=[37], t=1700231978000, sym=WMT, x=12, i=62879198166116, z=1}
+{p=155.36, ev=T, q=121983, s=36, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166117, z=1}
+{p=155.36, ev=T, q=121984, s=44, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166118, z=1}
+{p=155.36, ev=T, q=121985, s=38, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166119, z=1}
+{p=155.36, ev=T, q=121986, s=36, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166120, z=1}
+{p=155.36, ev=T, q=121987, s=7, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166121, z=1}
+{p=155.36, ev=T, q=121988, s=19, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166122, z=1}
+{p=155.36, ev=T, q=121989, s=22, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166123, z=1}
+{p=155.36, ev=T, q=121990, s=66, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166124, z=1}
+{p=155.36, ev=T, q=121991, s=12, c=[37], t=1700231978000, sym=WMT, x=12, i=62879198166125, z=1}
+{p=155.36, ev=T, q=121992, s=12, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166126, z=1}
+{p=155.36, ev=T, q=121993, s=38, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166127, z=1}
+{p=155.36, ev=T, q=121994, s=62, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166320, z=1}
+{p=155.36, ev=T, q=121995, s=57, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166321, z=1}
+{p=155.36, ev=T, q=121996, s=43, c=[14,37,41], t=1700231978000, sym=WMT, x=12, i=62879198166322, z=1}
+{p=155.28, ev=T, q=122580, s=13, c=[37], t=1700231982000, sym=WMT, trfi=202, x=4, i=71675508376150, z=1, trft=1700231982000}
+{p=155.3475, ev=T, q=143594, s=21, c=[10,37,41], t=1700232093000, sym=WMT, trfi=202, x=4, i=71675526919492, z=1, trft=1700232092999}
+{p=155.37, ev=T, q=143712, s=1, c=[37], t=1700232094000, sym=WMT, trfi=202, x=4, i=71675526925402, z=1, trft=1700232093999}
+{p=155.375, ev=T, q=144257, s=5, c=[37], t=1700232098000, sym=WMT, x=8, i=52983525095757, z=1}
+ready to sell before close market. position={WMT=StockPosition(stock=WMT, canSellQty=46.0, costPrice=156.41, currPrice=156.22)}, time=2023-11-18T04:59:00.014
+before close sell stock. stock=WMT, count=46.0, currentPrice=156.22, orderPrice=154.65
+before close sell stock. stock=WMT, orderId：5169577429858360392
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5169577429858360392, code=WMT, name=沃尔玛, count=46.0, price=154.65, avgPrice=155.37, createTime=2023-11-17 15:59:00, updateTimestamp=1.700254743E9, status=0)
+{p=155.29, ev=T, q=2675802, s=100, t=1700254762000, sym=WMT, x=10, i=52983560425554, z=1}
+{p=155.27, ev=T, q=2678561, s=5, c=[37], t=1700254765000, sym=WMT, trfi=202, x=4, i=71701665764162, z=1, trft=1700254765000}
+all stock has stop loss
+trade exit

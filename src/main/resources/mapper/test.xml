@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.TestMapper">
+
+    <insert id="insertTest">
+        insert into `2023-11-01` (`code`) value ("test")
+    </insert>
+
+    <insert id="insertTest2">
+        insert into ${date} (`code`) value (#{code})
+    </insert>
+</mapper>

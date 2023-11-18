@@ -686,6 +686,7 @@ public class BaseUtils {
     private static List<EarningDate> getEarningDateData(String date, String nextDate, String filePath) throws Exception {
         List<String> lines = readFile(filePath);
         List<EarningDate> list = Lists.newArrayList();
+        Map<String, EarningDate> stockEarningMap = Maps.newHashMap();
         for (String line : lines) {
             int index = line.indexOf(" ");
             String stock = line.substring(0, index);
@@ -693,17 +694,34 @@ public class BaseUtils {
             String actualDate;
             if (StringUtils.equals(EarningDate.AFTER_MARKET_CLOSE, earningType)) {
                 actualDate = nextDate;
-            } else {
+            } else if (StringUtils.equals(EarningDate.BEFORE_MARKET_OPEN, earningType)) {
+//            } else {
                 actualDate = date;
+            } else {
+                continue;
             }
-            list.add(new EarningDate(stock, date, earningType, actualDate));
+
+
+            EarningDate earning = new EarningDate(stock, date, earningType, actualDate);
+                        list.add(earning);
+//            // 如果之前不存在则直接put，如果之前存在且是TAS则直接put，否则跳过
+//            EarningDate existEarningDate = stockEarningMap.get(stock);
+//            if (existEarningDate == null) {
+//                stockEarningMap.put(stock, earning);
+//            } else {
+//                String existEarningType = existEarningDate.getEarningType();
+//                if (StringUtils.equals(EarningDate.TAS, existEarningType)) {
+//                    stockEarningMap.put(stock, earning);
+//                }
+//            }
         }
 
+//        list.addAll(stockEarningMap.values());
         return list;
     }
 
     public static void main(String[] args) throws Exception {
-        Map<String, List<EarningDate>> map = getEarningDate(null);
+        Map<String, List<EarningDate>> map = getEarningDate("2023-11-16");
         System.out.println(map);
     }
 }
