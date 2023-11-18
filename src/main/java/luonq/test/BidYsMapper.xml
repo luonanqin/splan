@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xhs.purchase.po.mapper.BidYsMapper">
+
+    <select id="findYsByPoFormNum" resultType="BidYs">
+        SELECT * FROM bid_ys WHERE po_form_num = #{poFormNum} AND is_valid = 1
+    </select>
+
+    <select id="getByYsFormNum" resultType="BidYs">
+        SELECT * FROM bid_ys WHERE form_num = #{poFormNum} AND is_valid = 1
+    </select>
+
+    <update id="deleteByYsFormNums">
+        UPDATE bid_ys SET is_valid = 0 WHERE form_num IN
+        <foreach collection="ysFormNums" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="findYsByPoFormNums" resultType="BidYs">
+        SELECT * FROM bid_ys WHERE po_form_num IN
+        <foreach collection="poFormNums" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        AND is_valid = 1
+    </select>
+
+    <select id="pageQueryForm" resultType="YsPageVo">
+        SELECT
+            ys.form_num ysFormNum,
+            ys.our_subject ourSubject,
+            ys.supplier_name supplierSubject,
+            ys.total_amount acceptAmount,
+            ys.creator_no creatorNo,
+            ys.create_time createTime,
+            ys.po_form_num orderFormNum,
+            ys.accept_status acceptStatus,
+            ys.submit_origin submitOrigin
+        FROM bid_ys ys
+        <include refid="pageQuerySql" />
+        ORDER BY ys.create_time DESC LIMIT #{pageSize} OFFSET #{start}
+    </select>
+
+    <select id="countQueryForm" resultType="int">
+        SELECT COUNT(*) FROM bid_ys ys
+        <include refid="pageQuerySql" />
+    </select>
+
+    <sql id="pageQuerySql">
+        LEFT JOIN (
+            SELECT DISTINCT fsa.form_num form_num FROM t_form_share_auth fsa
+            <where>
+            ( (fsa.auth_value=#{shareUserId} and fsa.auth_type='personal')
+            <if test="shareDeptIds!=null and shareDeptIds.size()>0">
+                OR (fsa.auth_value in
+                <foreach collection="shareDeptIds" item="shareDeptId" separator="," open="(" close=")">
+                    #{shareDeptId}
+                </foreach>
+                AND fsa.auth_type='department')
+            </if>)
+            </where>
+        ) sa ON sa.form_num = ys.form_num
+        <if test="(acceptanceCondition != null and acceptanceCondition != '') or (goodsCategoryPaths != null)">
+            INNER JOIN (
+                SELECT DISTINCT yd.ys_form_num, category_ids FROM bid_ys_detail yd
+                <where>
+                    <if test="acceptanceCondition != null and acceptanceCondition != ''">
+                        yd.name LIKE CONCAT ('%', #{acceptanceCondition}, '%')
+                    </if>
+                </where>
+            ) detail ON detail.ys_form_num = ys.form_num
+        </if>
+        INNER JOIN common_form cf ON ys.form_num = cf.form_num AND cf.is_valid = 1
+        <if test="currentStep != null or auditStatus != null">
+            <if test="currentStep != null">
+                AND cf.current_step = #{currentStep}
+            </if>
+            <if test="auditStatus != null">
+                AND cf.audit_status = #{auditStatus}
+            </if>
+        </if>
+        <where>
+            <if test="ysFormNum != null and ysFormNum != ''">
+                <bind name="ysFormNumKey" value="'%' + ysFormNum + '%'"/>
+                ys.form_num LIKE #{ysFormNumKey}
+            </if>
+            <if test="ysFormNums != null and ysFormNums.size() > 0">
+                and ys.form_num in
+                <foreach collection="ysFormNums" separator="," open="(" close=")" item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="orderFormNum != null and orderFormNum != ''">
+                <bind name="orderFormNumKey" value="'%' + orderFormNum + '%'"/>
+                AND ys.po_form_num LIKE #{orderFormNumKey}
+            </if>
+            <if test="supplierName != null and supplierName != ''">
+                <bind name="supplierNameKey" value="'%' + supplierName + '%'"/>
+                AND ys.supplier_name LIKE #{supplierNameKey}
+            </if>
+            <if test="ourSubject != null and ourSubject != ''">
+                <bind name="ourSubjectKey" value="'%' + ourSubject + '%'"/>
+                AND ys.our_subject LIKE #{ourSubjectKey}
+            </if>
+                <if test="userId != null">
+                    AND ys.creator_no = #{userId}
+                </if>
+                <if test="mySubmit == false and goodsCategoryPaths != null">
+                    AND detail.category_ids IN
+                    <foreach collection="goodsCategoryPaths" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </if>
+            <if test="startTime != null">
+                AND ys.create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND <![CDATA[ ys.create_time <= #{endTime} ]]>
+            </if>
+        </where>
+    </sql>
+
+    <select id="findByYsFormNums" resultType="BidYs">
+        SELECT * FROM bid_ys ys WHERE ys.form_num IN
+        <foreach collection="ysFormNums" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> AND ys.is_valid = 1 ORDER BY ys.create_time DESC
+    </select>
+
+    <select id="findPoFormNumsByYsFormNums" resultType="String">
+        SELECT DISTINCT ys.po_form_num FROM bid_ys ys WHERE ys.form_num IN
+        <foreach collection="ysFormNums" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> AND ys.is_valid = 1
+    </select>
+
+    <select id="getPoFormNumByYsFormNum" resultType="String">
+        SELECT po_form_num FROM bid_ys ys WHERE ys.form_num = #{formNum}
+    </select>
+
+</mapper>
