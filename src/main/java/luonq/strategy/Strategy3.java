@@ -227,7 +227,7 @@ public class Strategy3 {
                     dateToOpenTradeMap.put(date, Maps.newHashMap());
                 }
                 SimpleTrade openTrade = new SimpleTrade();
-                openTrade.setStock(stock);
+                openTrade.setCode(stock);
                 openTrade.setDate(date);
                 openTrade.setTradePrice(price);
 

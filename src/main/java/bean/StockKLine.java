@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import util.Constants;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 
 /**
  * Created by Luonanqin on 2023/1/31.
@@ -25,6 +28,17 @@ public class StockKLine {
     private double changePnt; // 涨跌百分比
     //    private double volume; // 成交量非成交额
     private BigDecimal volume; // 成交量非成交额
+    private String dbDate;
+
+    public String getDbYear() {
+        LocalDate oDate = LocalDate.parse(date, Constants.FORMATTER);
+        return String.valueOf(oDate.get(ChronoField.YEAR));
+    }
+
+    public String getFormatDate(){
+        LocalDate oDate = LocalDate.parse(date, Constants.FORMATTER);
+        return oDate.format(Constants.DB_DATE_FORMATTER);
+    }
 
     @Override
     public String toString() {

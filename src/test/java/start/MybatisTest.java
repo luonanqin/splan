@@ -30,8 +30,19 @@ public class MybatisTest extends BaseTest{
     @Test
     public void test2(){
         Total total = new Total();
-        total.setDate("`2023-11-01`");
+        total.setDbYear("2023-11-01");
         total.setCode("FUTU");
         testMapper.insertTest2(total);
+    }
+
+    @Test
+    public void test3() {
+        String s = testMapper.showTables("2023-11-01");
+        System.out.println(s);
+    }
+
+    @Test
+    public void test4(){
+        testMapper.createTable("`2023-11-02`");
     }
 }

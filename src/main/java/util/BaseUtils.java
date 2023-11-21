@@ -422,6 +422,10 @@ public class BaseUtils {
     }
 
     public static List<String> readFile(String filePath) throws Exception {
+        if (StringUtils.isBlank(filePath)) {
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+
         List<String> lineList = Lists.newArrayList();
         BufferedReader br = null;
         try {

@@ -1,0 +1,111 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7132372400592403552
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1700490480000, openTime=1700490600000, closeCheckTime=Tue Nov 21 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1115
+stock overbolling hit great 0.500000 size: 931
+filter merge stock, the stock set size is 931
+filter split stock, the stock set size is 928
+filter front reinstatement less 0.98 stock, the stock set size is 889
+filter earning and lastEarning stock, the stock set size is 882
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:00
+finish subcribe real time!
+time is early. {p=493.48, ev=T, q=275870, s=10, c=[12,37], t=1700490481000, sym=NVDA, x=12, i=5897, z=3}
+{p=493.48, ev=T, q=275870, s=10, c=[12,37], t=1700490481000, sym=NVDA, x=12, i=5897, z=3}
+time is early. {p=7.7, ev=T, q=81478, s=500, c=[12], t=1700490548000, sym=NIO, x=11, i=52983525165364, z=1}
+{p=7.7, ev=T, q=81478, s=500, c=[12], t=1700490548000, sym=NIO, x=11, i=52983525165364, z=1}
+time is early. {p=133.56, ev=T, q=134531, s=12, c=[12,37], t=1700490550000, sym=GOOGL, trfi=202, x=4, i=609, z=3, trft=1700490550000}
+{p=133.56, ev=T, q=134531, s=12, c=[12,37], t=1700490550000, sym=GOOGL, trfi=202, x=4, i=609, z=3, trft=1700490550000}
+time is early. {p=133.5601, ev=T, q=134532, s=12, c=[12,37], t=1700490550000, sym=GOOGL, trfi=202, x=4, i=610, z=3, trft=1700490550000}
+{p=133.5601, ev=T, q=134532, s=12, c=[12,37], t=1700490550000, sym=GOOGL, trfi=202, x=4, i=610, z=3, trft=1700490550000}
+time is early. {p=133.55, ev=T, q=134533, s=500, c=[12], t=1700490550000, sym=GOOGL, trfi=202, x=4, i=611, z=3, trft=1700490550000}
+{p=133.55, ev=T, q=134533, s=500, c=[12], t=1700490550000, sym=GOOGL, trfi=202, x=4, i=611, z=3, trft=1700490550000}
+time is early. {p=60.78, ev=T, q=134916, s=122, c=[14,12,41], t=1700490570000, sym=FUTU, x=12, i=185, z=3}
+{p=60.78, ev=T, q=134916, s=122, c=[14,12,41], t=1700490570000, sym=FUTU, x=12, i=185, z=3}
+time is early. {p=60.78, ev=T, q=134917, s=122, c=[14,12,41], t=1700490570000, sym=FUTU, x=12, i=186, z=3}
+{p=60.78, ev=T, q=134917, s=122, c=[14,12,41], t=1700490570000, sym=FUTU, x=12, i=186, z=3}
+time is early. {p=60.78, ev=T, q=134918, s=56, c=[14,12,37,41], t=1700490570000, sym=FUTU, x=12, i=187, z=3}
+{p=60.78, ev=T, q=134918, s=56, c=[14,12,37,41], t=1700490570000, sym=FUTU, x=12, i=187, z=3}
+time is early. {p=169.5, ev=T, q=23398, s=60, c=[12,37], t=1700490594000, sym=WM, x=8, i=52983525032272, z=1}
+{p=169.5, ev=T, q=23398, s=60, c=[12,37], t=1700490594000, sym=WM, x=8, i=52983525032272, z=1}
+StockEvent(stock=WMT, price=155.51, time=1700490600026) dn=155.742 current=1700490600124
+WMT=0.14896431277368938
+StockEvent(stock=CSCO, price=47.59, time=1700490600006) dn=48.241 current=1700490600172
+CSCO=1.3494745133807264,WMT=0.14896431277368938
+unsubscribeStockSet size: 100 1700490600185
+StockEvent(stock=PLCE, price=18.08, time=1700490600042) dn=19.796 current=1700490600261
+unsubscribeStockSet size: 200 1700490600659
+unsubscribeStockSet size: 300 1700490600681
+unsubscribeStockSet size: 400 1700490600876
+unsubscribeStockSet size: 500 1700490601424
+unsubscribeStockSet size: 600 1700490601439
+unsubscribeStockSet size: 700 1700490601447
+StockEvent(stock=GAMB, price=10.32, time=1700490600755) dn=10.769 current=1700490601451
+unsubscribeStockSet size: 800 1700490601718
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [CSCO, WMT]
+CSCO=1.3494745133807264,WMT=0.14896431277368938
+remain cash: 7302.839999999967
+buy stock. stock=CSCO, count=151, price=47.59, orderPrice=48.06, orderId: 5188444460916113072 1700490623281
+CSCO order is successfully executed. orderId: 5188444460916113072
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5188444460916113072, code=CSCO, name=思科, count=151.0, price=48.06, avgPrice=47.67, createTime=2023-11-20 09:30:22, updateTimestamp=1.700490625E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {CSCO=StopLoss(stock=CSCO, canSellQty=151.0, lossPrice=44.333)}
+ready to sell before close market. position={CSCO=StockPosition(stock=CSCO, canSellQty=151.0, costPrice=47.67, currPrice=48.35)}, time=2023-11-21T04:59:00.014
+before close sell stock. stock=CSCO, count=151.0, currentPrice=48.35, orderPrice=47.86
+{p=48.275, ev=T, q=4446092, s=316, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30199, z=3}
+{p=48.275, ev=T, q=4446093, s=144, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30200, z=3}
+{p=48.28, ev=T, q=4446094, s=84, c=[37], t=1700513940000, sym=CSCO, x=7, i=6649, z=3}
+{p=48.275, ev=T, q=4446095, s=200, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30201, z=3}
+{p=48.275, ev=T, q=4446096, s=140, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30202, z=3}
+{p=48.28, ev=T, q=4446097, s=400, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30203, z=3}
+{p=48.28, ev=T, q=4446098, s=197, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30204, z=3}
+{p=48.28, ev=T, q=4446099, s=503, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30205, z=3}
+{p=48.28, ev=T, q=4446100, s=100, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30206, z=3}
+{p=48.28, ev=T, q=4446101, s=704, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30207, z=3}
+{p=48.28, ev=T, q=4446102, s=400, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30208, z=3}
+{p=48.275, ev=T, q=4446103, s=5, c=[37], t=1700513940000, sym=CSCO, x=7, i=6650, z=3}
+{p=48.28, ev=T, q=4446104, s=200, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30209, z=3}
+{p=48.28, ev=T, q=4446105, s=4, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30210, z=3}
+{p=48.28, ev=T, q=4446106, s=4, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30211, z=3}
+{p=48.28, ev=T, q=4446107, s=12, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30212, z=3}
+{p=48.28, ev=T, q=4446108, s=100, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30213, z=3}
+{p=48.28, ev=T, q=4446109, s=1, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30214, z=3}
+{p=48.28, ev=T, q=4446110, s=1, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30215, z=3}
+{p=48.28, ev=T, q=4446111, s=15, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30216, z=3}
+{p=48.28, ev=T, q=4446112, s=18, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30217, z=3}
+{p=48.28, ev=T, q=4446113, s=100, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30218, z=3}
+{p=48.28, ev=T, q=4446114, s=63, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30219, z=3}
+{p=48.28, ev=T, q=4446115, s=40, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30220, z=3}
+{p=48.28, ev=T, q=4446116, s=23, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30221, z=3}
+before close sell stock. stock=CSCO, orderId：5197950829825765899
+{p=48.28, ev=T, q=4446117, s=56, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30222, z=3}
+{p=48.28, ev=T, q=4446118, s=4, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30223, z=3}
+{p=48.28, ev=T, q=4446119, s=60, c=[14,37,41], t=1700513940000, sym=CSCO, x=12, i=30224, z=3}
+{p=48.28, ev=T, q=4446120, s=814, c=[14,41], t=1700513940000, sym=CSCO, x=12, i=30225, z=3}
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5197950829825765899, code=CSCO, name=思科, count=151.0, price=47.86, avgPrice=48.28, createTime=2023-11-20 15:59:00, updateTimestamp=1.700513943E9, status=0)
+{p=48.28, ev=T, q=4474514, s=100, t=1700513961000, sym=CSCO, trfi=202, x=4, i=48505, z=3, trft=1700513961000}
+{p=48.285, ev=T, q=4516396, s=100, t=1700513984000, sym=CSCO, trfi=202, x=4, i=49031, z=3, trft=1700513983999}
+{p=48.295, ev=T, q=4516397, s=100, t=1700513984000, sym=CSCO, trfi=202, x=4, i=49032, z=3, trft=1700513984000}
+{p=48.285, ev=T, q=4523042, s=100, t=1700513987000, sym=CSCO, trfi=202, x=4, i=49065, z=3, trft=1700513987000}
+{p=48.29, ev=T, q=4537094, s=70, c=[14,37,41], t=1700513992000, sym=CSCO, x=7, i=6807, z=3}
+all stock has stop loss
+trade exit

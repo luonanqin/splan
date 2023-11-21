@@ -10,6 +10,7 @@ public final class Constants {
 
     public static final String DAY_FORMATTER = "MM/dd/yyyy";
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(Constants.DAY_FORMATTER);
+    public static final DateTimeFormatter DB_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static final String HIS_BASE_PATH = System.getProperty("os.name").equals("Windows 7") ? "E:\\splan\\src\\main\\resources\\historicalData\\" : "src/main/resources/historicalData/";
     public static final String GRAB_PATH = HIS_BASE_PATH + "grab/";

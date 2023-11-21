@@ -13,42 +13,59 @@ import java.util.List;
 public interface StockDataMapper {
 
     /**
+     * 建表
+     */
+    void createTable(String dbYear);
+
+    /**
+     * 判断表是否存在
+     */
+    String showTables(String dbYear);
+
+    /**
+     * 初始化股票空行
+     */
+    @Deprecated
+    void initStock(@Param("code") String code, @Param("dbYear") String dbYear);
+
+    /**
      * 批量导入文件数据
      */
-    void batchInsertFileData(List<Total> totalList);
+    void batchInsertFileData(@Param("list") List<Total> totalList, @Param("dbYear") String dbYear);
 
     /**
      * 查询股票是否已在库中存在
      */
-    int queryStockExistCount(@Param("code") String code, @Param("date") String date);
+    int queryStockExistCount(@Param("code") String code, @Param("dbYear") String dbYear);
 
     /**
      * 日K线
      */
-    void updateStockKLine(@Param("kline") StockKLine stockKLine, @Param("date") String date);
+    //    void updateStockKLine(@Param("kline") StockKLine stockKLine, @Param("dbYear") String dbYear);
+    void updateStockKLine(StockKLine stockKLine);
 
     /**
      * 收盘价对应的均线
      */
-    void updateMA(@Param("ma") MA ma, @Param("date") String date);
+    void updateMA(@Param("ma") MA ma, @Param("dbYear") String dbYear);
 
     /**
      * 收盘价对应的布林线
      */
-    void updateBOLL(@Param("boll") BOLL boll, @Param("date") String date);
+    void updateBOLL(@Param("boll") BOLL boll, @Param("dbYear") String dbYear);
 
     /**
      * 开盘价对应的布林线
      */
-    void updateOpenBOLL(@Param("boll") BOLL boll, @Param("date") String date);
+    void updateOpenBOLL(@Param("boll") BOLL boll, @Param("dbYear") String dbYear);
 
     /**
      * 开盘第一分钟成交均价和总成交量
      */
-    void updateF1minTrade(@Param("f1minTrade") RealOpenVol realOpenVol, @Param("date") String date);
+    void updateF1minTrade(@Param("f1minTrade") RealOpenVol realOpenVol, @Param("dbYear") String dbYear);
 
     /**
      * 开盘第一笔交易价及交易时间
      */
-    void updateOpenTrade(@Param("openTrade") SimpleTrade simpleTrade, @Param("date") String date);
+    void updateOpenTrade(@Param("openTrade") SimpleTrade simpleTrade, @Param("dbYear") String dbYear);
 }

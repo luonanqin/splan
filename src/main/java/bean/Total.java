@@ -1,6 +1,7 @@
 package bean;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 public class Total {
 
     private String code;
+    private String dbYear;
     private String date;
     private double open;
     private double close;
@@ -15,9 +17,9 @@ public class Total {
     private double low;
     private BigDecimal volume;
     private double openTrade;
-    private double openTradeTime;
+    private String openTradeTime;
     private double f1minAvgPrice;
-    private double f1minAvgVolume;
+    private double f1minVolume;
     private double md;
     private double mb;
     private double up;
@@ -31,4 +33,11 @@ public class Total {
     private double ma20;
     private double ma30;
     private double ma60;
+
+    public String getOpenTradeTime() {
+        if (StringUtils.isBlank(openTradeTime)) {
+            return "";
+        }
+        return openTradeTime;
+    }
 }

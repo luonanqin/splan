@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class RealOpenVol implements Serializable {
 
     private String date;
-    private double volumn;
+    private double volume;
     private double avgPrice;
 
 }

@@ -81,7 +81,7 @@ public class PreCloseSort {
                     dateToPreCloseMap.put(date, Maps.newHashMap());
                 }
                 SimpleTrade preClose = new SimpleTrade();
-                preClose.setStock(stock);
+                preClose.setCode(stock);
                 preClose.setDate(date);
                 preClose.setTradePrice(price);
 

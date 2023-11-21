@@ -9,7 +9,8 @@ import lombok.Data;
 public class SimpleTrade {
 
     private String date;
-    private String stock;
+    private String code;
     private double tradePrice;
-    private double volumn;
+    private double volume;
+    private String tradeTime;
 }

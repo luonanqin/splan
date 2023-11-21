@@ -218,7 +218,7 @@ public class Strategy10_5 {
                 }
                 RealOpenVol realOpenVol = new RealOpenVol();
                 realOpenVol.setDate(date);
-                realOpenVol.setVolumn(Double.valueOf(volumn));
+                realOpenVol.setVolume(Double.valueOf(volumn));
                 realOpenVol.setAvgPrice(Double.valueOf(avgPrice));
                 dateToStockRealOpenVolMap.get(date).put(stock, realOpenVol);
             }
@@ -253,7 +253,7 @@ public class Strategy10_5 {
                     dateToOpenTradeMap.put(date, Maps.newHashMap());
                 }
                 SimpleTrade openTrade = new SimpleTrade();
-                openTrade.setStock(stock);
+                openTrade.setCode(stock);
                 openTrade.setDate(date);
                 openTrade.setTradePrice(price);
 
@@ -261,7 +261,7 @@ public class Strategy10_5 {
                 if (realOpenVolMap != null) {
                     RealOpenVol realOpenVol = realOpenVolMap.get(stock);
                     if (realOpenVol != null) {
-                        openTrade.setVolumn(realOpenVol.getVolumn());
+                        openTrade.setVolume(realOpenVol.getVolume());
                     }
                 }
 
@@ -406,7 +406,7 @@ public class Strategy10_5 {
                                 continue;
                             }
                             SimpleTrade realOpenVol = stockRealOpenVolMap.get(stock);
-                            if (realOpenVol == null || realOpenVol.getVolumn() == 0) {
+                            if (realOpenVol == null || realOpenVol.getVolume() == 0) {
 //                                continue;
                             }
 //                            avgVolume = (int) realOpenVol.getVolumn() / 2;
