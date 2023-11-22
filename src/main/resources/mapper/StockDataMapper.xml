@@ -4,6 +4,34 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="luonq.mapper.StockDataMapper">
 
+    <sql id="queryColumn">
+        `id` as id,
+        `code` as code,
+        `date` as date,
+        `open` as open,
+        `close` as close,
+        `high` as high,
+        `low` as low,
+        `volume` as volume,
+        `open_trade` as openTrade,
+        `open_trade_time` as openTradeTime,
+        `f1min_avg_price` as f1minAvgPrice,
+        `f1min_volume` as f1minVolume,
+        `md` as md,
+        `mb` as mb,
+        `up` as up,
+        `dn` as dn,
+        `open_md` as openMd,
+        `open_mb` as openMb,
+        `open_up` as openUp,
+        `open_dn` as openDn,
+        `ma5` as ma5,
+        `ma10` as ma10,
+        `ma20` as ma20,
+        `ma30` as ma30,
+        `ma60` as ma60
+    </sql>
+
     <select id="showTables">
         show tables like '${dbYear}'
     </select>
@@ -131,6 +159,23 @@
         `ma30`=values(ma30),
         `ma60`=values(ma60)
     </insert>
+
+    <select id="queryForAllYear" resultType="Total">
+        select <include refid="queryColumn"/> from `${dbYear}` where id > #{page.id}
+        order by id
+        limit #{page.limit}
+    </select>
+
+    <select id="queryByCode" resultType="Total">
+        select <include refid="queryColumn"/> from `${dbYear}`
+        where code=#{code}
+        order by date ${dateOrderType}
+    </select>
+
+    <select id="selectByCodeDate" resultType="Total">
+        select <include refid="queryColumn"/> from `${dbYear}`
+        where code=#{code} and date=#{date}
+    </select>
 
     <update id="updateStockKLine" parameterType="bean.StockKLine">
         update `${dbYear}` set

@@ -20,6 +20,7 @@ import java.time.temporal.ChronoField;
 public class StockKLine {
 
     private String date;
+    private String code;
     private double open;
     private double close;
     private double high;

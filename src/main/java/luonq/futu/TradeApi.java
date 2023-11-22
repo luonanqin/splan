@@ -434,6 +434,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 //                System.out.printf("Receive TrdGetFunds: %s\n", json);
                 double cash = rsp.getS2COrBuilder().getFunds().getCash();
                 remainCash.set(cash);
+                System.out.println("onReply_GetFunds: " + cash);
             } catch (Exception e) {
                 System.out.println("onReply_GetFunds error. " + e.getMessage());
             }

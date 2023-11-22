@@ -2,6 +2,7 @@ package luonq.mapper;
 
 import bean.BOLL;
 import bean.MA;
+import bean.Page;
 import bean.RealOpenVol;
 import bean.SimpleTrade;
 import bean.StockKLine;
@@ -32,6 +33,21 @@ public interface StockDataMapper {
      * 批量导入文件数据
      */
     void batchInsertFileData(@Param("list") List<Total> totalList, @Param("dbYear") String dbYear);
+
+    /**
+     * 分页批量返回全表数据
+     */
+    List<Total> queryForAllYear(@Param("dbYear") String dbYear, @Param("page") Page page);
+
+    /**
+     * 返回某只股票某年的数据
+     */
+    List<Total> queryByCode(@Param("dbYear") String dbYear, @Param("code") String code, @Param("dateOrderType") String dateOrderType);
+
+    /**
+     * 返回某只股票某天的数据
+     */
+    Total selectByCodeDate(@Param("dbYear") String dbYear, @Param("code") String code, @Param("date") String date);
 
     /**
      * 查询股票是否已在库中存在

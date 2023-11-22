@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Data
 public class Total {
 
+    private int id;
     private String code;
     private String dbYear;
     private String date;
@@ -39,5 +40,25 @@ public class Total {
             return "";
         }
         return openTradeTime;
+    }
+
+    public StockKLine toKLine() {
+        return StockKLine.builder().code(code).date(date).open(open).close(close).high(high).low(low).volume(volume).build();
+    }
+
+    public BOLL toBoll() {
+        return BOLL.builder().code(code).date(date).mb(mb).dn(dn).up(up).md(md).build();
+    }
+
+    public BOLL toOpenBoll() {
+        return BOLL.builder().code(code).date(date).mb(openMb).dn(openDn).up(openUp).md(openMd).build();
+    }
+
+    public SimpleTrade toOpenTrade() {
+        return SimpleTrade.builder().code(code).date(date).tradePrice(openTrade).tradeTime(openTradeTime).volume(f1minVolume).build();
+    }
+
+    public RealOpenVol toF1minInfo() {
+        return RealOpenVol.builder().code(code).date(date).avgPrice(f1minAvgPrice).volume(f1minVolume).build();
     }
 }

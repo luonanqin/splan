@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class BOLL {
 
     private String date;
+    private String code;
     private double md; // 20日标准差
     private double mb; // 中轨线
     private double up; // 上轨线
