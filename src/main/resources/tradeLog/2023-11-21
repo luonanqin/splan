@@ -128,3 +128,12 @@ stop get real-time quote
 unsubscribe real-time quote
 begin listen stop loss: {ZTO=StopLoss(stock=ZTO, canSellQty=3.0, lossPrice=20.478), AMSWA=StopLoss(stock=AMSWA, canSellQty=756.0, lossPrice=8.983)}
 {p=22.07, ev=T, q=124609, s=14, c=[37], t=1700577566000, sym=ZTO, x=15, i=53031982031453, z=1}
+ready to sell before close market. position={ZTO=StockPosition(stock=ZTO, canSellQty=3.0, costPrice=22.022, currPrice=22.075), AMSWA=StockPosition(stock=AMSWA, canSellQty=756.0, costPrice=9.66, currPrice=9.653)}, time=2023-11-22T04:59:00.019
+before close sell stock. stock=AMSWA, count=756.0, currentPrice=9.653, orderPrice=9.55
+before close sell stock. stock=AMSWA, orderId：5208124503507517075
+before close sell stock. stock=ZTO, count=3.0, currentPrice=22.075, orderPrice=21.85
+before close sell stock. stock=ZTO, orderId：5208124507802484368
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5208124503507517075, code=AMSWA, name=美国软件, count=756.0, price=9.55, avgPrice=9.63, createTime=2023-11-21 15:59:00, updateTimestamp=1.700600341E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5208124507802484368, code=ZTO, name=中通快递, count=3.0, price=21.85, avgPrice=22.07, createTime=2023-11-21 15:59:00, updateTimestamp=1.700600341E9, status=0)
+all stock has stop loss
+trade exit

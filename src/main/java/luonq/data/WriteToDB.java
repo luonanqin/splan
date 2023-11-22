@@ -125,7 +125,7 @@ public class WriteToDB {
         }
 
         System.out.println(allTotals.size());
-        //        stockDataMapper.batchInsertFileData(allTotals, String.valueOf(curYear));
+        stockDataMapper.batchInsertFileData(allTotals, String.valueOf(curYear));
     }
 
     private void importHistoricalDate(Map<String, List<Total>> dateToTotalMap) {
