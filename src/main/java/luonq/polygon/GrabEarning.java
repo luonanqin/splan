@@ -89,6 +89,10 @@ public class GrabEarning implements PageProcessor {
     public static void getData() throws Exception {
         LocalDate now = LocalDate.now();
         String day = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        int dayOfWeek = now.getDayOfWeek().getValue();
+        if (!(dayOfWeek >= 1 && dayOfWeek <= 5)) {
+            return;
+        }
 
         GrabEarning pageProcessor = new GrabEarning();
         pageProcessor.setDay(day);

@@ -65,3 +65,20 @@ trade end
 stop get real-time quote
 unsubscribe real-time quote
 begin listen stop loss: {LEGN=StopLoss(stock=LEGN, canSellQty=123.0, lossPrice=54.99), PDS=StopLoss(stock=PDS, canSellQty=129.0, lossPrice=52.21)}
+{p=55.205, ev=T, q=754407, s=100, t=1700668215000, sym=PDS, x=15, i=54113205703532, z=1}
+{p=55.56, ev=T, q=1229001, s=100, t=1700673243000, sym=PDS, x=12, i=62879502584379, z=1}
+{p=55.6, ev=T, q=1428948, s=25, c=[37], t=1700675655000, sym=PDS, trfi=202, x=4, i=71688241955905, z=1, trft=1700675655000}
+{p=60.08, ev=T, q=2508751, s=15, c=[14,37,41], t=1700676026000, sym=LEGN, x=12, i=2680, z=3}
+{p=60.12, ev=T, q=2508752, s=185, c=[14,41], t=1700676026000, sym=LEGN, x=9, i=30, z=3}
+{p=56.12, ev=T, q=1908485, s=7, c=[37], t=1700681689000, sym=PDS, x=10, i=52983542403121, z=1}
+{p=59.99, ev=T, q=3505107, s=4, c=[37], t=1700682478000, sym=LEGN, trfi=202, x=4, i=2580, z=3, trft=1700682478000}
+{p=60.02, ev=T, q=4081106, s=100, t=1700685381000, sym=LEGN, trfi=202, x=4, i=3000, z=3, trft=1700685381000}
+ready to sell before close market. position={LEGN=StockPosition(stock=LEGN, canSellQty=123.0, costPrice=59.13, currPrice=60.17), PDS=StockPosition(stock=PDS, canSellQty=129.0, costPrice=56.14, currPrice=56.2)}, time=2023-11-23T04:59:00.041
+before close sell stock. stock=PDS, count=129.0, currentPrice=56.2, orderPrice=55.63
+before close sell stock. stock=PDS, orderId：5227062994768101580
+before close sell stock. stock=LEGN, count=123.0, currentPrice=60.17, orderPrice=59.56
+before close sell stock. stock=LEGN, orderId：5227062999063068877
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5227062994768101580, code=PDS, name=Precision Drilling, count=129.0, price=55.63, avgPrice=56.25, createTime=2023-11-22 15:59:00, updateTimestamp=1.70068674E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5227062999063068877, code=LEGN, name=传奇生物, count=123.0, price=59.56, avgPrice=60.08, createTime=2023-11-22 15:59:00, updateTimestamp=1.700686741E9, status=0)
+all stock has stop loss
+trade exit

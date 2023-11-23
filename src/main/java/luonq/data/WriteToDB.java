@@ -39,15 +39,14 @@ public class WriteToDB {
         Map<String, String> maFileMap = BaseUtils.getFileMap(Constants.INDICATOR_MA_PATH + "daily/");
         Map<String, String> openTradeFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade/");
 
-        Integer beforeYear = 2018;
-        for (; beforeYear > 1978; beforeYear--) {
+        Integer curYear = 2023;
+        for (; curYear > 1980; curYear--) {
             Map<String, List<Total>> dateToTotalMap = Maps.newHashMap();
             for (String code : dailyFileMap.keySet()) {
                 if (StringUtils.isNotBlank(stockCode) && !StringUtils.equalsIgnoreCase(code, stockCode)) {
                     continue;
                 }
 
-                Integer curYear = beforeYear;
                 String filePath = dailyFileMap.get(code);
                 List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, curYear, curYear - 1);
                 List<MA> maList = loadMA(BaseUtils.readFile(maFileMap.get(code)));
