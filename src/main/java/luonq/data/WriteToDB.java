@@ -55,19 +55,6 @@ public class WriteToDB {
                 List<SimpleTrade> openTrades = loadOpenTrade(BaseUtils.readFile(openTradeFileMap.get(code)));
                 List<RealOpenVol> f1minTrades = loadF1minTrade(BaseUtils.readFile(Constants.TRADE_OPEN_PATH + curYear + "/" + code));
 
-                //                for (StockKLine kLine : kLines) {
-                //                    String dbDate = kLine.getDbDate();
-                //                    kLine.setCode(code);
-                //                    if (StringUtils.isNotBlank(date) && !StringUtils.equalsIgnoreCase(date, dbDate)) {
-                //                        continue;
-                //                    }
-                //                    int count = stockDataMapper.queryStockExistCount(code, dbDate);
-                //                    if (count == 0) {
-                //                        stockDataMapper.initStock(code, dbDate);
-                //                    }
-                //                    stockDataMapper.updateStockKLine(kLine);
-                //
-                //                }
                 List<Total> totals = buildTotalList(code, kLines, maList, bolls, openBolls, openTrades, f1minTrades);
                 for (Total total : totals) {
                     String dbYear = total.getDbYear();
@@ -121,6 +108,11 @@ public class WriteToDB {
 
             List<Total> totals = buildTotalList(dateList, code, kLines, maList, bolls, openBolls, openTrades, f1minTrades);
             allTotals.addAll(totals);
+        }
+
+        if (CollectionUtils.isEmpty(allTotals)) {
+            System.out.println("there is no date at " + dateList);
+            return;
         }
 
         System.out.println(allTotals.size());

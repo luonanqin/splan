@@ -64,7 +64,7 @@ public class Processor {
         System.out.println("get data finish");
     }
 
-    @Scheduled(cron = "0 0 21 * * ?")
+    @Scheduled(cron = "0 0 21 * * MON-FRI")
     public static void getEarning() throws Exception {
         System.out.println("GrabEarning.getData start");
         long s8 = System.currentTimeMillis();
