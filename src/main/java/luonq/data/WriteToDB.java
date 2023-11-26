@@ -69,7 +69,7 @@ public class WriteToDB {
         }
     }
 
-    @Scheduled(cron = "0 0 15 * * ?")
+    @Scheduled(cron = "0 0 18 * * MON-FRI")
     public void additionToDB() throws Exception {
         log.info("additionToDB begin");
         additionToDB(Lists.newArrayList(), Lists.newArrayList());

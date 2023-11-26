@@ -142,3 +142,14 @@ begin listen stop loss: {CENTA=StopLoss(stock=CENTA, canSellQty=3.0, lossPrice=3
 {p=31.895, ev=T, q=204099, s=200, t=1700836372000, sym=URBN, x=12, i=151, z=3}
 {p=31.895, ev=T, q=204100, s=63, c=[37], t=1700836372000, sym=URBN, x=12, i=152, z=3}
 {p=31.895, ev=T, q=204102, s=200, t=1700836372000, sym=URBN, x=12, i=153, z=3}
+{p=32.425, ev=T, q=3024795, s=2, c=[37], t=1700848466000, sym=URBN, trfi=202, x=4, i=6178, z=3, trft=1700848466000}
+ready to sell before close market. position={CENTA=StockPosition(stock=CENTA, canSellQty=3.0, costPrice=35.978, currPrice=36.075), URBN=StockPosition(stock=URBN, canSellQty=229.0, costPrice=32.1, currPrice=32.495)}, time=2023-11-25T01:59:00.009
+before close sell stock. stock=URBN, count=229.0, currentPrice=32.495, orderPrice=32.17
+before close sell stock. stock=URBN, orderId：6414835263909242517
+before close sell stock. stock=CENTA, count=3.0, currentPrice=36.075, orderPrice=35.71
+before close sell stock. stock=CENTA, orderId：6414835268204209818
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6414835263909242517, code=URBN, name=都市服饰, count=229.0, price=32.17, avgPrice=32.5, createTime=2023-11-24 12:59:00, updateTimestamp=1.700848741E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6414835268204209818, code=CENTA, name=Central Garden & Pet-A, count=3.0, price=35.71, avgPrice=36.03, createTime=2023-11-24 12:59:00, updateTimestamp=1.700848742E9, status=0)
+{p=32.505, ev=T, q=3181666, s=53, c=[37], t=1700848766000, sym=URBN, trfi=202, x=4, i=6457, z=3, trft=1700848766000}
+all stock has stop loss
+trade exit

@@ -15,8 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Processor {
 
-//    @Scheduled(cron = "0 0 13 * * ?")
-    @Scheduled(cron = "0 0 14 * * MON-FRI")
+    @Scheduled(cron = "0 0 17 * * MON-FRI")
     public static void getData() throws Exception {
         System.out.println("GetHistoricalDaily.getData start");
         long s2 = System.currentTimeMillis();
