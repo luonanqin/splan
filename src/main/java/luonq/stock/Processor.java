@@ -35,7 +35,6 @@ public class Processor {
         long e4 = System.currentTimeMillis();
         System.out.println("MergeBollinger.calculate end. cost: " + (e4 - s4) / 1000 + "s\n");
 
-
         System.out.println("GetHistoricalTrade.getData start");
         long s5 = System.currentTimeMillis();
         GetHistoricalTrade.getData();
@@ -54,13 +53,16 @@ public class Processor {
         long e7 = System.currentTimeMillis();
         System.out.println("BollingerWithOpen.calculate end. cost: " + (e7 - s7) / 1000 + "s\n");
 
+
+        System.out.println("get data finish");
+    }
+
+    public static void getRehab() throws Exception{
         System.out.println("GetRehab.getData start");
         long s1 = System.currentTimeMillis();
         GetRehab.getData();
         long e1 = System.currentTimeMillis();
         System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
-
-        System.out.println("get data finish");
     }
 
     @Scheduled(cron = "0 0 21 * * MON-FRI")

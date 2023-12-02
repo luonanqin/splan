@@ -152,8 +152,8 @@ public class GetHistoricalDaily {
 //                System.out.println("invalid stock: " + stock);
                 continue;
             }
-            if (!stock.equals("AAPL")) {
-                //                continue;
+            if (!stock.equals("FUTU")) {
+                                continue;
             }
             String file = stockMap.get(stock);
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(file, 2023);

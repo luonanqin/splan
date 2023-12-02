@@ -1,0 +1,44 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7134907613028101334
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1701095280000, openTime=1701095400000, closeCheckTime=Tue Nov 28 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 509
+stock overbolling hit great 0.500000 size: 412
+filter merge stock, the stock set size is 412
+filter split stock, the stock set size is 412
+filter front reinstatement less 0.98 stock, the stock set size is 378
+filter earning and lastEarning stock, the stock set size is 377
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:03
+finish subcribe real time!
+time is early. {p=40.78, ev=T, q=67259, s=1, c=[12,37], t=1701095346000, sym=LI, trfi=202, x=4, i=31, z=3, trft=1701095346000}
+{p=40.78, ev=T, q=67259, s=1, c=[12,37], t=1701095346000, sym=LI, trfi=202, x=4, i=31, z=3, trft=1701095346000}
+unsubscribeStockSet size: 100 1701095400452
+unsubscribeStockSet size: 200 1701095400914
+StockEvent(stock=MCS, price=14.27, time=1701095400868) dn=14.356 current=1701095401216
+unsubscribeStockSet size: 300 1701095401446
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: []
+
+remain cash: 7546.849999999977
+onReply_GetFunds: 997546.85
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+there is no position that need to be listened

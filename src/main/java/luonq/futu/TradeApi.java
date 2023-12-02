@@ -458,6 +458,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                         double canSellQty = position.getCanSellQty();
                         double costPrice = position.getCostPrice();
                         double price = position.getPrice();
+                        if (canSellQty == 0) {
+                            continue;
+                        }
 
                         StockPosition stockPosition = new StockPosition();
                         stockPosition.setStock(code);
@@ -577,14 +580,16 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     public static void main(String[] args) {
         FTAPI.init();
         TradeApi trdDemo = new TradeApi();
-        trdDemo.setAccountId(simulateUsAccountId);
-        trdDemo.useSimulateEnv();
+//        trdDemo.setAccountId(simulateUsAccountId);
+//        trdDemo.useSimulateEnv();
+        trdDemo.useRealEnv();
         trdDemo.start();
 
         //        trdDemo.unlock();
         //        double funds = trdDemo.getFunds();
         //        System.out.println(funds);
-        //                trdDemo.getPositionList();
+        Map<String, StockPosition> positionMap = trdDemo.getPositionMap(null);
+        System.out.println(positionMap);
         //        trdDemo.placeOrder();
         //        trdDemo.modifyOrder();
         //        trdDemo.getHistoryOrderList("WWW");
