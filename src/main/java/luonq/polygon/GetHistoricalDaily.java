@@ -153,7 +153,7 @@ public class GetHistoricalDaily {
                 continue;
             }
             if (!stock.equals("FUTU")) {
-                                continue;
+//                                continue;
             }
             String file = stockMap.get(stock);
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(file, 2023);
