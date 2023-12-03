@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.EarningDataMapper">
+
+    <insert id="batchInsertEarning">
+        insert into `earning_calendar` (`date`,`stock`,`type`,`actual_date`) values
+        <foreach collection="list" separator="," item="item">
+            (#{item.date}, #{item.stock},#{item.earningType},#{item.actualDate})
+        </foreach>
+    </insert>
+
+    <select id="queryEarningByActualDate">
+        select * from `earning_calendar`
+        where actual_date = #{day}
+    </select>
+
+    <select id="queryEarningByDate">
+        select stock from `earning_calendar`
+        where date = #{day}
+    </select>
+</mapper>
