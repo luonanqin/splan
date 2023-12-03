@@ -1,0 +1,91 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7136357156887507819
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1701440880000, openTime=1701441000000, closeCheckTime=Sat Dec 02 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1199
+stock overbolling hit great 0.500000 size: 1050
+filter merge stock, the stock set size is 1050
+filter split stock, the stock set size is 1049
+filter front reinstatement less 0.98 stock, the stock set size is 992
+filter earning and lastEarning stock, the stock set size is 970
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:00
+finish subcribe real time!
+time is early. {p=465.15, ev=T, q=196901, s=106, c=[12], t=1701440962000, sym=NVDA, x=12, i=3505, z=3}
+{p=465.15, ev=T, q=196901, s=106, c=[12], t=1701440962000, sym=NVDA, x=12, i=3505, z=3}
+time is early. {p=465.15, ev=T, q=196902, s=7, c=[12,37], t=1701440962000, sym=NVDA, x=12, i=3506, z=3}
+{p=465.15, ev=T, q=196902, s=7, c=[12,37], t=1701440962000, sym=NVDA, x=12, i=3506, z=3}
+time is early. {p=465.14, ev=T, q=196903, s=11, c=[12,37], t=1701440962000, sym=NVDA, x=12, i=3507, z=3}
+{p=465.14, ev=T, q=196903, s=11, c=[12,37], t=1701440962000, sym=NVDA, x=12, i=3507, z=3}
+time is early. {p=465.12, ev=T, q=196904, s=20, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5814, z=3}
+{p=465.12, ev=T, q=196904, s=20, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5814, z=3}
+time is early. {p=465.11, ev=T, q=196905, s=20, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5815, z=3}
+{p=465.11, ev=T, q=196905, s=20, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5815, z=3}
+time is early. {p=465.1, ev=T, q=196906, s=15, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5816, z=3}
+{p=465.1, ev=T, q=196906, s=15, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5816, z=3}
+time is early. {p=465.1, ev=T, q=196907, s=1, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5817, z=3}
+{p=465.1, ev=T, q=196907, s=1, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5817, z=3}
+time is early. {p=465.1, ev=T, q=196908, s=200, c=[12], t=1701440962000, sym=NVDA, x=11, i=5818, z=3}
+{p=465.1, ev=T, q=196908, s=200, c=[12], t=1701440962000, sym=NVDA, x=11, i=5818, z=3}
+time is early. {p=465.08, ev=T, q=196909, s=80, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5819, z=3}
+{p=465.08, ev=T, q=196909, s=80, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5819, z=3}
+time is early. {p=465.08, ev=T, q=196910, s=50, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5820, z=3}
+{p=465.08, ev=T, q=196910, s=50, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5820, z=3}
+time is early. {p=465.08, ev=T, q=196911, s=4, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5821, z=3}
+{p=465.08, ev=T, q=196911, s=4, c=[12,37], t=1701440962000, sym=NVDA, x=11, i=5821, z=3}
+time is early. {p=465.14, ev=T, q=196912, s=3, c=[12,37], t=1701440962000, sym=NVDA, x=12, i=3508, z=3}
+{p=465.14, ev=T, q=196912, s=3, c=[12,37], t=1701440962000, sym=NVDA, x=12, i=3508, z=3}
+unsubscribeStockSet size: 100 1701441000363
+unsubscribeStockSet size: 200 1701441000385
+StockEvent(stock=SBUX, price=98.54, time=1701441000111) dn=98.875 current=1701441000398
+SBUX=0.33881163084702276
+StockEvent(stock=FUTU, price=53.27, time=1701441000142) dn=53.465 current=1701441000407
+FUTU=0.3647245861778739,SBUX=0.33881163084702276
+unsubscribeStockSet size: 300 1701441000492
+StockEvent(stock=AVO, price=8.28, time=1701441000333) dn=8.296 current=1701441000517
+StockEvent(stock=CCSI, price=18.64, time=1701441000424) dn=18.952 current=1701441000584
+CCSI=1.646264246517524,FUTU=0.3647245861778739,SBUX=0.33881163084702276
+unsubscribeStockSet size: 400 1701441000669
+StockEvent(stock=PDCO, price=25.36, time=1701441000576) dn=26.119 current=1701441000695
+StockEvent(stock=OLLI, price=73.25, time=1701441000550) dn=73.546 current=1701441000695
+CCSI=1.646264246517524,OLLI=0.40246920294782373,FUTU=0.3647245861778739,SBUX=0.33881163084702276
+unsubscribeStockSet size: 500 1701441000783
+StockEvent(stock=BILI, price=11.15, time=1701441000660) dn=11.677 current=1701441000841
+unsubscribeStockSet size: 600 1701441000878
+StockEvent(stock=MGPI, price=85.6, time=1701441000781) dn=86.41 current=1701441000945
+CCSI=1.646264246517524,MGPI=0.937391505612779,OLLI=0.40246920294782373,FUTU=0.3647245861778739,SBUX=0.33881163084702276
+StockEvent(stock=PII, price=82.45, time=1701441000840) dn=82.788 current=1701441000951
+CCSI=1.646264246517524,MGPI=0.937391505612779,PII=0.4082717302024374,OLLI=0.40246920294782373,FUTU=0.3647245861778739,SBUX=0.33881163084702276
+unsubscribeStockSet size: 700 1701441000962
+StockEvent(stock=GDS, price=10.1, time=1701441000697) dn=10.133 current=1701441000984
+unsubscribeStockSet size: 800 1701441001051
+unsubscribeStockSet size: 900 1701441001227
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [PII, FUTU, SBUX, MGPI, CCSI, OLLI]
+quote price(time=1701441021966): {FUTU=53.27, PII=82.45, SBUX=98.54, MGPI=85.6, CCSI=18.64, OLLI=73.25}
+quote price(time=1701441021969): {FUTU=53.27, PII=82.45, SBUX=98.54, MGPI=85.6, CCSI=18.64, OLLI=73.25}
+quote price(time=1701441021970): {FUTU=53.27, PII=82.45, SBUX=98.54, MGPI=85.6, CCSI=18.64, OLLI=73.25}
+CCSI=1.646264246517524,MGPI=0.937391505612779,PII=0.4082717302024374,OLLI=0.40246920294782373,FUTU=0.3647245861778739,SBUX=0.33881163084702276
+onReply_GetFunds: 488.66
+remain cash: 1399.66
+update order: OrderFill(tradeSide=1, fillID=0, orderID=7238648228378558821, code=CCSI, name=Consensus Cloud Solutions, count=62.0, price=18.63, avgPrice=18.63, createTime=2023-12-01 09:31:54.478, updateTimestamp=1.701441114948251E9, status=0)
+ready to sell before close market. position={CCSI=StockPosition(stock=CCSI, canSellQty=62.0, costPrice=18.63, currPrice=19.28)}, time=2023-12-02T04:59:00.060
+before close sell stock. stock=CCSI, count=62.0, currentPrice=19.28, orderPrice=19.18
+before close sell stock. stock=CCSI, orderId：3680377059816437563
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4783439458118327036, code=CCSI, name=Consensus Cloud Solutions, count=62.0, price=19.18, avgPrice=19.18, createTime=2023-12-01 16:00:37.557, updateTimestamp=1.701470146189659E9, status=0)
+

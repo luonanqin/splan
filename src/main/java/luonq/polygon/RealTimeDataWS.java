@@ -125,7 +125,9 @@ public class RealTimeDataWS {
 
             if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
                 listenExistPosition();
-                close();
+                if (!tradeExecutor.isRealTrade()) {
+                    close();
+                }
             } else {
                 initHistoricalData();
                 subcribeStock();
@@ -228,7 +230,9 @@ public class RealTimeDataWS {
         Map<String, StockPosition> allPosition = tradeExecutor.getAllPosition();
         tradeExecutor.setTradeStock(Lists.newArrayList(allPosition.keySet()));
         tradeExecutor.closeCheckPosition();
-        tradeExecutor.reListenStopLoss();
+        if (!tradeExecutor.isRealTrade()) {
+            tradeExecutor.reListenStopLoss();
+        }
     }
 
     public Date getCloseCheckTime() {
@@ -727,6 +731,10 @@ public class RealTimeDataWS {
                     }
 
                     Double price = MapUtils.getDouble(map, "p");
+                    if (price == null) {
+                        continue;
+                    }
+
                     StopLoss stopLoss = stockToStopLoss.get(stock);
                     if (stopLoss == null) {
                         System.out.println(stock + " don't need stop loss. it'll be unsubscribe");

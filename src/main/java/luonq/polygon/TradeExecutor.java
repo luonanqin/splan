@@ -28,17 +28,25 @@ public class TradeExecutor {
 
     private NodeList list;
     private TradeApi tradeApi;
+    //    private TradeApi tradeApi2;
     private int cut = 990000;
     private List<String> tradeStock = Lists.newArrayList();
     private RealTimeDataWS client;
+    private boolean realTrade = true;
 
     public TradeExecutor() {
         FTAPI.init();
         tradeApi = new TradeApi();
-        tradeApi.useSimulateEnv();
-        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
+        //        tradeApi.useSimulateEnv();
+        //        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
+        tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.unlock();
+
+        //        tradeApi2 = new TradeApi();
+        //        tradeApi2.useRealEnv();
+        //        tradeApi2.start();
+        //        tradeApi2.unlock();
     }
 
     public void setTradeStock(List<String> stocks) {
@@ -50,7 +58,11 @@ public class TradeExecutor {
         List<Node> nodes = list.getNodes();
         /** 1.获取剩余可用现金 */
         double remainCash = tradeApi.getFunds();
-        remainCash -= cut;
+        if (realTrade) {
+            remainCash += 911;
+        } else {
+            remainCash -= cut;
+        }
         System.out.println("remain cash: " + remainCash);
         for (int i = 0; i < nodes.size(); i++) {
             Node node = nodes.get(i);
@@ -60,7 +72,7 @@ public class TradeExecutor {
                 continue;
             }
             double price = RealTimeDataWS.realtimeQuoteMap.get(code);
-            double orderPrice = BigDecimal.valueOf(price * 1.01).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+            double orderPrice = BigDecimal.valueOf(price * 1.005).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
             /** 2.用剩余可用现金计算可买数量 */
             int count = (int) (remainCash / orderPrice);
 
@@ -70,9 +82,16 @@ public class TradeExecutor {
                 break;
             }
 
-            /** 3.用可买数量下市价单 */
+            /** 3.用可买数量下限价单 */
             long orderId = tradeApi.placeOrder(code, count, orderPrice);
             System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId + " " + System.currentTimeMillis());
+
+            //            try {
+            //                long orderId2 = tradeApi2.placeOrder(code, 1, orderPrice);
+            //                System.out.println("trade2 buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId2 + " " + System.currentTimeMillis());
+            //            } catch (Exception e) {
+            //                System.out.println("real order failed");
+            //            }
 
             /** 4.下单完成后，十秒后获取成交状态 */
             OrderFill orderFill = tradeApi.getOrderFill(orderId, 15);
@@ -83,13 +102,21 @@ public class TradeExecutor {
             } else {
                 /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
                 System.out.println(code + " order is successfully executed. orderId: " + orderId);
-                //                placeStopLossOrder(code);
+                if (realTrade) {
+                    try {
+                        placeStopLossOrder(code);
+                    } catch (Exception e) {
+                        System.out.println("real placeStopLossOrder failed");
+                    }
+                }
                 tradeStock.add(code);
             }
 
             /** 重新获取剩余可用现金 */
             remainCash = tradeApi.getFunds();
-            remainCash -= cut;
+            if (!realTrade) {
+                remainCash -= cut;
+            }
         }
         System.out.println("trade end");
 
@@ -126,7 +153,7 @@ public class TradeExecutor {
 
                                                  double canSellQty = stockPosition.getCanSellQty();
                                                  double currPrice = stockPosition.getCurrPrice();
-                                                 double orderPrice = BigDecimal.valueOf(currPrice * 0.99).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+                                                 double orderPrice = BigDecimal.valueOf(currPrice * 0.995).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
                                                  System.out.println("before close sell stock. stock=" + stock + ", count=" + canSellQty + ", currentPrice=" + currPrice + ", orderPrice=" + orderPrice);
                                                  long orderId = tradeApi.placeOrderForLossNormal(stock, canSellQty, orderPrice);
                                                  System.out.println("before close sell stock. stock=" + stock + ", orderId：" + orderId);
@@ -135,6 +162,7 @@ public class TradeExecutor {
                                      }
                                  }
           , client.getCloseCheckTime());
+        System.out.println("begin close check timer listen!");
     }
 
     public void beginListenStopLoss() {
@@ -161,7 +189,7 @@ public class TradeExecutor {
 
         if (MapUtils.isEmpty(stockToStopLoss)) {
             System.out.println("there is no position that need to be listened");
-//            System.exit(0);
+            //            System.exit(0);
             return;
         }
         client.listenStopLoss(stockToStopLoss);

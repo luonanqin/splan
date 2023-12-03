@@ -87,6 +87,13 @@ public class WriteToDB {
         int curYear = 2023;
         if (CollectionUtils.isEmpty(dateList)) {
             LocalDate yesterday = LocalDate.now().minusDays(1);
+            while (true) {
+                if (yesterday.getDayOfWeek().getValue() > 5) {
+                    yesterday = yesterday.minusDays(1);
+                } else {
+                    break;
+                }
+            }
             String yestedayDate = yesterday.format(Constants.DB_DATE_FORMATTER);
             dateList = Lists.newArrayList(yestedayDate);
             curYear = yesterday.getYear();

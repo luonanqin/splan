@@ -1,0 +1,303 @@
+/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=50035:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/deploy.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/cldrdata.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/dnsns.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/jaccess.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/jfxrt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/localedata.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/nashorn.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunec.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunjce_provider.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/sunpkcs11.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/ext/zipfs.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/javaws.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jfxswt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/management-agent.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/plugin.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/ant-javafx.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/dt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/javafx-mx.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/jconsole.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/packager.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/sa-jdi.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/lib/tools.jar:/Users/Luonanqin/study/intellij_idea_workspaces/splan/target/classes:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-java/4.7.2/selenium-java-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-api/4.7.2/selenium-api-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-chrome-driver/4.7.2/selenium-chrome-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/service/auto-service-annotations/1.0.1/auto-service-annotations-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/service/auto-service/1.0.1/auto-service-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/auto/auto-common/1.2/auto-common-1.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-chromium-driver/4.7.2/selenium-chromium-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-json/4.7.2/selenium-json-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v106/4.7.2/selenium-devtools-v106-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v107/4.7.2/selenium-devtools-v107-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v108/4.7.2/selenium-devtools-v108-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-devtools-v85/4.7.2/selenium-devtools-v85-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-edge-driver/4.7.2/selenium-edge-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-firefox-driver/4.7.2/selenium-firefox-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-http/4.7.2/selenium-http-4.7.2.jar:/Users/Luonanqin/study/maven/repository/dev/failsafe/failsafe/3.3.0/failsafe-3.3.0.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-ie-driver/4.7.2/selenium-ie-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-remote-driver/4.7.2/selenium-remote-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/com/beust/jcommander/1.82/jcommander-1.82.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-buffer/4.1.84.Final/netty-buffer-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec-http/4.1.84.Final/netty-codec-http-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec/4.1.84.Final/netty-codec-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-handler/4.1.84.Final/netty-handler-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-common/4.1.84.Final/netty-common-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-classes-epoll/4.1.84.Final/netty-transport-classes-epoll-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-classes-kqueue/4.1.84.Final/netty-transport-classes-kqueue-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-epoll/4.1.84.Final/netty-transport-native-epoll-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-kqueue/4.1.84.Final/netty-transport-native-kqueue-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-unix-common/4.1.84.Final/netty-transport-native-unix-common-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport/4.1.84.Final/netty-transport-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-resolver/4.1.84.Final/netty-resolver-4.1.84.Final.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-api/1.19.0/opentelemetry-api-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-context/1.19.0/opentelemetry-context-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-exporter-logging/1.19.0/opentelemetry-exporter-logging-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-metrics/1.19.0/opentelemetry-sdk-metrics-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-logs/1.19.0-alpha/opentelemetry-sdk-logs-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-api-logs/1.19.0-alpha/opentelemetry-api-logs-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-common/1.19.0/opentelemetry-sdk-common-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure-spi/1.19.0/opentelemetry-sdk-extension-autoconfigure-spi-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/1.19.0-alpha/opentelemetry-sdk-extension-autoconfigure-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk-trace/1.19.0/opentelemetry-sdk-trace-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-sdk/1.19.0/opentelemetry-sdk-1.19.0.jar:/Users/Luonanqin/study/maven/repository/io/opentelemetry/opentelemetry-semconv/1.19.0-alpha/opentelemetry-semconv-1.19.0-alpha.jar:/Users/Luonanqin/study/maven/repository/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar:/Users/Luonanqin/study/maven/repository/net/bytebuddy/byte-buddy/1.12.18/byte-buddy-1.12.18.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar:/Users/Luonanqin/study/maven/repository/org/asynchttpclient/async-http-client/2.12.3/async-http-client-2.12.3.jar:/Users/Luonanqin/study/maven/repository/org/asynchttpclient/async-http-client-netty-utils/2.12.3/async-http-client-netty-utils-2.12.3.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-codec-socks/4.1.60.Final/netty-codec-socks-4.1.60.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-handler-proxy/4.1.60.Final/netty-handler-proxy-4.1.60.Final.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-epoll/4.1.60.Final/netty-transport-native-epoll-4.1.60.Final-linux-x86_64.jar:/Users/Luonanqin/study/maven/repository/io/netty/netty-transport-native-kqueue/4.1.60.Final/netty-transport-native-kqueue-4.1.60.Final-osx-x86_64.jar:/Users/Luonanqin/study/maven/repository/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar:/Users/Luonanqin/study/maven/repository/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar:/Users/Luonanqin/study/maven/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-manager/4.7.2/selenium-manager-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-safari-driver/4.7.2/selenium-safari-driver-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/seleniumhq/selenium/selenium-support/4.7.2/selenium-support-4.7.2.jar:/Users/Luonanqin/study/maven/repository/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar:/Users/Luonanqin/study/maven/repository/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar:/Users/Luonanqin/study/maven/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar:/Users/Luonanqin/study/maven/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar:/Users/Luonanqin/study/maven/repository/com/futunn/openapi/futu-api/7.1.3308/futu-api-7.1.3308.jar:/Users/Luonanqin/study/maven/repository/com/google/protobuf/protobuf-java/3.5.1/protobuf-java-3.5.1.jar:/Users/Luonanqin/study/maven/repository/org/bouncycastle/bcprov-jdk15on/1.68/bcprov-jdk15on-1.68.jar:/Users/Luonanqin/study/maven/repository/org/bouncycastle/bcpkix-jdk15on/1.68/bcpkix-jdk15on-1.68.jar:/Users/Luonanqin/study/maven/repository/com/alibaba/fastjson/1.2.53/fastjson-1.2.53.jar:/Users/Luonanqin/study/maven/repository/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1.jar:/Users/Luonanqin/study/maven/repository/org/apache/commons/commons-collections4/4.2/commons-collections4-4.2.jar:/Users/Luonanqin/study/maven/repository/org/projectlombok/lombok/1.18.16/lombok-1.18.16.jar:/Users/Luonanqin/study/maven/repository/com/google/protobuf/protobuf-java-util/3.5.1/protobuf-java-util-3.5.1.jar:/Users/Luonanqin/study/maven/repository/com/google/code/gson/gson/2.7/gson-2.7.jar:/Users/Luonanqin/study/maven/repository/org/java-websocket/Java-WebSocket/1.3.5/Java-WebSocket-1.3.5.jar:/Users/Luonanqin/study/maven/repository/javax/websocket/javax.websocket-api/1.1/javax.websocket-api-1.1.jar:/Users/Luonanqin/study/maven/repository/org/glassfish/tyrus/bundles/tyrus-standalone-client/1.9/tyrus-standalone-client-1.9.jar:/Users/Luonanqin/study/maven/repository/com/huaban/jieba-analysis/1.0.2/jieba-analysis-1.0.2.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/guava/31.0.1-jre/guava-31.0.1-jre.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar:/Users/Luonanqin/study/maven/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar:/Users/Luonanqin/study/maven/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/Luonanqin/study/maven/repository/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar:/Users/Luonanqin/study/maven/repository/com/google/errorprone/error_prone_annotations/2.7.1/error_prone_annotations-2.7.1.jar:/Users/Luonanqin/study/maven/repository/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-web/2.4.1/spring-boot-starter-web-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter/2.4.1/spring-boot-starter-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-logging/2.4.1/spring-boot-starter-logging-2.4.1.jar:/Users/Luonanqin/study/maven/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar:/Users/Luonanqin/study/maven/repository/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/logging/log4j/log4j-to-slf4j/2.13.3/log4j-to-slf4j-2.13.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/logging/log4j/log4j-api/2.13.3/log4j-api-2.13.3.jar:/Users/Luonanqin/study/maven/repository/org/slf4j/jul-to-slf4j/1.7.30/jul-to-slf4j-1.7.30.jar:/Users/Luonanqin/study/maven/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar:/Users/Luonanqin/study/maven/repository/org/yaml/snakeyaml/1.27/snakeyaml-1.27.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-json/2.4.1/spring-boot-starter-json-2.4.1.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-databind/2.11.3/jackson-databind-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-annotations/2.11.3/jackson-annotations-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/core/jackson-core/2.11.3/jackson-core-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.11.3/jackson-datatype-jdk8-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.11.3/jackson-datatype-jsr310-2.11.3.jar:/Users/Luonanqin/study/maven/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.11.3/jackson-module-parameter-names-2.11.3.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-tomcat/2.4.1/spring-boot-starter-tomcat-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.41/tomcat-embed-core-9.0.41.jar:/Users/Luonanqin/study/maven/repository/org/glassfish/jakarta.el/3.0.3/jakarta.el-3.0.3.jar:/Users/Luonanqin/study/maven/repository/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.41/tomcat-embed-websocket-9.0.41.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-web/5.3.2/spring-web-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-beans/5.3.2/spring-beans-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-webmvc/5.3.2/spring-webmvc-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-aop/5.3.2/spring-aop-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-context/5.3.2/spring-context-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-expression/5.3.2/spring-expression-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-configuration-processor/2.4.1/spring-boot-configuration-processor-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-devtools/2.4.1/spring-boot-devtools-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot/2.4.1/spring-boot-2.4.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-autoconfigure/2.4.1/spring-boot-autoconfigure-2.4.1.jar:/Users/Luonanqin/study/maven/repository/com/jayway/jsonpath/json-path/2.4.0/json-path-2.4.0.jar:/Users/Luonanqin/study/maven/repository/net/minidev/json-smart/2.3/json-smart-2.3.jar:/Users/Luonanqin/study/maven/repository/net/minidev/accessors-smart/1.2/accessors-smart-1.2.jar:/Users/Luonanqin/study/maven/repository/org/ow2/asm/asm/5.0.4/asm-5.0.4.jar:/Users/Luonanqin/study/maven/repository/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-core/5.3.2/spring-core-5.3.2.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-jcl/5.3.2/spring-jcl-5.3.2.jar:/Users/Luonanqin/study/maven/repository/us/codecraft/webmagic-core/0.7.3/webmagic-core-0.7.3.jar:/Users/Luonanqin/study/maven/repository/us/codecraft/xsoup/0.3.1/xsoup-0.3.1.jar:/Users/Luonanqin/study/maven/repository/org/slf4j/slf4j-api/1.7.6/slf4j-api-1.7.6.jar:/Users/Luonanqin/study/maven/repository/org/slf4j/slf4j-log4j12/1.7.6/slf4j-log4j12-1.7.6.jar:/Users/Luonanqin/study/maven/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar:/Users/Luonanqin/study/maven/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar:/Users/Luonanqin/study/maven/repository/org/jsoup/jsoup/1.10.3/jsoup-1.10.3.jar:/Users/Luonanqin/study/maven/repository/commons-io/commons-io/1.3.2/commons-io-1.3.2.jar:/Users/Luonanqin/study/maven/repository/org/mybatis/spring/boot/mybatis-spring-boot-starter/2.3.1/mybatis-spring-boot-starter-2.3.1.jar:/Users/Luonanqin/study/maven/repository/org/springframework/boot/spring-boot-starter-jdbc/2.7.12/spring-boot-starter-jdbc-2.7.12.jar:/Users/Luonanqin/study/maven/repository/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-jdbc/5.3.27/spring-jdbc-5.3.27.jar:/Users/Luonanqin/study/maven/repository/org/springframework/spring-tx/5.3.27/spring-tx-5.3.27.jar:/Users/Luonanqin/study/maven/repository/org/mybatis/spring/boot/mybatis-spring-boot-autoconfigure/2.3.1/mybatis-spring-boot-autoconfigure-2.3.1.jar:/Users/Luonanqin/study/maven/repository/org/mybatis/mybatis/3.5.13/mybatis-3.5.13.jar:/Users/Luonanqin/study/maven/repository/org/mybatis/mybatis-spring/2.1.1/mybatis-spring-2.1.1.jar:/Users/Luonanqin/study/maven/repository/mysql/mysql-connector-java/8.0.13/mysql-connector-java-8.0.13.jar luonq.polygon.RealTimeDataWS
+objc[62026]: Class JavaLaunchHelper is implemented in both /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/bin/java (0x1044b74c0) and /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/libinstrument.dylib (0x10cbe34e0). One of the two will be used. Which one is undefined.
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7135269937314177962
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1701181680000, openTime=1701181800000, closeCheckTime=Wed Nov 29 04:59:00 CST 2023
+unlock success
+Nov 28, 2023 10:15:23 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5002' will be ignored.
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1133
+stock overbolling hit great 0.500000 size: 948
+filter merge stock, the stock set size is 948
+filter split stock, the stock set size is 945
+filter front reinstatement less 0.98 stock, the stock set size is 874
+filter earning and lastEarning stock, the stock set size is 871
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+wait pre trade time. now is 22:16:00
+wait pre trade time. now is 22:16:05
+wait pre trade time. now is 22:16:10
+wait pre trade time. now is 22:16:15
+wait pre trade time. now is 22:16:20
+wait pre trade time. now is 22:16:25
+wait pre trade time. now is 22:16:30
+wait pre trade time. now is 22:16:35
+wait pre trade time. now is 22:16:40
+wait pre trade time. now is 22:16:45
+wait pre trade time. now is 22:16:50
+wait pre trade time. now is 22:16:55
+wait pre trade time. now is 22:17:00
+wait pre trade time. now is 22:17:05
+wait pre trade time. now is 22:17:10
+wait pre trade time. now is 22:17:15
+wait pre trade time. now is 22:17:20
+wait pre trade time. now is 22:17:25
+wait pre trade time. now is 22:17:30
+wait pre trade time. now is 22:17:35
+wait pre trade time. now is 22:17:40
+wait pre trade time. now is 22:17:45
+wait pre trade time. now is 22:17:50
+wait pre trade time. now is 22:17:55
+wait pre trade time. now is 22:18:00
+wait pre trade time. now is 22:18:05
+wait pre trade time. now is 22:18:10
+wait pre trade time. now is 22:18:15
+wait pre trade time. now is 22:18:20
+wait pre trade time. now is 22:18:25
+wait pre trade time. now is 22:18:30
+wait pre trade time. now is 22:18:35
+wait pre trade time. now is 22:18:40
+wait pre trade time. now is 22:18:45
+wait pre trade time. now is 22:18:50
+wait pre trade time. now is 22:18:55
+wait pre trade time. now is 22:19:00
+wait pre trade time. now is 22:19:05
+wait pre trade time. now is 22:19:10
+wait pre trade time. now is 22:19:15
+wait pre trade time. now is 22:19:20
+wait pre trade time. now is 22:19:25
+wait pre trade time. now is 22:19:30
+wait pre trade time. now is 22:19:35
+wait pre trade time. now is 22:19:40
+wait pre trade time. now is 22:19:45
+wait pre trade time. now is 22:19:50
+wait pre trade time. now is 22:19:55
+wait pre trade time. now is 22:20:00
+wait pre trade time. now is 22:20:05
+wait pre trade time. now is 22:20:10
+wait pre trade time. now is 22:20:15
+wait pre trade time. now is 22:20:20
+wait pre trade time. now is 22:20:25
+wait pre trade time. now is 22:20:30
+wait pre trade time. now is 22:20:35
+wait pre trade time. now is 22:20:40
+wait pre trade time. now is 22:20:45
+wait pre trade time. now is 22:20:50
+wait pre trade time. now is 22:20:55
+wait pre trade time. now is 22:21:00
+wait pre trade time. now is 22:21:05
+wait pre trade time. now is 22:21:10
+wait pre trade time. now is 22:21:15
+wait pre trade time. now is 22:21:20
+wait pre trade time. now is 22:21:25
+wait pre trade time. now is 22:21:30
+wait pre trade time. now is 22:21:35
+wait pre trade time. now is 22:21:40
+wait pre trade time. now is 22:21:45
+wait pre trade time. now is 22:21:50
+wait pre trade time. now is 22:21:55
+wait pre trade time. now is 22:22:00
+wait pre trade time. now is 22:22:05
+wait pre trade time. now is 22:22:10
+wait pre trade time. now is 22:22:15
+wait pre trade time. now is 22:22:20
+wait pre trade time. now is 22:22:25
+wait pre trade time. now is 22:22:30
+wait pre trade time. now is 22:22:35
+wait pre trade time. now is 22:22:40
+wait pre trade time. now is 22:22:45
+wait pre trade time. now is 22:22:50
+wait pre trade time. now is 22:22:55
+wait pre trade time. now is 22:23:00
+wait pre trade time. now is 22:23:05
+wait pre trade time. now is 22:23:10
+wait pre trade time. now is 22:23:15
+wait pre trade time. now is 22:23:20
+wait pre trade time. now is 22:23:25
+wait pre trade time. now is 22:23:30
+wait pre trade time. now is 22:23:35
+wait pre trade time. now is 22:23:40
+wait pre trade time. now is 22:23:45
+wait pre trade time. now is 22:23:50
+wait pre trade time. now is 22:23:55
+wait pre trade time. now is 22:24:00
+wait pre trade time. now is 22:24:05
+wait pre trade time. now is 22:24:10
+wait pre trade time. now is 22:24:15
+wait pre trade time. now is 22:24:20
+wait pre trade time. now is 22:24:25
+wait pre trade time. now is 22:24:30
+wait pre trade time. now is 22:24:35
+wait pre trade time. now is 22:24:40
+wait pre trade time. now is 22:24:45
+wait pre trade time. now is 22:24:50
+wait pre trade time. now is 22:24:55
+wait pre trade time. now is 22:25:00
+wait pre trade time. now is 22:25:05
+wait pre trade time. now is 22:25:10
+wait pre trade time. now is 22:25:15
+wait pre trade time. now is 22:25:20
+wait pre trade time. now is 22:25:25
+wait pre trade time. now is 22:25:30
+wait pre trade time. now is 22:25:35
+wait pre trade time. now is 22:25:40
+wait pre trade time. now is 22:25:45
+wait pre trade time. now is 22:25:50
+wait pre trade time. now is 22:25:55
+wait pre trade time. now is 22:26:00
+wait pre trade time. now is 22:26:05
+wait pre trade time. now is 22:26:10
+wait pre trade time. now is 22:26:15
+wait pre trade time. now is 22:26:20
+wait pre trade time. now is 22:26:25
+wait pre trade time. now is 22:26:30
+wait pre trade time. now is 22:26:35
+wait pre trade time. now is 22:26:40
+wait pre trade time. now is 22:26:45
+wait pre trade time. now is 22:26:50
+wait pre trade time. now is 22:26:55
+wait pre trade time. now is 22:27:00
+wait pre trade time. now is 22:27:05
+wait pre trade time. now is 22:27:10
+wait pre trade time. now is 22:27:15
+wait pre trade time. now is 22:27:20
+wait pre trade time. now is 22:27:25
+wait pre trade time. now is 22:27:30
+wait pre trade time. now is 22:27:35
+wait pre trade time. now is 22:27:40
+wait pre trade time. now is 22:27:45
+wait pre trade time. now is 22:27:50
+wait pre trade time. now is 22:27:55
+begin subcribe stock at 22:28:00
+finish subcribe real time!
+time is early. {p=236.82, ev=T, q=202492, s=50, c=[14,12,37,41], t=1701181716000, sym=TSLA, x=11, i=5319, z=3}
+{p=236.82, ev=T, q=202492, s=50, c=[14,12,37,41], t=1701181716000, sym=TSLA, x=11, i=5319, z=3}
+time is early. {p=11.91, ev=T, q=21115, s=20, c=[12,37], t=1701181726000, sym=GME, x=18, i=52983525027894, z=1}
+{p=11.91, ev=T, q=21115, s=20, c=[12,37], t=1701181726000, sym=GME, x=18, i=52983525027894, z=1}
+time is early. {p=11.91, ev=T, q=21116, s=20, c=[12,37], t=1701181726000, sym=GME, x=7, i=52983525027896, z=1}
+{p=11.91, ev=T, q=21116, s=20, c=[12,37], t=1701181726000, sym=GME, x=7, i=52983525027896, z=1}
+time is early. {p=11.91, ev=T, q=21117, s=20, c=[12,37], t=1701181726000, sym=GME, x=7, i=52983525027897, z=1}
+{p=11.91, ev=T, q=21117, s=20, c=[12,37], t=1701181726000, sym=GME, x=7, i=52983525027897, z=1}
+time is early. {p=11.91, ev=T, q=21118, s=20, c=[12,37], t=1701181726000, sym=GME, x=2, i=62879130077269, z=1}
+{p=11.91, ev=T, q=21118, s=20, c=[12,37], t=1701181726000, sym=GME, x=2, i=62879130077269, z=1}
+time is early. {p=333.2, ev=T, q=78990, s=1, c=[12,37], t=1701181779000, sym=META, trfi=202, x=4, i=631, z=3, trft=1701181779000}
+{p=333.2, ev=T, q=78990, s=1, c=[12,37], t=1701181779000, sym=META, trfi=202, x=4, i=631, z=3, trft=1701181779000}
+StockEvent(stock=ARGX, price=452.5, time=1701181800005) dn=467.631 current=1701181800119
+unsubscribeStockSet size: 100 1701181800124
+unsubscribeStockSet size: 200 1701181800363
+unsubscribeStockSet size: 300 1701181800625
+StockEvent(stock=GIS, price=63.52, time=1701181800600) dn=63.707 current=1701181800650
+GIS=0.2935313230885109
+StockEvent(stock=CHWY, price=18.265, time=1701181800677) dn=18.455 current=1701181800786
+CHWY=1.029531292332689,GIS=0.2935313230885109
+unsubscribeStockSet size: 400 1701181800824
+unsubscribeStockSet size: 500 1701181800963
+unsubscribeStockSet size: 600 1701181801099
+StockEvent(stock=LANC, price=162.92, time=1701181800955) dn=163.254 current=1701181801152
+unsubscribeStockSet size: 700 1701181801203
+StockEvent(stock=CVGW, price=23.0, time=1701181801044) dn=23.104 current=1701181801240
+unsubscribeStockSet size: 800 1701181801477
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [GIS, CHWY]
+quote price(time=1701181821613): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821615): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821618): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821618): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821619): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821621): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821623): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821627): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821630): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821633): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821681): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821682): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821682): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821683): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821683): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821683): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821683): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821683): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821683): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821683): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821685): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821686): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821687): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821688): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821691): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821693): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821694): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821697): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821698): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821700): {GIS=63.52, CHWY=18.265}
+quote price(time=1701181821918): {GIS=63.52, CHWY=18.32}
+CHWY=1.029531292332689,GIS=0.2935313230885109
+onReply_GetFunds: 997546.85
+remain cash: 7546.849999999977
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181822728): {GIS=63.52, CHWY=18.3}
+buy stock. stock=CHWY, count=409, price=18.32, orderPrice=18.41, orderId: 6434369573964763445 1701181822774
+quote price(time=1701181823727): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181823727): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181825470): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181826586): {GIS=63.52, CHWY=18.3}
+quote price(time=1701181826586): {GIS=63.52, CHWY=18.3}
+CHWY order is successfully executed. orderId: 6434369573964763445
+update order: OrderFill(tradeSide=1, fillID=0, orderID=6434369573964763445, code=CHWY, name=Chewy, count=409.0, price=18.41, avgPrice=18.3, createTime=2023-11-28 09:30:22, updateTimestamp=1.701181826E9, status=0)
+onReply_GetFunds: 990056.84
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {CHWY=StopLoss(stock=CHWY, canSellQty=409.0, lossPrice=17.019)}
+{p=18.3265, ev=T, q=209883, s=20, c=[37], t=1701183446000, sym=CHWY, trfi=202, x=4, i=71675711215434, z=1, trft=1701183446000}
+{p=18.465, ev=T, q=262725, s=100, t=1701183937000, sym=CHWY, trfi=202, x=4, i=71675826752858, z=1, trft=1701183936999}
+{p=18.49, ev=T, q=325560, s=26, c=[14,37,41], t=1701184562000, sym=CHWY, x=3, i=52983525161042, z=1}
+{p=18.49, ev=T, q=325561, s=1, c=[37], t=1701184562000, sym=CHWY, x=3, i=52983525161043, z=1}
+ready to sell before close market. position={CHWY=StockPosition(stock=CHWY, canSellQty=409.0, costPrice=18.3, currPrice=18.715)}, time=2023-11-29T04:59:00.010
+before close sell stock. stock=CHWY, count=409.0, currentPrice=18.715, orderPrice=18.62
+before close sell stock. stock=CHWY, orderId：6443655387717466067
+all stock has stop loss
+trade exit
+closing websocket. reason=CloseReason[1006,Closed abnormally.]
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6443655387717466067, code=CHWY, name=Chewy, count=409.0, price=18.62, avgPrice=18.76, createTime=2023-11-28 15:59:00, updateTimestamp=1.701205142E9, status=0)
+reconnect websocket
+opening websocket
+connected
+auth_success
+reconnect finish
+there is no stock need to listen stop loss
+trade exit
