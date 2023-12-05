@@ -13,7 +13,6 @@ import luonq.mapper.StockDataMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
@@ -69,7 +68,7 @@ public class WriteToDB {
         }
     }
 
-    @Scheduled(cron = "0 0 18 * * MON-FRI")
+//    @Scheduled(cron = "0 0 18 * * MON-FRI")
     public void additionToDB() throws Exception {
         log.info("additionToDB begin");
         additionToDB(Lists.newArrayList(), Lists.newArrayList());

@@ -9,13 +9,12 @@ import luonq.polygon.GetHistoricalOpenFirstTrade;
 import luonq.polygon.GetHistoricalTrade;
 import luonq.polygon.GrabEarning;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Processor {
 
-    @Scheduled(cron = "0 0 17 * * MON-FRI")
+//    @Scheduled(cron = "0 0 17 * * MON-FRI")
     public static void getData() throws Exception {
         System.out.println("GetHistoricalDaily.getData start");
         long s2 = System.currentTimeMillis();
@@ -65,7 +64,7 @@ public class Processor {
         System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
     }
 
-    @Scheduled(cron = "0 0 21 * * MON-FRI")
+//    @Scheduled(cron = "0 0 21 * * MON-FRI")
     public static void getEarning() throws Exception {
         System.out.println("GrabEarning.getData start");
         long s8 = System.currentTimeMillis();

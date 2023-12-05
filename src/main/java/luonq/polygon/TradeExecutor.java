@@ -58,9 +58,7 @@ public class TradeExecutor {
         List<Node> nodes = list.getNodes();
         /** 1.获取剩余可用现金 */
         double remainCash = tradeApi.getFunds();
-        if (realTrade) {
-            remainCash += 911;
-        } else {
+        if (!realTrade) {
             remainCash -= cut;
         }
         System.out.println("remain cash: " + remainCash);
@@ -104,7 +102,7 @@ public class TradeExecutor {
                 System.out.println(code + " order is successfully executed. orderId: " + orderId);
                 if (realTrade) {
                     try {
-                        placeStopLossOrder(code);
+                        placeStopLossOrder(orderFill);
                     } catch (Exception e) {
                         System.out.println("real placeStopLossOrder failed");
                     }
@@ -112,10 +110,13 @@ public class TradeExecutor {
                 tradeStock.add(code);
             }
 
-            /** 重新获取剩余可用现金 */
-            remainCash = tradeApi.getFunds();
             if (!realTrade) {
+                /** 模拟盘重新获取剩余可用现金 */
+                remainCash = tradeApi.getFunds();
                 remainCash -= cut;
+            } else if (orderFill != null) {
+                /** 实盘获取的剩余现金实时性不高，所以用前值减去已成交订单金额得到最新现金 */
+                remainCash = remainCash - orderFill.getAvgPrice() * orderFill.getCount();
             }
         }
         System.out.println("trade end");
@@ -130,7 +131,9 @@ public class TradeExecutor {
         Thread.sleep(10000);
         /** 7.计算之前已成交的止损价格，并设置止损市价单（模拟盘不支持） */
         /** 7*.（只用于模拟盘，实盘需注释掉）计算止损价格临时存储，然后让主进程监听这些股票，发现低于止损价则触发止损限价单 */
-        beginListenStopLoss();
+        if (!realTrade) {
+            beginListenStopLoss();
+        }
     }
 
     public void closeCheckPosition() {
@@ -206,6 +209,22 @@ public class TradeExecutor {
 
         double canSellQty = stockPosition.getCanSellQty();
         double costPrice = stockPosition.getCostPrice();
+        double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
+
+        long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
+        System.out.println(code + " placeStopLoss market order. qty=" + canSellQty + ", auxPrice=" + auxPrice + ", orderId：" + orderId);
+    }
+
+    // 根据订单返回的信息设定止损单
+    public void placeStopLossOrder(OrderFill orderFill) {
+        if (orderFill == null) {
+            System.out.println("order fill is null");
+            return;
+        }
+
+        String code = orderFill.getCode();
+        double canSellQty = orderFill.getCount();
+        double costPrice = orderFill.getAvgPrice();
         double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
 
         long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);

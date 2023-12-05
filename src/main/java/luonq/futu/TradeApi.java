@@ -586,9 +586,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         trdDemo.start();
 
         //        trdDemo.unlock();
-        //        double funds = trdDemo.getFunds();
-        //        System.out.println(funds);
-        Map<String, StockPosition> positionMap = trdDemo.getPositionMap(null);
+                double funds = trdDemo.getFunds();
+                System.out.println(funds);
+        Map<String, StockPosition> positionMap = trdDemo.getPositionMap("NTES");
         System.out.println(positionMap);
         //        trdDemo.placeOrder();
         //        trdDemo.modifyOrder();

@@ -288,6 +288,8 @@ public class RealTimeDataWS {
     }
 
     private Set<String> buildStockSet(Map<String, String> fileMap) throws Exception {
+        LocalDate now = LocalDate.now();
+        LocalDate standard = now.minusDays(4);
         // 过滤前日收盘价低于CLOSE_PRICE
         Set<String> set = Sets.newHashSet();
         for (String stock : fileMap.keySet()) {
@@ -296,6 +298,11 @@ public class RealTimeDataWS {
             double close = first.getClose();
             double open = first.getOpen();
             double volume = first.getVolume().doubleValue();
+            String date = first.getDate();
+            LocalDate parse = LocalDate.parse(date, Constants.FORMATTER);
+            if (parse.isBefore(standard)) {
+                continue;
+            }
             if (close > PRICE_LIMIT && volume > 100000 && close < open) {
                 set.add(stock);
             }
