@@ -501,7 +501,7 @@ public class RealTimeDataWS {
         }
     }
 
-    private void subcribeStock() {
+    private void subcribeStock() throws InterruptedException {
         subscribed = true;
         while (true) {
             LocalDateTime now = LocalDateTime.now();
@@ -511,6 +511,7 @@ public class RealTimeDataWS {
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
+                    throw e;
                 }
             } else {
                 System.out.println("begin subcribe stock at " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));

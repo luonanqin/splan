@@ -1,6 +1,7 @@
 package luonq.data;
 
 import bean.BOLL;
+import bean.EarningDate;
 import bean.MA;
 import bean.RealOpenVol;
 import bean.SimpleTrade;
@@ -9,8 +10,10 @@ import bean.Total;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import luonq.mapper.EarningDataMapper;
 import luonq.mapper.StockDataMapper;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +32,9 @@ public class WriteToDB {
 
     @Autowired
     private StockDataMapper stockDataMapper;
+
+    @Autowired
+    private EarningDataMapper earningDataMapper;
 
     /**
      * 一次性导入历史数据
@@ -68,7 +74,6 @@ public class WriteToDB {
         }
     }
 
-//    @Scheduled(cron = "0 0 18 * * MON-FRI")
     public void additionToDB() throws Exception {
         log.info("additionToDB begin");
         additionToDB(Lists.newArrayList(), Lists.newArrayList());
@@ -123,6 +128,29 @@ public class WriteToDB {
 
         System.out.println(allTotals.size());
         stockDataMapper.batchInsertFileData(allTotals, String.valueOf(curYear));
+    }
+
+    public void earningToDB(List<String> dateList) {
+        if (CollectionUtils.isEmpty(dateList)) {
+            dateList = Lists.newArrayList(LocalDate.now().format(Constants.DB_DATE_FORMATTER));
+        }
+
+        List<EarningDate> earningDateList = dateList.stream().map(date -> {
+            try {
+                return BaseUtils.getEarningDate(date);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }).filter(MapUtils::isNotEmpty).flatMap(e -> e.values().stream().flatMap(s -> s.stream())).distinct().collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(earningDateList)) {
+            System.out.println(dateList + " has no earning data");
+            return;
+        }
+
+        earningDataMapper.batchInsertEarning(earningDateList);
+        System.out.println("sync earning finish. dateList=" + dateList + ", earning sum=" + earningDateList.size());
     }
 
     private void importHistoricalDate(Map<String, List<Total>> dateToTotalMap) {

@@ -4,6 +4,7 @@ import bean.Page;
 import bean.Total;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import luonq.mapper.EarningDataMapper;
 import luonq.mapper.StockDataMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class ReadFromDB {
 
     @Autowired
     private StockDataMapper stockDataMapper;
+
+    @Autowired
+    private EarningDataMapper earningDataMapper;
 
     public List<Total> getAllYearDate(String dbYear) {
         Page page = new Page();
@@ -39,4 +43,9 @@ public class ReadFromDB {
         }
         return stockDataMapper.queryByCode(dbYear, code, dateOrderType);
     }
+
+    public List<String> getStockForEarning(String date) {
+        return earningDataMapper.queryEarningByActualDate(date);
+    }
+
 }

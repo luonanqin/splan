@@ -2,6 +2,9 @@ package bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import util.Constants;
+
+import java.time.LocalDate;
 
 /**
  * Created by Luonanqin on 2023/9/7.
@@ -19,4 +22,12 @@ public class EarningDate {
     private String date;
     private String earningType;
     private String actualDate;
+
+    public String getActualDbDate() {
+        return LocalDate.parse(actualDate, Constants.FORMATTER).format(Constants.DB_DATE_FORMATTER);
+    }
+
+    public String getDbDate() {
+        return LocalDate.parse(date, Constants.FORMATTER).format(Constants.DB_DATE_FORMATTER);
+    }
 }

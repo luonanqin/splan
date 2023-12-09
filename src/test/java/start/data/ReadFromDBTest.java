@@ -4,6 +4,7 @@ import bean.Page;
 import bean.Total;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import luonq.data.ReadFromDB;
 import luonq.mapper.StockDataMapper;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +19,9 @@ public class ReadFromDBTest extends BaseTest {
 
     @Autowired
     private StockDataMapper stockDataMapper;
+
+    @Autowired
+    private ReadFromDB readFromDB;
 
     @Before
     public void before() {
@@ -43,5 +47,11 @@ public class ReadFromDBTest extends BaseTest {
             allTotals.addAll(totals);
         }
         System.out.println(allTotals.size());
+    }
+
+    @Test
+    public void getStockForEarning(){
+        List<String> codeList = readFromDB.getStockForEarning("2023-12-08");
+        System.out.println(codeList);
     }
 }

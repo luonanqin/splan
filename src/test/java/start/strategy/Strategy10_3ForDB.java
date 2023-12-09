@@ -221,13 +221,11 @@ public class Strategy10_3ForDB extends BaseTest {
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
             String date = dateList.get(j);
             Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
-            List<EarningDate> earningDates = MapUtils.getObject(earningFormatDateMap, date, Lists.newArrayList());
-            Set<String> earningStockSet = earningDates.stream().map(EarningDate::getStock).collect(Collectors.toSet());
+            List<String> earningStockSet = readFromDB.getStockForEarning(date);
 
-            Set<String> lastEarningStockSet = Sets.newHashSet();
+            List<String> lastEarningStockSet = Lists.newArrayList();
             if (j > 0) {
-                List<EarningDate> lastEarningDates = MapUtils.getObject(earningFormatDateMap, dateList.get(j - 1), Lists.newArrayList());
-                lastEarningStockSet = lastEarningDates.stream().map(EarningDate::getStock).collect(Collectors.toSet());
+                lastEarningStockSet = readFromDB.getStockForEarning(dateList.get(j - 1));
             }
 
             for (String stock : allCode) {

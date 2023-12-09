@@ -4,20 +4,33 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="luonq.mapper.EarningDataMapper">
 
+    <sql id="queryColumn">
+        `id` as id,
+        `code` as stock,
+        `date` as date,
+        `actual_date` as actualDate,
+        `earning_type` as earningType
+    </sql>
+
     <insert id="batchInsertEarning">
-        insert into `earning_calendar` (`date`,`stock`,`type`,`actual_date`) values
+        insert into `earning_calendar` (`date`,`code`,`earning_type`,`actual_date`) values
         <foreach collection="list" separator="," item="item">
-            (#{item.date}, #{item.stock},#{item.earningType},#{item.actualDate})
+            (#{item.dbDate}, #{item.stock},#{item.earningType},#{item.actualDbDate})
         </foreach>
+        on duplicate key update
+        `date`=values(date),
+        `code`=values(code),
+        `earning_type`=values(earning_type),
+        `actual_date`=values(actual_date)
     </insert>
 
     <select id="queryEarningByActualDate">
-        select * from `earning_calendar`
+        select distinct code from `earning_calendar`
         where actual_date = #{day}
     </select>
 
     <select id="queryEarningByDate">
-        select stock from `earning_calendar`
+        select <include refid="queryColumn"/> from `earning_calendar`
         where date = #{day}
     </select>
 </mapper>

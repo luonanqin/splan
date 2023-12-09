@@ -32,4 +32,10 @@ public class WriteToDBTest extends BaseTest {
     public void additionToDB() throws Exception {
         writeToDB.additionToDB(Lists.newArrayList(), Lists.newArrayList());
     }
+
+    @Test
+    public void earningToDB() {
+        writeToDB.earningToDB(null);
+    }
+
 }
