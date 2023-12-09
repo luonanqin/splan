@@ -206,8 +206,28 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         System.out.printf("Send TrdPlaceOrder: %d\n", seqNo);
     }
 
+    // 市价单买入
+    public long placeMarketBuyOrder(String code, double count) {
+        return placeOrder(code, count, null, TrdCommon.TrdSide.TrdSide_Buy_VALUE);
+    }
+
+    // 市价单卖出
+    public long placeMarketSellOrder(String code, double count) {
+        return placeOrder(code, count, null, TrdCommon.TrdSide.TrdSide_Sell_VALUE);
+    }
+
+    // 限价单买入
+    public long placeNormalBuyOrder(String code, double count, double price) {
+        return placeOrder(code, count, price, TrdCommon.TrdSide.TrdSide_Buy_VALUE);
+    }
+
+    // 限价单卖出
+    public long placeNormalSellOrder(String code, double count, double price) {
+        return placeOrder(code, count, price, TrdCommon.TrdSide.TrdSide_Sell_VALUE);
+    }
+
     // 下单接口，指定数量和价格，有价格就是限价单，没价格就是市价单，返回订单ID
-    public long placeOrder(String code, int count, Double price) {
+    private long placeOrder(String code, double count, Double price, int trdSide) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
           .setTrdEnv(tradeEnv)
@@ -217,11 +237,10 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         TrdPlaceOrder.C2S.Builder c2sBuilder = TrdPlaceOrder.C2S.newBuilder()
           .setPacketID(trd.nextPacketID())
           .setHeader(header)
-          .setTrdSide(TrdCommon.TrdSide.TrdSide_Buy_VALUE)
+          .setTrdSide(trdSide)
           .setSecMarket(TrdCommon.TrdSecMarket.TrdSecMarket_US_VALUE)
           .setCode(code)
           .setQty(count);
-
         if (price != null) {
             c2sBuilder.setOrderType(TrdCommon.OrderType.OrderType_Normal_VALUE).setPrice(price);
         } else {
@@ -240,16 +259,6 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     // 下单接口，专用于止损市价单
     public long placeOrderForLossMarket(String code, double count, Double auxPrice) {
-        return placeOrderForLoss(code, count, auxPrice, TrdCommon.OrderType.OrderType_Stop_VALUE);
-    }
-
-    // 下单接口，专用于普通卖出限价单
-    public long placeOrderForLossNormal(String code, double count, Double price) {
-        return placeOrderForLoss(code, count, price, TrdCommon.OrderType.OrderType_Normal_VALUE);
-    }
-
-    // 下单接口，专用于止损单
-    public long placeOrderForLoss(String code, double count, Double price, int orderType) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
           .setTrdEnv(tradeEnv)
@@ -263,12 +272,8 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .setSecMarket(TrdCommon.TrdSecMarket.TrdSecMarket_US_VALUE)
           .setCode(code)
           .setQty(count)
-          .setOrderType(orderType);
-        if (orderType == TrdCommon.OrderType.OrderType_Normal_VALUE) {
-            c2sBuilder.setPrice(price);
-        } else if (orderType == TrdCommon.OrderType.OrderType_Stop_VALUE) {
-            c2sBuilder.setAuxPrice(price);
-        }
+          .setOrderType(TrdCommon.OrderType.OrderType_Stop_VALUE)
+          .setAuxPrice(auxPrice);
 
         TrdPlaceOrder.C2S c2s = c2sBuilder.build();
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
@@ -486,6 +491,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     public void onReply_PlaceOrder(FTAPI_Conn client, int nSerialNo, TrdPlaceOrder.Response rsp) {
         if (rsp.getRetType() != 0) {
             System.out.printf("TrdPlaceOrder failed: %s\n", rsp.getRetMsg());
+            orderId.set(-1);
         } else {
             try {
                 long orderID = rsp.getS2COrBuilder().getOrderID();
@@ -586,10 +592,12 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         trdDemo.start();
 
         //        trdDemo.unlock();
-                double funds = trdDemo.getFunds();
-                System.out.println(funds);
-        Map<String, StockPosition> positionMap = trdDemo.getPositionMap("NTES");
-        System.out.println(positionMap);
+//                double funds = trdDemo.getFunds();
+//                System.out.println(funds);
+//        Map<String, StockPosition> positionMap = trdDemo.getPositionMap("NTES");
+//        System.out.println(positionMap);
+//        long crmt = trdDemo.placeOrder("CRMT", 21.0, null);
+//        System.out.println(crmt);
         //        trdDemo.placeOrder();
         //        trdDemo.modifyOrder();
         //        trdDemo.getHistoryOrderList("WWW");

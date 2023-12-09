@@ -22,7 +22,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import util.BaseUtils;
 import util.Constants;
 
@@ -109,7 +108,6 @@ public class RealTimeDataWS {
     @Autowired
     private TradeExecutor tradeExecutor;
 
-    @Scheduled(cron = "0 0 22 * * ?")
     public void init() {
         try {
             initVariable();
@@ -132,6 +130,8 @@ public class RealTimeDataWS {
                 initHistoricalData();
                 subcribeStock();
                 sendToTradeDataListener();
+                close();
+                System.out.println("trade finish");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -794,8 +794,8 @@ public class RealTimeDataWS {
         client.init();
 //        client.sendToTradeDataListener();
 
-        while (true) {
-            Thread.sleep(1000);
-        }
+//        while (true) {
+//            Thread.sleep(1000);
+//        }
     }
 }

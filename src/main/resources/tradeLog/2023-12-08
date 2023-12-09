@@ -1,0 +1,92 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7138894275211442934
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1702045680000, openTime=1702045800000, closeCheckTime=Sat Dec 09 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 845
+stock overbolling hit great 0.500000 size: 708
+filter merge stock, the stock set size is 708
+filter split stock, the stock set size is 707
+filter front reinstatement less 0.98 stock, the stock set size is 668
+filter earning and lastEarning stock, the stock set size is 654
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:04
+finish subcribe real time!
+time is early. {p=34.79, ev=T, q=203441, s=10, c=[12,37], t=1702045787000, sym=LI, x=12, i=275, z=3}
+{p=34.79, ev=T, q=203441, s=10, c=[12,37], t=1702045787000, sym=LI, x=12, i=275, z=3}
+time is early. {p=34.79, ev=T, q=203442, s=10, c=[12,37], t=1702045787000, sym=LI, x=12, i=276, z=3}
+{p=34.79, ev=T, q=203442, s=10, c=[12,37], t=1702045787000, sym=LI, x=12, i=276, z=3}
+time is early. {p=34.8, ev=T, q=203443, s=180, c=[12], t=1702045787000, sym=LI, x=12, i=277, z=3}
+{p=34.8, ev=T, q=203443, s=180, c=[12], t=1702045787000, sym=LI, x=12, i=277, z=3}
+StockEvent(stock=PG, price=145.83, time=1702045800069) dn=146.081 current=1702045800370
+StockEvent(stock=CRMT, price=61.18, time=1702045800181) dn=62.285 current=1702045800374
+CRMT=1.7741029140242386
+StockEvent(stock=COCO, price=26.68, time=1702045800105) dn=26.804 current=1702045800386
+StockEvent(stock=BSY, price=50.48, time=1702045800156) dn=50.709 current=1702045800391
+StockEvent(stock=SU, price=30.37, time=1702045800206) dn=30.466 current=1702045800391
+unsubscribeStockSet size: 100 1702045800394
+StockEvent(stock=ORLY, price=954.88, time=1702045800234) dn=958.008 current=1702045800471
+StockEvent(stock=RELY, price=18.81, time=1702045800318) dn=19.189 current=1702045800479
+RELY=1.9750898952524953,CRMT=1.7741029140242386
+StockEvent(stock=VRSK, price=232.36, time=1702045800296) dn=233.527 current=1702045800504
+StockEvent(stock=SLB, price=48.43, time=1702045800513) dn=48.79 current=1702045800698
+unsubscribeStockSet size: 200 1702045800703
+StockEvent(stock=ZETA, price=7.795, time=1702045800537) dn=7.867 current=1702045800704
+StockEvent(stock=HAL, price=34.74, time=1702045800596) dn=34.786 current=1702045800781
+StockEvent(stock=INTA, price=36.01, time=1702045800560) dn=36.115 current=1702045800841
+StockEvent(stock=AMH, price=34.39, time=1702045800660) dn=34.414 current=1702045800894
+unsubscribeStockSet size: 300 1702045800987
+StockEvent(stock=TDC, price=43.29, time=1702045800684) dn=44.368 current=1702045801000
+TDC=2.4296790479625017,RELY=1.9750898952524953,CRMT=1.7741029140242386
+StockEvent(stock=HES, price=133.32, time=1702045800708) dn=133.97 current=1702045801018
+StockEvent(stock=CEG, price=109.645, time=1702045800686) dn=111.541 current=1702045801055
+StockEvent(stock=MTDR, price=53.33, time=1702045800718) dn=53.505 current=1702045801067
+unsubscribeStockSet size: 400 1702045801197
+StockEvent(stock=KEX, price=72.85, time=1702045800790) dn=73.137 current=1702045801277
+StockEvent(stock=CNQ, price=61.57, time=1702045800741) dn=61.714 current=1702045801288
+StockEvent(stock=OOMA, price=10.15, time=1702045800844) dn=10.297 current=1702045801374
+unsubscribeStockSet size: 500 1702045801407
+StockEvent(stock=XPOF, price=12.29, time=1702045800808) dn=12.516 current=1702045801481
+TDC=2.4296790479625017,RELY=1.9750898952524953,XPOF=1.8056887184404031,CRMT=1.7741029140242386
+unsubscribeStockSet size: 600 1702045801933
+StockEvent(stock=FDS, price=439.96, time=1702045800987) dn=441.643 current=1702045801967
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [TDC, RELY, XPOF, CRMT]
+quote price(time=1702045820881): {TDC=43.29, RELY=18.81, XPOF=12.29, CRMT=61.18}
+quote price(time=1702045820882): {TDC=43.29, RELY=18.81, XPOF=12.29, CRMT=61.18}
+quote price(time=1702045820891): {TDC=43.29, RELY=18.81, XPOF=12.29, CRMT=61.18}
+quote price(time=1702045820892): {TDC=43.29, RELY=18.81, XPOF=12.29, CRMT=61.18}
+quote price(time=1702045820893): {TDC=43.29, RELY=18.81, XPOF=12.29, CRMT=61.18}
+quote price(time=1702045820894): {TDC=43.29, RELY=18.81, XPOF=12.29, CRMT=61.18}
+quote price(time=1702045821331): {TDC=43.29, RELY=18.81, XPOF=12.29, CRMT=62.97}
+quote price(time=1702045821469): {TDC=43.39, RELY=18.81, XPOF=12.29, CRMT=62.97}
+TDC=2.4296790479625017,RELY=1.9750898952524953,XPOF=1.8056887184404031,CRMT=1.7741029140242386
+onReply_GetFunds: 1319.8
+remain cash: 1319.8
+update order: OrderFill(tradeSide=1, fillID=0, orderID=8975091850671481076, code=TDC, name=天睿公司, count=30.0, price=43.46, avgPrice=43.46, createTime=2023-12-08 09:31:10.903, updateTimestamp=1.702045884714079E9, status=0)
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+ready to sell before close market. position={TDC=StockPosition(stock=TDC, canSellQty=30.0, costPrice=43.46, currPrice=43.07)}, time=2023-12-09T04:59:00.016
+before close sell stock for market price. stock=TDC, count=30.0
+unlock success
+sell stock orderId=2030128256395210897
+sell stock success. stock=TDC, orderId?2030128256395210897
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2030128256395210897, code=TDC, name=????, count=30.0, price=0.0, avgPrice=43.3808, createTime=2023-12-08 15:59:00.150, updateTimestamp=1.702069140577925E9, status=0)

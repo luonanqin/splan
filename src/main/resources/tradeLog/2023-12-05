@@ -221,3 +221,9 @@ begin close check timer listen!
 unsubscribe real-time quote
 begin listen stop loss: {MNSO=StopLoss(stock=MNSO, canSellQty=68.0, lossPrice=18.748)}
 {p=20.71, ev=T, q=118053, s=17, c=[37,60], t=1701786653000, sym=MNSO, x=12, i=62879166585695, z=1}
+sell stock before close market
+ready to sell before close market. position={MNSO=StockPosition(stock=MNSO, canSellQty=68.0, costPrice=20.16, currPrice=20.72)}, time=2023-12-06T04:58:59.918
+before close sell stock. stock=MNSO, count=68.0, currentPrice=20.72, orderPrice=20.61
+unlock success
+before close sell stock. stock=MNSO, orderId?6807895300315772918
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6807895300315772918, code=MNSO, name=????, count=68.0, price=20.61, avgPrice=20.7309, createTime=2023-12-05 15:59:00.151, updateTimestamp=1.701809940552542E9, status=0)

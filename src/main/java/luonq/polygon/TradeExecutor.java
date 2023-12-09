@@ -70,7 +70,7 @@ public class TradeExecutor {
                 continue;
             }
             double price = RealTimeDataWS.realtimeQuoteMap.get(code);
-            double orderPrice = BigDecimal.valueOf(price * 1.005).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+            double orderPrice = BigDecimal.valueOf(price * 1.003).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
             /** 2.用剩余可用现金计算可买数量 */
             int count = (int) (remainCash / orderPrice);
 
@@ -81,15 +81,18 @@ public class TradeExecutor {
             }
 
             /** 3.用可买数量下限价单 */
-            long orderId = tradeApi.placeOrder(code, count, orderPrice);
+            long orderId;
+            if (realTrade) {
+//                orderId = tradeApi.placeMarketBuyOrder(code, count);
+                orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
+            } else {
+                orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
+            }
+            if (orderId == -1) {
+                System.out.println("place order failed. code=" + code + ", count=" + count + ", orderPrice=" + orderPrice);
+                continue;
+            }
             System.out.println("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId + " " + System.currentTimeMillis());
-
-            //            try {
-            //                long orderId2 = tradeApi2.placeOrder(code, 1, orderPrice);
-            //                System.out.println("trade2 buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId2 + " " + System.currentTimeMillis());
-            //            } catch (Exception e) {
-            //                System.out.println("real order failed");
-            //            }
 
             /** 4.下单完成后，十秒后获取成交状态 */
             OrderFill orderFill = tradeApi.getOrderFill(orderId, 15);
@@ -126,7 +129,7 @@ public class TradeExecutor {
         System.out.println("stop get real-time quote");
 
         /** 6.建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */
-        closeCheckPosition();
+        //        closeCheckPosition();
 
         Thread.sleep(10000);
         /** 7.计算之前已成交的止损价格，并设置止损市价单（模拟盘不支持） */
@@ -158,7 +161,7 @@ public class TradeExecutor {
                                                  double currPrice = stockPosition.getCurrPrice();
                                                  double orderPrice = BigDecimal.valueOf(currPrice * 0.995).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
                                                  System.out.println("before close sell stock. stock=" + stock + ", count=" + canSellQty + ", currentPrice=" + currPrice + ", orderPrice=" + orderPrice);
-                                                 long orderId = tradeApi.placeOrderForLossNormal(stock, canSellQty, orderPrice);
+                                                 long orderId = tradeApi.placeNormalSellOrder(stock, canSellQty, orderPrice);
                                                  System.out.println("before close sell stock. stock=" + stock + ", orderId：" + orderId);
                                              }
                                          }
@@ -166,6 +169,49 @@ public class TradeExecutor {
                                  }
           , client.getCloseCheckTime());
         System.out.println("begin close check timer listen!");
+    }
+
+    public void closeSell() {
+        System.out.println("sell stock before close market");
+        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(null);
+        System.out.println("ready to sell before close market. position=" + positionMap + ", time=" + LocalDateTime.now());
+        if (MapUtils.isEmpty(positionMap)) {
+            System.out.println("position is empty. trade is end today!!!");
+        } else {
+            for (String stock : positionMap.keySet()) {
+                StockPosition stockPosition = positionMap.get(stock);
+                if (stockPosition == null) {
+                    System.out.println("closeCheckPosition failed! " + stock + " position is not exist!");
+                    continue;
+                }
+
+                /** 收盘前卖出尝试3次 */
+                for (int i = 0; i < 3; i++) {
+                    double canSellQty = stockPosition.getCanSellQty();
+
+                    System.out.println("before close sell stock for market price. stock=" + stock + ", count=" + canSellQty);
+                    long orderId = tradeApi.placeMarketSellOrder(stock, canSellQty);
+                    //                double currPrice = stockPosition.getCurrPrice();
+                    //                double orderPrice = BigDecimal.valueOf(currPrice * 0.995).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+                    //                System.out.println("before close sell stock. stock=" + stock + ", count=" + canSellQty + ", currentPrice=" + currPrice + ", orderPrice=" + orderPrice);
+                    //                long orderId = tradeApi.placeOrderForLossNormal(stock, canSellQty, orderPrice);
+                    //                long orderId = 1234567890;
+                    System.out.println("sell stock orderId=" + orderId);
+                    if (orderId == -1) {
+                        System.out.println("retry sell stock=" + stock);
+                        continue;
+                    }
+                    OrderFill orderFill = tradeApi.getOrderFill(orderId, 8);
+                    if (orderFill == null) {
+                        int cancelResCode = tradeApi.cancelOrder(orderId);
+                        System.out.println("sell stock cancel. retry stock=" + stock + ", orderId=" + orderId + ", cancelResCode=" + cancelResCode);
+                        continue;
+                    }
+                    System.out.println("sell stock success. stock=" + stock + ", orderId：" + orderId);
+                    break;
+                }
+            }
+        }
     }
 
     public void beginListenStopLoss() {
@@ -232,7 +278,7 @@ public class TradeExecutor {
     }
 
     public void placeStopLossOrder(String code, double canSellQty, double price) {
-        long orderId = tradeApi.placeOrderForLossNormal(code, canSellQty, price);
+        long orderId = tradeApi.placeNormalSellOrder(code, canSellQty, price);
         System.out.println(code + " placeStopLoss limit order. qty=" + canSellQty + ", price=" + price + ", orderId: " + orderId);
     }
 
