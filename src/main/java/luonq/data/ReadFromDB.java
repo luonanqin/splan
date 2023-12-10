@@ -48,4 +48,7 @@ public class ReadFromDB {
         return earningDataMapper.queryEarningByActualDate(date);
     }
 
+    public List<String> getAllStock(int year, String date) {
+        return stockDataMapper.queryStockList(String.valueOf(year), date);
+    }
 }

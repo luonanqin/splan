@@ -17,6 +17,7 @@ import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,34 +73,26 @@ public class Strategy_DB {
     public void init() throws Exception {
         buildCodeSet();
 
+        LocalDate now = LocalDate.now();
+        int lastYear = now.getYear()-1;
+        int twoLastYear = lastYear-1;
+
         ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 3, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
-        CountDownLatch cdl = new CountDownLatch(3);
-        AtomicReference<List<Total>> _2023_Data = new AtomicReference<>();
+        CountDownLatch cdl = new CountDownLatch(2);
+        AtomicReference<List<Total>> _lastYear_Data = new AtomicReference<>();
         executor.submit(() -> {
             try {
-                List<Total> allYearDate = readFromDB.getAllYearDate("2023");
-                _2023_Data.set(allYearDate);
-                log.info("load 2023 finish");
-            } catch (Exception e) {
-                e.printStackTrace();
+                _lastYear_Data.set(readFromDB.getAllYearDate(String.valueOf(lastYear)));
+                log.info("load {} finish", lastYear);
             } finally {
                 cdl.countDown();
             }
         });
-        AtomicReference<List<Total>> _2022_Data = new AtomicReference<>();
+        AtomicReference<List<Total>> _twoLastYear_Data = new AtomicReference<>();
         executor.submit(() -> {
             try {
-                _2022_Data.set(readFromDB.getAllYearDate("2022"));
-                log.info("load 2022 finish");
-            } finally {
-                cdl.countDown();
-            }
-        });
-        AtomicReference<List<Total>> _2021_Data = new AtomicReference<>();
-        executor.submit(() -> {
-            try {
-                _2021_Data.set(readFromDB.getAllYearDate("2021"));
-                log.info("load 2021 finish");
+                _twoLastYear_Data.set(readFromDB.getAllYearDate(String.valueOf(twoLastYear)));
+                log.info("load {} finish", twoLastYear);
             } finally {
                 cdl.countDown();
             }
@@ -107,8 +100,8 @@ public class Strategy_DB {
         cdl.await();
 
         List<Total> computeHisDate = Lists.newArrayList();
-        computeHisDate.addAll(_2022_Data.get());
-        computeHisDate.addAll(_2021_Data.get());
+        computeHisDate.addAll(_lastYear_Data.get());
+        computeHisDate.addAll(_twoLastYear_Data.get());
         Map<String, List<Total>> hisCodeTotalMap = computeHisDate.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.toList()));
         hisCodeTotalMap.forEach((code, totals) -> {
             hisKLineMap.put(code, totals.stream().map(Total::toKLine).collect(Collectors.toList()));
@@ -117,7 +110,10 @@ public class Strategy_DB {
     }
 
     private void buildCodeSet() throws Exception {
-        allCode = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge/").keySet();
+        LocalDate date = LocalDate.now().minusDays(1);
+        int year = date.getYear();
+        String day = date.format(Constants.DB_DATE_FORMATTER);
+        allCode = Sets.newHashSet(readFromDB.getAllStock(year, day));
         Set<String> invalidStockSet = Sets.newHashSet("FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
         allCode.removeAll(invalidStockSet);
         BaseUtils.filterStock(allCode);
