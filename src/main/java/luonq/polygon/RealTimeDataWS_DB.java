@@ -1,7 +1,6 @@
 package luonq.polygon;
 
 import bean.BOLL;
-import bean.EarningDate;
 import bean.FrontReinstatement;
 import bean.Node;
 import bean.NodeList;
@@ -12,16 +11,19 @@ import bean.StockKLine;
 import bean.StockPosition;
 import bean.StockRatio;
 import bean.StopLoss;
+import bean.Total;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
+import luonq.data.ReadFromDB;
 import luonq.strategy.backup.Strategy_DB;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
 
@@ -57,9 +59,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static util.Constants.SEPARATOR;
-
-//@Component
+@Component
 @ClientEndpoint
 public class RealTimeDataWS_DB {
 
@@ -101,8 +101,7 @@ public class RealTimeDataWS_DB {
 
     public static Set<String> stockSet;
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
-    private static Map<String, String> fileMap;
-    private static AsyncEventBus tradeEventBus = asyncEventBus();
+    private AsyncEventBus tradeEventBus;
     private Session userSession = null;
 
     @Autowired
@@ -110,6 +109,9 @@ public class RealTimeDataWS_DB {
 
     @Autowired
     private Strategy_DB strategy;
+
+    @Autowired
+    private ReadFromDB readFromDB;
 
     public void init() {
         try {
@@ -124,12 +126,7 @@ public class RealTimeDataWS_DB {
             initUnsubscribeExecutor();
             initTrade();
 
-            if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
-                listenExistPosition();
-                if (!tradeExecutor.isRealTrade()) {
-                    close();
-                }
-            } else {
+            if (MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
                 initHistoricalData();
                 subcribeStock();
                 sendToTradeDataListener();
@@ -162,9 +159,9 @@ public class RealTimeDataWS_DB {
         hasAuth = new AtomicBoolean(false);
         unsubcribeStockSet = Sets.newHashSet();
         tradeEventBus = asyncEventBus();
-//        if (tradeExecutor == null) {
-//            tradeExecutor = new TradeExecutor_DB();
-//        }
+        //        if (tradeExecutor == null) {
+        //            tradeExecutor = new TradeExecutor_DB();
+        //        }
         tradeExecutor.init();
     }
 
@@ -189,11 +186,9 @@ public class RealTimeDataWS_DB {
 
     public void initHistoricalData() {
         try {
-            String mergePath = Constants.HIS_BASE_PATH + "merge" + SEPARATOR;
-            fileMap = BaseUtils.getFileMap(mergePath);
-            originRatioMap = strategy.computeHisOverBollingerRatio();
+            computeHisOverBollingerRatio();
             loadEarningInfo();
-            stockSet = buildStockSet(fileMap);
+            stockSet = buildStockSet();
             //            stockSet.clear();
             //            stockSet.add("RNST");
 
@@ -230,17 +225,13 @@ public class RealTimeDataWS_DB {
         }
     }
 
-    public void listenExistPosition() {
-        Map<String, StockPosition> allPosition = tradeExecutor.getAllPosition();
-        tradeExecutor.setTradeStock(Lists.newArrayList(allPosition.keySet()));
-        tradeExecutor.closeCheckPosition();
-        if (!tradeExecutor.isRealTrade()) {
-            tradeExecutor.reListenStopLoss();
-        }
-    }
-
     public Date getCloseCheckTime() {
         return closeCheckTime;
+    }
+
+    private void computeHisOverBollingerRatio() throws Exception {
+        strategy.init();
+        originRatioMap = strategy.computeHisOverBollingerRatio();
     }
 
     private void initManyTime() {
@@ -277,38 +268,50 @@ public class RealTimeDataWS_DB {
         executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MINUTES, workQueue);
     }
 
-    public static void loadEarningInfo() throws Exception {
+    public void loadEarningInfo() {
         LocalDate now = LocalDate.now();
-        String todayDate = now.format(Constants.FORMATTER);
-        List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2022);
-        String lastDate = kLines.get(0).getDate();
+        String today = now.format(Constants.DB_DATE_FORMATTER);
+        todayEarningStockSet = Sets.newHashSet(readFromDB.getStockForEarning(today));
 
-        Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
-        List<EarningDate> earningDates = MapUtils.getObject(earningDateMap, todayDate, Lists.newArrayList());
-        todayEarningStockSet = earningDates.stream().map(EarningDate::getStock).collect(Collectors.toSet());
-
-        List<EarningDate> lastEarningDates = MapUtils.getObject(earningDateMap, lastDate, Lists.newArrayList());
-        lastEarningStockSet = lastEarningDates.stream().map(EarningDate::getStock).collect(Collectors.toSet());
+        String yesterday;
+        if (now.getDayOfWeek().getValue() == 1) {
+            yesterday = now.minusDays(3).format(Constants.DB_DATE_FORMATTER);
+        } else {
+            yesterday = now.minusDays(1).format(Constants.DB_DATE_FORMATTER);
+        }
+        lastEarningStockSet = Sets.newHashSet(readFromDB.getStockForEarning(yesterday));
     }
 
-    private Set<String> buildStockSet(Map<String, String> fileMap) throws Exception {
+    private Set<String> buildStockSet() throws Exception {
         LocalDate now = LocalDate.now();
+        LocalDate yesterday = now.minusDays(1);
         LocalDate standard = now.minusDays(4);
-        // 过滤前日收盘价低于CLOSE_PRICE
+        List<Total> latestData;
+        while (true) {
+            int year = yesterday.getYear();
+            String date = yesterday.format(Constants.DB_DATE_FORMATTER);
+            latestData = readFromDB.getAllStockData(year, date);
+            if (CollectionUtils.isNotEmpty(latestData)) {
+                break;
+            } else {
+                yesterday = yesterday.minusDays(1);
+            }
+        }
+
+        // 过滤前日收盘价低于CLOSE_PRICE 和 前日成交量小于10w的
         Set<String> set = Sets.newHashSet();
-        for (String stock : fileMap.keySet()) {
-            String filePath = fileMap.get(stock);
-            StockKLine first = BaseUtils.getLatestKLine(filePath);
-            double close = first.getClose();
-            double open = first.getOpen();
-            double volume = first.getVolume().doubleValue();
-            String date = first.getDate();
-            LocalDate parse = LocalDate.parse(date, Constants.FORMATTER);
+        for (Total total : latestData) {
+            String code = total.getCode();
+            double close = total.getClose();
+            double open = total.getOpen();
+            double volume = total.getVolume().doubleValue();
+            String date = total.getDate();
+            LocalDate parse = LocalDate.parse(date, Constants.DB_DATE_FORMATTER);
             if (parse.isBefore(standard)) {
                 continue;
             }
             if (close > PRICE_LIMIT && volume > 100000 && close < open) {
-                set.add(stock);
+                set.add(code);
             }
         }
         System.out.println(String.format("stock latest close great %d size: %d", PRICE_LIMIT, set.size()));
@@ -371,17 +374,16 @@ public class RealTimeDataWS_DB {
         return set;
     }
 
-    public static void loadLatestMA20() throws Exception {
-        int beforeYear = 2023, afterYear = 2021;
-        for (String stock : stockSet) {
+    public void loadLatestMA20() {
+        Map<String, List<StockKLine>> curKLineMap = strategy.getCurKLineMap();
+        for (String stock : curKLineMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge" + SEPARATOR + stock, beforeYear, afterYear);
+            List<StockKLine> kLines = curKLineMap.get(stock);
             if (kLines.size() < 19) {
                 continue;
             }
-            //            kLines = kLines.subList(1, kLines.size());
             BigDecimal m20close = BigDecimal.ZERO;
             List<Double> _19Close = Lists.newArrayList();
             for (int i = 0; i < 19; i++) {
@@ -396,12 +398,13 @@ public class RealTimeDataWS_DB {
         System.out.println("finish load lastest 19-days close data");
     }
 
-    private static void loadLastDn() throws Exception {
-        for (String stock : stockSet) {
+    private void loadLastDn() {
+        Map<String, List<BOLL>> curKLineMap = strategy.getCurBollMap();
+        for (String stock : curKLineMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll" + SEPARATOR + stock, 2023, 2022);
+            List<BOLL> bolls = curKLineMap.get(stock);
             if (CollectionUtils.isEmpty(bolls)) {
                 continue;
             }
@@ -412,7 +415,7 @@ public class RealTimeDataWS_DB {
         System.out.println("finish load last DN for BOLL");
     }
 
-    public static AsyncEventBus asyncEventBus() {
+    public AsyncEventBus asyncEventBus() {
         int corePoolSize = Runtime.getRuntime().availableProcessors();
         int maxPoolSize = 100;
         int keepAliveTime = 60 * 1000;
@@ -702,7 +705,7 @@ public class RealTimeDataWS_DB {
         if (MapUtils.isEmpty(stockToStopLoss)) {
             System.out.println("there is no stock need to listen stop loss");
             System.out.println("trade exit");
-//            System.exit(0);
+            //            System.exit(0);
             return;
         }
         listenStopLoss = true;
@@ -729,7 +732,7 @@ public class RealTimeDataWS_DB {
                     if (stockToStopLoss.size() == 0) {
                         System.out.println("all stock has stop loss");
                         System.out.println("trade exit");
-//                        System.exit(0);
+                        //                        System.exit(0);
                         return;
                     }
                     continue;
@@ -769,7 +772,7 @@ public class RealTimeDataWS_DB {
                 if (stockToStopLoss.size() == 0) {
                     System.out.println("listen stop loss end!");
                     System.out.println("trade exit");
-//                    System.exit(0);
+                    //                    System.exit(0);
                     return;
                 }
             }
@@ -797,10 +800,10 @@ public class RealTimeDataWS_DB {
     public static void main(String[] args) throws InterruptedException {
         RealTimeDataWS_DB client = new RealTimeDataWS_DB();
         client.init();
-//        client.sendToTradeDataListener();
+        //        client.sendToTradeDataListener();
 
-//        while (true) {
-//            Thread.sleep(1000);
-//        }
+        //        while (true) {
+        //            Thread.sleep(1000);
+        //        }
     }
 }

@@ -8,12 +8,13 @@ import bean.Total;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
@@ -51,6 +52,7 @@ import static java.math.BigDecimal.ROUND_DOWN;
  */
 @Component
 @Slf4j
+@Data
 public class Strategy_DB {
 
     public static final String TEST_STOCK = "";
@@ -66,6 +68,14 @@ public class Strategy_DB {
      * 2021-2022年k线
      */
     Map<String/* code */, List<StockKLine>> hisKLineMap = Maps.newHashMap();
+    /**
+     * 2022-2023年k线
+     */
+    Map<String/* code */, List<StockKLine>> curKLineMap = Maps.newHashMap();
+    /**
+     * 2023布林线
+     */
+    Map<String/* code */, List<BOLL>> curBollMap = Maps.newHashMap();
 
     @Autowired
     private ReadFromDB readFromDB;
@@ -74,11 +84,21 @@ public class Strategy_DB {
         buildCodeSet();
 
         LocalDate now = LocalDate.now();
-        int lastYear = now.getYear()-1;
-        int twoLastYear = lastYear-1;
+        int curYear = now.getYear();
+        int lastYear = curYear - 1;
+        int twoLastYear = lastYear - 1;
 
         ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 3, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
-        CountDownLatch cdl = new CountDownLatch(2);
+        CountDownLatch cdl = new CountDownLatch(3);
+        AtomicReference<List<Total>> _curYear_Data = new AtomicReference<>();
+        executor.submit(() -> {
+            try {
+                _curYear_Data.set(readFromDB.getAllYearDate(String.valueOf(curYear)));
+                log.info("load {} finish", curYear);
+            } finally {
+                cdl.countDown();
+            }
+        });
         AtomicReference<List<Total>> _lastYear_Data = new AtomicReference<>();
         executor.submit(() -> {
             try {
@@ -99,24 +119,37 @@ public class Strategy_DB {
         });
         cdl.await();
 
-        List<Total> computeHisDate = Lists.newArrayList();
-        computeHisDate.addAll(_lastYear_Data.get());
-        computeHisDate.addAll(_twoLastYear_Data.get());
-        Map<String, List<Total>> hisCodeTotalMap = computeHisDate.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.toList()));
+        List<Total> computeHisData = Lists.newArrayList();
+        computeHisData.addAll(_lastYear_Data.get());
+        computeHisData.addAll(_twoLastYear_Data.get());
+        Map<String, List<Total>> hisCodeTotalMap = computeHisData.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.toList()));
         hisCodeTotalMap.forEach((code, totals) -> {
             hisKLineMap.put(code, totals.stream().map(Total::toKLine).collect(Collectors.toList()));
             hisCodeOpenBollMap.put(code, totals.stream().collect(Collectors.toMap(Total::getDate, Total::toOpenBoll)));
         });
+
+        List<Total> computeCurData = Lists.newArrayList();
+        computeCurData.addAll(_curYear_Data.get());
+        computeCurData.addAll(_lastYear_Data.get());
+        Map<String, List<Total>> curCodeTotalMap = computeCurData.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.toList()));
+        curCodeTotalMap.forEach((code, totals) -> {
+            curKLineMap.put(code, totals.stream().map(Total::toKLine).collect(Collectors.toList()));
+        });
+
+        curBollMap = computeCurData.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.mapping(Total::toBoll, Collectors.toList())));
     }
 
-    private void buildCodeSet() throws Exception {
-        LocalDate date = LocalDate.now().minusDays(1);
-        int year = date.getYear();
-        String day = date.format(Constants.DB_DATE_FORMATTER);
-        allCode = Sets.newHashSet(readFromDB.getAllStock(year, day));
-        Set<String> invalidStockSet = Sets.newHashSet("FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
-        allCode.removeAll(invalidStockSet);
-        BaseUtils.filterStock(allCode);
+    private void buildCodeSet() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        List<String> codeList;
+        do {
+            int year = yesterday.getYear();
+            String day = yesterday.format(Constants.DB_DATE_FORMATTER);
+            codeList = readFromDB.getAllStock(year, day);
+            yesterday = yesterday.minusDays(1);
+        } while (CollectionUtils.isEmpty(codeList));
+
+        allCode = Sets.newHashSet(codeList);
     }
 
     public Map<String, StockRatio> computeHisOverBollingerRatio() {

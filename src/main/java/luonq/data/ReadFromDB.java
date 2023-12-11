@@ -51,4 +51,8 @@ public class ReadFromDB {
     public List<String> getAllStock(int year, String date) {
         return stockDataMapper.queryStockList(String.valueOf(year), date);
     }
+
+    public List<Total> getAllStockData(int year, String date) {
+        return stockDataMapper.queryStockDataList(String.valueOf(year), date);
+    }
 }

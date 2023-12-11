@@ -54,4 +54,16 @@ public class ReadFromDBTest extends BaseTest {
         List<String> codeList = readFromDB.getStockForEarning("2023-12-08");
         System.out.println(codeList);
     }
+
+    @Test
+    public void getAllStock(){
+        List<String> allStock = readFromDB.getAllStock(2023, "2023-12-07");
+        System.out.println(allStock);
+    }
+
+    @Test
+    public void getAllStockData(){
+        List<Total> allStockData = readFromDB.getAllStockData(2023, "2023-12-07");
+        System.out.println(allStockData.size());
+    }
 }

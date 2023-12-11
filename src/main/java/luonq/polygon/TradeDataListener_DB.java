@@ -84,7 +84,7 @@ public class TradeDataListener_DB {
     public static void main(String[] args) throws Exception {
         RealTimeDataWS_DB.stockSet = Sets.newHashSet("RRGB");
 
-        RealTimeDataWS_DB.loadLatestMA20();
+//        RealTimeDataWS_DB.loadLatestMA20();
         TradeDataListener_DB tradeDataListener = new TradeDataListener_DB();
         tradeDataListener.cal(new StockEvent("RRGB", 10.03d, 1692027257000L));
     }

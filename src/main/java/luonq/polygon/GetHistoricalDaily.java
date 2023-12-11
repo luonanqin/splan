@@ -133,7 +133,12 @@ public class GetHistoricalDaily {
 
     public static void getData() throws Exception {
         LocalDate today = LocalDate.now();
-        LocalDate yesterday = today.minusDays(1);
+        LocalDate yesterday;
+        if (today.getDayOfWeek().getValue() == 1) {
+            yesterday = today.minusDays(3);
+        } else {
+            yesterday = today.minusDays(1);
+        }
 
         int threadCount = 100;
         int corePoolSize = threadCount;

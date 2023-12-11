@@ -2,7 +2,6 @@ package start.strategy;
 
 import bean.BOLL;
 import bean.Bean;
-import bean.EarningDate;
 import bean.RatioBean;
 import bean.SimpleTrade;
 import bean.StockKLine;
@@ -24,7 +23,6 @@ import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -210,12 +208,12 @@ public class Strategy10_3ForDB extends BaseTest {
 
         // 计算出open低于dn（收盘后的dn）比例最高的前十股票，然后再遍历计算收益
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
-        Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
-        Map<String, List<EarningDate>> earningFormatDateMap = Maps.newHashMap();
-        earningDateMap.forEach((date, list) -> {
-            String earningDate = LocalDate.parse(date, Constants.FORMATTER).format(Constants.DB_DATE_FORMATTER);
-            earningFormatDateMap.put(earningDate, list);
-        });
+//        Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
+//        Map<String, List<EarningDate>> earningFormatDateMap = Maps.newHashMap();
+//        earningDateMap.forEach((date, list) -> {
+//            String earningDate = LocalDate.parse(date, Constants.FORMATTER).format(Constants.DB_DATE_FORMATTER);
+//            earningFormatDateMap.put(earningDate, list);
+//        });
         Map<String, Map<String, Double>> dateToStockRatioMap = Maps.newHashMap();
         for (int j = 0; j < dateList.size(); j++) {
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
