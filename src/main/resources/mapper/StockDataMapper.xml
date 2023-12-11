@@ -161,19 +161,37 @@
     </insert>
 
     <select id="queryForAllYear" resultType="Total">
-        select <include refid="queryColumn"/> from `${dbYear}` where id > #{page.id}
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}` where id > #{page.id}
         order by id
         limit #{page.limit}
     </select>
 
     <select id="queryByCode" resultType="Total">
-        select <include refid="queryColumn"/> from `${dbYear}`
-        where code=#{code}
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}`
+        where code = #{code}
         order by date ${dateOrderType}
     </select>
 
+    <select id="queryStockList" resultType="java.lang.String">
+        select code from `${dbYear}`
+        where date = #{date}
+    </select>
+
+    <select id="queryStockDataList" resultType="Total">
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}`
+        where date = #{date}
+    </select>
+
     <select id="selectByCodeDate" resultType="Total">
-        select <include refid="queryColumn"/> from `${dbYear}`
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}`
         where code=#{code} and date=#{date}
     </select>
 
