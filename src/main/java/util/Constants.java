@@ -37,4 +37,6 @@ public final class Constants {
     public static final String TEST_PATH = USER_PATH + "src/main/resources/testData/";
 
     public static final String SPLIT_PATH = USER_PATH + "src/main/resources/splitData/";
+
+    public static int TRADE_ERROR_CODE = -500;
 }

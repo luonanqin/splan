@@ -25,8 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +56,7 @@ public class GetHistoricalTrade {
         //        Map<String, String> hasMergeMap = BaseUtils.getFileMap(Constants.TRADE_OPEN_PATH + year);
         int poolSize = 20;
         LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
-        Executor cachedThread = new ThreadPoolExecutor(poolSize, poolSize, 60, TimeUnit.SECONDS, workQueue);
+        ThreadPoolExecutor cachedThread = new ThreadPoolExecutor(poolSize, poolSize, 60, TimeUnit.SECONDS, workQueue);
         LinkedBlockingQueue<HttpClient> httpClients = new LinkedBlockingQueue<>();
         for (int i = 0; i < poolSize; i++) {
             httpClients.offer(new HttpClient());
@@ -162,6 +160,7 @@ public class GetHistoricalTrade {
                 }
             });
         }
+        cachedThread.shutdown();
     }
 
     // date +request failed.

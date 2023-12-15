@@ -1,0 +1,94 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7140343559679748234
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1702391280000, openTime=1702391400000, closeCheckTime=Wed Dec 13 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 849
+stock overbolling hit great 0.500000 size: 725
+filter merge stock, the stock set size is 725
+filter split stock, the stock set size is 725
+filter front reinstatement less 0.98 stock, the stock set size is 657
+filter earning and lastEarning stock, the stock set size is 656
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:01
+finish subcribe real time!
+time is early. {p=14.72, ev=T, q=101187, s=50, c=[14,12,37,41], t=1702391299000, sym=MARA, x=12, i=1615, z=3}
+{p=14.72, ev=T, q=101187, s=50, c=[14,12,37,41], t=1702391299000, sym=MARA, x=12, i=1615, z=3}
+time is early. {p=14.72, ev=T, q=101188, s=400, c=[14,12,41], t=1702391299000, sym=MARA, x=12, i=1616, z=3}
+{p=14.72, ev=T, q=101188, s=400, c=[14,12,41], t=1702391299000, sym=MARA, x=12, i=1616, z=3}
+time is early. {p=14.72, ev=T, q=101189, s=500, c=[14,12,41], t=1702391299000, sym=MARA, x=11, i=1747, z=3}
+{p=14.72, ev=T, q=101189, s=500, c=[14,12,41], t=1702391299000, sym=MARA, x=11, i=1747, z=3}
+time is early. {p=40.47, ev=T, q=32749, s=1, c=[14,12,37,41], t=1702391354000, sym=RBLX, x=11, i=52983525228871, z=1}
+{p=40.47, ev=T, q=32749, s=1, c=[14,12,37,41], t=1702391354000, sym=RBLX, x=11, i=52983525228871, z=1}
+time is early. {p=40.48, ev=T, q=32750, s=10, c=[14,12,37,41], t=1702391354000, sym=RBLX, x=12, i=62879146925420, z=1}
+{p=40.48, ev=T, q=32750, s=10, c=[14,12,37,41], t=1702391354000, sym=RBLX, x=12, i=62879146925420, z=1}
+time is early. {p=40.47, ev=T, q=32751, s=20, c=[14,12,37,41], t=1702391354000, sym=RBLX, x=12, i=62879146925421, z=1}
+{p=40.47, ev=T, q=32751, s=20, c=[14,12,37,41], t=1702391354000, sym=RBLX, x=12, i=62879146925421, z=1}
+time is early. {p=460.75, ev=T, q=101935, s=481, c=[14,12,41], t=1702391354000, sym=NVDA, x=11, i=7432, z=3}
+{p=460.75, ev=T, q=101935, s=481, c=[14,12,41], t=1702391354000, sym=NVDA, x=11, i=7432, z=3}
+time is early. {p=238.36, ev=T, q=184263, s=67, c=[12,37], t=1702391389000, sym=TSLA, x=8, i=9089, z=3}
+{p=238.36, ev=T, q=184263, s=67, c=[12,37], t=1702391389000, sym=TSLA, x=8, i=9089, z=3}
+time is early. {p=238.33, ev=T, q=184264, s=24, c=[12,37], t=1702391389000, sym=TSLA, x=8, i=9090, z=3}
+{p=238.33, ev=T, q=184264, s=24, c=[12,37], t=1702391389000, sym=TSLA, x=8, i=9090, z=3}
+unsubscribeStockSet size: 100 1702391400260
+StockEvent(stock=CMTL, price=7.91, time=1702391400166) dn=8.691 current=1702391400322
+CMTL=8.98630767460592
+StockEvent(stock=SWBI, price=12.31, time=1702391400022) dn=12.574 current=1702391400370
+StockEvent(stock=SBOW, price=27.31, time=1702391400295) dn=28.686 current=1702391400448
+unsubscribeStockSet size: 200 1702391400564
+unsubscribeStockSet size: 300 1702391400762
+StockEvent(stock=EDR, price=22.83, time=1702391400661) dn=23.255 current=1702391400823
+StockEvent(stock=GIL, price=33.0, time=1702391400696) dn=33.388 current=1702391400979
+StockEvent(stock=IMNM, price=7.31, time=1702391400697) dn=7.345 current=1702391401011
+StockEvent(stock=MEI, price=21.11, time=1702391400715) dn=21.338 current=1702391401065
+unsubscribeStockSet size: 400 1702391401226
+StockEvent(stock=GEOS, price=10.93, time=1702391400685) dn=11.189 current=1702391401264
+StockEvent(stock=AOUT, price=7.4, time=1702391400717) dn=7.464 current=1702391401272
+StockEvent(stock=XPRO, price=14.82, time=1702391400723) dn=14.839 current=1702391401273
+unsubscribeStockSet size: 500 1702391401397
+StockEvent(stock=OOMA, price=9.95, time=1702391400842) dn=9.988 current=1702391401412
+StockEvent(stock=HPK, price=13.57, time=1702391400890) dn=13.581 current=1702391401430
+StockEvent(stock=XPOF, price=9.06, time=1702391400683) dn=9.941 current=1702391401643
+StockEvent(stock=HNRG, price=11.17, time=1702391401018) dn=11.203 current=1702391401643
+StockEvent(stock=GEF, price=63.47, time=1702391400986) dn=63.728 current=1702391401720
+unsubscribeStockSet size: 600 1702391401835
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [CMTL]
+CMTL=8.98630767460592
+onReply_GetFunds: 1284.44
+remain cash: 1284.44
+TrdPlaceOrder failed: 购买力不足，您可以尝试以下方式提升：
+1. 进行货币兑换
+2. 存入更多资金 请前往: https://api.futunn.com/v2/webview/jump?user_id=11412506&is_visitor=0&clienttype=40&clientver=7.01.3308&clientlang=0&url=202011222&jump_target=1001
+place order failed. code=CMTL, count=161, orderPrice=7.93
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+update order: OrderFill(tradeSide=1, fillID=0, orderID=147591943723659455, code=CMTL, name=康姆泰克通讯, count=165.0, price=7.72, avgPrice=7.72, createTime=2023-12-12 09:35:47.774, updateTimestamp=1.702391809587149E9, status=0)
+sell stock before close market
+ready to sell before close market. position={CMTL=StockPosition(stock=CMTL, canSellQty=165.0, costPrice=7.72, currPrice=7.665)}, time=2023-12-13T04:58:59.196
+before close sell stock for market price. stock=CMTL, count=165.0
+unlock success
+sell stock orderId=3025660367356981170
+update order: OrderFill(tradeSide=2, fillID=0, orderID=3025660367356981170, code=CMTL, name=??????, count=165.0, price=0.0, avgPrice=7.671, createTime=2023-12-12 15:58:59.291, updateTimestamp=1.702414739732098E9, status=0)
+sell stock success. stock=CMTL, orderId?3025660367356981170
+update order: OrderFill(tradeSide=2, fillID=0, orderID=3025660367356981170, code=CMTL, name=??????, count=165.0, price=0.0, avgPrice=7.671, createTime=2023-12-12 15:58:59.291, updateTimestamp=1.702414739732098E9, status=0)
+sell stock orderId=4781480581197321447
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4781480581197321447, code=CMTL, name=??????, count=162.0, price=0.0, avgPrice=7.501, createTime=2023-12-13 15:58:59.234, updateTimestamp=1.702501139646772E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4781480581197321447, code=CMTL, name=??????, count=162.0, price=0.0, avgPrice=7.501, createTime=2023-12-13 15:58:59.234, updateTimestamp=1.702501139646772E9, status=0)
+sell stock success. stock=CMTL, orderId?4781480581197321447
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4781480581197321447, code=CMTL, name=??????, count=162.0, price=0.0, avgPrice=7.501, createTime=2023-12-13 15:58:59.234, updateTimestamp=1.702501139646772E9, status=0)

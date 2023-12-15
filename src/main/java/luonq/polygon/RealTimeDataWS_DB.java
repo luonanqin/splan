@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -90,7 +89,7 @@ public class RealTimeDataWS_DB {
     private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> realtimeQuoteBQ = new LinkedBlockingQueue<>(1000);
-    private Executor executor;
+    private ThreadPoolExecutor executor;
     private long preTradeTime;
     private long openTime;
     private long listenEndTime;
@@ -470,6 +469,7 @@ public class RealTimeDataWS_DB {
         if (userSession != null) {
             manualClose = true;
             userSession.close();
+            executor.shutdown();
         }
     }
 

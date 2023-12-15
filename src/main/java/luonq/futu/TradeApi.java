@@ -15,6 +15,7 @@ import com.futu.openapi.pb.QotSub;
 import com.futu.openapi.pb.TrdCommon;
 import com.futu.openapi.pb.TrdGetFunds;
 import com.futu.openapi.pb.TrdGetHistoryOrderList;
+import com.futu.openapi.pb.TrdGetMaxTrdQtys;
 import com.futu.openapi.pb.TrdGetPositionList;
 import com.futu.openapi.pb.TrdModifyOrder;
 import com.futu.openapi.pb.TrdPlaceOrder;
@@ -45,6 +46,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static util.Constants.TRADE_ERROR_CODE;
+
 /**
  * Created by Luonanqin on 2022/12/22.
  */
@@ -64,6 +67,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     private Map<Long, LinkedBlockingQueue<OrderFill>> orderFillMap = Maps.newHashMap();
     private BlockingQueue<Map<String, StockPosition>> stockPositionBlock = new LinkedBlockingQueue<>();
     private BlockingQueue<Long> stopLossOrder = new LinkedBlockingQueue<>();
+    private AtomicInteger maxCashBuy = new AtomicInteger(-2);
 
     FTAPI_Conn_Trd trd = new FTAPI_Conn_Trd();
     FTAPI_Conn_Qot qot = new FTAPI_Conn_Qot();
@@ -287,11 +291,15 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     // 撤单
     public int cancelOrder(long orderId) {
-        return modifyOrder(orderId, TrdCommon.ModifyOrderOp.ModifyOrderOp_Cancel_VALUE);
+        return modifyOrder(orderId, TrdCommon.ModifyOrderOp.ModifyOrderOp_Cancel_VALUE, 0, 0);
+    }
+
+    public int upOrderPrice(long orderId, double qty, double price) {
+        return modifyOrder(orderId, TrdCommon.ModifyOrderOp.ModifyOrderOp_Normal_VALUE, qty, price);
     }
 
     // 改单（修改、撤单、删除等），返回操作结果码
-    public int modifyOrder(long orderId, int modifyOrderOp) {
+    public int modifyOrder(long orderId, int modifyOrderOp, double qty, double price) {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
           .setTrdEnv(tradeEnv)
@@ -302,6 +310,8 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .setHeader(header)
           .setOrderID(orderId)
           .setModifyOrderOp(modifyOrderOp)
+          .setQty(qty)
+          .setPrice(price)
           .build();
         TrdModifyOrder.Request req = TrdModifyOrder.Request.newBuilder().setC2S(c2s).build();
         trd.modifyOrder(req);
@@ -367,6 +377,29 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .build();
         TrdGetHistoryOrderList.Request req = TrdGetHistoryOrderList.Request.newBuilder().setC2S(c2s).build();
         int seqNo = trd.getHistoryOrderList(req);
+    }
+
+    public int getMaxCashBuy(String code, double price) {
+        TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
+          .setAccID(accountId)
+          .setTrdEnv(tradeEnv)
+          .setTrdMarket(tradeMarket)
+          .build();
+        TrdGetMaxTrdQtys.C2S c2s = TrdGetMaxTrdQtys.C2S.newBuilder()
+          .setHeader(header)
+          .setOrderType(TrdCommon.OrderType.OrderType_Normal_VALUE)
+          .setCode(code)
+          .setPrice(price)
+          .setSecMarket(TrdCommon.TrdSecMarket.TrdSecMarket_US_VALUE)
+          .build();
+        TrdGetMaxTrdQtys.Request req = TrdGetMaxTrdQtys.Request.newBuilder().setC2S(c2s).build();
+        trd.getMaxTrdQtys(req);
+
+        while (true) {
+            if (maxCashBuy.get() != -2) {
+                return maxCashBuy.getAndSet(-2);
+            }
+        }
     }
 
     @Override
@@ -564,6 +597,23 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         }
     }
 
+    @Override
+    public void onReply_GetMaxTrdQtys(FTAPI_Conn client, int nSerialNo, TrdGetMaxTrdQtys.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("TrdGetMaxTrdQtys failed: %s\n", rsp.getRetMsg());
+            maxCashBuy.set(TRADE_ERROR_CODE);
+        } else {
+            try {
+                TrdCommon.MaxTrdQtys maxTrdQtys = rsp.getS2COrBuilder().getMaxTrdQtys();
+                int count = (int) maxTrdQtys.getMaxCashBuy();
+                maxCashBuy.set(count);
+                System.out.println("onReply_GetMaxTrdQtys: " + count);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static List<String> readFile(String filePath) {
         List<String> lineList = Lists.newArrayList();
         BufferedReader br = null;
@@ -598,6 +648,8 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 //        System.out.println(positionMap);
 //        long crmt = trdDemo.placeOrder("CRMT", 21.0, null);
 //        System.out.println(crmt);
+        int count = trdDemo.getMaxCashBuy("AAPL", 190);
+        System.out.println(count);
         //        trdDemo.placeOrder();
         //        trdDemo.modifyOrder();
         //        trdDemo.getHistoryOrderList("WWW");
@@ -605,12 +657,12 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         //        double aapl = trdDemo.getBasicQot("AAPL");
         //        System.out.println(aapl);
 
-        while (true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException exc) {
-
-            }
-        }
+//        while (true) {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException exc) {
+//
+//            }
+//        }
     }
 }

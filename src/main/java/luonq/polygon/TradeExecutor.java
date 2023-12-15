@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static util.Constants.TRADE_ERROR_CODE;
+
 /**
  * Created by Luonanqin on 2023/5/9.
  */
@@ -71,9 +73,14 @@ public class TradeExecutor {
             }
             double price = RealTimeDataWS.realtimeQuoteMap.get(code);
             double orderPrice = BigDecimal.valueOf(price * 1.003).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
-            /** 2.用剩余可用现金计算可买数量 */
-            int count = (int) (remainCash / orderPrice);
-
+//            /** 2.用剩余可用现金计算可买数量 */
+//            int count = (int) (remainCash / orderPrice);
+            /** 2.调用接口获取最大可买数量 */
+            int count = tradeApi.getMaxCashBuy(code, orderPrice);
+            if (count == TRADE_ERROR_CODE) {
+                System.out.println("get max cash buy error. code=" + code + ", orderPrice=" + orderPrice);
+                continue;
+            }
             /** 如果可买数量为0，则执行56 */
             if (count <= 0) {
                 System.out.println("there is no cash to trade. trade finish");
@@ -117,9 +124,9 @@ public class TradeExecutor {
                 /** 模拟盘重新获取剩余可用现金 */
                 remainCash = tradeApi.getFunds();
                 remainCash -= cut;
-            } else if (orderFill != null) {
-                /** 实盘获取的剩余现金实时性不高，所以用前值减去已成交订单金额得到最新现金 */
-                remainCash = remainCash - orderFill.getAvgPrice() * orderFill.getCount();
+//            } else if (orderFill != null) {
+//                /** 实盘获取的剩余现金实时性不高，所以用前值减去已成交订单金额得到最新现金 */
+//                remainCash = remainCash - orderFill.getAvgPrice() * orderFill.getCount();
             }
         }
         System.out.println("trade end");
