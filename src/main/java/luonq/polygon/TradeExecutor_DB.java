@@ -99,7 +99,7 @@ public class TradeExecutor_DB {
             OrderFill orderFill = tradeApi.getOrderFill(orderId, 15);
             if (orderFill == null) {
                 /** 5.如果没有成交完成，则撤销剩下订单，并继续 */
-                int cancelResCode = tradeApi.cancelOrder(orderId);
+                long cancelResCode = tradeApi.cancelOrder(orderId);
                 System.out.println(code + " order has been canceled. orderId: " + orderId + ", cancel res code: " + cancelResCode);
             } else {
                 /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
@@ -204,7 +204,7 @@ public class TradeExecutor_DB {
                     }
                     OrderFill orderFill = tradeApi.getOrderFill(orderId, 8);
                     if (orderFill == null) {
-                        int cancelResCode = tradeApi.cancelOrder(orderId);
+                        long cancelResCode = tradeApi.cancelOrder(orderId);
                         System.out.println("sell stock cancel. retry stock=" + stock + ", orderId=" + orderId + ", cancelResCode=" + cancelResCode);
                         continue;
                     }
