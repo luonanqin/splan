@@ -436,5 +436,10 @@ closing websocket. reason=CloseReason[1000]
 manual close websocket
 trade finish
 update order: OrderFill(tradeSide=1, fillID=0, orderID=361512190611713888, code=TW, name=Tradeweb Markets, count=14.0, price=86.86, avgPrice=86.86, createTime=2023-12-15 09:31:23.567, updateTimestamp=1.702650684024665E9, status=0)
-
-Process finished with exit code 137 (interrupted by signal 9: SIGKILL)
+sell stock before close market
+ready to sell before close market. position={TW=StockPosition(stock=TW, canSellQty=14.0, costPrice=86.86, currPrice=87.51)}, time=2023-12-16T04:58:59.938
+before close sell stock for market price. stock=TW, count=14.0
+unlock success
+sell stock orderId=375795315158070607
+update order: OrderFill(tradeSide=2, fillID=0, orderID=375795315158070607, code=TW, name=Tradeweb Markets, count=14.0, price=0.0, avgPrice=88.1901, createTime=2023-12-15 15:59:00.051, updateTimestamp=1.702673940490439E9, status=0)
+sell stock success. stock=TW, orderId?375795315158070607
