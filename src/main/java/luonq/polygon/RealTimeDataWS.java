@@ -44,15 +44,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -101,7 +97,7 @@ public class RealTimeDataWS {
     public static Set<String> stockSet;
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private static Map<String, String> fileMap;
-    private static AsyncEventBus tradeEventBus = asyncEventBus();
+    private AsyncEventBus tradeEventBus;
     private Session userSession = null;
 
     @Autowired
@@ -109,6 +105,7 @@ public class RealTimeDataWS {
 
     public void init() {
         try {
+            initThreadExecutor();
             initVariable();
             initManyTime();
             connect();
@@ -117,15 +114,9 @@ public class RealTimeDataWS {
                 return;
             }
 
-            initUnsubscribeExecutor();
             initTrade();
 
-            if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
-                listenExistPosition();
-                if (!tradeExecutor.isRealTrade()) {
-                    close();
-                }
-            } else {
+            if (MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
                 initHistoricalData();
                 subcribeStock();
                 sendToTradeDataListener();
@@ -263,8 +254,8 @@ public class RealTimeDataWS {
         System.out.println("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
     }
 
-    private void initUnsubscribeExecutor() {
-        int threadCount = 100;
+    private void initThreadExecutor() {
+        int threadCount = 2000;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
@@ -407,23 +398,24 @@ public class RealTimeDataWS {
         System.out.println("finish load last DN for BOLL");
     }
 
-    public static AsyncEventBus asyncEventBus() {
-        int corePoolSize = Runtime.getRuntime().availableProcessors();
-        int maxPoolSize = 100;
-        int keepAliveTime = 60 * 1000;
+    public AsyncEventBus asyncEventBus() {
+//        int corePoolSize = Runtime.getRuntime().availableProcessors();
+//        int maxPoolSize = 100;
+//        int keepAliveTime = 60 * 1000;
 
-        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(2000);
-        RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
-        ThreadFactory factory = new ThreadFactory() {
-            private final AtomicInteger integer = new AtomicInteger(1);
+        //        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(2000);
+        //        RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
+        //        ThreadFactory factory = new ThreadFactory() {
+        //            private final AtomicInteger integer = new AtomicInteger(1);
+        //
+        //            @Override
+        //            public Thread newThread(Runnable r) {
+        //                return new Thread(r, "TheadPool-Thread-" + integer.getAndIncrement());
+        //            }
+        //        };
 
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "TheadPool-Thread-" + integer.getAndIncrement());
-            }
-        };
-
-        return new AsyncEventBus(new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue, factory, handler));
+        //        return new AsyncEventBus(new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue, factory, handler));
+        return new AsyncEventBus(executor);
     }
 
     /**
@@ -698,7 +690,7 @@ public class RealTimeDataWS {
         if (MapUtils.isEmpty(stockToStopLoss)) {
             System.out.println("there is no stock need to listen stop loss");
             System.out.println("trade exit");
-//            System.exit(0);
+            //            System.exit(0);
             return;
         }
         listenStopLoss = true;
@@ -725,7 +717,7 @@ public class RealTimeDataWS {
                     if (stockToStopLoss.size() == 0) {
                         System.out.println("all stock has stop loss");
                         System.out.println("trade exit");
-//                        System.exit(0);
+                        //                        System.exit(0);
                         return;
                     }
                     continue;
@@ -765,7 +757,7 @@ public class RealTimeDataWS {
                 if (stockToStopLoss.size() == 0) {
                     System.out.println("listen stop loss end!");
                     System.out.println("trade exit");
-//                    System.exit(0);
+                    //                    System.exit(0);
                     return;
                 }
             }
@@ -793,10 +785,5 @@ public class RealTimeDataWS {
     public static void main(String[] args) throws InterruptedException {
         RealTimeDataWS client = new RealTimeDataWS();
         client.init();
-//        client.sendToTradeDataListener();
-
-//        while (true) {
-//            Thread.sleep(1000);
-//        }
     }
 }
