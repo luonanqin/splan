@@ -6,11 +6,13 @@ import bean.MA;
 import bean.RealOpenVol;
 import bean.SimpleTrade;
 import bean.StockKLine;
+import bean.StockRehab;
 import bean.Total;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import luonq.mapper.EarningDataMapper;
+import luonq.mapper.RehabDataMapper;
 import luonq.mapper.StockDataMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -26,6 +28,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static util.Constants.SPLIT_PATH;
+
 @Component
 @Slf4j
 public class WriteToDB {
@@ -35,6 +39,9 @@ public class WriteToDB {
 
     @Autowired
     private EarningDataMapper earningDataMapper;
+
+    @Autowired
+    private RehabDataMapper rehabDataMapper;
 
     /**
      * 一次性导入历史数据
@@ -151,6 +158,20 @@ public class WriteToDB {
 
         earningDataMapper.batchInsertEarning(earningDateList);
         System.out.println("sync earning finish. dateList=" + dateList + ", earning sum=" + earningDateList.size());
+    }
+
+    public void rehabToDB() {
+        try {
+            List<String> lineList = BaseUtils.readFile(SPLIT_PATH + "rehab");
+            List<List<String>> partition = Lists.partition(lineList, 1000);
+            for (List<String> lines : partition) {
+                List<StockRehab> list = lines.stream().map(StockRehab::convert).collect(Collectors.toList());
+                rehabDataMapper.batchInsertRehab(list);
+            }
+            System.out.println("finish rehabToDB. size=" + lineList.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void importHistoricalDate(Map<String, List<Total>> dateToTotalMap) {

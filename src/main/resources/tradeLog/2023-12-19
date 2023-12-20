@@ -86,3 +86,10 @@ unsubscribe real-time quote
 closing websocket. reason=CloseReason[1000]
 manual close websocket
 trade finish
+sell stock before close market
+ready to sell before close market. position={SCHL=StockPosition(stock=SCHL, canSellQty=35.0, costPrice=35.725, currPrice=37.37)}, time=2023-12-20T04:59:00.238
+before close sell stock for market price. stock=SCHL, count=35.0
+unlock success
+sell stock orderId=1014291012889609381
+sell stock success. stock=SCHL, orderId?1014291012889609381
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1014291012889609381, code=SCHL, name=????, count=35.0, price=0.0, avgPrice=37.2198, createTime=2023-12-19 15:59:00.372, updateTimestamp=1.703019540805626E9, status=0)

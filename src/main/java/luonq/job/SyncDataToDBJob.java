@@ -24,14 +24,19 @@ public class SyncDataToDBJob {
     }
 
     @XxlJob("syncEarningToDB.job")
-    public void syncEarningToDB() throws Exception{
+    public void syncEarningToDB() throws Exception {
         Gson gson = new Gson();
         String dateJson = XxlJobHelper.getJobParam();
         List<String> dateList = null;
         if (StringUtils.isNotBlank(dateJson)) {
             dateList = gson.fromJson(dateJson, List.class);
+            System.out.println(dateList);
         }
-        System.out.println(dateList);
         writeToDB.earningToDB(dateList);
+    }
+
+    @XxlJob("syncRehabToDB.job")
+    public void syncRehabToDB() throws Exception {
+        writeToDB.rehabToDB();
     }
 }

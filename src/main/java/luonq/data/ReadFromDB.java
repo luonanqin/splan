@@ -1,10 +1,12 @@
 package luonq.data;
 
 import bean.Page;
+import bean.StockRehab;
 import bean.Total;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import luonq.mapper.EarningDataMapper;
+import luonq.mapper.RehabDataMapper;
 import luonq.mapper.StockDataMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class ReadFromDB {
 
     @Autowired
     private EarningDataMapper earningDataMapper;
+
+    @Autowired
+    private RehabDataMapper rehabDataMapper;
 
     public List<Total> getAllYearDate(String dbYear) {
         Page page = new Page();
@@ -54,5 +59,9 @@ public class ReadFromDB {
 
     public List<Total> getAllStockData(int year, String date) {
         return stockDataMapper.queryStockDataList(String.valueOf(year), date);
+    }
+
+    public StockRehab getLatestRehab(String code) {
+        return rehabDataMapper.queryLatestRehab(code);
     }
 }

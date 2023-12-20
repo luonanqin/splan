@@ -38,4 +38,8 @@ public class WriteToDBTest extends BaseTest {
         writeToDB.earningToDB(null);
     }
 
+    @Test
+    public void rehabToDB() {
+        writeToDB.rehabToDB();
+    }
 }

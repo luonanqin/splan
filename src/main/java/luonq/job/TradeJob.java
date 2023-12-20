@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import luonq.polygon.RealTimeDataWS;
 import luonq.polygon.RealTimeDataWS_DB;
 import luonq.polygon.TradeExecutor;
+import luonq.polygon.TradeExecutor_DB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,9 @@ public class TradeJob {
 
     @Autowired
     private RealTimeDataWS_DB realTimeDataWS_db;
+
+    @Autowired
+    private TradeExecutor_DB tradeExecutor_db;
 
     @XxlJob("Trade.job")
     public void trade() throws Exception {
@@ -28,6 +32,14 @@ public class TradeJob {
 
     @XxlJob("SellBeforeCloseMarket.job")
     public void sellBeforeCloseMarket() {
+        try {
+            tradeExecutor_db.init();
+            tradeExecutor_db.closeSell();
+            System.out.println("tradeExecutor_db sell");
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         TradeExecutor tradeExecutor = new TradeExecutor();
         tradeExecutor.closeSell();
     }

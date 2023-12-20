@@ -1,6 +1,5 @@
 package luonq.futu;
 
-import bean.StockRehab;
 import com.futu.openapi.FTAPI;
 import com.futu.openapi.FTAPI_Conn;
 import com.futu.openapi.FTAPI_Conn_Qot;
@@ -20,13 +19,12 @@ import util.Constants;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by Luonanqin on 2023/5/5.
  */
 @Data
-public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
+public class GetRehabList implements FTSPI_Qot, FTSPI_Conn {
 
     // CompanyAct_None = 0; 无
     // CompanyAct_Split = 1; 拆股
@@ -40,10 +38,10 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
 
     FTAPI_Conn_Qot qot = new FTAPI_Conn_Qot();
 
-    private List<StockRehab> result = Lists.newArrayList();
+    private Map<String, List<String>> result = Maps.newHashMap();
     private Map<Integer, String> seqNoToStock = Maps.newHashMap();
 
-    public GetRehab() {
+    public GetRehabList() {
         qot.setClientInfo("javaclient", 1);  //设置客户端信息
         qot.setConnSpi(this);  //设置连接回调
         qot.setQotSpi(this);   //设置交易回调
@@ -113,32 +111,30 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
                 return;
             }
             String stock = seqNoToStock.get(nSerialNo);
-            QotCommon.Rehab rehab = rehabList.get(rehabList.size() - 1);
-            String time = rehab.getTime();
-            double fwdFactorA = rehab.getFwdFactorA();
-            long companyActFlag = rehab.getCompanyActFlag();
+            List<String> info = Lists.newArrayList();
+            for (QotCommon.Rehab rehab : rehabList) {
+                String time = rehab.getTime();
+                double fwdFactorA = rehab.getFwdFactorA();
+                long companyActFlag = rehab.getCompanyActFlag();
 
-            StockRehab stockRehab = new StockRehab();
-            stockRehab.setCode(stock);
-            stockRehab.setDate(time);
-            stockRehab.setFwdFactorA(fwdFactorA);
-            stockRehab.setCompanyActFlag(companyActFlag);
+                String value = time + " " + fwdFactorA + " " + companyActFlag;
+                info.add(stock + " " + value);
+            }
+            System.out.println(stock + " count:" + info.size());
 
-//            System.out.println(stockRehab);
-
-            result.add(stockRehab);
+            result.put(stock, info);
         }
     }
 
     public static void getData() throws Exception {
         FTAPI.init();
-        GetRehab quote = new GetRehab();
+        GetRehabList quote = new GetRehabList();
         quote.start();
 
         //        quote.getRehab("DPST");
 
         Map<String, String> stockFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
-        Set<String> invalidSet = Sets.newHashSet("SDC","SEV","STSA","BSAQ","DHHC","STRE","HLBZ","MSDA","BBBY","FWAC","KDNY","WPCB","SJR","RIDE","SLGG","SCUA","APEN","APGN","CEMI","YELL","KAL","SQZ","JATT","BBLN","VMGA","CNCE","APMI","SDAC","BTB","GRAY","GRCY","MBSC","RAAS","BWC","RADI","FOCS","SLVR","PTRA","GRIL","DICE","SUMO","LYLT","GRNA","MTAC","TGR","OIIM","TIG","RJAC","FORG","CIH","VVNT","AHRN","KVSC","SMIH","ZING","EUCR","CFMS","PDCE","ORCC","LCI","PLXP","TYDE","HMPT","HVBC","ORIA","MLAC","FGMC","IPVI","CVT","FPAC","SVFB","AQUA","MTVC","EMBK","UTAA","DALS","PDOT","VNTR","UBA","SVNA","BLNG","AIMC","LSI","DRTT","DCP","CORS","DCT","HERA","GSQB","GSRM","SESN","AZRE","LION","UTME","CS","GBRG","HEXO","IQMD","LITT","MLVF","PEAR","DMS","AZYO","CPAA","MCG","USX","DSEY","ARNC","CGRN","SNRH","MURF","RKTA","SI","EVOJ","EVOP","VORB","PNAC","HWKZ","MMP","WAVC","ARYE","OBNK","XM","CYAD","TRAQ","MMMB","AAWW","TIOA","ZT","JUGG","RCLF","OBSV","MTP","CPUH","AJRD","ENOB","NHIC","JMAC","NYMX","JUPW","VPCB","MEKA","PNTM","VQS","ENTF","DTEA","CHRA","ESM","TRTN","GLOP","NGC","CYXT","SGFY","METX","FISV","FACT","BVXV","ABST","SGHL","EOCW","BNNR","BWAC","ISEE","CIDM","FRON","SPCM","ATAQ","ATCO","MNTV","VHNA","RUTH","SGTX","CIIG","SPKB","JNCE","CINC","FRC","FRG","ATNX","SPPI","OFC","CREC","WWE","ALBO","GVCI","ACQR","ATTO","FZT","JWAC","GEEX","GMVD","PGRW","SYNH","TTCF","OSH","ITCB","GENQ","RENN","UNVR","GET","ALPA","TCFC","GFX","BGCP","ALPS","ADAL","RETA","BOXD","REVE","ADER","GLS","REUN","FSTX","LDHA","ICNC","PHCF","BPAC","XPAX","ADMP","DMYS","BGRY","TLGA","AURC","TCVA","CSII","MGTA","PKI","GFGD","FTEV","GNUS","DNAB","DNAD","QTEK","HILS","ONCS","IDBA","PTE","LMNL","NBRV","ZEST","AVAC","AMOV","AMOT","LVAC","FTPA","GFOR","SIRE","MPRA","HHC","ROCG","SRGA","AMRS","ROCC","LMST","FCRD","SIVB","PIAI","HMA","GOGN","IMBI","AMYT","CCAI","HAPP","TMDI","HSC","RONI","MYOV","WEJO","YVR","DFFN","LVRA","GGAA","CTIC","RXDX","TMKR","VBOC","ANGN","PRBM","PRDS","ERES","IBA","CLBR","UPTD","YTPG","ZEV","QTT","ANPC","QUOT","LFAC","PANA","HSKA","IMV","PRTK","OXAC","RAM","PRVB","FMIV","ANZU","CDAK","INDT","ISO","TETC","ERYP","INKA","CLXT","VLAT","BRIV","AFTR","ALR","DGNU","ROC","AMV","BRMK","TWCB","RTL","ATY","NUVA","AUY","SCAQ","UIHC","HTGM","AGAC","STET","PSPC","VLON","OPNT","SKYA","TWNI","AGFS","SCHN","VLTA","AGGR","MAXR","SAL","HCNE","TOAC");
+        Set<String> invalidSet = Sets.newHashSet("SDC", "SEV", "STSA", "BSAQ", "DHHC", "STRE", "HLBZ", "MSDA", "BBBY", "FWAC", "KDNY", "WPCB", "SJR", "RIDE", "SLGG", "SCUA", "APEN", "APGN", "CEMI", "YELL", "KAL", "SQZ", "JATT", "BBLN", "VMGA", "CNCE", "APMI", "SDAC", "BTB", "GRAY", "GRCY", "MBSC", "RAAS", "BWC", "RADI", "FOCS", "SLVR", "PTRA", "GRIL", "DICE", "SUMO", "LYLT", "GRNA", "MTAC", "TGR", "OIIM", "TIG", "RJAC", "FORG", "CIH", "VVNT", "AHRN", "KVSC", "SMIH", "ZING", "EUCR", "CFMS", "PDCE", "ORCC", "LCI", "PLXP", "TYDE", "HMPT", "HVBC", "ORIA", "MLAC", "FGMC", "IPVI", "CVT", "FPAC", "SVFB", "AQUA", "MTVC", "EMBK", "UTAA", "DALS", "PDOT", "VNTR", "UBA", "SVNA", "BLNG", "AIMC", "LSI", "DRTT", "DCP", "CORS", "DCT", "HERA", "GSQB", "GSRM", "SESN", "AZRE", "LION", "UTME", "CS", "GBRG", "HEXO", "IQMD", "LITT", "MLVF", "PEAR", "DMS", "AZYO", "CPAA", "MCG", "USX", "DSEY", "ARNC", "CGRN", "SNRH", "MURF", "RKTA", "SI", "EVOJ", "EVOP", "VORB", "PNAC", "HWKZ", "MMP", "WAVC", "ARYE", "OBNK", "XM", "CYAD", "TRAQ", "MMMB", "AAWW", "TIOA", "ZT", "JUGG", "RCLF", "OBSV", "MTP", "CPUH", "AJRD", "ENOB", "NHIC", "JMAC", "NYMX", "JUPW", "VPCB", "MEKA", "PNTM", "VQS", "ENTF", "DTEA", "CHRA", "ESM", "TRTN", "GLOP", "NGC", "CYXT", "SGFY", "METX", "FISV", "FACT", "BVXV", "ABST", "SGHL", "EOCW", "BNNR", "BWAC", "ISEE", "CIDM", "FRON", "SPCM", "ATAQ", "ATCO", "MNTV", "VHNA", "RUTH", "SGTX", "CIIG", "SPKB", "JNCE", "CINC", "FRC", "FRG", "ATNX", "SPPI", "OFC", "CREC", "WWE", "ALBO", "GVCI", "ACQR", "ATTO", "FZT", "JWAC", "GEEX", "GMVD", "PGRW", "SYNH", "TTCF", "OSH", "ITCB", "GENQ", "RENN", "UNVR", "GET", "ALPA", "TCFC", "GFX", "BGCP", "ALPS", "ADAL", "RETA", "BOXD", "REVE", "ADER", "GLS", "REUN", "FSTX", "LDHA", "ICNC", "PHCF", "BPAC", "XPAX", "ADMP", "DMYS", "BGRY", "TLGA", "AURC", "TCVA", "CSII", "MGTA", "PKI", "GFGD", "FTEV", "GNUS", "DNAB", "DNAD", "QTEK", "HILS", "ONCS", "IDBA", "PTE", "LMNL", "NBRV", "ZEST", "AVAC", "AMOV", "AMOT", "LVAC", "FTPA", "GFOR", "SIRE", "MPRA", "HHC", "ROCG", "SRGA", "AMRS", "ROCC", "LMST", "FCRD", "SIVB", "PIAI", "HMA", "GOGN", "IMBI", "AMYT", "CCAI", "HAPP", "TMDI", "HSC", "RONI", "MYOV", "WEJO", "YVR", "DFFN", "LVRA", "GGAA", "CTIC", "RXDX", "TMKR", "VBOC", "ANGN", "PRBM", "PRDS", "ERES", "IBA", "CLBR", "UPTD", "YTPG", "ZEV", "QTT", "ANPC", "QUOT", "LFAC", "PANA", "HSKA", "IMV", "PRTK", "OXAC", "RAM", "PRVB", "FMIV", "ANZU", "CDAK", "INDT", "ISO", "TETC", "ERYP", "INKA", "CLXT", "VLAT", "BRIV", "AFTR", "ALR", "DGNU", "ROC", "AMV", "BRMK", "TWCB", "RTL", "ATY", "NUVA", "AUY", "SCAQ", "UIHC", "HTGM", "AGAC", "STET", "PSPC", "VLON", "OPNT", "SKYA", "TWNI", "AGFS", "SCHN", "VLTA", "AGGR", "MAXR", "SAL", "HCNE", "TOAC");
         for (String stock : stockFileMap.keySet()) {
             if (invalidSet.contains(stock)) {
                 continue;
@@ -146,13 +142,17 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
             quote.getRehab(stock);
             Thread.sleep(600);
         }
-        List<StockRehab> result = quote.getResult();
-//        System.out.println(result);
-        List<String> data = result.stream().map(StockRehab::toString).collect(Collectors.toList());
-//        BaseUtils.writeFile(Constants.SPLIT_PATH + "rehab", data);
+        Map<String, List<String>> result = quote.getResult();
+        List<String> data = Lists.newArrayList();
+        for (String stock : result.keySet()) {
+            for (String value : result.get(stock)) {
+                data.add(String.format("%s %s", stock, value));
+            }
+        }
+        BaseUtils.writeFile(Constants.SPLIT_PATH + "rehabList", data);
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         getData();
     }
 }
