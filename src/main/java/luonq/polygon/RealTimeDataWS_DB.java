@@ -10,6 +10,7 @@ import bean.StockEvent;
 import bean.StockKLine;
 import bean.StockPosition;
 import bean.StockRatio;
+import bean.StockRehab;
 import bean.StopLoss;
 import bean.Total;
 import com.alibaba.fastjson.JSON;
@@ -46,15 +47,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -71,8 +68,8 @@ public class RealTimeDataWS_DB {
     public static final double LOSS_RATIO = 0.07d; // 止损比例
     public static final int DELAY_MINUTE = 0;
     public static final long LISTENING_TIME = 30000L; // 监听时长，毫秒
-    private static LocalDateTime dayLight_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
-    private static LocalDateTime dayLight_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
+    private static LocalDateTime summerTime = BaseUtils.getSummerTime(null);
+    private static LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
     private boolean subscribed = false;
     private boolean listenStopLoss = false;
@@ -114,6 +111,7 @@ public class RealTimeDataWS_DB {
 
     public void init() {
         try {
+            initThreadExecutor();
             initVariable();
             initManyTime();
             connect();
@@ -122,7 +120,6 @@ public class RealTimeDataWS_DB {
                 return;
             }
 
-            initUnsubscribeExecutor();
             initTrade();
 
             if (MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
@@ -245,7 +242,7 @@ public class RealTimeDataWS_DB {
             preTrade = now.minusDays(1);
         }
 
-        if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
+        if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
             preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             openTime = now.withHour(21).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
@@ -258,8 +255,8 @@ public class RealTimeDataWS_DB {
         System.out.println("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
     }
 
-    private void initUnsubscribeExecutor() {
-        int threadCount = 100;
+    private void initThreadExecutor() {
+        int threadCount = 2000;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
@@ -344,17 +341,24 @@ public class RealTimeDataWS_DB {
         System.out.println(String.format("filter split stock, the stock set size is %d", set.size()));
 
         // 过滤所有今年前复权因子低于0.98的
-        LocalDate firstDay = LocalDate.parse("2023-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        int year = now.getYear();
+        LocalDate firstDay = LocalDate.parse(year + "-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         Set<FrontReinstatement> reinstatementInfo = BaseUtils.getFrontReinstatementInfo();
         Map<String, FrontReinstatement> map = reinstatementInfo.stream().collect(Collectors.toMap(FrontReinstatement::getStock, Function.identity()));
         for (String stock : map.keySet()) {
-            FrontReinstatement fr = map.get(stock);
-            double factor = fr.getFactor();
-            if (factor > 0.98) {
+            StockRehab latestRehab = readFromDB.getLatestRehab(stock);
+            String date = latestRehab.getDate();
+            double fwdFactorA = latestRehab.getFwdFactorA();
+            if (fwdFactorA > 0.98) {
                 continue;
             }
+            //            FrontReinstatement fr = map.get(stock);
+            //            double factor = fr.getFactor();
+            //            if (factor > 0.98) {
+            //                continue;
+            //            }
 
-            String date = fr.getDate();
+            //            String date = fr.getDate();
             LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (dateParse.isAfter(firstDay)) {
                 set.remove(stock);
@@ -415,22 +419,21 @@ public class RealTimeDataWS_DB {
     }
 
     public AsyncEventBus asyncEventBus() {
-        int corePoolSize = Runtime.getRuntime().availableProcessors();
-        int maxPoolSize = 100;
-        int keepAliveTime = 60 * 1000;
-
-        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(2000);
-        RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
-        ThreadFactory factory = new ThreadFactory() {
-            private final AtomicInteger integer = new AtomicInteger(1);
-
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "TheadPool-Thread-" + integer.getAndIncrement());
-            }
-        };
-
-        return new AsyncEventBus(new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue, factory, handler));
+        //        int corePoolSize = Runtime.getRuntime().availableProcessors();
+        //        int maxPoolSize = 100;
+        //        int keepAliveTime = 60 * 1000;
+        //
+        //        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(2000);
+        //        RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
+        //        ThreadFactory factory = new ThreadFactory() {
+        //            private final AtomicInteger integer = new AtomicInteger(1);
+        //
+        //            @Override
+        //            public Thread newThread(Runnable r) {
+        //                return new Thread(r, "TheadPool-Thread-" + integer.getAndIncrement());
+        //            }
+        //        };
+        return new AsyncEventBus(executor);
     }
 
     /**

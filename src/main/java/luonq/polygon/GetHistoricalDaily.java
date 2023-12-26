@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
+import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,43 +43,43 @@ public class GetHistoricalDaily {
       "ARCK", "COWN", "DNZ", "CPAR", "CPAQ", "MCG", "MIT", "RKTA", "EVOP", "VGFC", "AAWW", "TZPS", "RCII", "OBSV",
       "MTP", "MEAC", "SJR", "APEN", "BLI", "CENQ", "JATT", "TYDE", "MLAI", "HERA", "VORB", "JMAC", "VPCB", "ABGI",
       "PFDR", "PFHD", "ESM", "HORI", "NGC", "FINM", "SGFY", "BNFT", "UMPQ", "DLCA", "DCRD", "DTRT", "FRON", "IBER",
-      "ATCO", "FRSG", "PONO", "ACDI", "SPKB", "MFGP", "TBSA", "NAAC", "ALBO", "ACQR", "CIXX", "GEEX", "BSGA","BYN",
-      "SUAC","BRD","SQL","APAC","NETC","CNGL","SLAM","CFFS","CCM","BTBD","KVSA","GATE","LBTYB","PLMI","LHC","APTM",
-      "AGMH","APRN","IXAQ","RRAC","MCAC","LGST","DISA","MCAG","APCA","EMCG","MTRY","SLAC","SELB","LGVC","NEWR","PMGM",
-      "CGA","MBTC","CEQP","GSMG","PCYG","QOMO","CNNB","HUDA","SUNL","NXGN","SFR","YOTA","SCPL","CIR","NFNT","PCCT",
-      "DEN","SFT","CXAC","CCV","BLUA","AACI","NOVV","ZYNE","SSU","BTWN","FXCO","ARIZ","THRN","KLR","VEDU","JUN","NPAB",
-      "SDC","MCLD","MDNA","SLVR","GTAC","MBSC","RADI","FHLT","BTB","UTAA","SLGG","BKI","RCAC","SURF","DRTT","FOCS",
-      "CFMS","LOV","LATG","YELL","UBA","ARTE","ARYD","KDNY","CGRN","BWC","APPH","HMPT","FGMC","UPH","WE","ENCP","BSAQ",
-      "PDCE","IRAA","ZING","SDAC","APGN","PTRA","BLNG","MURF","NOVN","ASCA","SWSS","MMP","FORG","SQZ","HMAC","OSTK",
-      "DMS","EAC","CHAA","FICV","MTAC","UTME","TRON","TRCA","IRRX","TRHC","OCAX","FWAC","LSI","EFHT","TRTL","LSXMB",
-      "DCP","DICE","OTEC","APMI","GRIL","AZYO","ARBG","GRCY","TALS","DBTX","GRNA","NCR","EMBK","IRNT","NMTR","FRBN",
-      "SGII","RAAS","ASPA","DALS","VNTR","CPAA","VQS","VECT","KYCH","BWAQ","FRLA","FREQ","GDNR","ATAK","SEV","TBCP",
-      "BLU","NLS","ACAX","EDTX","ARNC","AHRN","GDST","ORCC","RIDE","HVBC","HWKZ","FRGI","ACBA","MNTN","CORS","RMGC",
-      "OLIT","MTCR","TRTN","RCLF","ATEK","JUPW","DUET","CVT","PFSW","PNAC","MLVF","WTMA","MMMB","MTVC","GSRM","LCI",
-      "OTMO","SHAP","BOCN","WAVC","PLXP","SNRH","ARYE","METX","MOLN","GAQ","MLAC","BBLN","AZRE","OPA","HEXO","ACAQ",
-      "BOAC","ICCH","RJAC","DTOC","MGI","SCUA","TCBS","DSEY","AQUA","OSI","EGLX","CS","HPLT","ITAQ","STSA","LITT",
-      "VMGA","ENOB","SHUA","USX","GSQB","GIA","XM","NEX","CPUH","SUMO","BVXV","BBBY","ADEX","VHNA","RVLP","EUCR",
-      "BSMX","SVNA","SI","ATVI","TGR","AJRD","VIVE","FZT","JUGG","CEMI","GBRG","TCOA","VACC","FSRX","RE","ICPT","ORIA",
-      "IPVI","ATAQ","XPDB","NATI","GLG","SYNH","KRNL","FSNB","AMAO","ENTF","OFC","NYMX","CHRA","WWE","TIG","KAL","IQMD",
-      "CIH","GLOP","CBIO","RETA","OIG","TA","NH","ZT","FACT","FTII","ABST","ADER","BWAC","ICNC","CBRG","PEAR","SGTX",
-      "FRG","TRAQ","RWOD","NSTD","MEKA","GMVD","BMAQ","NBST","OBNK","PHYT","GFX","EOCW","SPPI","TIOA","ROCL","CYXT",
-      "ISEE","ADMP","GFGD","ATTO","CYAD","GENQ","HZNP","EVOJ","PNTM","MEOA","NHIC","MGTA","UNVR","CREC","VSAC","HAIA",
-      "EQRX","FLFV","AURC","AVID","TTCF","FISV","GFOR","VRAY","HILS","LMNL","ALPA","RUTH","VBFC","ALPS","SGHL","REUN",
-      "MNTV","MPRA","DTEA","BYTS","SPCM","XPAX","CIDM","TLGA","KSPN","SAMA","AMOT","IDBA","VBLT","BNNR","JNCE","TCFC",
-      "CIIG","BPAC","GNUS","PGRW","TCRR","RENN","CCAI","JWAC","GVCI","DFFN","BGCP","PKI","AMRS","DNAB","IVCP","SRGA",
-      "HHC","PRLH","REVE","ATNX","PIAI","ROCC","BGRY","FRC","WWAC","AFAR","GLS","TCVA","CRZN","TMKR","PRTC","PRPC","KINZ",
-      "NBRV","UPTD","DNAD","CINC","PRDS","KBAL","ADAL","ITCB","OSH","CLRC","AAC","PICC","PHCF","BOXD","ATCX","PTE","ZEV",
-      "TCDA","YVR","LFAC","RAD","GOGN","BIOC","BITE","ONCS","MACA","BREZ","AIB","GWII","HMA","IMBI","PRTK","QTEK","RXDX",
-      "CSII","QUOT","AOGO","PBAX","HSC","AVAC","ANZU","VBOC","DPCS","CTIC","LMST","LDHA","BGSX","APM","DMYS","BIOS",
-      "OXUS","INTE","CMCA","AKU","GET","DKDCA","INFI","VCXB","GYRO","CLBR","ROCG","ONEM","BRQS","PRBM","FSTX","LVAC",
-      "SIRE","GGAA","ERES","ANGN","FTAA","RNER","FCAX","ABC","OXAC","OPOF","LEGA","HCCI","HYRE","PME","AMCI","WEJO",
-      "KAII","TWNK","FEXD","HCMA","ESTE","POW","DHCA","MYOV","RONI","ZEST","TMDI","LVRA","RTL","AEAC","VIVO","FTEV",
-      "FMIV","CTAQ","AFTR","FTPA","AMOV","INT","AMYT","ANAC","HSKA","NUVA","ANPC","IBA","INDT","AGAC","AXAC","SRNE",
-      "SCHN","IDRA","SIVB","WEBR","TWCB","HAPP","UIHC","ERYP","HZN","GXII","YTPG","FCRD","AERC","SAL","IAA","IMV","PANA",
-      "ABB","QTT","IMRA","CLAA","AEHA","SCAQ","AVCT","STET","VLAT","PACX","CLXT","ROC","MICT","HTGM","PRVB","AVEO",
-      "BRIV","HSAQ","ISO","TETC","SKYA","AVYA","BRMK","ATY","AMV","RAM","CDAK","TOAC","QUMU","AUD","VLON","EBAC","HCNE",
-      "AUY","PSPC","IVC","MAXR","PAYA","DGNU","AGFS","RFP","OPNT","INKA","ITQ","APN","STAR","LOKM","ALR","BIOT","TWNI",
-      "VLTA","LGAC","VLDR","AGGR","SCMA","VLNS");
+      "ATCO", "FRSG", "PONO", "ACDI", "SPKB", "MFGP", "TBSA", "NAAC", "ALBO", "ACQR", "CIXX", "GEEX", "BSGA", "BYN",
+      "SUAC", "BRD", "SQL", "APAC", "NETC", "CNGL", "SLAM", "CFFS", "CCM", "BTBD", "KVSA", "GATE", "LBTYB", "PLMI", "LHC", "APTM",
+      "AGMH", "APRN", "IXAQ", "RRAC", "MCAC", "LGST", "DISA", "MCAG", "APCA", "EMCG", "MTRY", "SLAC", "SELB", "LGVC", "NEWR", "PMGM",
+      "CGA", "MBTC", "CEQP", "GSMG", "PCYG", "QOMO", "CNNB", "HUDA", "SUNL", "NXGN", "SFR", "YOTA", "SCPL", "CIR", "NFNT", "PCCT",
+      "DEN", "SFT", "CXAC", "CCV", "BLUA", "AACI", "NOVV", "ZYNE", "SSU", "BTWN", "FXCO", "ARIZ", "THRN", "KLR", "VEDU", "JUN", "NPAB",
+      "SDC", "MCLD", "MDNA", "SLVR", "GTAC", "MBSC", "RADI", "FHLT", "BTB", "UTAA", "SLGG", "BKI", "RCAC", "SURF", "DRTT", "FOCS",
+      "CFMS", "LOV", "LATG", "YELL", "UBA", "ARTE", "ARYD", "KDNY", "CGRN", "BWC", "APPH", "HMPT", "FGMC", "UPH", "WE", "ENCP", "BSAQ",
+      "PDCE", "IRAA", "ZING", "SDAC", "APGN", "PTRA", "BLNG", "MURF", "NOVN", "ASCA", "SWSS", "MMP", "FORG", "SQZ", "HMAC", "OSTK",
+      "DMS", "EAC", "CHAA", "FICV", "MTAC", "UTME", "TRON", "TRCA", "IRRX", "TRHC", "OCAX", "FWAC", "LSI", "EFHT", "TRTL", "LSXMB",
+      "DCP", "DICE", "OTEC", "APMI", "GRIL", "AZYO", "ARBG", "GRCY", "TALS", "DBTX", "GRNA", "NCR", "EMBK", "IRNT", "NMTR", "FRBN",
+      "SGII", "RAAS", "ASPA", "DALS", "VNTR", "CPAA", "VQS", "VECT", "KYCH", "BWAQ", "FRLA", "FREQ", "GDNR", "ATAK", "SEV", "TBCP",
+      "BLU", "NLS", "ACAX", "EDTX", "ARNC", "AHRN", "GDST", "ORCC", "RIDE", "HVBC", "HWKZ", "FRGI", "ACBA", "MNTN", "CORS", "RMGC",
+      "OLIT", "MTCR", "TRTN", "RCLF", "ATEK", "JUPW", "DUET", "CVT", "PFSW", "PNAC", "MLVF", "WTMA", "MMMB", "MTVC", "GSRM", "LCI",
+      "OTMO", "SHAP", "BOCN", "WAVC", "PLXP", "SNRH", "ARYE", "METX", "MOLN", "GAQ", "MLAC", "BBLN", "AZRE", "OPA", "HEXO", "ACAQ",
+      "BOAC", "ICCH", "RJAC", "DTOC", "MGI", "SCUA", "TCBS", "DSEY", "AQUA", "OSI", "EGLX", "CS", "HPLT", "ITAQ", "STSA", "LITT",
+      "VMGA", "ENOB", "SHUA", "USX", "GSQB", "GIA", "XM", "NEX", "CPUH", "SUMO", "BVXV", "BBBY", "ADEX", "VHNA", "RVLP", "EUCR",
+      "BSMX", "SVNA", "SI", "ATVI", "TGR", "AJRD", "VIVE", "FZT", "JUGG", "CEMI", "GBRG", "TCOA", "VACC", "FSRX", "RE", "ICPT", "ORIA",
+      "IPVI", "ATAQ", "XPDB", "NATI", "GLG", "SYNH", "KRNL", "FSNB", "AMAO", "ENTF", "OFC", "NYMX", "CHRA", "WWE", "TIG", "KAL", "IQMD",
+      "CIH", "GLOP", "CBIO", "RETA", "OIG", "TA", "NH", "ZT", "FACT", "FTII", "ABST", "ADER", "BWAC", "ICNC", "CBRG", "PEAR", "SGTX",
+      "FRG", "TRAQ", "RWOD", "NSTD", "MEKA", "GMVD", "BMAQ", "NBST", "OBNK", "PHYT", "GFX", "EOCW", "SPPI", "TIOA", "ROCL", "CYXT",
+      "ISEE", "ADMP", "GFGD", "ATTO", "CYAD", "GENQ", "HZNP", "EVOJ", "PNTM", "MEOA", "NHIC", "MGTA", "UNVR", "CREC", "VSAC", "HAIA",
+      "EQRX", "FLFV", "AURC", "AVID", "TTCF", "FISV", "GFOR", "VRAY", "HILS", "LMNL", "ALPA", "RUTH", "VBFC", "ALPS", "SGHL", "REUN",
+      "MNTV", "MPRA", "DTEA", "BYTS", "SPCM", "XPAX", "CIDM", "TLGA", "KSPN", "SAMA", "AMOT", "IDBA", "VBLT", "BNNR", "JNCE", "TCFC",
+      "CIIG", "BPAC", "GNUS", "PGRW", "TCRR", "RENN", "CCAI", "JWAC", "GVCI", "DFFN", "BGCP", "PKI", "AMRS", "DNAB", "IVCP", "SRGA",
+      "HHC", "PRLH", "REVE", "ATNX", "PIAI", "ROCC", "BGRY", "FRC", "WWAC", "AFAR", "GLS", "TCVA", "CRZN", "TMKR", "PRTC", "PRPC", "KINZ",
+      "NBRV", "UPTD", "DNAD", "CINC", "PRDS", "KBAL", "ADAL", "ITCB", "OSH", "CLRC", "AAC", "PICC", "PHCF", "BOXD", "ATCX", "PTE", "ZEV",
+      "TCDA", "YVR", "LFAC", "RAD", "GOGN", "BIOC", "BITE", "ONCS", "MACA", "BREZ", "AIB", "GWII", "HMA", "IMBI", "PRTK", "QTEK", "RXDX",
+      "CSII", "QUOT", "AOGO", "PBAX", "HSC", "AVAC", "ANZU", "VBOC", "DPCS", "CTIC", "LMST", "LDHA", "BGSX", "APM", "DMYS", "BIOS",
+      "OXUS", "INTE", "CMCA", "AKU", "GET", "DKDCA", "INFI", "VCXB", "GYRO", "CLBR", "ROCG", "ONEM", "BRQS", "PRBM", "FSTX", "LVAC",
+      "SIRE", "GGAA", "ERES", "ANGN", "FTAA", "RNER", "FCAX", "ABC", "OXAC", "OPOF", "LEGA", "HCCI", "HYRE", "PME", "AMCI", "WEJO",
+      "KAII", "TWNK", "FEXD", "HCMA", "ESTE", "POW", "DHCA", "MYOV", "RONI", "ZEST", "TMDI", "LVRA", "RTL", "AEAC", "VIVO", "FTEV",
+      "FMIV", "CTAQ", "AFTR", "FTPA", "AMOV", "INT", "AMYT", "ANAC", "HSKA", "NUVA", "ANPC", "IBA", "INDT", "AGAC", "AXAC", "SRNE",
+      "SCHN", "IDRA", "SIVB", "WEBR", "TWCB", "HAPP", "UIHC", "ERYP", "HZN", "GXII", "YTPG", "FCRD", "AERC", "SAL", "IAA", "IMV", "PANA",
+      "ABB", "QTT", "IMRA", "CLAA", "AEHA", "SCAQ", "AVCT", "STET", "VLAT", "PACX", "CLXT", "ROC", "MICT", "HTGM", "PRVB", "AVEO",
+      "BRIV", "HSAQ", "ISO", "TETC", "SKYA", "AVYA", "BRMK", "ATY", "AMV", "RAM", "CDAK", "TOAC", "QUMU", "AUD", "VLON", "EBAC", "HCNE",
+      "AUY", "PSPC", "IVC", "MAXR", "PAYA", "DGNU", "AGFS", "RFP", "OPNT", "INKA", "ITQ", "APN", "STAR", "LOKM", "ALR", "BIOT", "TWNI",
+      "VLTA", "LGAC", "VLDR", "AGGR", "SCMA", "VLNS");
 
     public static List<StockKLine> getHistoricalDaily(String stock, List<String> addDate, HttpClient httpClient) {
         List<StockKLine> list = Lists.newArrayList();
@@ -132,12 +133,16 @@ public class GetHistoricalDaily {
 
     public static void getData() throws Exception {
         LocalDate today = LocalDate.now();
+        int year = today.getYear();
         LocalDate yesterday;
         if (today.getDayOfWeek().getValue() == 1) {
             yesterday = today.minusDays(3);
         } else {
             yesterday = today.minusDays(1);
         }
+
+        // 每年的第一个工作日需要初始化目录及文件
+        firstWorkDayInit();
 
         int threadCount = 100;
         int corePoolSize = threadCount;
@@ -150,25 +155,37 @@ public class GetHistoricalDaily {
             queue.offer(new HttpClient());
         }
 
-        Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily/");
+        String dirPath = getHistoryDirPath(today);
+        LocalDate firstWorkDay = getFirstWorkDay();
+        Map<String, String> stockMap = BaseUtils.getFileMap(dirPath);
+        int fileYear = 2023;
+        if (year != 2023) {
+            if (today.isAfter(firstWorkDay)) {
+                fileYear = year;
+            } else {
+                fileYear = year - 1;
+            }
+        }
         for (String stock : stockMap.keySet()) {
             if (invalidStock.contains(stock)) {
-//                System.out.println("invalid stock: " + stock);
+                //                System.out.println("invalid stock: " + stock);
                 continue;
             }
-            if (!stock.equals("FUTU")) {
-//                                continue;
+            if (!stock.equals("NXTP")) {
+                //                continue;
             }
             String file = stockMap.get(stock);
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(file, 2023);
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(file, fileYear);
             List<String> addDate = Lists.newArrayList();
+            String date;
             if (CollectionUtils.isEmpty(stockKLines)) {
-                System.out.println("no file " + stock);
-                continue;
+                //                System.out.println("no file " + stock);
+                date = "01/01/" + year;
+            } else {
+                StockKLine stockKLine = stockKLines.get(0);
+                date = stockKLine.getDate();
             }
 
-            StockKLine stockKLine = stockKLines.get(0);
-            String date = stockKLine.getDate();
             LocalDate latestDate = LocalDate.parse(date, Constants.FORMATTER);
             while (latestDate.isBefore(yesterday)) {
                 latestDate = latestDate.plusDays(1);
@@ -176,7 +193,7 @@ public class GetHistoricalDaily {
             }
 
             if (CollectionUtils.isEmpty(addDate)) {
-                System.out.println("has get " + stock);
+                //                System.out.println("has get " + stock);
                 continue;
             }
             HttpClient httpClient = queue.take();
@@ -185,7 +202,7 @@ public class GetHistoricalDaily {
                 try {
                     dataList = getHistoricalDaily(stock, addDate, httpClient);
                     if (CollectionUtils.isEmpty(dataList)) {
-                        System.out.println("no data " + stock);
+                        //                        System.out.println("no data " + stock);
                         return;
                     }
                     for (StockKLine kLine : dataList) {
@@ -196,7 +213,7 @@ public class GetHistoricalDaily {
                     System.out.println(stock + " " + e.getMessage());
                 } finally {
                     if (CollectionUtils.isNotEmpty(dataList)) {
-                        System.out.println("get success " + stock);
+                        //                        System.out.println("get success " + stock);
                     }
                     queue.offer(httpClient);
                 }
@@ -208,6 +225,63 @@ public class GetHistoricalDaily {
             }
         }
         cachedThread.shutdown();
+    }
+
+    private static String getHistoryDirPath(LocalDate today) {
+        String dirPath;
+        int year = today.getYear();
+        if (year == 2023) {
+            dirPath = Constants.HIS_BASE_PATH + "2023daily/";
+        } else {
+            LocalDate firstWorkDay = getFirstWorkDay();
+
+            // 如果今天是今年第一个工作日，则文件目录为前一年（2023年要特殊处理）。如果不是，则文件目录为当年
+            if (today.isAfter(firstWorkDay)) {
+                dirPath = Constants.HIS_BASE_PATH + year + "/hisDaily";
+            } else {
+                if (year - 1 == 2023) {
+                    dirPath = Constants.HIS_BASE_PATH + "2023daily/";
+                } else {
+                    dirPath = Constants.HIS_BASE_PATH + (year - 1) + "/hisDaily";
+                }
+            }
+        }
+        return dirPath;
+    }
+
+    private static LocalDate getFirstWorkDay() {
+        LocalDate firstDay = LocalDate.now().withMonth(1).withDayOfMonth(1);
+        LocalDate firstWorkDay;
+        while (true) {
+            int dayOfWeek = firstDay.getDayOfWeek().getValue();
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                firstWorkDay = firstDay;
+                break;
+            } else {
+                firstDay = firstDay.plusDays(1);
+            }
+        }
+        return firstWorkDay;
+    }
+
+    private static void firstWorkDayInit() throws Exception {
+        LocalDate firstWorkDay = getFirstWorkDay();
+        LocalDate today = LocalDate.now();
+        if (firstWorkDay.isEqual(today)) {
+            int year = today.getYear();
+            File dir = new File(Constants.HIS_BASE_PATH + year + "/hisDaily/");
+            dir.mkdirs();
+
+            String dirPath = getHistoryDirPath(today);
+            Map<String, String> stockMap = BaseUtils.getFileMap(dirPath);
+            Set<String> stockSet = stockMap.keySet();
+            for (String stock : stockSet) {
+                File file = new File(Constants.HIS_BASE_PATH + year + "/hisDaily/" + stock);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {

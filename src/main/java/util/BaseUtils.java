@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -724,6 +725,39 @@ public class BaseUtils {
         return list;
     }
 
+    public static LocalDateTime getSummerTime(Integer year) {
+        if (year == null) {
+            year = LocalDate.now().getYear();
+        }
+
+        LocalDateTime summerTime = LocalDateTime.of(year, 3, 1, 0, 0, 0);
+        int sundayTimes = 0;
+        while (true) {
+            if (summerTime.getDayOfWeek().getValue() == 7) {
+                sundayTimes++;
+            }
+            if (sundayTimes == 2) {
+                break;
+            }
+            summerTime = summerTime.plusDays(1);
+        }
+        return summerTime;
+    }
+
+    public static LocalDateTime getWinterTime(Integer year) {
+        if (year == null) {
+            year = LocalDate.now().getYear();
+        }
+
+        LocalDateTime winterTime = LocalDateTime.of(year, 11, 1, 0, 0, 0);
+        while (true) {
+            if (winterTime.getDayOfWeek().getValue() == 7) {
+                break;
+            }
+            winterTime = winterTime.plusDays(1);
+        }
+        return winterTime;
+    }
     public static void main(String[] args) throws Exception {
         Map<String, List<EarningDate>> map = getEarningDate("2023-11-16");
         System.out.println(map);

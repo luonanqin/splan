@@ -43,7 +43,7 @@ public class MergeKline {
             }
 
             if (StringUtils.equals(latestKLine.toString(), _2023KLines.get(0).toString())) {
-                System.out.println("has merged " + stock);
+//                System.out.println("has merged " + stock);
                 continue;
             }
 
@@ -52,7 +52,7 @@ public class MergeKline {
             _2023KLines.addAll(stockKLines);
 
             BaseUtils.writeStockKLine(mergePath + stock, _2023KLines);
-            System.out.println("finish " + stock);
+//            System.out.println("finish " + stock);
         }
     }
 

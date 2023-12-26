@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoField;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -70,12 +69,8 @@ public class GetHistoricalPreClose {
         }
 
         // 2022
-        LocalDateTime dayLight2022_1 = LocalDateTime.of(2022, 3, 13, 0, 0, 0);
-        LocalDateTime dayLight2022_2 = LocalDateTime.of(2022, 11, 6, 0, 0, 0);
-
-        // 2023
-        LocalDateTime dayLight2023_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
-        LocalDateTime dayLight2023_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
+        LocalDateTime summerTime = BaseUtils.getSummerTime(null);
+        LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
         for (String stock : stockSet) {
             if (!stock.equals("MSI")) {
@@ -100,12 +95,9 @@ public class GetHistoricalPreClose {
                     continue;
                 }
                 LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
-                int year = day.get(ChronoField.YEAR);
                 int hour, minute = 30, seconds = 0;
 
-                if (year == 2022 && day.isAfter(dayLight2022_1) && day.isBefore(dayLight2022_2)) {
-                    hour = 21;
-                } else if (year == 2023 && (day.isAfter(dayLight2023_1) && day.isBefore(dayLight2023_2))) {
+                if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
                     hour = 21;
                 } else {
                     hour = 22;
@@ -171,7 +163,7 @@ public class GetHistoricalPreClose {
         //
         //            LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
         //            int hour, minute = 30, seconds = 0;
-        //            if (day.isAfter(dayLight2022_1) && day.isBefore(dayLight2022_2)) {
+        //            if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
         //                hour = 21;
         //            } else {
         //                hour = 22;

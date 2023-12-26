@@ -67,8 +67,8 @@ public class RealTimeDataWS {
     public static final double LOSS_RATIO = 0.07d; // 止损比例
     public static final int DELAY_MINUTE = 0;
     public static final long LISTENING_TIME = 30000L; // 监听时长，毫秒
-    private static LocalDateTime dayLight_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
-    private static LocalDateTime dayLight_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
+    private static LocalDateTime summerTime = BaseUtils.getSummerTime(null);
+    private static LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
     private boolean subscribed = false;
     private boolean listenStopLoss = false;
@@ -241,7 +241,7 @@ public class RealTimeDataWS {
             preTrade = now.minusDays(1);
         }
 
-        if (now.isAfter(dayLight_1) && now.isBefore(dayLight_2)) {
+        if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
             preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             openTime = now.withHour(21).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
             closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));

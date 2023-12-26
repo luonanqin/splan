@@ -52,7 +52,7 @@ public class MergeBollinger {
                 }
             }
             if (StringUtils.isBlank(earliestDate)) {
-                System.out.println("has calculate: " + stock);
+//                System.out.println("has calculate: " + stock);
                 continue;
             }
 
@@ -105,7 +105,7 @@ public class MergeBollinger {
             }
 
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, bollList);
-            System.out.println("finish " + stock);
+//            System.out.println("finish " + stock);
         }
     }
 

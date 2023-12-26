@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_UP;
-import static luonq.polygon.RealTimeDataWS.originRatioMap;
+import static luonq.polygon.RealTimeDataWS_DB.originRatioMap;
 
 /**
  * Created by Luonanqin on 2023/5/9.

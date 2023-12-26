@@ -1,0 +1,136 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7143605774467118598
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1703168880000, openTime=1703169000000, closeCheckTime=Fri Dec 22 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 2210
+stock overbolling hit great 0.500000 size: 1886
+filter merge stock, the stock set size is 1886
+filter split stock, the stock set size is 1882
+filter front reinstatement less 0.98 stock, the stock set size is 1774
+filter earning and lastEarning stock, the stock set size is 1765
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:02
+finish subcribe real time!
+time is early. {p=95.01, ev=T, q=299237, s=34, c=[14,12,37,41], t=1703168886000, sym=SBUX, x=12, i=361, z=3}
+{p=95.01, ev=T, q=299237, s=34, c=[14,12,37,41], t=1703168886000, sym=SBUX, x=12, i=361, z=3}
+time is early. {p=95.01, ev=T, q=299238, s=34, c=[14,12,37,41], t=1703168886000, sym=SBUX, x=12, i=362, z=3}
+{p=95.01, ev=T, q=299238, s=34, c=[14,12,37,41], t=1703168886000, sym=SBUX, x=12, i=362, z=3}
+time is early. {p=95, ev=T, q=299239, s=20, c=[14,12,37,41], t=1703168886000, sym=SBUX, x=12, i=363, z=3}
+{p=95, ev=T, q=299239, s=20, c=[14,12,37,41], t=1703168886000, sym=SBUX, x=12, i=363, z=3}
+time is early. {p=196.03, ev=T, q=170310, s=1, c=[12,37], t=1703168894000, sym=AAPL, trfi=202, x=4, i=1680, z=3, trft=1703168894000}
+{p=196.03, ev=T, q=170310, s=1, c=[12,37], t=1703168894000, sym=AAPL, trfi=202, x=4, i=1680, z=3, trft=1703168894000}
+time is early. {p=254.3, ev=T, q=78120, s=1, c=[14,12,37,41], t=1703168906000, sym=CRWD, x=12, i=1042, z=3}
+{p=254.3, ev=T, q=78120, s=1, c=[14,12,37,41], t=1703168906000, sym=CRWD, x=12, i=1042, z=3}
+time is early. {p=96.5, ev=T, q=299908, s=5, c=[14,12,37,41], t=1703168917000, sym=SEDG, x=12, i=279, z=3}
+{p=96.5, ev=T, q=299908, s=5, c=[14,12,37,41], t=1703168917000, sym=SEDG, x=12, i=279, z=3}
+time is early. {p=280.48, ev=T, q=256663, s=4, c=[14,12,37,41], t=1703168924000, sym=MKTX, x=12, i=14, z=3}
+{p=280.48, ev=T, q=256663, s=4, c=[14,12,37,41], t=1703168924000, sym=MKTX, x=12, i=14, z=3}
+time is early. {p=43.9, ev=T, q=20818, s=1, c=[12,37], t=1703168931000, sym=TDC, trfi=201, x=4, i=79371822977099, z=1, trft=1703168931000}
+{p=43.9, ev=T, q=20818, s=1, c=[12,37], t=1703168931000, sym=TDC, trfi=201, x=4, i=79371822977099, z=1, trft=1703168931000}
+time is early. {p=252.12, ev=T, q=183603, s=60, c=[12,37], t=1703168932000, sym=TSLA, x=11, i=10989, z=3}
+{p=252.12, ev=T, q=183603, s=60, c=[12,37], t=1703168932000, sym=TSLA, x=11, i=10989, z=3}
+time is early. {p=196.6, ev=T, q=32498, s=32, c=[14,12,37,41], t=1703168933000, sym=SNOW, x=8, i=52983525225827, z=1}
+{p=196.6, ev=T, q=32498, s=32, c=[14,12,37,41], t=1703168933000, sym=SNOW, x=8, i=52983525225827, z=1}
+time is early. {p=196.55, ev=T, q=32499, s=7, c=[14,12,37,41], t=1703168933000, sym=SNOW, x=12, i=62879147123509, z=1}
+{p=196.55, ev=T, q=32499, s=7, c=[14,12,37,41], t=1703168933000, sym=SNOW, x=12, i=62879147123509, z=1}
+time is early. {p=280.48, ev=T, q=257316, s=2, c=[14,12,37,41], t=1703168945000, sym=MKTX, x=12, i=35, z=3}
+{p=280.48, ev=T, q=257316, s=2, c=[14,12,37,41], t=1703168945000, sym=MKTX, x=12, i=35, z=3}
+time is early. {p=9.49, ev=T, q=300780, s=1, c=[12,37], t=1703168951000, sym=SOFI, trfi=202, x=4, i=735, z=3, trft=1703168951000}
+{p=9.49, ev=T, q=300780, s=1, c=[12,37], t=1703168951000, sym=SOFI, trfi=202, x=4, i=735, z=3, trft=1703168951000}
+unsubscribeStockSet size: 100 1703169000135
+StockEvent(stock=ARGX, price=334.68, time=1703169000003) dn=368.465 current=1703169000154
+StockEvent(stock=ENTA, price=8.57, time=1703169000008) dn=8.578 current=1703169000184
+ENTA=0.09326183259500023
+unsubscribeStockSet size: 200 1703169000193
+StockEvent(stock=VERX, price=26.02, time=1703169000013) dn=26.02 current=1703169000205
+unsubscribeStockSet size: 300 1703169000302
+StockEvent(stock=HALO, price=36.67, time=1703169000024) dn=36.964 current=1703169000307
+HALO=0.7953684666161589,ENTA=0.09326183259500023
+unsubscribeStockSet size: 400 1703169000421
+unsubscribeStockSet size: 500 1703169000512
+StockEvent(stock=IMAX, price=15.0, time=1703169000512) dn=15.073 current=1703169000614
+unsubscribeStockSet size: 600 1703169000632
+unsubscribeStockSet size: 700 1703169000704
+unsubscribeStockSet size: 800 1703169000795
+unsubscribeStockSet size: 900 1703169000869
+StockEvent(stock=PRI, price=201.77, time=1703169000701) dn=202.657 current=1703169000900
+HALO=0.7953684666161589,PRI=0.43768535012360804,ENTA=0.09326183259500023
+StockEvent(stock=CCJ, price=42.71, time=1703169000776) dn=42.985 current=1703169000924
+unsubscribeStockSet size: 1000 1703169000933
+unsubscribeStockSet size: 1100 1703169000980
+unsubscribeStockSet size: 1200 1703169001020
+StockEvent(stock=ADM, price=70.64, time=1703169000821) dn=71.039 current=1703169001041
+HALO=0.7953684666161589,ADM=0.5616633117020241,PRI=0.43768535012360804,ENTA=0.09326183259500023
+unsubscribeStockSet size: 1300 1703169001080
+unsubscribeStockSet size: 1400 1703169001112
+StockEvent(stock=HCM, price=16.88, time=1703169000855) dn=16.975 current=1703169001142
+unsubscribeStockSet size: 1500 1703169001217
+StockEvent(stock=RACE, price=338.8, time=1703169000924) dn=340.146 current=1703169001323
+HALO=0.7953684666161589,ADM=0.5616633117020241,PRI=0.43768535012360804,RACE=0.39571242936856627,ENTA=0.09326183259500023
+unsubscribeStockSet size: 1600 1703169001331
+unsubscribeStockSet size: 1700 1703169001402
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [PRI, ENTA, RACE, ADM, HALO]
+quote price(time=1703169021478): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021481): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021482): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021482): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021510): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021512): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021512): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021512): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021512): {ENTA=8.57, PRI=201.77, RACE=338.8, ADM=70.64, HALO=36.67}
+quote price(time=1703169021758): {ENTA=8.57, PRI=201.77, RACE=338.64, ADM=70.64, HALO=36.67}
+quote price(time=1703169022272): {ENTA=8.57, PRI=201.77, RACE=338.64, ADM=70.64, HALO=36.67}
+quote price(time=1703169022273): {ENTA=8.57, PRI=201.77, RACE=338.64, ADM=70.64, HALO=36.67}
+quote price(time=1703169022273): {ENTA=8.57, PRI=201.77, RACE=338.64, ADM=70.64, HALO=36.67}
+HALO=0.7953684666161589,ADM=0.5616633117020241,PRI=0.43768535012360804,RACE=0.39571242936856627,ENTA=0.09326183259500023
+onReply_GetFunds: 1314.21
+remain cash: 1314.21
+first trade. orderPrice=36.78, multiple=1
+onReply_GetMaxTrdQtys: 35
+buy stock. stock=HALO, count=35, price=36.67, orderPrice=36.78, orderId: 8549876111061339855 1703169022584
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.63, ADM=70.64, HALO=36.67}
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.63, ADM=70.64, HALO=36.67}
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.63, ADM=70.64, HALO=36.67}
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.63, ADM=70.64, HALO=36.67}
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.58, ADM=70.64, HALO=36.67}
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.58, ADM=70.64, HALO=36.67}
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.58, ADM=70.64, HALO=36.67}
+quote price(time=1703169022772): {ENTA=8.57, PRI=201.77, RACE=338.58, ADM=70.64, HALO=36.67}
+HALO order is successfully executed. orderId=8549876111061339855
+update order: OrderFill(tradeSide=1, fillID=0, orderID=8549876111061339855, code=HALO, name=奥洛兹美医疗, count=35.0, price=36.78, avgPrice=36.78, createTime=2023-12-21 09:30:22.511, updateTimestamp=1.703169023075078E9, status=0)
+quote price(time=1703169023140): {ENTA=8.57, PRI=201.77, RACE=338.58, ADM=70.64, HALO=36.67}
+quote price(time=1703169023165): {ENTA=8.57, PRI=201.77, RACE=338.58, ADM=70.64, HALO=36.67}
+quote price(time=1703169023165): {ENTA=8.57, PRI=201.77, RACE=338.58, ADM=70.64, HALO=36.67}
+HALO placeStopLoss market order. qty=35.0, auxPrice=34.205, orderId：1794504928621891773
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+ready to sell before close market. position={HALO=StockPosition(stock=HALO, canSellQty=35.0, costPrice=36.78, currPrice=36.865)}, time=2023-12-22T04:58:59.206
+before close sell stock for market price. stock=HALO, count=35.0
+unlock success
+sell stock orderId=215067386032808074
+update order: OrderFill(tradeSide=2, fillID=0, orderID=215067386032808074, code=HALO, name=??????, count=35.0, price=0.0, avgPrice=36.8614, createTime=2023-12-21 15:58:59.360, updateTimestamp=1.703192339958396E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=215067386032808074, code=HALO, name=??????, count=35.0, price=0.0, avgPrice=36.8614, createTime=2023-12-21 15:58:59.360, updateTimestamp=1.703192339958396E9, status=0)
+sell stock success. stock=HALO, orderId?215067386032808074
+tradeExecutor_db sell

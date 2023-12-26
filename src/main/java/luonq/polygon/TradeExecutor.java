@@ -236,7 +236,7 @@ public class TradeExecutor {
                         System.out.println("sell stock cancel. retry stock=" + stock + ", orderId=" + orderId + ", cancelResCode=" + cancelResCode);
                         continue;
                     }
-                    System.out.println("sell stock success. stock=" + stock + ", orderId：" + orderId);
+                    System.out.println("sell stock success. stock=" + stock + ", orderId=" + orderId);
                     break;
                 }
             }

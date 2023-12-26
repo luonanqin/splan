@@ -70,7 +70,7 @@ public class GrabEarning implements PageProcessor {
             }
             String result = symbol + " " + time;
             res.add(result);
-            System.out.println(result);
+//            System.out.println(result);
         }
 
         return res;

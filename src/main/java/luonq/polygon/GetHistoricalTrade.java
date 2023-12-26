@@ -44,14 +44,9 @@ public class GetHistoricalTrade {
         String timeGte = "timestamp.gte=";
 
         // 2023
-        LocalDateTime dayLight2023_1 = LocalDateTime.of(2023, 3, 12, 0, 0, 0);
-        LocalDateTime dayLight2023_2 = LocalDateTime.of(2023, 11, 6, 0, 0, 0);
         int year = 2023;
-
-        // 2022
-        LocalDateTime dayLight2022_1 = LocalDateTime.of(2022, 3, 13, 0, 0, 0);
-        LocalDateTime dayLight2022_2 = LocalDateTime.of(2022, 11, 6, 0, 0, 0);
-        //                int year = 2022;
+        LocalDateTime summerTime = BaseUtils.getSummerTime(null);
+        LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
         //        Map<String, String> hasMergeMap = BaseUtils.getFileMap(Constants.TRADE_OPEN_PATH + year);
         int poolSize = 20;
@@ -66,7 +61,7 @@ public class GetHistoricalTrade {
         Map<String, String> stockMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
         for (String stock : stockMap.keySet()) {
             if (!stock.equals("AAPL")) {
-//                continue;
+                //                continue;
             }
             String stockFile = stockMap.get(stock);
             String openFile = openMap.get(stock);
@@ -105,7 +100,7 @@ public class GetHistoricalTrade {
             }
 
             if (CollectionUtils.isEmpty(dateList)) {
-                System.out.println("has get " + stock);
+                //                System.out.println("has get " + stock);
                 continue;
             }
 
@@ -118,7 +113,7 @@ public class GetHistoricalTrade {
                     LocalDateTime day = LocalDate.parse(date, Constants.FORMATTER).atTime(0, 0);
 
                     int hour, minute = 30, seconds = 0;
-                    if (day.isAfter(dayLight2023_1) && day.isBefore(dayLight2023_2)) {
+                    if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
                         hour = 21;
                     } else {
                         hour = 22;
@@ -133,6 +128,10 @@ public class GetHistoricalTrade {
 
                     try {
                         String trade = getTrade(url, httpClient);
+                        if (!trade.contains(",")) {
+                            System.out.println(stock + " " + trade);
+                            continue;
+                        }
                         result.add(date + "," + trade);
                     } finally {
                         httpClients.offer(httpClient);
@@ -154,7 +153,7 @@ public class GetHistoricalTrade {
                         fw.write(str + "\n");
                     }
                     fw.close();
-                    System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+                    //                    System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
                 } catch (Exception e) {
                     System.out.println("error: " + result);
                 }
@@ -183,7 +182,7 @@ public class GetHistoricalTrade {
                     }
                 }
                 if (code != 200) {
-                    System.err.println("request failed");
+                    //                    System.err.println("request failed");
                     result = "request failed";
                     success = false;
                     break;
