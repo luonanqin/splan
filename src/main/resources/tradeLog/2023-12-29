@@ -1,0 +1,80 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7146503954357032303
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1703860080000, openTime=1703860200000, closeCheckTime=Sat Dec 30 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 988
+stock overbolling hit great 0.500000 size: 846
+filter merge stock, the stock set size is 846
+filter split stock, the stock set size is 844
+filter front reinstatement less 0.98 stock, the stock set size is 789
+filter earning and lastEarning stock, the stock set size is 788
+after filte: [SCS, CMRE, TWST, NOVA, DAWN, YPF, TSLA, FLGT, COUR, WLK, NMRK, AA, WING, BHLB, BLTE, WLY, HON, AEHR, AX, POOL, SEM, WMS, BA, WMT, ACDC, A, BC, TBLD, GOLD, HPK, GOLF, BG, MLTX, AXON, BJ, ARCH, CENTA, BN, BP, DHR, ATGE, AEIS, SLCA, CECO, DHT, NTAP, BYND, LYB, W, LRCX, BZ, Z, SFM, SPIR, NVDA, CE, CF, CI, DIN, CL, CP, LZB, FNA, FAST, CTAS, CMTL, FND, AMZN, CING, DE, ACHC, APAM, SCSC, DK, DNUT, HRT, LITE, AZUL, SHC, FNV, DT, CCAP, DV, GDYN, NTCT, DY, WPM, MDGL, SHO, SHW, EH, FOR, IMCR, SPLK, QRVO, BHE, ONTO, TBPH, ATKR, ROOT, SPNT, DLO, FL, FN, AXSM, CCCS, MSFT, NTES, WRK, UNP, FLNC, HUN, GOOG, HUT, BIP, BLZE, GT, LCII, WST, HD, ARGX, SKY, SKX, HI, FRO, SLB, HP, HLIO, CEIX, ANAB, TMHC, NTGR, QNST, SHAK, ODP, FFBC, SPOT, BELFB, BKR, IMGN, DOV, GGAL, ACLX, POWI, ACLS, JD, FTI, ZYME, MAS, NVMI, CELC, SPSC, EEFT, DPZ, PTCT, BMA, PINS, FUL, EZPW, BMI, BHVN, KN, BMO, NXPI, KR, MCK, WWW, AVTE, IDXX, LI, IBTX, ODFL, ANET, SPB, PTEN, UTI, SWBI, SPR, MC, MD, HNRG, SHEL, NTLA, MU, UCTT, MX, NE, SNPS, YELP, ATRC, KAR, UVE, PAAS, EXPD, MFC, FFIV, LEVI, PTGX, EXPO, OC, UHAL, OI, ON, QDEL, OR, AAOI, APLS, OKE, GKOS, IMMR, BRC, APLE, HAYW, PG, AVXL, APLD, PK, DVN, MGY, BRP, AAPL, FLWS, STC, CERE, DUOL, OLK, OLN, STT, UPST, QS, CCOI, ARRY, PGNY, CAKE, PRDO, BSY, EPAC, SPXC, WTTR, RF, EPAM, IAS, CERT, KEX, RS, BTU, RY, DDOG, RGLD, SA, ALGM, BUD, QLYS, SD, SE, SG, GRBK, DYN, SM, SQ, QUIK, ST, SU, NVTS, IIIV, TD, TH, TK, RIOT, TEAM, APPF, SXC, CTRA, TW, CCRN, UPWK, IMTX, MLI, PZZA, SBAC, RGNX, CAMT, PTLO, CLDX, SYM, YETI, VC, HSBC, TECH, TOWN, LASR, ARVN, TMST, RCEL, SYNA, IMVT, ORC, ALKS, MBUU, SHOO, WK, WM, PRLB, NCTY, RVNC, WW, HLVX, FWRG, MOH, RVLV, SWKS, TIMB, BOOT, NEWT, MOS, OSW, ITCI, BOOM, RACE, VAC, ALLE, CARS, ZIP, TTEK, CARR, RXST, ETRN, NARI, PLAY, CRSP, IRBT, ALNY, GEF, RXRX, ZG, GEN, KMT, ZM, GES, PLAB, EAT, FSLY, MRO, OVV, BORR, EBR, GFS, GCMG, CYBR, PCRX, GAIN, PANW, CRWD, OWL, MSM, CPRX, ECL, MORF, VECO, ALPN, PLCE, RCKT, TAL, GOOGL, VET, DOOR, OXY, EDR, EDU, TXRH, VINP, GIB, OSUR, CAH, MUR, ANVS, CAT, ADBE, TREE, TCN, TRGP, TENB, EFC, SUPN, VKTX, TDC, MMSI, RLAY, PARR, BMRN, UBER, BKNG, DXCM, TDW, CCK, CCJ, EGO, BECN, USFD, ECVT, BOWL, CWCO, TER, MEDP, MXL, EHC, RNGR, VIV, TRIP, REVG, GLDD, LSCC, SHYF, PRVA, PHAT, CDW, BILL, CEG, EHAB, CUBI, ABBV, SMAR, TGH, WSBC, XOM, SOFI, LBAI, GNE, LSEA, ENPH, INDI, MTDR, SBOW, VLO, ZTS, THO, UDMY, TCMD, WDFC, JBHT, SMCI, VMD, ACN, VMC, UFPI, VRDN, MCBC, HDSN, PAG, INCY, GPC, VIST, PAR, CHH, INFA, RARE, GPN, REZI, CHI, ADI, ELP, EWCZ, GPS, TNET, CHX, CHKP, PBF, XRAY, ENSG, VNT, MMYT, XRX, VTLE, BGNE, EMN, EMR, GPOR, REYN, LFMD, DECK, ZWS, BRBR, RGS, CSCO, CBAY, ENS, TNGX, FIGS, PDD, GSK, FORM, HOLI, PLNT, AGO, IRON, MGNI, LULU, TMO, CLB, PEN, EPC, PEP, ENTG, SMHI, VRA, GTX, LOCO, RJF, TNK, TNL, TNP, CMC, VRT, CMG, PFS, SQSP, NBR, CYRX, DINO, CMP, VSH, AIR, TOL, MELI, GVA, ERF, MCHP, DIOD, SONO, ERJ, AJG, CNI, AMAT, PDCO, AMAM, CNQ, VRNA, CHRD, CNX, TPH, XENE, ASML, KRNY, TPR, ESI, SSYS, NFLX, KLAC, COP, GWW, RMD, WFRD, PLSE, PII, AMBC, AMBA, NEM, ALC, CPE, NEO, NET, OTEX, ICVX, CPS, RNG, TRS, IRWD, VVV, EYPT, INOD, YUMC, AMN, AMP, ADSK, AMR, BRKR, AMX, PKG, ASPN, ROL, TSM, CDLX, CRC, ANF, RNST, CRL, CHTR, CRK, GLPG, CRM, TTC, TTD, CRS, COCO, AKAM, AMEH, AMED, KEYS, DELL, CSQ, AON, MERC, CODI, APA, APD, CDNS, APH, EXP, FTDR, RRC, HMST, BLBD, GDDY, RRR, PNT, CUK, KLIC, MTSI, RRX, LBRT, ADUS, META, METC, EDIT, BROS, CVE, SOVO, ASTL, VRSK, MRNA, VRSN, CVX, INTU, PPG, BLDR, TXN, PUMP, TXT, ASUR, ASC, CWH, RTX, BANR, INSP, INST, LSTR, KRUS, FCFS, MANH, SMTC, LIN, HAL, HTBK, INTC, MANU, WOLF, BPMC, CXW, PRG, PRO, AMKR, AUB, ORLY, EWTX, IDCC, FIVN, LOPE, NOG, HCA, PSO, AVD, PWSC, INVA, LKQ, NOV, PSX, NDSN, NOW, WAB, AVO, VNOM, AVT, RXO, GSHD, SEIC, WAT, BASE, KNSA, AWI, SGML, LMB, MARA, KRYS, RYI, STEP, AORT, ZETA, NSSC, COLL, AXL, HES, MRTN, NBTB, AGCO, FERG, FBP, OLED, RYTM, MRUS, FCF, PWP, PWR, AVAV, MATW, LOW, FTNT, TFII, AZN, HGV, AMPH, NMIH, NTB, PXD, MRVL, PBPB, FRME, COOP, QCOM, RDNT, NUE, VLRS, SITE, AMSC, MLKN, BFAM, BLMN, THRD, LECO, THRM, LRN, DASH, WHD, RBLX, DBX, NWN, DNLI, HTLF, CORT, TWOA, MLNK, SAH, ESTA, SGRY, STLD, SAIA, VSCO, AVGO, HLI, FHI, WIX, TFPM, SAIC, BNTX, LIND, JELD, DNOW, DWAC, HLX, SBH, ACAD, SBS, FRPT, CMPS, FIX, DAVA, AKRO, MNTK, STNG]
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:02
+finish subcribe real time!
+time is early. {p=498.26, ev=T, q=87503, s=2, c=[14,12,37,41], t=1703860162000, sym=NVDA, x=11, i=2484, z=3}
+{p=498.26, ev=T, q=87503, s=2, c=[14,12,37,41], t=1703860162000, sym=NVDA, x=11, i=2484, z=3}
+time is early. {p=260.25, ev=T, q=23521, s=7, c=[12,37], t=1703860170000, sym=BA, x=11, i=52983525363540, z=1}
+{p=260.25, ev=T, q=23521, s=7, c=[12,37], t=1703860170000, sym=BA, x=11, i=52983525363540, z=1}
+time is early. {p=50.3, ev=T, q=292435, s=1, c=[14,12,37,41], t=1703860174000, sym=INTC, x=12, i=396, z=3}
+{p=50.3, ev=T, q=292435, s=1, c=[14,12,37,41], t=1703860174000, sym=INTC, x=12, i=396, z=3}
+time is early. {p=50.3, ev=T, q=292436, s=22, c=[14,12,37,41], t=1703860174000, sym=INTC, x=12, i=397, z=3}
+{p=50.3, ev=T, q=292436, s=22, c=[14,12,37,41], t=1703860174000, sym=INTC, x=12, i=397, z=3}
+time is early. {p=50.3, ev=T, q=292437, s=9, c=[14,12,37,41], t=1703860174000, sym=INTC, x=8, i=496, z=3}
+{p=50.3, ev=T, q=292437, s=9, c=[14,12,37,41], t=1703860174000, sym=INTC, x=8, i=496, z=3}
+time is early. {p=50.3, ev=T, q=292438, s=5, c=[14,12,37,41], t=1703860174000, sym=INTC, x=19, i=86, z=3}
+{p=50.3, ev=T, q=292438, s=5, c=[14,12,37,41], t=1703860174000, sym=INTC, x=19, i=86, z=3}
+time is early. {p=50.3, ev=T, q=292439, s=1, c=[14,12,37,41], t=1703860174000, sym=INTC, x=12, i=398, z=3}
+{p=50.3, ev=T, q=292439, s=1, c=[14,12,37,41], t=1703860174000, sym=INTC, x=12, i=398, z=3}
+unsubscribeStockSet size: 100 1703860200245
+StockEvent(stock=NEO, price=16.82, time=1703860200059) dn=16.789 current=1703860200252
+StockEvent(stock=AIR, price=62.5, time=1703860200258) dn=62.117 current=1703860200496
+unsubscribeStockSet size: 200 1703860200497
+unsubscribeStockSet size: 300 1703860200666
+unsubscribeStockSet size: 400 1703860200828
+unsubscribeStockSet size: 500 1703860200938
+unsubscribeStockSet size: 600 1703860201050
+StockEvent(stock=TFPM, price=13.14, time=1703860200860) dn=13.113 current=1703860201086
+StockEvent(stock=LOPE, price=132.52, time=1703860200802) dn=133.819 current=1703860201102
+LOPE=0.9707141736225635
+unsubscribeStockSet size: 700 1703860201228
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [LOPE]
+LOPE=0.9707141736225635
+onReply_GetFunds: 1261.15
+remain cash: 1261.15
+first trade. orderPrice=132.91, multiple=1
+onReply_GetMaxTrdQtys: 9
+buy stock. stock=LOPE, count=9, price=132.52, orderPrice=132.91, orderId: 620975628199428655 1703860222335
+LOPE order is successfully executed. orderId=620975628199428655
+update order: OrderFill(tradeSide=1, fillID=0, orderID=620975628199428655, code=LOPE, name=大峡谷教育, count=9.0, price=132.91, avgPrice=132.91, createTime=2023-12-29 09:30:22.268, updateTimestamp=1.703860222830521E9, status=0)
+LOPE placeStopLoss market order. qty=9.0, auxPrice=123.606, orderId：4877015312695133995
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+ready to sell before close market. position={LOPE=StockPosition(stock=LOPE, canSellQty=9.0, costPrice=132.91, currPrice=131.78)}, time=2023-12-30T04:58:59.214
+before close sell stock for market price. stock=LOPE, count=9.0
+unlock success
+sell stock orderId=4136152041416412878
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4136152041416412878, code=LOPE, name=?????, count=9.0, price=0.0, avgPrice=131.9173, createTime=2023-12-29 15:58:59.355, updateTimestamp=1.703883539748441E9, status=0)
+sell stock success. stock=LOPE, orderId=4136152041416412878
+tradeExecutor_db sell
