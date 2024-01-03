@@ -34,11 +34,11 @@ public class Bollinger {
         Set<String> hasCalcStock = hasCalcMap.keySet();
 
         for (String stock : stockToKLineMap.keySet()) {
-            if (!stock.equals("TKR")) {
-                continue;
+            if (!stock.equals("WINV")) {
+//                continue;
             }
             if (hasCalcStock.contains(stock)) {
-                //                continue;
+                                continue;
             }
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock), 2023);
 

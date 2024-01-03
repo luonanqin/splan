@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
 import util.Constants;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -20,39 +21,60 @@ public class MergeKline {
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         List<String> stockList = Lists.newArrayList(dailyFileMap.keySet());
-        //                stockList.clear();
-        //                stockList.add("MPC");
+//        stockList.clear();
+//        stockList.add("FUTU");
 
-        Map<String, String> _2023Map = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
+        // 计算读取最新k线的目录及读取年份
+        LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
+        LocalDate today = LocalDate.now();
+        int year = today.getYear(), beforeYear = year;
+        String stockKLinePath;
+        if (year == 2023) {
+            stockKLinePath = Constants.HIS_BASE_PATH + "2023daily";
+        } else {
+            if (today.isAfter(firstWorkDay)) {
+                stockKLinePath = Constants.HIS_BASE_PATH + year + "/dailyKLine";
+            } else {
+                if (year - 1 == 2023) {
+                    stockKLinePath = Constants.HIS_BASE_PATH + "2023daily/";
+                } else {
+                    stockKLinePath = Constants.HIS_BASE_PATH + (year - 1) + "/dailyKLine";
+                }
+            }
+        }
+
+        Map<String, String> stockKLineMap = BaseUtils.getFileMap(stockKLinePath);
         for (String stock : stockList) {
-            //            if (hasMergeMap.containsKey(stock)) {
-            //                continue;
-            //            }
-
-            if (!_2023Map.containsKey(stock) || !hasMergeMap.containsKey(stock)) {
+            if (!stockKLineMap.containsKey(stock)) {
                 continue;
             }
             String mergedFile = hasMergeMap.get(stock);
+            if (StringUtils.isBlank(mergedFile)) {
+                String dailyFilePath = dailyFileMap.get(stock);
+                List<StockKLine> dailyStockKLines = BaseUtils.loadDataToKline(dailyFilePath, 2022);
+                mergedFile = mergePath + stock;
+                BaseUtils.writeStockKLine(mergedFile, dailyStockKLines);
+            }
             StockKLine latestKLine = BaseUtils.getLatestKLine(mergedFile);
 
-            String _2023File = _2023Map.get(stock);
-            List<StockKLine> _2023KLines = BaseUtils.loadDataToKline(_2023File, 2023);
+            String filePath = stockKLineMap.get(stock);
+            List<StockKLine> hisStockKLines = BaseUtils.loadDataToKline(filePath, beforeYear);
 
-            if (_2023KLines.size() < 40) {
+            int index = 0;
+            for (; index < hisStockKLines.size(); index++) {
+                if (StringUtils.equals(latestKLine.toString(), hisStockKLines.get(index).toString())) {
+                    break;
+                }
+            }
+            if (index == 0) {
                 continue;
             }
+            hisStockKLines = hisStockKLines.subList(0, index);
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(mergedFile, beforeYear);
+            hisStockKLines.addAll(stockKLines);
 
-            if (StringUtils.equals(latestKLine.toString(), _2023KLines.get(0).toString())) {
-//                System.out.println("has merged " + stock);
-                continue;
-            }
-
-            String dailyPath = dailyFileMap.get(stock);
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(dailyPath);
-            _2023KLines.addAll(stockKLines);
-
-            BaseUtils.writeStockKLine(mergePath + stock, _2023KLines);
-//            System.out.println("finish " + stock);
+            BaseUtils.writeStockKLine(mergePath + stock, hisStockKLines);
+            System.out.println("finish " + stock);
         }
     }
 

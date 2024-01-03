@@ -45,17 +45,28 @@ public class GetHistoricalOpenFirstTrade {
         String timeGte = "timestamp.gte=";
         String limit = "10";
 
-        Map<String, String> stockOpenFirstMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade");
-        // 获取2022-2023年所有交易日
-        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2021);
-        List<String> tradeDateList = stockKLines.stream().map(StockKLine::getDate).collect(Collectors.toList());
-
-        // 获取所有股票列表
-        Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
-        Set<String> stockSet = fileMap.keySet();
-        //        Set<String> stockSet = Sets.newHashSet("TKR", "ALTI", "LULU", "GBX", "EURN", "BLTE", "PRCT", "OPOF", "VECT", "AC", "CHGG", "FULT", "HRT", "BLFY", "XYL", "SRCE", "PPL", "NBTB", "ALRS", "CLBK", "FIBK", "TERN", "EBF", "WRK", "BDX", "VREX", "ARIS", "NEM", "SMLR", "TTGT", "AZTA", "SRTS", "OM", "CRDO", "MX", "DZSI", "EQC", "YETI", "LASR", "INGN", "XPEL", "RETA", "FHN", "FIGS", "XMTR", "SI", "CDNA", "IAA", "CARA", "UNFI", "SBNY", "ZION", "WAL", "QTWO", "TARS", "EBIX", "NWFL", "MNTK", "ARCE", "CTRN", "PHAR", "PROK", "SQ", "TRUP", "SCHL", "HRMY", "AURA", "SMTC", "ANGO", "ASND", "ATEN", "RGP", "SSTI", "STG", "ADTN", "CRUS", "WISH", "LAKE", "ACR", "ALVO", "GFF", "FFIV");
-
-        // 每只股票循环查询2022-2023年每个交易日的盘前最后交易价，并写入文件。查询时10个线程并行
+        // 计算读取最新k线的目录及读取年份
+        LocalDate today = LocalDate.now();
+        int curYear = today.getYear(), lastYear = curYear - 1;
+        LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
+        String kLinePath, openFirstTradePath;
+        if (curYear == 2023) {
+            kLinePath = Constants.HIS_BASE_PATH + "2023daily";
+            openFirstTradePath = Constants.TRADE_PATH + "openFirstTrade/";
+        } else {
+            if (today.isAfter(firstWorkDay)) {
+                kLinePath = Constants.HIS_BASE_PATH + curYear + "/dailyKLine";
+                openFirstTradePath = Constants.HIS_BASE_PATH + curYear + "/openFirstTrade/";
+            } else {
+                if (lastYear == 2023) {
+                    kLinePath = Constants.HIS_BASE_PATH + "2023daily/";
+                    openFirstTradePath = Constants.TRADE_PATH + "openFirstTrade/";
+                } else {
+                    kLinePath = Constants.HIS_BASE_PATH + lastYear + "/dailyKLine";
+                    openFirstTradePath = Constants.HIS_BASE_PATH + lastYear + "/openFirstTrade/";
+                }
+            }
+        }
 
         int threadCount = 100;
         int corePoolSize = threadCount;
@@ -68,15 +79,16 @@ public class GetHistoricalOpenFirstTrade {
             clients.offer(new HttpClient());
         }
 
-        // 2023
         LocalDateTime summerTime = BaseUtils.getSummerTime(null);
         LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
-        Set<String> test = Sets.newHashSet("ARRY");
-        for (String stock : stockSet) {
+        Map<String, String> stockOpenFirstMap = BaseUtils.getFileMap(openFirstTradePath);
+        Map<String, String> stockMap = BaseUtils.getFileMap(kLinePath);
+        Set<String> test = Sets.newHashSet("AAPL");
+        for (String stock : stockMap.keySet()) {
             try {
                 if (!test.contains(stock)) {
-                    //                    continue;
+                    continue;
                 }
 
                 String file = stockOpenFirstMap.get(stock);
@@ -92,6 +104,10 @@ public class GetHistoricalOpenFirstTrade {
                     }
                     latestDate = split[0];
                 }
+
+                String stockFile = stockMap.get(stock);
+                List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockFile, lastYear);
+                List<String> tradeDateList = stockKLines.stream().map(StockKLine::getDate).collect(Collectors.toList());
 
                 List<String> dateList = Lists.newArrayList();
                 LocalDate latestDay = LocalDate.parse(latestDate, Constants.FORMATTER);
@@ -109,7 +125,7 @@ public class GetHistoricalOpenFirstTrade {
                     }
                 }
                 if (CollectionUtils.isEmpty(dateList)) {
-//                    System.out.println("has get " + stock);
+                    //                    System.out.println("has get " + stock);
                     continue;
                 }
 
@@ -137,7 +153,7 @@ public class GetHistoricalOpenFirstTrade {
                             String preUrl = api + stock + "?order=asc&" + timeGte + openTS + "000000&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
                             String preTrade = getTrade(preUrl, httpClient);
                             if (!preTrade.contains(",")) {
-                                System.out.println(stock+" "+preTrade);
+                                System.out.println(stock + " " + preTrade);
                                 continue;
                             }
                             String str = date + "," + preTrade;
@@ -155,12 +171,12 @@ public class GetHistoricalOpenFirstTrade {
 
                     try {
                         lines.addAll(0, sync);
-                        BaseUtils.writeFile(Constants.TRADE_PATH + "openFirstTrade/" + stock, lines);
+                        BaseUtils.writeFile(openFirstTradePath + stock, lines);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     long cost = System.currentTimeMillis() - begin;
-//                    System.out.println("finish " + stock + " " + cost / 1000);
+                    System.out.println("finish " + stock + " " + cost / 1000);
                 });
             } catch (Exception e) {
                 System.out.println("error stock: " + stock);

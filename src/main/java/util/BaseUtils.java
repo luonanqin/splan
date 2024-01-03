@@ -255,7 +255,13 @@ public class BaseUtils {
     }
 
     public static List<StockKLine> loadDataToKline(String filePath, Integer beforeYear, Integer afterYear) throws Exception {
-        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+        } catch (FileNotFoundException e) {
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+
         if (filePath.contains("_historical")) {
             br.readLine();
         }
@@ -348,6 +354,10 @@ public class BaseUtils {
             list.add(daily);
         }
         return list;
+    }
+
+    public static List<BOLL> readBollFile(String filePath, Integer beforeYear) throws Exception {
+        return readBollFile(filePath, beforeYear, null);
     }
 
     public static List<BOLL> readBollFile(String filePath, Integer beforeYear, Integer afterYear) throws Exception {
@@ -533,7 +543,8 @@ public class BaseUtils {
             return null;
         }
 
-        return convertToKLine(Lists.newArrayList(first), 2023, 0).get(0);
+        int year = LocalDate.now().getYear();
+        return convertToKLine(Lists.newArrayList(first), year, 0).get(0);
     }
 
     public static String getLatestLine(String filePath) throws Exception {
@@ -700,28 +711,27 @@ public class BaseUtils {
             if (StringUtils.equals(EarningDate.AFTER_MARKET_CLOSE, earningType)) {
                 actualDate = nextDate;
             } else if (StringUtils.equals(EarningDate.BEFORE_MARKET_OPEN, earningType)) {
-//            } else {
+                //            } else {
                 actualDate = date;
             } else {
                 continue;
             }
 
-
             EarningDate earning = new EarningDate(stock, date, earningType, actualDate);
-                        list.add(earning);
-//            // 如果之前不存在则直接put，如果之前存在且是TAS则直接put，否则跳过
-//            EarningDate existEarningDate = stockEarningMap.get(stock);
-//            if (existEarningDate == null) {
-//                stockEarningMap.put(stock, earning);
-//            } else {
-//                String existEarningType = existEarningDate.getEarningType();
-//                if (StringUtils.equals(EarningDate.TAS, existEarningType)) {
-//                    stockEarningMap.put(stock, earning);
-//                }
-//            }
+            list.add(earning);
+            //            // 如果之前不存在则直接put，如果之前存在且是TAS则直接put，否则跳过
+            //            EarningDate existEarningDate = stockEarningMap.get(stock);
+            //            if (existEarningDate == null) {
+            //                stockEarningMap.put(stock, earning);
+            //            } else {
+            //                String existEarningType = existEarningDate.getEarningType();
+            //                if (StringUtils.equals(EarningDate.TAS, existEarningType)) {
+            //                    stockEarningMap.put(stock, earning);
+            //                }
+            //            }
         }
 
-//        list.addAll(stockEarningMap.values());
+        //        list.addAll(stockEarningMap.values());
         return list;
     }
 
@@ -758,6 +768,23 @@ public class BaseUtils {
         }
         return winterTime;
     }
+
+    public static LocalDate getFirstWorkDay() {
+        LocalDate firstDay = LocalDate.now().withMonth(1).withDayOfMonth(1);
+        LocalDate firstWorkDay;
+        while (true) {
+            int dayOfWeek = firstDay.getDayOfWeek().getValue();
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                firstWorkDay = firstDay;
+                break;
+            } else {
+                firstDay = firstDay.plusDays(1);
+            }
+        }
+        firstWorkDay = firstWorkDay.withDayOfMonth(2);
+        return firstWorkDay;
+    }
+
     public static void main(String[] args) throws Exception {
         Map<String, List<EarningDate>> map = getEarningDate("2023-11-16");
         System.out.println(map);

@@ -55,11 +55,11 @@ public class TradeDataListener_DB {
         BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
         double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
 
+        System.out.println(event + " dn=" + dn + " current=" + System.currentTimeMillis());
         if (dn < price) {
             return;
         }
 
-        System.out.println(event + " dn=" + dn + " current=" + System.currentTimeMillis());
         double diff = (dn - price) / dn * 100;
         int diffInt = (int) diff;
         if (diffInt > 6) {

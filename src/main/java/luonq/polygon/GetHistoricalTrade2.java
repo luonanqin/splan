@@ -80,18 +80,22 @@ public class GetHistoricalTrade2 {
         Map<String, String> openMap = BaseUtils.getFileMap(openTradePath);
         Map<String, String> stockMap = BaseUtils.getFileMap(kLinePath);
         for (String stock : stockMap.keySet()) {
-            if (!stock.equals("DENN")) {
+            if (!stock.equals("AAPL")) {
 //                continue;
             }
             String stockFile = stockMap.get(stock);
             String openFile = openMap.get(stock);
-            if (StringUtils.isBlank(openFile)) {
-                continue;
-            }
+
             List<StockKLine> kLines = BaseUtils.loadDataToKline(stockFile, year);
-            List<String> openLines = BaseUtils.readFile(openFile);
             if (CollectionUtils.isEmpty(kLines)) {
                 continue;
+            }
+
+            List<String> openLines;
+            if (StringUtils.isBlank(openFile)) {
+                openLines = Lists.newArrayListWithExpectedSize(0);
+            }else{
+                openLines = BaseUtils.readFile(openFile);
             }
 
             List<String> dateList = Lists.newArrayList();

@@ -306,7 +306,7 @@ public class RealTimeDataWS_DB {
             if (parse.isBefore(standard)) {
                 continue;
             }
-            if (close > PRICE_LIMIT && volume > 100000 && close < open) {
+            if (close > PRICE_LIMIT && volume > 100000 && close <= open) {
                 set.add(code);
             }
         }
@@ -374,6 +374,7 @@ public class RealTimeDataWS_DB {
         // 历史搜集的无效股票
         set.removeAll(invalidStockSet);
 
+        System.out.println("after filte: " + set);
         return set;
     }
 

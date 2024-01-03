@@ -156,7 +156,7 @@ public class GetHistoricalDaily {
         }
 
         String dirPath = getHistoryDirPath(today);
-        LocalDate firstWorkDay = getFirstWorkDay();
+        LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
         Map<String, String> stockMap = BaseUtils.getFileMap(dirPath);
         int fileYear = 2023;
         if (year != 2023) {
@@ -171,7 +171,7 @@ public class GetHistoricalDaily {
                 //                System.out.println("invalid stock: " + stock);
                 continue;
             }
-            if (!stock.equals("NXTP")) {
+            if (!stock.equals("AAPL")) {
                 //                continue;
             }
             String file = stockMap.get(stock);
@@ -233,50 +233,38 @@ public class GetHistoricalDaily {
         if (year == 2023) {
             dirPath = Constants.HIS_BASE_PATH + "2023daily/";
         } else {
-            LocalDate firstWorkDay = getFirstWorkDay();
+            LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
 
             // 如果今天是今年第一个工作日，则文件目录为前一年（2023年要特殊处理）。如果不是，则文件目录为当年
             if (today.isAfter(firstWorkDay)) {
-                dirPath = Constants.HIS_BASE_PATH + year + "/hisDaily";
+                dirPath = Constants.HIS_BASE_PATH + year + "/dailyKLine";
             } else {
                 if (year - 1 == 2023) {
                     dirPath = Constants.HIS_BASE_PATH + "2023daily/";
                 } else {
-                    dirPath = Constants.HIS_BASE_PATH + (year - 1) + "/hisDaily";
+                    dirPath = Constants.HIS_BASE_PATH + (year - 1) + "/dailyKLine";
                 }
             }
         }
         return dirPath;
     }
 
-    private static LocalDate getFirstWorkDay() {
-        LocalDate firstDay = LocalDate.now().withMonth(1).withDayOfMonth(1);
-        LocalDate firstWorkDay;
-        while (true) {
-            int dayOfWeek = firstDay.getDayOfWeek().getValue();
-            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-                firstWorkDay = firstDay;
-                break;
-            } else {
-                firstDay = firstDay.plusDays(1);
-            }
-        }
-        return firstWorkDay;
-    }
-
     private static void firstWorkDayInit() throws Exception {
-        LocalDate firstWorkDay = getFirstWorkDay();
+        LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
         LocalDate today = LocalDate.now();
         if (firstWorkDay.isEqual(today)) {
             int year = today.getYear();
-            File dir = new File(Constants.HIS_BASE_PATH + year + "/hisDaily/");
-            dir.mkdirs();
+            File dailyKLineDir = new File(Constants.HIS_BASE_PATH + year + "/dailyKLine/");
+            dailyKLineDir.mkdirs();
+
+            File tradeDir = new File(Constants.TRADE_OPEN_PATH + year + "/");
+            tradeDir.mkdirs();
 
             String dirPath = getHistoryDirPath(today);
             Map<String, String> stockMap = BaseUtils.getFileMap(dirPath);
             Set<String> stockSet = stockMap.keySet();
             for (String stock : stockSet) {
-                File file = new File(Constants.HIS_BASE_PATH + year + "/hisDaily/" + stock);
+                File file = new File(Constants.HIS_BASE_PATH + year + "/dailyKLine/" + stock);
                 if (!file.exists()) {
                     file.createNewFile();
                 }
