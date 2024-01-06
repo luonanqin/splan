@@ -178,7 +178,7 @@ public class GetHistoricalTrade2 {
                         fw.write(str + "\n");
                     }
                     fw.close();
-                    System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+//                    System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
                 } catch (Exception e) {
                     System.out.println("error: " + result);
                 }

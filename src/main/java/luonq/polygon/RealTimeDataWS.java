@@ -266,7 +266,7 @@ public class RealTimeDataWS {
     public static void loadEarningInfo() throws Exception {
         LocalDate now = LocalDate.now();
         String todayDate = now.format(Constants.FORMATTER);
-        List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2022);
+        List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2024, 2023);
         String lastDate = kLines.get(0).getDate();
 
         Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
@@ -359,7 +359,7 @@ public class RealTimeDataWS {
     }
 
     public static void loadLatestMA20() throws Exception {
-        int beforeYear = 2023, afterYear = 2021;
+        int beforeYear = 2024, afterYear = 2022;
         for (String stock : stockSet) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
@@ -388,7 +388,7 @@ public class RealTimeDataWS {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll" + SEPARATOR + stock, 2023, 2022);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll" + SEPARATOR + stock, 2024, 2023);
             if (CollectionUtils.isEmpty(bolls)) {
                 continue;
             }

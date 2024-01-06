@@ -341,7 +341,7 @@ public class RealTimeDataWS_DB {
         System.out.println(String.format("filter split stock, the stock set size is %d", set.size()));
 
         // 过滤所有今年前复权因子低于0.98的
-        int year = now.getYear();
+        int year = now.getYear() - 1;
         LocalDate firstDay = LocalDate.parse(year + "-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         Set<FrontReinstatement> reinstatementInfo = BaseUtils.getFrontReinstatementInfo();
         Map<String, FrontReinstatement> map = reinstatementInfo.stream().collect(Collectors.toMap(FrontReinstatement::getStock, Function.identity()));

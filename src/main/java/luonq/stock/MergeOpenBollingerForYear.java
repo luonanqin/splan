@@ -24,7 +24,7 @@ public class MergeOpenBollingerForYear {
         Map<String, String> bollMap = BaseUtils.getFileMap(mergePath);
         for (String stock : bollMap.keySet()) {
             if (!stock.equals("AAPL")) {
-//                continue;
+                //                continue;
             }
 
             List<BOLL> curBolls = BaseUtils.readBollFile(mergePath + stock, curYear);
@@ -53,7 +53,7 @@ public class MergeOpenBollingerForYear {
             }
             if (curBollLines.size() > originSize) {
                 BaseUtils.writeFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, curBollLines);
-                System.out.println("finish " + stock);
+                //                System.out.println("finish " + stock);
             }
         }
     }

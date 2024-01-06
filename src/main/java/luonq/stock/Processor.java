@@ -3,10 +3,9 @@ package luonq.stock;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import luonq.futu.GetRehab;
-import luonq.indicator.BollingerWithOpen;
 import luonq.polygon.GetHistoricalDaily;
 import luonq.polygon.GetHistoricalOpenFirstTrade;
-import luonq.polygon.GetHistoricalTrade;
+import luonq.polygon.GetHistoricalTrade2;
 import luonq.polygon.GrabEarning;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Processor {
 
-//    @Scheduled(cron = "0 0 17 * * MON-FRI")
     public static void getData() throws Exception {
         System.out.println("GetHistoricalDaily.getData start");
         long s2 = System.currentTimeMillis();
@@ -28,15 +26,21 @@ public class Processor {
         long e3 = System.currentTimeMillis();
         System.out.println("MergeKline.merge end. cost: " + (e3 - s3) / 1000 + "s\n");
 
-        System.out.println("MergeBollinger.calculate start");
+        System.out.println("BollingerForYear.calculate start");
         long s4 = System.currentTimeMillis();
-        MergeBollinger.calculate();
+        BollingerForYear.calculate();
         long e4 = System.currentTimeMillis();
-        System.out.println("MergeBollinger.calculate end. cost: " + (e4 - s4) / 1000 + "s\n");
+        System.out.println("BollingerForYear.calculate end. cost: " + (e4 - s4) / 1000 + "s\n");
+
+        System.out.println("MergeBollingerForYear.calculate start");
+        long s8 = System.currentTimeMillis();
+        MergeBollingerForYear.calculate();
+        long e8 = System.currentTimeMillis();
+        System.out.println("MergeBollingerForYear.calculate end. cost: " + (e8 - s8) / 1000 + "s\n");
 
         System.out.println("GetHistoricalTrade.getData start");
         long s5 = System.currentTimeMillis();
-        GetHistoricalTrade.getData();
+        GetHistoricalTrade2.getData();
         long e5 = System.currentTimeMillis();
         System.out.println("GetHistoricalTrade.getData end. cost: " + (e5 - s5) / 1000 + "s\n");
 
@@ -48,10 +52,15 @@ public class Processor {
 
         System.out.println("BollingerWithOpen.calculate start");
         long s7 = System.currentTimeMillis();
-        BollingerWithOpen.calculate();
+        OpenBollingerForYear.calculate();
         long e7 = System.currentTimeMillis();
         System.out.println("BollingerWithOpen.calculate end. cost: " + (e7 - s7) / 1000 + "s\n");
 
+        System.out.println("MergeOpenBollingerForYear.calculate start");
+        long s9= System.currentTimeMillis();
+        MergeOpenBollingerForYear.calculate();
+        long e9 = System.currentTimeMillis();
+        System.out.println("MergeOpenBollingerForYear.calculate end. cost: " + (e9 - s9) / 1000 + "s\n");
 
         System.out.println("get data finish");
     }
@@ -64,7 +73,6 @@ public class Processor {
         System.out.println("GetRehab.getData end. cost: " + (e1 - s1) / 1000 + "s\n");
     }
 
-//    @Scheduled(cron = "0 0 21 * * MON-FRI")
     public static void getEarning() throws Exception {
         System.out.println("GrabEarning.getData start");
         long s8 = System.currentTimeMillis();

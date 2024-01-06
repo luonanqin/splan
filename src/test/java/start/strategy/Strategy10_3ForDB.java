@@ -12,6 +12,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +24,7 @@ import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -94,14 +96,15 @@ public class Strategy10_3ForDB extends BaseTest {
     public void before() throws Exception {
         buildCodeSet();
 
+        int year = LocalDate.now().getYear(), lastYear = year - 1, last2Year = lastYear - 1;
         ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 3, 5, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
         CountDownLatch cdl = new CountDownLatch(3);
         AtomicReference<List<Total>> _2023_Data = new AtomicReference<>();
         executor.submit(() -> {
             try {
-                List<Total> allYearDate = readFromDB.getAllYearDate("2023");
+                List<Total> allYearDate = readFromDB.getAllYearDate(String.valueOf(year));
                 _2023_Data.set(allYearDate);
-                log.info("load 2023 finish");
+                log.info("load {} finish", year);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -111,8 +114,8 @@ public class Strategy10_3ForDB extends BaseTest {
         AtomicReference<List<Total>> _2022_Data = new AtomicReference<>();
         executor.submit(() -> {
             try {
-                _2022_Data.set(readFromDB.getAllYearDate("2022"));
-                log.info("load 2022 finish");
+                _2022_Data.set(readFromDB.getAllYearDate(String.valueOf(lastYear)));
+                log.info("load {} finish", lastYear);
             } finally {
                 cdl.countDown();
             }
@@ -120,8 +123,8 @@ public class Strategy10_3ForDB extends BaseTest {
         AtomicReference<List<Total>> _2021_Data = new AtomicReference<>();
         executor.submit(() -> {
             try {
-                _2021_Data.set(readFromDB.getAllYearDate("2021"));
-                log.info("load 2021 finish");
+                _2021_Data.set(readFromDB.getAllYearDate(String.valueOf(last2Year)));
+                log.info("load {} finish", last2Year);
             } finally {
                 cdl.countDown();
             }
@@ -141,6 +144,7 @@ public class Strategy10_3ForDB extends BaseTest {
         Map<String, List<Total>> _2022_dateTotalMap = _2022_Data.get().stream().collect(Collectors.groupingBy(Total::getDate, Collectors.toList()));
         _2022_dateTotalMap.forEach((date, totals) -> {
             dateToStockLineMap.put(date, totals.stream().collect(Collectors.toMap(Total::getCode, Total::toKLine)));
+            dateToStockBollMap.put(date, totals.stream().collect(Collectors.toMap(Total::getCode, Total::toBoll)));
             buildDateToOpenTradeMap(date, totals);
         });
         _2023_dateTotalMap.forEach((date, totals) -> {
@@ -176,17 +180,20 @@ public class Strategy10_3ForDB extends BaseTest {
     public void test() throws Exception {
         double exchange = 6.94;
         double init = 10000 / exchange;
-        int curYear = 2023;
+        int curYear = 2024;
+        String curDbYear = String.valueOf(curYear);
+        String lastDbYear = String.valueOf(curYear - 1);
         double capital = init;
         Map<String, StockRatio> originRatioMap = computeHisOverBollingerRatio();
 
         // 准备当天和20天前的日期映射，用于实时计算布林值
-        List<Total> _2022_aapl = readFromDB.getCodeDate("2022", "AAPL", "desc");
-        List<Total> _2023_aapl = readFromDB.getCodeDate("2023", "AAPL", "desc");
+        List<Total> _2022_aapl = readFromDB.getCodeDate(lastDbYear, "AAPL", "desc");
+        List<Total> _2023_aapl = readFromDB.getCodeDate(curDbYear, "AAPL", "desc");
         _2023_aapl.addAll(_2022_aapl);
         List<StockKLine> kLines = _2023_aapl.stream().map(Total::toKLine).collect(Collectors.toList());
         Map<String, List<String>> dateToBefore20dayMap = Maps.newHashMap();
         List<String> dateList = Lists.newArrayList();
+        boolean lastYearLastDay = true;
         for (int i = 0; i < kLines.size(); i++) {
             if (i + 20 > kLines.size() - 1) {
                 break;
@@ -201,6 +208,9 @@ public class Strategy10_3ForDB extends BaseTest {
             String year = date.substring(0, 4);
             if (year.equals(String.valueOf(curYear))) {
                 dateList.add(date);
+            } else if (lastYearLastDay) {
+                dateList.add(date);
+                lastYearLastDay = false;
             }
         }
         Collections.reverse(dateList);
@@ -208,12 +218,12 @@ public class Strategy10_3ForDB extends BaseTest {
 
         // 计算出open低于dn（收盘后的dn）比例最高的前十股票，然后再遍历计算收益
         Map<String, List<String>> dateToStocksMap = Maps.newHashMap();
-//        Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
-//        Map<String, List<EarningDate>> earningFormatDateMap = Maps.newHashMap();
-//        earningDateMap.forEach((date, list) -> {
-//            String earningDate = LocalDate.parse(date, Constants.FORMATTER).format(Constants.DB_DATE_FORMATTER);
-//            earningFormatDateMap.put(earningDate, list);
-//        });
+        //        Map<String, List<EarningDate>> earningDateMap = BaseUtils.getEarningDate(null);
+        //        Map<String, List<EarningDate>> earningFormatDateMap = Maps.newHashMap();
+        //        earningDateMap.forEach((date, list) -> {
+        //            String earningDate = LocalDate.parse(date, Constants.FORMATTER).format(Constants.DB_DATE_FORMATTER);
+        //            earningFormatDateMap.put(earningDate, list);
+        //        });
         Map<String, Map<String, Double>> dateToStockRatioMap = Maps.newHashMap();
         for (int j = 0; j < dateList.size(); j++) {
             Map<String, Double> stockToRatioMap = Maps.newHashMap();
@@ -296,19 +306,16 @@ public class Strategy10_3ForDB extends BaseTest {
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
                     int gainCount = 0, lossCount = 0;
-                    for (int j = 0; j < dateList.size(); j++) {
+                    for (int j = 1; j < dateList.size(); j++) {
                         String date = dateList.get(j);
                         if (date.equals("11/09/2023")) {
                             //                            System.out.println();
                         }
                         Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
                         Map<String, StockKLine> lastStockKLineMap = Maps.newHashMap();
-                        String lastDate = "";
-                        if (j > 0) {
-                            lastDate = dateList.get(j - 1);
-                            lastStockBollMap = dateToStockBollMap.get(lastDate);
-                            lastStockKLineMap = dateToStockLineMap.get(lastDate);
-                        }
+                        String lastDate = dateList.get(j - 1);
+                        lastStockBollMap = dateToStockBollMap.get(lastDate);
+                        lastStockKLineMap = dateToStockLineMap.get(lastDate);
                         Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                         Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
                         List<String> stocks = dateToStocksMap.get(date);
@@ -442,6 +449,10 @@ public class Strategy10_3ForDB extends BaseTest {
             }
 
             List<StockKLine> kLines = hisKLineMap.get(stock);
+            if (CollectionUtils.isEmpty(kLines)) {
+                System.out.println("computeHisOverBollingerRatio null: " + stock);
+                continue;
+            }
             Map<String, BOLL> dateToOpenBollMap = hisCodeOpenBollMap.get(stock);
             List<Bean> result = strategy(kLines, dateToOpenBollMap);
 

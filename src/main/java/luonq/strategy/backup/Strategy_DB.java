@@ -163,6 +163,9 @@ public class Strategy_DB {
             }
 
             List<StockKLine> kLines = hisKLineMap.get(stock);
+            if (CollectionUtils.isEmpty(kLines)) {
+                continue;
+            }
             Map<String, BOLL> dateToOpenBollMap = hisCodeOpenBollMap.get(stock);
             List<Bean> result = strategy(kLines, dateToOpenBollMap);
 

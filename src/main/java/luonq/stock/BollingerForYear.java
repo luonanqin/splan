@@ -60,7 +60,7 @@ public class BollingerForYear {
 
         for (String stock : stockToKLineMap.keySet()) {
             if (!stock.equals("AAIC")) {
-//                continue;
+                //                continue;
             }
 
             List<StockKLine> lastKLines = BaseUtils.loadDataToKline(lastKLinePath + stock, lastYear);
@@ -136,12 +136,7 @@ public class BollingerForYear {
                 bollList.addAll(0, newBollList);
                 BaseUtils.writeFile(Constants.HIS_BASE_PATH + curYear + "/BOLL/" + stock, bollList);
 
-//                List<BOLL> mergeBolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, curYear);
-//                List<String> mergeBollList = mergeBolls.stream().map(BOLL::toString).collect(Collectors.toList());
-//                mergeBollList.addAll(0, newBollList);
-//                BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, mergeBollList);
-
-                System.out.println("finish " + stock);
+                //                System.out.println("finish " + stock);
             }
         }
     }

@@ -91,11 +91,12 @@ public class WriteToDB {
      * 自定义股票和日期增量导入
      */
     public void additionToDB(List<String> codeList, List<String> dateList) throws Exception {
+        int curYear = LocalDate.now().getYear(), lastYear = curYear - 1;
+
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge/");
         Map<String, String> maFileMap = BaseUtils.getFileMap(Constants.INDICATOR_MA_PATH + "daily/");
-        Map<String, String> openTradeFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade/");
+        Map<String, String> openTradeFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + curYear + "/openFirstTrade/");
 
-        int curYear = 2023;
         if (CollectionUtils.isEmpty(dateList)) {
             LocalDate yesterday = LocalDate.now().minusDays(1);
             while (true) {
@@ -108,6 +109,7 @@ public class WriteToDB {
             String yestedayDate = yesterday.format(Constants.DB_DATE_FORMATTER);
             dateList = Lists.newArrayList(yestedayDate);
             curYear = yesterday.getYear();
+            lastYear = curYear - 1;
         }
 
         List<Total> allTotals = Lists.newArrayList();
@@ -117,10 +119,10 @@ public class WriteToDB {
             }
 
             String filePath = dailyFileMap.get(code);
-            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, curYear, curYear - 1);
+            List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, curYear, lastYear);
             List<MA> maList = loadMA(BaseUtils.readFile(maFileMap.get(code)));
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + code, curYear, curYear - 1);
-            List<BOLL> openBolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + code, curYear, curYear - 1);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + code, curYear, lastYear);
+            List<BOLL> openBolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + code, curYear, lastYear);
             List<SimpleTrade> openTrades = loadOpenTrade(BaseUtils.readFile(openTradeFileMap.get(code)));
             List<RealOpenVol> f1minTrades = loadF1minTrade(BaseUtils.readFile(Constants.TRADE_OPEN_PATH + curYear + "/" + code));
 
@@ -134,7 +136,7 @@ public class WriteToDB {
         }
 
         System.out.println(allTotals.size());
-        stockDataMapper.batchInsertFileData(allTotals, String.valueOf(curYear));
+        batchInsertFileData(allTotals, curYear);
     }
 
     public void earningToDB(List<String> dateList) {
@@ -172,6 +174,16 @@ public class WriteToDB {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void batchInsertFileData(List<Total> totalList, int dbYear) {
+        String year = String.valueOf(dbYear);
+        String exist = stockDataMapper.showTables(year);
+        if (StringUtils.isBlank(exist)) {
+            stockDataMapper.createTable(year);
+        }
+
+        stockDataMapper.batchInsertFileData(totalList, year);
     }
 
     private void importHistoricalDate(Map<String, List<Total>> dateToTotalMap) {
@@ -233,7 +245,6 @@ public class WriteToDB {
         }
 
         List<SimpleTrade> res = Lists.newArrayList();
-        lineList.remove(lineList.size() - 1);
         for (String line : lineList) {
             String[] split = line.split(",");
             if (split.length < 3) {

@@ -70,11 +70,11 @@ public class TradeExecutor_DB {
             Node node = nodes.get(0);
             String code = node.getName();
             double price;
-            if (!RealTimeDataWS.realtimeQuoteMap.containsKey(code)) {
+            if (!RealTimeDataWS_DB.realtimeQuoteMap.containsKey(code)) {
                 System.out.println("can't find real-time quote: " + code);
                 price = node.getPrice();
             } else {
-                price = RealTimeDataWS.realtimeQuoteMap.get(code);
+                price = RealTimeDataWS_DB.realtimeQuoteMap.get(code);
             }
 
             double upRatio = 0.003;
@@ -160,7 +160,7 @@ public class TradeExecutor_DB {
         System.out.println("trade end");
 
         // 停止监听实时报价
-        RealTimeDataWS.getRealtimeQuote = false;
+        RealTimeDataWS_DB.getRealtimeQuote = false;
         System.out.println("stop get real-time quote");
 
         /** 6.建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */

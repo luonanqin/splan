@@ -56,7 +56,7 @@ public class Strategy10_3 {
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
         double init = 10000 / exchange;
-        int beforeYear = 2023, afterYear = 2021, afterYear2 = 2022;
+        int beforeYear = 2024, afterYear = 2022, afterYear2 = 2023;
         double capital = init;
         Map<String, StockRatio> originRatioMap = computeHistoricalOverBollingerRatio();
         Set<String> invalidStockSet = Sets.newHashSet("FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
@@ -90,7 +90,7 @@ public class Strategy10_3 {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, beforeYear, afterYear2);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, beforeYear, afterYear);
 
             for (BOLL boll : bolls) {
                 String date = boll.getDate();
@@ -105,6 +105,7 @@ public class Strategy10_3 {
         List<StockKLine> kLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", beforeYear, afterYear);
         Map<String, List<String>> dateToBefore20dayMap = Maps.newHashMap();
         List<String> dateList = Lists.newArrayList();
+        boolean lastYearLastDay = true;
         for (int i = 0; i < kLines.size(); i++) {
             if (i + 20 > kLines.size() - 1) {
                 break;
@@ -119,6 +120,9 @@ public class Strategy10_3 {
             String year = date.substring(date.lastIndexOf("/") + 1);
             if (year.equals(String.valueOf(beforeYear))) {
                 dateList.add(date);
+            } else if (lastYearLastDay) {
+                dateList.add(date);
+                lastYearLastDay = false;
             }
         }
         Collections.reverse(dateList);
@@ -146,11 +150,11 @@ public class Strategy10_3 {
                 if (kLine == null) {
                     continue;
                 }
-                if (date.equals("10/27/2023") && (stock.equals("ALGN")||stock.equals("MARA"))) {
-//                                        System.out.println();
+                if (date.equals("10/27/2023") && (stock.equals("ALGN") || stock.equals("MARA"))) {
+                    //                                        System.out.println();
                 }
                 if (earningStockSet.contains(stock) || lastEarningStockSet.contains(stock)) {
-                                        continue;
+                    continue;
                 }
                 double open = kLine.getOpen();
                 BigDecimal m20close = BigDecimal.valueOf(open);
@@ -203,7 +207,7 @@ public class Strategy10_3 {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<String> lineList = BaseUtils.readFile(Constants.TRADE_OPEN_PATH + "2023/" + stock);
+            List<String> lineList = BaseUtils.readFile(Constants.TRADE_OPEN_PATH + "2024/" + stock);
             for (String line : lineList) {
                 String[] split = line.split(",");
                 String date = split[0];
@@ -225,14 +229,14 @@ public class Strategy10_3 {
         }
         // 加载开盘有真实交易的股票(5秒内有交易的才算有效开盘)
         Map<String, Map<String, SimpleTrade>> dateToOpenTradeMap = Maps.newHashMap();
-        Map<String, String> openFirstFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade");
+        Map<String, String> openFirstFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/openFirstTrade");
         for (String stock : openFirstFileMap.keySet()) {
             List<String> lines = BaseUtils.readFile(openFirstFileMap.get(stock));
             if (CollectionUtils.isEmpty(lines)) {
                 continue;
             }
 
-            lines.remove(lines.size() - 1);
+            //            lines.remove(lines.size() - 1);
             for (String line : lines) {
                 String[] split = line.split(",");
                 if (split.length < 3) {
@@ -283,19 +287,16 @@ public class Strategy10_3 {
                     Map<String, StockRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockRatio>) originRatioMap);
 
                     int gainCount = 0, lossCount = 0;
-                    for (int j = 0; j < dateList.size(); j++) {
+                    for (int j = 1; j < dateList.size(); j++) {
                         String date = dateList.get(j);
                         if (date.equals("11/09/2023")) {
-//                            System.out.println();
+                            //                            System.out.println();
                         }
                         Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
                         Map<String, StockKLine> lastStockKLineMap = Maps.newHashMap();
-                        String lastDate = "";
-                        if (j > 0) {
-                            lastDate = dateList.get(j - 1);
-                            lastStockBollMap = dateToStockBollMap.get(lastDate);
-                            lastStockKLineMap = dateToStockLineMap.get(lastDate);
-                        }
+                        String lastDate = dateList.get(j - 1);
+                        lastStockBollMap = dateToStockBollMap.get(lastDate);
+                        lastStockKLineMap = dateToStockLineMap.get(lastDate);
                         Map<String, StockKLine> stockKLineMap = dateToStockLineMap.get(date);
                         Map<String, BOLL> stockBollMap = dateToStockBollMap.get(date);
                         List<String> stocks = dateToStocksMap.get(date);
@@ -312,15 +313,15 @@ public class Strategy10_3 {
                             BOLL boll = stockBollMap.get(stock);
                             BOLL lastBoll = lastStockBollMap.get(lastDate);
 
-                            if (lastKLine != null && (lastKLine.getVolume().doubleValue()<100000 || lastKLine.getClose()>lastKLine.getOpen())) {
-                                                                continue;
+                            if (lastKLine != null && (lastKLine.getVolume().doubleValue() < 100000 || lastKLine.getClose() > lastKLine.getOpen())) {
+                                continue;
                             }
 
                             double open = kLine.getOpen();
                             double close = kLine.getClose();
                             double low = kLine.getLow();
                             if (boll == null) {
-                                System.out.println(date+" "+stock+" boll is null");
+                                System.out.println(date + " " + stock + " boll is null");
                                 continue;
                             }
                             double currMb = boll.getMb();
@@ -352,18 +353,18 @@ public class Strategy10_3 {
                             StockRatio stockRatio = ratioMap.get(stock);
                             Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
                             if (MapUtils.isEmpty(ratioDetail)) {
-//                                stockRatio.addBean(buildBean(kLine, boll));
+                                //                                stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
 
                             RatioBean ratioBean = ratioDetail.get(openDnDiffInt);
                             if (ratioBean == null || ratioBean.getRatio() < hit) {
-//                                stockRatio.addBean(buildBean(kLine, boll));
+                                //                                stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
 
                             if (hasCompute) {
-//                                stockRatio.addBean(buildBean(kLine, boll));
+                                //                                stockRatio.addBean(buildBean(kLine, boll));
                                 continue;
                             }
 
@@ -402,7 +403,7 @@ public class Strategy10_3 {
                                     lossCount++;
                                 }
                             }
-//                            stockRatio.addBean(buildBean(kLine, boll));
+                            //                            stockRatio.addBean(buildBean(kLine, boll));
                             size++;
                         }
                         capital += income;
@@ -422,8 +423,7 @@ public class Strategy10_3 {
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(mergePath);
 
-
-        int beforeYear = 2022, afterYear = 2020;
+        int beforeYear = 2023, afterYear = 2021;
         Map<String, StockRatio> stockRatioMap = Maps.newHashMap();
         for (String stock : dailyFileMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
@@ -435,13 +435,13 @@ public class Strategy10_3 {
 
             String filePath = dailyFileMap.get(stock);
             List<StockKLine> kLines = BaseUtils.loadDataToKline(filePath, beforeYear, afterYear);
-//            Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
+            //            Map<String, StockKLine> dateToKLineMap = kLines.stream().collect(Collectors.toMap(StockKLine::getDate, k -> k, (k1, k2) -> k1));
 
-//            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2022, 2020);
-//            Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
+            //            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2022, 2020);
+            //            Map<String, BOLL> dateToBollMap = bolls.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));
 
-//            List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
-//                        List<Bean> result = strategy(kLines);
+            //            List<Bean> result = strategy1(dateToKLineMap, dateToBollMap);
+            //                        List<Bean> result = strategy(kLines);
 
             List<BOLL> bollWithOpen = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, beforeYear, afterYear);
             Map<String, BOLL> dateToOpenBollMap = bollWithOpen.stream().collect(Collectors.toMap(BOLL::getDate, b -> b, (b1, b2) -> b1));

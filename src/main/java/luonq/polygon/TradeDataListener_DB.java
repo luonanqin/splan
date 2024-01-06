@@ -68,7 +68,7 @@ public class TradeDataListener_DB {
         StockRatio stockRatio = originRatioMap.get(stock);
         Map<Integer, RatioBean> ratioMap = stockRatio.getRatioMap();
         RatioBean ratioBean = ratioMap.get(diffInt);
-        if (ratioBean == null || ratioBean.getRatio() < RealTimeDataWS.HIT) {
+        if (ratioBean == null || ratioBean.getRatio() < RealTimeDataWS_DB.HIT) {
             return;
         }
 

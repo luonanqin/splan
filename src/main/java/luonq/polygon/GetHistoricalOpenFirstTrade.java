@@ -7,7 +7,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -24,12 +23,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * Created by Luonanqin on 2023/5/14.
@@ -82,51 +79,61 @@ public class GetHistoricalOpenFirstTrade {
         LocalDateTime summerTime = BaseUtils.getSummerTime(null);
         LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
-        Map<String, String> stockOpenFirstMap = BaseUtils.getFileMap(openFirstTradePath);
+        Map<String, String> openFirstMap = BaseUtils.getFileMap(openFirstTradePath);
         Map<String, String> stockMap = BaseUtils.getFileMap(kLinePath);
-        Set<String> test = Sets.newHashSet("AAPL");
         for (String stock : stockMap.keySet()) {
             try {
-                if (!test.contains(stock)) {
-                    continue;
-                }
-
-                String file = stockOpenFirstMap.get(stock);
-                if (StringUtils.isBlank(file)) {
-                    continue;
-                }
-                List<String> lines = BaseUtils.readFile(file);
-                String latestDate = "01/01/2000";
-                if (CollectionUtils.isNotEmpty(lines)) {
-                    String[] split = lines.get(0).split(",");
-                    if (split.length < 3) {
-                        continue;
-                    }
-                    latestDate = split[0];
+                if (!stock.equals("AAPL")) {
+//                    continue;
                 }
 
                 String stockFile = stockMap.get(stock);
-                List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockFile, lastYear);
-                List<String> tradeDateList = stockKLines.stream().map(StockKLine::getDate).collect(Collectors.toList());
+                String openFirstFile = openFirstMap.get(stock);
+
+                List<StockKLine> kLines = BaseUtils.loadDataToKline(stockFile, curYear);
+                if (CollectionUtils.isEmpty(kLines)) {
+                    continue;
+                }
+
+                List<String> lines;
+                if (StringUtils.isBlank(openFirstFile)) {
+                    lines = Lists.newArrayListWithExpectedSize(0);
+                } else {
+                    lines = BaseUtils.readFile(openFirstFile);
+                }
 
                 List<String> dateList = Lists.newArrayList();
-                LocalDate latestDay = LocalDate.parse(latestDate, Constants.FORMATTER);
-                for (String tradeDate : tradeDateList) {
-                    LocalDate tradeDay = LocalDate.parse(tradeDate, Constants.FORMATTER);
-                    if (latestDay.isEqual(tradeDay) && retry) {
-                        dateList.add(latestDate);
-                        lines.remove(0);
+                if (CollectionUtils.isNotEmpty(lines)) {
+                    String openLine = lines.get(0);
+                    String[] split = openLine.split(",");
+                    if (split.length < 3) {
                         continue;
                     }
-                    if (latestDay.isBefore(tradeDay)) {
-                        dateList.add(tradeDate);
-                    } else {
-                        break;
+                    String openDate = split[0];
+
+                    if (openDate.length() > 10) {
+                        System.out.println(stock + " " + openLine);
+                        continue;
                     }
-                }
-                if (CollectionUtils.isEmpty(dateList)) {
-                    //                    System.out.println("has get " + stock);
-                    continue;
+
+                    LocalDate dateParse = LocalDate.parse(openDate, Constants.FORMATTER);
+
+                    for (int i = 0; i < kLines.size(); i++) {
+                        String latestDate = kLines.get(i).getDate();
+                        LocalDate latestDateParse = LocalDate.parse(latestDate, Constants.FORMATTER);
+                        if (dateParse.isEqual(latestDateParse) && retry) {
+                            dateList.add(latestDate);
+                            lines.remove(0);
+                            continue;
+                        }
+                        if (dateParse.isBefore(latestDateParse)) {
+                            dateList.add(latestDate);
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    kLines.forEach(k -> dateList.add(k.getDate()));
                 }
 
                 HttpClient httpClient = clients.take();
@@ -176,7 +183,7 @@ public class GetHistoricalOpenFirstTrade {
                         e.printStackTrace();
                     }
                     long cost = System.currentTimeMillis() - begin;
-                    System.out.println("finish " + stock + " " + cost / 1000);
+//                    System.out.println("finish " + stock + " " + cost / 1000);
                 });
             } catch (Exception e) {
                 System.out.println("error stock: " + stock);

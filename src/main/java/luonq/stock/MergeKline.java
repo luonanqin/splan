@@ -21,8 +21,8 @@ public class MergeKline {
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.STD_DAILY_PATH);
         List<String> stockList = Lists.newArrayList(dailyFileMap.keySet());
-//        stockList.clear();
-//        stockList.add("FUTU");
+        //        stockList.clear();
+        //        stockList.add("FUTU");
 
         // 计算读取最新k线的目录及读取年份
         LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
@@ -74,7 +74,7 @@ public class MergeKline {
             hisStockKLines.addAll(stockKLines);
 
             BaseUtils.writeStockKLine(mergePath + stock, hisStockKLines);
-            System.out.println("finish " + stock);
+            //            System.out.println("finish " + stock);
         }
     }
 

@@ -26,21 +26,22 @@ public class MergeBollinger {
         Map<String, String> stockToKLineMap = BaseUtils.getFileMap(mergePath);
         Map<String, String> hasCalcMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "mergeBoll");
         Set<String> hasCalcStock = hasCalcMap.keySet();
+        int year = 2023;
 
         for (String stock : stockToKLineMap.keySet()) {
             if (!stock.equals("AAPL")) {
-                //                continue;
+//                                continue;
             }
             if (hasCalcStock.contains(stock)) {
                 //                continue;
             }
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock), 2023);
-            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, 2023, 0);
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(stockToKLineMap.get(stock), year);
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, year);
             if (CollectionUtils.isEmpty(bolls) || CollectionUtils.isEmpty(stockKLines)) {
                 continue;
             }
-            List<String> stockDateList = stockKLines.stream().filter(s -> s.getDate().endsWith("2023")).map(StockKLine::getDate).collect(Collectors.toList());
-            Set<String> bollDateSet = bolls.stream().filter(b -> b.getDate().endsWith("2023")).map(BOLL::getDate).collect(Collectors.toSet());
+            List<String> stockDateList = stockKLines.stream().filter(s -> s.getDate().endsWith(String.valueOf(year))).map(StockKLine::getDate).collect(Collectors.toList());
+            Set<String> bollDateSet = bolls.stream().filter(b -> b.getDate().endsWith(String.valueOf(year))).map(BOLL::getDate).collect(Collectors.toSet());
             String earliestDate = "", prevDate = "";
             int index = 0;
             for (int i = 0; i < stockDateList.size(); i++) {
@@ -52,7 +53,7 @@ public class MergeBollinger {
                 }
             }
             if (StringUtils.isBlank(earliestDate)) {
-//                System.out.println("has calculate: " + stock);
+                //                System.out.println("has calculate: " + stock);
                 continue;
             }
 
@@ -105,7 +106,7 @@ public class MergeBollinger {
             }
 
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, bollList);
-//            System.out.println("finish " + stock);
+            //            System.out.println("finish " + stock);
         }
     }
 

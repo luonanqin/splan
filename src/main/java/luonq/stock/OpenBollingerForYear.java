@@ -60,7 +60,7 @@ public class OpenBollingerForYear {
 
         for (String stock : stockToKLineMap.keySet()) {
             if (!stock.equals("AAPL")) {
-                continue;
+                //                continue;
             }
 
             List<StockKLine> lastKLines = BaseUtils.loadDataToKline(lastKLinePath + stock, lastYear);
@@ -142,7 +142,7 @@ public class OpenBollingerForYear {
                 bollList.addAll(0, newBollList);
                 BaseUtils.writeFile(Constants.HIS_BASE_PATH + curYear + "/openBOLL/" + stock, bollList);
 
-                System.out.println("finish " + stock);
+                //                System.out.println("finish " + stock);
             }
         }
     }

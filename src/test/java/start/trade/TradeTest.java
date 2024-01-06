@@ -1,5 +1,6 @@
 package start.trade;
 
+import luonq.job.TradeJob;
 import luonq.polygon.RealTimeDataWS_DB;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,16 @@ public class TradeTest extends BaseTest {
     @Autowired
     private RealTimeDataWS_DB realTimeDataWS_db;
 
+    @Autowired
+    private TradeJob tradeJob;
+
     @Test
     public void test(){
         realTimeDataWS_db.init();
+    }
+
+    @Test
+    public void test_sellBeforeCloseMarket(){
+        tradeJob.sellBeforeCloseMarket();
     }
 }

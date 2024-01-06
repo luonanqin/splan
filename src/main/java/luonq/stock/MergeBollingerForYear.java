@@ -53,7 +53,7 @@ public class MergeBollingerForYear {
             }
             if (curBollLines.size() > originSize) {
                 BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, curBollLines);
-                System.out.println("finish " + stock);
+//                System.out.println("finish " + stock);
             }
         }
     }
