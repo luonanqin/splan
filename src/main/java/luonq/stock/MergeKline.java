@@ -2,6 +2,7 @@ package luonq.stock;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
 import util.Constants;
@@ -13,6 +14,7 @@ import java.util.Map;
 /**
  * Created by Luonanqin on 2023/4/25.
  */
+@Slf4j
 public class MergeKline {
 
     public static void merge() throws Exception {
@@ -74,7 +76,7 @@ public class MergeKline {
             hisStockKLines.addAll(stockKLines);
 
             BaseUtils.writeStockKLine(mergePath + stock, hisStockKLines);
-            //            System.out.println("finish " + stock);
+            //            log.info("finish " + stock);
         }
     }
 

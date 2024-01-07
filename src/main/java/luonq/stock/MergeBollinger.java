@@ -2,6 +2,7 @@ package luonq.stock;
 
 import bean.BOLL;
 import bean.StockKLine;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
@@ -19,6 +20,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 /**
  * Created by Luonanqin on 2023/2/3.
  */
+@Slf4j
 public class MergeBollinger {
 
     public static void calculate() throws Exception {
@@ -53,7 +55,7 @@ public class MergeBollinger {
                 }
             }
             if (StringUtils.isBlank(earliestDate)) {
-                //                System.out.println("has calculate: " + stock);
+                //                log.info("has calculate: " + stock);
                 continue;
             }
 
@@ -106,7 +108,7 @@ public class MergeBollinger {
             }
 
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, bollList);
-            //            System.out.println("finish " + stock);
+            //            log.info("finish " + stock);
         }
     }
 

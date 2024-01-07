@@ -3,6 +3,7 @@ package luonq.stock;
 import bean.BOLL;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 import util.Constants;
@@ -22,6 +23,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
  * 读取前一年和当年的k线计算当年布林线，新年前19个交易日需要前一年的数据一起计算布林线
  * 计算好的布林线要merge到mergeBoll
  */
+@Slf4j
 public class BollingerForYear {
 
     public static void calculate() throws Exception {
@@ -136,7 +138,7 @@ public class BollingerForYear {
                 bollList.addAll(0, newBollList);
                 BaseUtils.writeFile(Constants.HIS_BASE_PATH + curYear + "/BOLL/" + stock, bollList);
 
-                //                System.out.println("finish " + stock);
+                //                log.info("finish " + stock);
             }
         }
     }

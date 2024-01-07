@@ -30,7 +30,7 @@ public class SyncDataToDBJob {
         List<String> dateList = null;
         if (StringUtils.isNotBlank(dateJson)) {
             dateList = gson.fromJson(dateJson, List.class);
-            System.out.println(dateList);
+            log.info("syncEarningToDB.job dateList: {}", dateList);
         }
         writeToDB.earningToDB(dateList);
     }

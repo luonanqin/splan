@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="log.path" value="/Users/Luonanqin/study/intellij_idea_workspaces/splan/src/main/resources/executeLog"/>
+    <timestamp key="year" datePattern="yyyy"/>
+    <timestamp key="datetime" datePattern="MM-dd"/>
+
+    <!-- 定义输出到控制台的appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 定义输出到文件的appender -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${log.path}/${year}/trade-${datetime}.log</file>
+        <append>true</append>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 设置根logger的level为INFO，并将日志同时输出到控制台和文件 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+<!--        <appender-ref ref="FILE"/>-->
+    </root>
+
+    <logger name="luonq" level="INFO">
+        <appender-ref ref= "FILE"/>
+    </logger>
+</configuration>

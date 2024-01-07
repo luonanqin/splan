@@ -2,7 +2,6 @@ package luonq.job;
 
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
-import luonq.polygon.RealTimeDataWS;
 import luonq.polygon.RealTimeDataWS_DB;
 import luonq.polygon.TradeExecutor;
 import luonq.polygon.TradeExecutor_DB;
@@ -19,12 +18,6 @@ public class TradeJob {
     @Autowired
     private TradeExecutor_DB tradeExecutor_db;
 
-    @XxlJob("Trade.job")
-    public void trade() throws Exception {
-        RealTimeDataWS realTimeDataWS = new RealTimeDataWS();
-        realTimeDataWS.init();
-    }
-
     @XxlJob("Trade_DB.job")
     public void trade_DB() throws Exception {
         realTimeDataWS_db.init();
@@ -35,7 +28,7 @@ public class TradeJob {
         try {
             tradeExecutor_db.init();
             tradeExecutor_db.closeSell();
-            System.out.println("tradeExecutor_db sell");
+            log.info("tradeExecutor_db sell");
             return;
         } catch (Exception e) {
             e.printStackTrace();

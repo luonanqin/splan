@@ -26,6 +26,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.protobuf.util.JsonFormat;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +52,7 @@ import static util.Constants.TRADE_ERROR_CODE;
 /**
  * Created by Luonanqin on 2022/12/22.
  */
+@Slf4j
 public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     public static String pwd = MD5Util.calcMD5("134931");
@@ -109,17 +111,17 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     public void start() {
         trd.initConnect("127.0.0.1", (short) 11111, false);
         //        qot.initConnect("127.0.0.1", (short) 11111, false);
-        System.out.println("trade api initialize staring...");
+        log.info("trade api initialize staring...");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException exc) {
         }
-        System.out.println("trade api initialize finish start!");
+        log.info("trade api initialize finish start!");
     }
 
     @Override
     public void onInitConnect(FTAPI_Conn client, long errCode, String desc) {
-        System.out.printf("TradeApi onInitConnect: ret=%b desc=%s connID=%d\n", errCode, desc, client.getConnectID());
+        log.info("TradeApi onInitConnect: ret={} desc={} connID={}", errCode, desc, client.getConnectID());
         if (errCode != 0) {
             return;
         }
@@ -140,7 +142,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .build();
         TrdUnlockTrade.Request req = TrdUnlockTrade.Request.newBuilder().setC2S(c2s).build();
         trd.unlockTrade(req);
-        //        System.out.printf("Send TrdUnlockTrade: %d\n", seqNo);
+        //        log.info("Send TrdUnlockTrade: %d\n", seqNo);
     }
 
     // 获取资金接口
@@ -207,7 +209,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .build();
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
         int seqNo = trd.placeOrder(req);
-        System.out.printf("Send TrdPlaceOrder: %d\n", seqNo);
+        log.info("Send TrdPlaceOrder: {}", seqNo);
     }
 
     // 市价单买入
@@ -338,7 +340,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
-        System.out.println("subcribe quote: " + stock);
+        log.info("subcribe quote: " + stock);
     }
 
     // 获取报价
@@ -352,7 +354,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .build();
         QotGetBasicQot.Request req = QotGetBasicQot.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.getBasicQot(req);
-        System.out.println("try to get basic qot: " + stock);
+        log.info("try to get basic qot: " + stock);
         while (true) {
             if (quote.get() != 0) {
                 return quote.getAndSet(0);
@@ -404,14 +406,14 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     @Override
     public void onDisconnect(FTAPI_Conn client, long errCode) {
-        System.out.printf("Qot onDisConnect: %d\n", errCode);
+        log.info("Qot onDisConnect: {}", errCode);
     }
 
     // 订单成交回调
     @Override
     public void onPush_UpdateOrder(FTAPI_Conn client, TrdUpdateOrder.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdUpdateOrder failed: %s\n", rsp.getRetMsg());
+            log.error("TrdUpdateOrder failed: {}", rsp.getRetMsg());
         } else {
             try {
                 TrdCommon.Order order = rsp.getS2COrBuilder().getOrder();
@@ -420,7 +422,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 double fillQty = order.getFillQty();
                 double fillAvgPrice = order.getFillAvgPrice();
                 if (orderStatus != TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE) {
-                    //                    System.out.println("fillQty: " + fillQty + ", fillAvgPrice: " + fillAvgPrice);
+                    //                    log.info("fillQty: " + fillQty + ", fillAvgPrice: " + fillAvgPrice);
                     return;
                 }
 
@@ -438,9 +440,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                     orderFillMap.put(orderID, new LinkedBlockingQueue<>(10));
                 }
                 orderFillMap.get(orderID).offer(fill);
-                System.out.println("update order: " + fill);
+                log.info("update order: {}", fill);
             } catch (Exception e) {
-                System.out.println("onPush_UpdateOrder error. " + e.getMessage());
+                log.error("onPush_UpdateOrder error.", e);
             }
         }
     }
@@ -449,14 +451,14 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_UnlockTrade(FTAPI_Conn client, int nSerialNo, TrdUnlockTrade.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdUnlockTrade failed: %s\n", rsp.getRetMsg());
+            log.error("TrdUnlockTrade failed: {}", rsp.getRetMsg());
         } else {
             try {
-                System.out.println("unlock success");
+                log.info("unlock success");
                 //                            String json = JsonFormat.printer().print(rsp);
-                //                            System.out.printf("Receive TrdUnlockTrade: %s\n", json);
+                //                            log.info("Receive TrdUnlockTrade: %s\n", json);
             } catch (Exception e) {
-                System.out.println("onReply_UnlockTrade error. " + e.getMessage());
+                log.error("onReply_UnlockTrade error.", e);
             }
         }
     }
@@ -465,16 +467,16 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_GetFunds(FTAPI_Conn client, int nSerialNo, TrdGetFunds.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdGetFunds failed: %s\n", rsp.getRetMsg());
+            log.error("TrdGetFunds failed: {}", rsp.getRetMsg());
         } else {
             try {
                 //                String json = JsonFormat.printer().print(rsp);
-                //                System.out.printf("Receive TrdGetFunds: %s\n", json);
+                //                log.info("Receive TrdGetFunds: %s\n", json);
                 double cash = rsp.getS2COrBuilder().getFunds().getCash();
                 remainCash.set(cash);
-                System.out.println("onReply_GetFunds: " + cash);
+                log.info("onReply_GetFunds: {}", cash);
             } catch (Exception e) {
-                System.out.println("onReply_GetFunds error. " + e.getMessage());
+                log.error("onReply_GetFunds error.", e);
             }
         }
     }
@@ -483,7 +485,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_GetPositionList(FTAPI_Conn client, int nSerialNo, TrdGetPositionList.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdGetPositionList failed: %s\n", rsp.getRetMsg());
+            log.error("TrdGetPositionList failed: {}", rsp.getRetMsg());
         } else {
             try {
                 Map<String, StockPosition> positionMap = Maps.newHashMap();
@@ -511,10 +513,10 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 }
 
                 //                String json = JsonFormat.printer().print(rsp);
-                //                System.out.printf("Receive TrdGetPositionList: %s\n", json);
+                //                log.info("Receive TrdGetPositionList: %s\n", json);
                 stockPositionBlock.offer(positionMap);
             } catch (Exception e) {
-                System.out.println("onReply_GetPositionList error. " + e.getMessage());
+                log.error("onReply_GetPositionList error.", e);
             }
         }
     }
@@ -523,7 +525,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_PlaceOrder(FTAPI_Conn client, int nSerialNo, TrdPlaceOrder.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdPlaceOrder failed: %s\n", rsp.getRetMsg());
+            log.error("TrdPlaceOrder failed: {}", rsp.getRetMsg());
             orderId.set(TRADE_ERROR_CODE);
         } else {
             try {
@@ -531,9 +533,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 orderFillMap.put(orderID, new LinkedBlockingQueue<>());
                 orderId.set(orderID);
                 //                String json = JsonFormat.printer().print(rsp);
-                //                System.out.printf("Receive TrdPlaceOrder: %s\n", json);
+                //                log.info("Receive TrdPlaceOrder: %s\n", json);
             } catch (Exception e) {
-                System.out.println("onReply_PlaceOrder error. " + e.getMessage());
+                log.error("onReply_PlaceOrder error. ", e);
             }
         }
     }
@@ -542,15 +544,15 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_ModifyOrder(FTAPI_Conn client, int nSerialNo, TrdModifyOrder.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdModifyOrder failed: %s\n", rsp.getRetMsg());
+            log.error("TrdModifyOrder failed: {}", rsp.getRetMsg());
             modifyOrderId.set(TRADE_ERROR_CODE);
         } else {
             try {
                 modifyOrderId.set(rsp.getS2C().getOrderID());
                 //                String json = JsonFormat.printer().print(rsp);
-                //                System.out.printf("Receive TrdModifyOrder: %s\n", json);
+                //                log.info("Receive TrdModifyOrder: %s\n", json);
             } catch (Exception e) {
-                System.out.println("onReply_ModifyOrder error. " + e.getMessage());
+                log.error("onReply_ModifyOrder error. ", e);
             }
         }
     }
@@ -559,9 +561,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_Sub(FTAPI_Conn client, int nSerialNo, QotSub.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("Subcribe qot failed: %s\n", rsp.getRetMsg());
+            log.error("Subcribe qot failed: {}", rsp.getRetMsg());
         } else {
-            System.out.println("Subcribe qot success");
+            log.info("Subcribe qot success");
         }
     }
 
@@ -569,7 +571,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_GetBasicQot(FTAPI_Conn client, int nSerialNo, QotGetBasicQot.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("get basic qot failed: %s\n", rsp.getRetMsg());
+            log.error("get basic qot failed: {}", rsp.getRetMsg());
             quote.set(-1);
         } else {
             QotGetBasicQot.S2C s2C = rsp.getS2C();
@@ -577,7 +579,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
             for (QotCommon.BasicQot basicQot : basicQotListList) {
                 String stock = basicQot.getSecurity().getCode();
                 double curPrice = basicQot.getCurPrice();
-                System.out.println("get basic qot. stock=" + stock + " price=" + curPrice);
+                log.info("get basic qot. stock=" + stock + " price=" + curPrice);
                 quote.set(curPrice);
                 return;
             }
@@ -587,13 +589,13 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_GetHistoryOrderList(FTAPI_Conn client, int nSerialNo, TrdGetHistoryOrderList.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdGetHistoryOrderLis failed: %s\n", rsp.getRetMsg());
+            log.error("TrdGetHistoryOrderLis failed: {}", rsp.getRetMsg());
         } else {
             try {
                 String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive GetHistoryOrderList: %s\n", json);
+                log.info("Receive GetHistoryOrderList: {}", json);
             } catch (Exception e) {
-                System.out.println("onReply_GetHistoryOrderList error. " + e.getMessage());
+                log.error("onReply_GetHistoryOrderList error. ", e);
             }
         }
     }
@@ -601,16 +603,16 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_GetMaxTrdQtys(FTAPI_Conn client, int nSerialNo, TrdGetMaxTrdQtys.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("TrdGetMaxTrdQtys failed: %s\n", rsp.getRetMsg());
+            log.error("TrdGetMaxTrdQtys failed: {}", rsp.getRetMsg());
             maxCashBuy.set(TRADE_ERROR_CODE);
         } else {
             try {
                 TrdCommon.MaxTrdQtys maxTrdQtys = rsp.getS2COrBuilder().getMaxTrdQtys();
                 int count = (int) maxTrdQtys.getMaxCashBuy();
                 maxCashBuy.set(count);
-                System.out.println("onReply_GetMaxTrdQtys: " + count);
+                log.info("onReply_GetMaxTrdQtys: " + count);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("onReply_GetMaxTrdQtys error. ", e);
             }
         }
     }
@@ -628,7 +630,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
             }
             br.close();
         } catch (Exception e) {
-            System.out.println("can not find file: " + filePath);
+            log.error("can not find file: {}", filePath);
             return Lists.newArrayList();
         }
         return lineList;

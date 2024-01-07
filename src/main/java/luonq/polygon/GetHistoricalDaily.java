@@ -6,6 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Luonanqin on 2023/5/5.
  */
+@Slf4j
 public class GetHistoricalDaily {
 
     public static String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
@@ -122,7 +124,7 @@ public class GetHistoricalDaily {
                 StockKLine kLine = StockKLine.builder().date(formatDate).open(open).close(close).high(high).low(low).volume(volume).build();
                 list.add(kLine);
             } catch (Exception e) {
-                System.out.println(stock + " " + e.getMessage());
+                log.error(stock + " " + e.getMessage());
             } finally {
                 get.releaseConnection();
             }
@@ -168,7 +170,7 @@ public class GetHistoricalDaily {
         }
         for (String stock : stockMap.keySet()) {
             if (invalidStock.contains(stock)) {
-                //                System.out.println("invalid stock: " + stock);
+                //                log.info("invalid stock: " + stock);
                 continue;
             }
             if (!stock.equals("AAPL")) {
@@ -179,7 +181,7 @@ public class GetHistoricalDaily {
             List<String> addDate = Lists.newArrayList();
             String date;
             if (CollectionUtils.isEmpty(stockKLines)) {
-                //                System.out.println("no file " + stock);
+                //                log.info("no file " + stock);
                 date = "01/01/" + year;
             } else {
                 StockKLine stockKLine = stockKLines.get(0);
@@ -193,16 +195,17 @@ public class GetHistoricalDaily {
             }
 
             if (CollectionUtils.isEmpty(addDate)) {
-                //                System.out.println("has get " + stock);
+                //                log.info("has get " + stock);
                 continue;
             }
+            log.info("has get {}", stock);
             HttpClient httpClient = queue.take();
             cachedThread.execute(() -> {
                 List<StockKLine> dataList = null;
                 try {
                     dataList = getHistoricalDaily(stock, addDate, httpClient);
                     if (CollectionUtils.isEmpty(dataList)) {
-                        //                        System.out.println("no data " + stock);
+                        //                        log.info("no data " + stock);
                         return;
                     }
                     for (StockKLine kLine : dataList) {
@@ -210,10 +213,10 @@ public class GetHistoricalDaily {
                     }
                     BaseUtils.writeStockKLine(file, stockKLines);
                 } catch (Exception e) {
-                    System.out.println(stock + " " + e.getMessage());
+                    log.error(stock + " " + e.getMessage());
                 } finally {
                     if (CollectionUtils.isNotEmpty(dataList)) {
-                        //                        System.out.println("get success " + stock);
+                        //                        log.info("get success " + stock);
                     }
                     queue.offer(httpClient);
                 }
@@ -277,6 +280,6 @@ public class GetHistoricalDaily {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
         getData();
-        System.out.println("============ end ============");
+        log.info("============ end ============");
     }
 }

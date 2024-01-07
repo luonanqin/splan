@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 import util.Constants;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * Created by Luonanqin on 2023/5/5.
  */
 @Data
+@Slf4j
 public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
 
     // CompanyAct_None = 0; 无
@@ -94,14 +96,14 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
           .build();
         QotRequestRehab.Request req = QotRequestRehab.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.requestRehab(req);
-        //        System.out.println(code + " " + seqNo);
+        //        log.info(code + " " + seqNo);
         seqNoToStock.put(seqNo, code);
     }
 
     @Override
     public void onReply_RequestRehab(FTAPI_Conn client, int nSerialNo, QotRequestRehab.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("QotRequestRehab failed: %s\n", rsp.getRetMsg());
+            log.warn("QotRequestRehab failed: {}", rsp.getRetMsg());
         } else {
             try {
                 Thread.sleep(100);
@@ -124,7 +126,7 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
             stockRehab.setFwdFactorA(fwdFactorA);
             stockRehab.setCompanyActFlag(companyActFlag);
 
-//            System.out.println(stockRehab);
+            //            log.info(stockRehab);
 
             result.add(stockRehab);
         }
@@ -138,7 +140,7 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
         //        quote.getRehab("DPST");
 
         Map<String, String> stockFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
-        Set<String> invalidSet = Sets.newHashSet("SDC","SEV","STSA","BSAQ","DHHC","STRE","HLBZ","MSDA","BBBY","FWAC","KDNY","WPCB","SJR","RIDE","SLGG","SCUA","APEN","APGN","CEMI","YELL","KAL","SQZ","JATT","BBLN","VMGA","CNCE","APMI","SDAC","BTB","GRAY","GRCY","MBSC","RAAS","BWC","RADI","FOCS","SLVR","PTRA","GRIL","DICE","SUMO","LYLT","GRNA","MTAC","TGR","OIIM","TIG","RJAC","FORG","CIH","VVNT","AHRN","KVSC","SMIH","ZING","EUCR","CFMS","PDCE","ORCC","LCI","PLXP","TYDE","HMPT","HVBC","ORIA","MLAC","FGMC","IPVI","CVT","FPAC","SVFB","AQUA","MTVC","EMBK","UTAA","DALS","PDOT","VNTR","UBA","SVNA","BLNG","AIMC","LSI","DRTT","DCP","CORS","DCT","HERA","GSQB","GSRM","SESN","AZRE","LION","UTME","CS","GBRG","HEXO","IQMD","LITT","MLVF","PEAR","DMS","AZYO","CPAA","MCG","USX","DSEY","ARNC","CGRN","SNRH","MURF","RKTA","SI","EVOJ","EVOP","VORB","PNAC","HWKZ","MMP","WAVC","ARYE","OBNK","XM","CYAD","TRAQ","MMMB","AAWW","TIOA","ZT","JUGG","RCLF","OBSV","MTP","CPUH","AJRD","ENOB","NHIC","JMAC","NYMX","JUPW","VPCB","MEKA","PNTM","VQS","ENTF","DTEA","CHRA","ESM","TRTN","GLOP","NGC","CYXT","SGFY","METX","FISV","FACT","BVXV","ABST","SGHL","EOCW","BNNR","BWAC","ISEE","CIDM","FRON","SPCM","ATAQ","ATCO","MNTV","VHNA","RUTH","SGTX","CIIG","SPKB","JNCE","CINC","FRC","FRG","ATNX","SPPI","OFC","CREC","WWE","ALBO","GVCI","ACQR","ATTO","FZT","JWAC","GEEX","GMVD","PGRW","SYNH","TTCF","OSH","ITCB","GENQ","RENN","UNVR","GET","ALPA","TCFC","GFX","BGCP","ALPS","ADAL","RETA","BOXD","REVE","ADER","GLS","REUN","FSTX","LDHA","ICNC","PHCF","BPAC","XPAX","ADMP","DMYS","BGRY","TLGA","AURC","TCVA","CSII","MGTA","PKI","GFGD","FTEV","GNUS","DNAB","DNAD","QTEK","HILS","ONCS","IDBA","PTE","LMNL","NBRV","ZEST","AVAC","AMOV","AMOT","LVAC","FTPA","GFOR","SIRE","MPRA","HHC","ROCG","SRGA","AMRS","ROCC","LMST","FCRD","SIVB","PIAI","HMA","GOGN","IMBI","AMYT","CCAI","HAPP","TMDI","HSC","RONI","MYOV","WEJO","YVR","DFFN","LVRA","GGAA","CTIC","RXDX","TMKR","VBOC","ANGN","PRBM","PRDS","ERES","IBA","CLBR","UPTD","YTPG","ZEV","QTT","ANPC","QUOT","LFAC","PANA","HSKA","IMV","PRTK","OXAC","RAM","PRVB","FMIV","ANZU","CDAK","INDT","ISO","TETC","ERYP","INKA","CLXT","VLAT","BRIV","AFTR","ALR","DGNU","ROC","AMV","BRMK","TWCB","RTL","ATY","NUVA","AUY","SCAQ","UIHC","HTGM","AGAC","STET","PSPC","VLON","OPNT","SKYA","TWNI","AGFS","SCHN","VLTA","AGGR","MAXR","SAL","HCNE","TOAC");
+        Set<String> invalidSet = Sets.newHashSet("SDC", "SEV", "STSA", "BSAQ", "DHHC", "STRE", "HLBZ", "MSDA", "BBBY", "FWAC", "KDNY", "WPCB", "SJR", "RIDE", "SLGG", "SCUA", "APEN", "APGN", "CEMI", "YELL", "KAL", "SQZ", "JATT", "BBLN", "VMGA", "CNCE", "APMI", "SDAC", "BTB", "GRAY", "GRCY", "MBSC", "RAAS", "BWC", "RADI", "FOCS", "SLVR", "PTRA", "GRIL", "DICE", "SUMO", "LYLT", "GRNA", "MTAC", "TGR", "OIIM", "TIG", "RJAC", "FORG", "CIH", "VVNT", "AHRN", "KVSC", "SMIH", "ZING", "EUCR", "CFMS", "PDCE", "ORCC", "LCI", "PLXP", "TYDE", "HMPT", "HVBC", "ORIA", "MLAC", "FGMC", "IPVI", "CVT", "FPAC", "SVFB", "AQUA", "MTVC", "EMBK", "UTAA", "DALS", "PDOT", "VNTR", "UBA", "SVNA", "BLNG", "AIMC", "LSI", "DRTT", "DCP", "CORS", "DCT", "HERA", "GSQB", "GSRM", "SESN", "AZRE", "LION", "UTME", "CS", "GBRG", "HEXO", "IQMD", "LITT", "MLVF", "PEAR", "DMS", "AZYO", "CPAA", "MCG", "USX", "DSEY", "ARNC", "CGRN", "SNRH", "MURF", "RKTA", "SI", "EVOJ", "EVOP", "VORB", "PNAC", "HWKZ", "MMP", "WAVC", "ARYE", "OBNK", "XM", "CYAD", "TRAQ", "MMMB", "AAWW", "TIOA", "ZT", "JUGG", "RCLF", "OBSV", "MTP", "CPUH", "AJRD", "ENOB", "NHIC", "JMAC", "NYMX", "JUPW", "VPCB", "MEKA", "PNTM", "VQS", "ENTF", "DTEA", "CHRA", "ESM", "TRTN", "GLOP", "NGC", "CYXT", "SGFY", "METX", "FISV", "FACT", "BVXV", "ABST", "SGHL", "EOCW", "BNNR", "BWAC", "ISEE", "CIDM", "FRON", "SPCM", "ATAQ", "ATCO", "MNTV", "VHNA", "RUTH", "SGTX", "CIIG", "SPKB", "JNCE", "CINC", "FRC", "FRG", "ATNX", "SPPI", "OFC", "CREC", "WWE", "ALBO", "GVCI", "ACQR", "ATTO", "FZT", "JWAC", "GEEX", "GMVD", "PGRW", "SYNH", "TTCF", "OSH", "ITCB", "GENQ", "RENN", "UNVR", "GET", "ALPA", "TCFC", "GFX", "BGCP", "ALPS", "ADAL", "RETA", "BOXD", "REVE", "ADER", "GLS", "REUN", "FSTX", "LDHA", "ICNC", "PHCF", "BPAC", "XPAX", "ADMP", "DMYS", "BGRY", "TLGA", "AURC", "TCVA", "CSII", "MGTA", "PKI", "GFGD", "FTEV", "GNUS", "DNAB", "DNAD", "QTEK", "HILS", "ONCS", "IDBA", "PTE", "LMNL", "NBRV", "ZEST", "AVAC", "AMOV", "AMOT", "LVAC", "FTPA", "GFOR", "SIRE", "MPRA", "HHC", "ROCG", "SRGA", "AMRS", "ROCC", "LMST", "FCRD", "SIVB", "PIAI", "HMA", "GOGN", "IMBI", "AMYT", "CCAI", "HAPP", "TMDI", "HSC", "RONI", "MYOV", "WEJO", "YVR", "DFFN", "LVRA", "GGAA", "CTIC", "RXDX", "TMKR", "VBOC", "ANGN", "PRBM", "PRDS", "ERES", "IBA", "CLBR", "UPTD", "YTPG", "ZEV", "QTT", "ANPC", "QUOT", "LFAC", "PANA", "HSKA", "IMV", "PRTK", "OXAC", "RAM", "PRVB", "FMIV", "ANZU", "CDAK", "INDT", "ISO", "TETC", "ERYP", "INKA", "CLXT", "VLAT", "BRIV", "AFTR", "ALR", "DGNU", "ROC", "AMV", "BRMK", "TWCB", "RTL", "ATY", "NUVA", "AUY", "SCAQ", "UIHC", "HTGM", "AGAC", "STET", "PSPC", "VLON", "OPNT", "SKYA", "TWNI", "AGFS", "SCHN", "VLTA", "AGGR", "MAXR", "SAL", "HCNE", "TOAC", "AGLE", "SCU", "SCOB", "NVCN", "STOR", "MBAC", "NMTR", "SFT", "JUN", "SCPL", "MSAC", "GIAC", "SJI", "WPCA", "BSGA", "LGTO", "ZYNE", "BLI", "APGB", "PCCT", "BSMX", "SQL", "CENQ", "SSU", "CEQP", "SUAC", "BSQR", "NVSA", "NETC", "APRN", "LHCG", "NEWR", "PTOC", "CNNB", "VECT", "PTRS", "SUNL", "TPBA", "VEDU", "AYLA", "IPAX", "HMAC", "KSI", "CCV", "MCAE", "SMAP", "PCYG", "CFFE", "CIR", "KNBE", "CFIV", "KVSA", "WQGA", "NFNT", "ELVT", "FOXW", "MCLD", "THAC", "CFRX", "CTG", "BCOR", "MTRY", "MLAI", "IPVF", "LHC", "SVFA", "BTWN", "KNSW", "EDTX", "CXAC", "SELB", "THRN", "GSMG", "GSQD", "DEN", "NXGN", "COUP", "NOVN", "ARBG", "JCIC", "ARCK", "ARCE", "COWN", "ARGO", "LIVB", "UPH", "HT", "DNZ", "AAIC", "CPAR", "CPAQ", "BMAQ", "MDNA", "NM", "HWEL", "MIT", "ARTE", "VGFC", "TZPS", "TRCA", "OSTK", "DBTX", "MEAC", "TRHC", "VII", "ABCM", "VMW", "IRNT", "TALS", "ABGI", "PFDR", "NCR", "EFHT", "MEOA", "PFHD", "HORI", "ASPA", "FINM", "BNFT", "FRBN", "SGII", "FREQ", "OTMO", "FRGI", "UMPQ", "DLCA", "DCRD", "DTRT", "PFSW", "GDNR", "TBCP", "IBER", "ACAQ", "OLIT", "FRSG", "PONO", "WMC", "ACDI", "MFGP", "FRXB", "HPLT", "TBSA", "BOAC", "NAAC", "MOBV", "EGLX", "ACRO", "CIXX", "ATVI", "GEHI", "ITAQ", "RVLP", "TCDA", "HYRE", "NATI", "ALOR", "SHUA", "KINZ", "RNER", "FSRX", "CRZN", "GLG", "MOXC", "VACC", "VIVO", "ICPT", "KAII", "AMAO", "FTAA", "BGSX", "AMCI", "FTCH", "FCAX", "CBIO", "VRTV", "GWII", "POW", "HZNP", "ONEM", "HEP", "AEAC", "PYR", "AVCT", "AVEO", "WEBR", "EQRX", "AEHA", "AVID", "LEGA", "PICC", "SAMA", "SRNE", "CTAQ", "IDRA", "ANAC", "VBLT", "AERC", "AVYA", "PACW", "IMPL", "PACX", "TMPO", "PACI", "CLAA", "HSAQ", "IMRA", "QUMU", "CCVI", "MICT", "WWAC", "PRPC", "BIOC", "BIOT", "BIOS", "ITQ", "PAYA", "RFP", "IVC", "BRDS", "NLTX", "MIRO", "LOCC", "EBAC", "AKU", "VLDR", "LOKM", "DKDCA", "VCXA", "HCCI", "VLNS", "HCDI", "LGAC", "TWNK", "ESTE", "SCMA");
         for (String stock : stockFileMap.keySet()) {
             if (invalidSet.contains(stock)) {
                 continue;
@@ -147,12 +149,12 @@ public class GetRehab implements FTSPI_Qot, FTSPI_Conn {
             Thread.sleep(600);
         }
         List<StockRehab> result = quote.getResult();
-//        System.out.println(result);
+        //        log.info(result);
         List<String> data = result.stream().map(StockRehab::toString).collect(Collectors.toList());
-//        BaseUtils.writeFile(Constants.SPLIT_PATH + "rehab", data);
+        BaseUtils.writeFile(Constants.SPLIT_PATH + "rehab", data);
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         getData();
     }
 }

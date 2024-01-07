@@ -3,6 +3,7 @@ package luonq.indicator;
 import bean.BOLL;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import util.BaseUtils;
 import util.Constants;
 
@@ -17,6 +18,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 /**
  * Created by Luonanqin on 2023/2/3.
  */
+@Slf4j
 public class Bollinger {
 
     public static void main(String[] args) throws Exception {
@@ -78,7 +80,7 @@ public class Bollinger {
             }
 
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, Lists.reverse(maList));
-            System.out.println("finish " + period + " " + stock);
+            log.info("finish " + period + " " + stock);
         }
     }
 }

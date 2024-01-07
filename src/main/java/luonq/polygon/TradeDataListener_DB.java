@@ -8,6 +8,7 @@ import bean.StockRatio;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ import static luonq.polygon.RealTimeDataWS_DB.originRatioMap;
  * Created by Luonanqin on 2023/5/9.
  */
 @Data
+@Slf4j
 public class TradeDataListener_DB {
 
     private NodeList list;
@@ -55,7 +57,7 @@ public class TradeDataListener_DB {
         BigDecimal mdPow2 = BigDecimal.valueOf(md).multiply(BigDecimal.valueOf(2));
         double dn = BigDecimal.valueOf(mb).subtract(mdPow2).setScale(3, ROUND_DOWN).doubleValue();
 
-        System.out.println(event + " dn=" + dn + " current=" + System.currentTimeMillis());
+        log.info(event + " dn=" + dn + " current=" + System.currentTimeMillis());
         if (dn < price) {
             return;
         }

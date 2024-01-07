@@ -142,7 +142,7 @@ public class OpenBollingerForYear {
                 bollList.addAll(0, newBollList);
                 BaseUtils.writeFile(Constants.HIS_BASE_PATH + curYear + "/openBOLL/" + stock, bollList);
 
-                //                System.out.println("finish " + stock);
+                //                log.info("finish " + stock);
             }
         }
     }

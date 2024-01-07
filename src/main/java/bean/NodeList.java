@@ -2,11 +2,13 @@ package bean;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class NodeList {
 
     private Node head = null;
@@ -127,7 +129,7 @@ public class NodeList {
             list.add(temp.getName() + "=" + temp.getValue());
             temp = temp.getNext();
         }
-        System.out.println(StringUtils.join(list, ","));
+        log.info("Node list show: {}", StringUtils.join(list, ","));
     }
 
     public List<Node> getNodes() {

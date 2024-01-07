@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.google.common.collect.Lists;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
+@Slf4j
 public class GrabEarning implements PageProcessor {
 
     public String day;
@@ -70,7 +72,7 @@ public class GrabEarning implements PageProcessor {
             }
             String result = symbol + " " + time;
             res.add(result);
-//            System.out.println(result);
+//            log.info(result);
         }
 
         return res;

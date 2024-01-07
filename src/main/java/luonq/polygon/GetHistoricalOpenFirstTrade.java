@@ -7,6 +7,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Luonanqin on 2023/5/14.
  */
+@Slf4j
 public class GetHistoricalOpenFirstTrade {
 
     public static boolean retry = false;
@@ -112,7 +114,7 @@ public class GetHistoricalOpenFirstTrade {
                     String openDate = split[0];
 
                     if (openDate.length() > 10) {
-                        System.out.println(stock + " " + openLine);
+                        log.info(stock + " " + openLine);
                         continue;
                     }
 
@@ -160,7 +162,7 @@ public class GetHistoricalOpenFirstTrade {
                             String preUrl = api + stock + "?order=asc&" + timeGte + openTS + "000000&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
                             String preTrade = getTrade(preUrl, httpClient);
                             if (!preTrade.contains(",")) {
-                                System.out.println(stock + " " + preTrade);
+                                log.info(stock + " " + preTrade);
                                 continue;
                             }
                             String str = date + "," + preTrade;
@@ -183,10 +185,10 @@ public class GetHistoricalOpenFirstTrade {
                         e.printStackTrace();
                     }
                     long cost = System.currentTimeMillis() - begin;
-//                    System.out.println("finish " + stock + " " + cost / 1000);
+//                    log.info("finish " + stock + " " + cost / 1000);
                 });
             } catch (Exception e) {
-                System.out.println("error stock: " + stock);
+                log.error("error stock: " + stock);
                 e.printStackTrace();
             }
         }
@@ -234,6 +236,6 @@ public class GetHistoricalOpenFirstTrade {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
         getData();
-        System.out.println("============ end ============");
+        log.info("============ end ============");
     }
 }

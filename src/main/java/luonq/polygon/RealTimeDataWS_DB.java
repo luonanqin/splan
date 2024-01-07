@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
+import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import luonq.strategy.backup.Strategy_DB;
 import org.apache.commons.collections4.CollectionUtils;
@@ -57,10 +58,10 @@ import java.util.stream.Collectors;
 
 @Component
 @ClientEndpoint
+@Slf4j
 public class RealTimeDataWS_DB {
 
     public static final String TEST_STOCK = "";
-    public static final String TEST_SUBSCRIBE_STOCK = "T.CXAI,T.SLV,T.DRMA,T.FMS,T.SOXS,T.GFAI,T.APPH,T.TNA,T.IWM,T.TZA,T.TWM,T.SRTY,T.NFLX,T.JEPI,T.META,T.AUD,T.IONQ,T.TIVC,T.TSLA,T.CYTO,T.FFIE,T.GPRO,T.TMF,T.MO,T.BBIG,T.SOXL,T.BBLN,T.MINM,T.MSFT,T.UVXY,T.GOOG,T.MVST,T.NVDA,T.TQQQ,T.GETR,T.ATNF,T.IBRX,T.AMZN,T.PLX,T.UPRO,T.UCO,T.PACW,T.SPY,T.MARA,T.AGBA,T.ZFOX,T.INTC,T.DIS,T.PYPL,T.CDTX,T.INBS,T.LICN,T.SPXU,T.SRTS,T.SBFM,T.TSLL,T.NRGU,T.SOFI,T.SQQQ,T.AIG,T.U,T.O,T.EGIO,T.MTC,T.IEF,T.TLT,T.CWEB,T.TCBP,T.SVFD,T.GDC,T.TRKA,T.AAPL,T.SSO,T.IDEX,T.VRM,T.SNDL,T.NTEST,T.GMDA,T.ABNB,T.TMV,T.SDOW,T.VCIG,T.XLI,T.CRKN,T.GDXD,T.VSSYW,T.KNTE,T.ASML,T.NKLA,T.AMD,T.OPK,T.UVIX,T.SBSW,T.JD,T.LABU,T.BABA,T.PTGX,T.CS,T.BITO,T.NIO,T.TCRX,T.XPEV,T.SFWL,T.OPEN,T.BNTX,T.GOOGL,T.INDA,T.ZURA,T.LILM,T.PBTS,T.ADMP,T.Z,T.RYAAY,T.WMT,T.CISO,T.USO,T.CCL,T.BOIL,T.TUP,T.AFRM,T.SLGG,T.OPFI,T.BNKU,T.F,T.BE,T.SURG,T.MWG,T.LCID,T.RIVN,T.NVO,T.SOS,T.CNEY,T.SNTG,T.POLA,T.IZM,T.OXY,T.QBTS,T.GFI,T.GOEV,T.EPAM,T.HOUR,T.BLBD,T.GOLD,T.JAGX,T.GLD,T.TWLO,T.EURN,T.JOBY,T.CVX,T.VIXY,T.ALLR,T.SMX,T.MRNA,T.HYZN,T.BFRG,T.ZIM,T.NOBL,T.ORGO,T.VATE,T.IAU,T.SCHD,T.AGQ,T.VOO,T.XLF,T.SOUN,T.GETY,T.UAVS,T.CRSP,T.KO,T.PTEST,T.CVNA,T.CI,T.KOLD,T.WFC,T.BLUE,T.CJJD,T.GDX,T.LABD,T.BLNK,T.BAC,T.MULN,T.LUNR,T.IMGN,T.IONM,T.FUTU,T.SHFS,T.SONO,T.STSS,T.CEI,T.CMCSA,T.CYTK,T.HLN,T.IREN,T.SBUX,T.ZOM,T.TCJH,T.C,T.QQQ,T.TOP,T.UFAB,T.RACE,T.HKD,T.AMPE,T.QQQM,T.DDL,T.YINN,T.ASTI,T.UBS,T.TCMD,T.FNGU,T.SPXS,T.LAC,T.PLUG,T.TRVN,T.QCOM,T.NVTA,T.JEPQ,T.ICUCW,T.BULZ,T.BRDS,T.GRVY,T.CLRO,T.SHOP,T.MOBQ,T.LI,T.VALE,T.GCTK,T.BB,T.DRN,T.HUBS,T.DNA,T.IQ,T.PLTR,T.FSLR,T.QLD,T.PAAS,T.PBLA,T.BIOL,T.HSBC,T.PEP,T.AUGX,T.MFH,T.CPE,T.DOG,T.HUDI,T.COSM,T.WDAY,T.XELA,T.DB,T.INPX,T.SNN,T.PDD,T.FXI,T.SSRM,T.TSLQ,T.HMPT,T.BYND,T.QID,T.GRIL,T.GSK,T.BNKD,T.HSTO,T.CTLT,T.ZION,T.HCDI,T.WETG,T.VXX,T.SAVA,T.SVXY,T.AKAN,T.BFLY,T.CARR,T.CLSK,T.IBM,T.DWAC,T.NKE,T.NVDS,T.INCR,T.MSTR,T.T,T.TSM,T.CSCO,T.DADA,T.SQ,T.ZSL,T.SARK,T.IVV,T.SDS,T.SPLG,T.UDOW,T.HMY,T.DXF,T.PFE,T.OMH,T.MHNC,T.SIGA,T.ATXG,T.NOGN,T.LYFT,T.RIOT,T.BMY,T.FAS,T.TECL,T.SPG,T.NDAQ,T.GNS,T.SPXL,T.WAL,T.SVIX,T.UNG,T.NOK,T.SAI,T.ARKK,T.AKLI,T.RKLB,T.AGFY,T.DDOG,T.RBLX,T.NBTX,T.MCRB,T.SNAP,T.TIO,T.HGEN,T.TAL,T.WOOF,T.DIA,T.BTBT,T.MGAM,T.UPWK,T.TWOU,T.AMC,T.YANG,T.WISA,T.ABBV,T.TCOM,T.SMTC,T.MAXN,T.UPST,T.CMND,T.ARR,T.ROKU,T.FISV,T.TSLS,T.MU,T.RELI,T.AI,T.AZN,T.NU,T.ZVZZT,T.TLRY,T.BURU,T.XLP,T.EEFT,T.CROX,T.ADXN,T.PBR,T.CXAIW,T.BITI,T.APE,T.ABB,T.FNGD,T.XLV,T.SENS,T.APLD,T.HOLO,T.TSP,T.HUIZ,T.ATEST,T.NVS,T.TLTW,T.MOS,T.DPST,T.EJH,T.BPT,T.SHEL,T.SPRO,T.SVOL,T.COIN,T.NCMI,T.TMC,T.MGIH,T.DHY,T.FOXA,T.TRUP,T.WPM,T.NVAX,T.SQM,T.KWEB,T.ZH,T.EVA,T.SNGX,T.LICY,T.HIMX,T.SPYG,T.RWM,T.VXRT,T.CTVA,T.MS,T.SPCE,T.ADBE,T.ING,T.FLNC,T.TDOC,T.NNOX,T.ENPH,T.NCLH,T.MCD,T.GDXU";
     public static final Set<String> invalidStockSet = Sets.newHashSet("FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
     public static final URI uri = URI.create("wss://socket.polygon.io/stocks");
     public static final double HIT = 0.5d; // 策略成功率
@@ -127,7 +128,7 @@ public class RealTimeDataWS_DB {
                 subcribeStock();
                 sendToTradeDataListener();
                 close();
-                System.out.println("trade finish");
+                log.info("trade finish");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -173,7 +174,7 @@ public class RealTimeDataWS_DB {
             }
             times++;
             if (times > 10) {
-                System.out.println("auth failed");
+                log.info("auth failed");
                 //                System.exit(0);
                 return false;
             }
@@ -191,7 +192,7 @@ public class RealTimeDataWS_DB {
             loadLastDn();
             loadLatestMA20();
 
-            System.out.println("finish init historical data");
+            log.info("finish init historical data");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -206,7 +207,7 @@ public class RealTimeDataWS_DB {
 
             tradeExecutor.setList(list);
             tradeExecutor.setClient(this);
-            System.out.println("finish init trade");
+            log.info("finish init trade");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,7 +253,7 @@ public class RealTimeDataWS_DB {
             closeCheckTime = Date.from(closeCheck.withHour(4).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         }
         listenEndTime = openTime + LISTENING_TIME;
-        System.out.println("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
+        log.info("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
     }
 
     private void initThreadExecutor() {
@@ -310,7 +311,7 @@ public class RealTimeDataWS_DB {
                 set.add(code);
             }
         }
-        System.out.println(String.format("stock latest close great %d size: %d", PRICE_LIMIT, set.size()));
+        log.info(String.format("stock latest close great %d size: %d", PRICE_LIMIT, set.size()));
 
         // 过滤所有OverBolling策略命中率低于HIT
         for (String stock : originRatioMap.keySet()) {
@@ -327,18 +328,18 @@ public class RealTimeDataWS_DB {
                 set.remove(stock);
             }
         }
-        System.out.println(String.format("stock overbolling hit great %f size: %d", HIT, set.size()));
+        log.info(String.format("stock overbolling hit great %f size: %d", HIT, set.size()));
 
         // 过滤所有合股
         Set<String> mergeStock = BaseUtils.getMergeStock();
         set.removeAll(mergeStock);
-        System.out.println(String.format("filter merge stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter merge stock, the stock set size is %d", set.size()));
 
         // 过滤所有拆股
         Set<SplitStockInfo> splitStockInfo = BaseUtils.getSplitStockInfo();
         Set<String> splitStock = splitStockInfo.stream().map(SplitStockInfo::getStock).collect(Collectors.toSet());
         set.removeAll(splitStock);
-        System.out.println(String.format("filter split stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter split stock, the stock set size is %d", set.size()));
 
         // 过滤所有今年前复权因子低于0.98的
         int year = now.getYear() - 1;
@@ -364,17 +365,17 @@ public class RealTimeDataWS_DB {
                 set.remove(stock);
             }
         }
-        System.out.println(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
 
         // 财报当天和财报后一天都不进行交易
         set.removeAll(todayEarningStockSet);
         set.removeAll(lastEarningStockSet);
-        System.out.println(String.format("filter earning and lastEarning stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter earning and lastEarning stock, the stock set size is %d", set.size()));
 
         // 历史搜集的无效股票
         set.removeAll(invalidStockSet);
 
-        System.out.println("after filte: " + set);
+        log.info("after filte: " + set);
         return set;
     }
 
@@ -399,7 +400,7 @@ public class RealTimeDataWS_DB {
             stockToM19CloseSum.put(stock, m20close.doubleValue());
             stockToM19Close.put(stock, _19Close);
         }
-        System.out.println("finish load lastest 19-days close data");
+        log.info("finish load lastest 19-days close data");
     }
 
     private void loadLastDn() {
@@ -416,7 +417,7 @@ public class RealTimeDataWS_DB {
             double dn = boll.getDn();
             stockToLastDn.put(stock, dn);
         }
-        System.out.println("finish load last DN for BOLL");
+        log.info("finish load last DN for BOLL");
     }
 
     public AsyncEventBus asyncEventBus() {
@@ -444,7 +445,7 @@ public class RealTimeDataWS_DB {
      */
     @OnOpen
     public void onOpen(Session userSession) {
-        System.out.println("opening websocket");
+        log.info("opening websocket");
         this.userSession = userSession;
     }
 
@@ -456,13 +457,13 @@ public class RealTimeDataWS_DB {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
-        System.out.println("closing websocket. reason=" + reason);
+        log.info("closing websocket. reason=" + reason);
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
         }
         if (manualClose) {
-            System.out.println("manual close websocket");
+            log.info("manual close websocket");
             return;
         }
         reconnect();
@@ -486,7 +487,7 @@ public class RealTimeDataWS_DB {
     public void onMessage(String message) {
         try {
             if (subscribed) {
-                //                System.out.println(message);
+                //                log.info(message);
                 subscribeBQ.offer(message);
             } else if (listenStopLoss) {
                 stopLossBQ.offer(message);
@@ -499,16 +500,16 @@ public class RealTimeDataWS_DB {
                 String msg = MapUtils.getString(map, "message");
 
                 if ("connected".equals(status) && "Connected Successfully".equals(msg)) {
-                    System.out.println(status);
+                    log.info(status);
                     sendMessage("{\"action\":\"auth\",\"params\":\"Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY\"}");
                 } else if ("auth_success".equals(status) && "authenticated".equals(msg)) {
-                    System.out.println(status);
+                    log.info(status);
                     hasAuth.set(true);
                 }
             }
         } catch (
           Exception e) {
-            System.out.println("onMessage " + e.getMessage());
+            log.info("onMessage " + e.getMessage());
         }
     }
 
@@ -518,14 +519,14 @@ public class RealTimeDataWS_DB {
             LocalDateTime now = LocalDateTime.now();
             long nowTime = now.toInstant(ZoneOffset.of("+8")).toEpochMilli();
             if (nowTime < preTradeTime) {
-                System.out.println("wait pre trade time. now is " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                log.info("wait pre trade time. now is " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     throw e;
                 }
             } else {
-                System.out.println("begin subcribe stock at " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                log.info("begin subcribe stock at " + now.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
                 break;
             }
         }
@@ -534,13 +535,13 @@ public class RealTimeDataWS_DB {
             for (String stock : stockSet) {
                 sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
             }
-            System.out.println("finish subcribe real time!");
+            log.info("finish subcribe real time!");
         });
     }
 
     @OnMessage
     public void onMessage(ByteBuffer bytes) {
-        System.out.println("Handle byte buffer");
+        log.info("Handle byte buffer");
     }
 
     /**
@@ -566,34 +567,33 @@ public class RealTimeDataWS_DB {
                         return;
                     } else if (stockSet.size() - unsubcribeStockSet.size() < 100) {
                         if (listenEndTime - currentTime > 10000) {
-                            System.out.println("many stock has received data. keep listening");
+                            log.info("many stock has received data. keep listening");
                             continue;
                         }
                         beginTrade("many stock has received data. listen end!");
                         return;
                     } else {
-                        System.out.println("there is no msg. continue");
+                        log.info("there is no msg. continue");
                         continue;
                     }
                 }
 
-                //                System.out.println(msg);
+                //                log.info(msg);
                 List<Map> maps = JSON.parseArray(msg, Map.class);
                 Map<String, StockEvent> stockToEvent = Maps.newHashMap();
                 for (Map map : maps) {
                     String stock = MapUtils.getString(map, "sym", "");
 
                     if (unsubcribeStockSet.contains(stock) || StringUtils.isBlank(stock)) {
-                        //                        System.out.println(msg);
+                        //                        log.info(msg);
                         continue;
                     }
                     Double price = MapUtils.getDouble(map, "p");
                     Long time = MapUtils.getLong(map, "t");
-                    //                    System.out.println(map);
+                    //                    log.info(map);
                     if (time < openTime) {
                         if (time % 1000 == 0) {
-                            System.out.println("time is early. " + map);
-                            System.out.println(map);
+                            log.info("time is early. " + map);
                         }
                         continue;
                     }
@@ -631,13 +631,13 @@ public class RealTimeDataWS_DB {
                 }
             }
         } catch (Exception e) {
-            System.out.println("sendToTradeDataListener error. " + e.getMessage());
+            log.info("sendToTradeDataListener error. " + e.getMessage());
         }
     }
 
     public void beginTrade(String msg) throws Exception {
         subscribed = false;
-        System.out.println(msg);
+        log.info(msg);
         unsubscribeAll();
         listenEnd = true;
         getRealtimeQuote();
@@ -648,7 +648,7 @@ public class RealTimeDataWS_DB {
     public void getRealtimeQuote() throws InterruptedException {
         getRealtimeQuote = true;
         Set<String> stockSet = list.getNodes().stream().map(Node::getName).collect(Collectors.toSet());
-        System.out.println("get real-time quote: " + stockSet);
+        log.info("get real-time quote: " + stockSet);
         for (String stock : stockSet) {
             sendMessage("{\"action\":\"subscribe\", \"params\":\"Q." + stock + "\"}");
         }
@@ -671,16 +671,16 @@ public class RealTimeDataWS_DB {
                         Double price = MapUtils.getDouble(map, "ap");
                         realtimeQuoteMap.put(stock, price);
                     }
-                    System.out.println("quote price(time=" + System.currentTimeMillis() + "): " + realtimeQuoteMap);
+                    log.info("quote price(time=" + System.currentTimeMillis() + "): " + realtimeQuoteMap);
                 }
 
                 // 退出前反订阅
                 for (String stock : stockSet) {
                     sendMessage("{\"action\":\"unsubscribe\", \"params\":\"Q." + stock + "\"}");
                 }
-                System.out.println("unsubscribe real-time quote");
+                log.info("unsubscribe real-time quote");
             } catch (Exception e) {
-                System.out.println("getRealtimeQuote error. " + e.getMessage());
+                log.info("getRealtimeQuote error. " + e.getMessage());
             }
         });
         Thread.sleep(1000);
@@ -693,7 +693,7 @@ public class RealTimeDataWS_DB {
         executor.execute(() -> sendMessage("{\"action\":\"unsubscribe\", \"params\":\"T." + stock + "\"}"));
         unsubcribeStockSet.add(stock);
         if (unsubcribeStockSet.size() % 100 == 0) {
-            System.out.println("unsubscribeStockSet size: " + unsubcribeStockSet.size() + " " + System.currentTimeMillis());
+            log.info("unsubscribeStockSet size: " + unsubcribeStockSet.size() + " " + System.currentTimeMillis());
         }
         return true;
     }
@@ -702,19 +702,19 @@ public class RealTimeDataWS_DB {
         for (String stock : stockSet) {
             unsubscribe(stock);
         }
-        System.out.println("=========== finish unsubscribe ===========");
+        log.info("=========== finish unsubscribe ===========");
     }
 
     public void listenStopLoss(Map<String, StopLoss> stockToStopLoss) {
         if (MapUtils.isEmpty(stockToStopLoss)) {
-            System.out.println("there is no stock need to listen stop loss");
-            System.out.println("trade exit");
+            log.info("there is no stock need to listen stop loss");
+            log.info("trade exit");
             //            System.exit(0);
             return;
         }
         listenStopLoss = true;
         unsubcribeStockSet.removeAll(stockToStopLoss.keySet());
-        System.out.println("begin listen stop loss: " + stockToStopLoss);
+        log.info("begin listen stop loss: " + stockToStopLoss);
         for (String stock : stockToStopLoss.keySet()) {
             sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
         }
@@ -734,8 +734,8 @@ public class RealTimeDataWS_DB {
                     }
                     noNeedListen.forEach(s -> stockToStopLoss.remove(s));
                     if (stockToStopLoss.size() == 0) {
-                        System.out.println("all stock has stop loss");
-                        System.out.println("trade exit");
+                        log.info("all stock has stop loss");
+                        log.info("trade exit");
                         //                        System.exit(0);
                         return;
                     }
@@ -756,48 +756,48 @@ public class RealTimeDataWS_DB {
 
                     StopLoss stopLoss = stockToStopLoss.get(stock);
                     if (stopLoss == null) {
-                        System.out.println(stock + " don't need stop loss. it'll be unsubscribe");
+                        log.info(stock + " don't need stop loss. it'll be unsubscribe");
                         unsubscribe(stock);
                         continue;
                     }
                     Long time = MapUtils.getLong(map, "t");
                     if (time % 1000 == 0) {
-                        System.out.println(map);
+                        log.info("time: {}, data: {}", time, map);
                     }
                     double lossPrice = stopLoss.getLossPrice();
                     double canSellQty = stopLoss.getCanSellQty();
                     if (price < lossPrice) {
                         double orderPrice = BigDecimal.valueOf(lossPrice * 0.99).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
-                        System.out.println(stock + " touch the stop loss. current price=" + price + ", lossPrice=" + lossPrice + ", orderPrice=" + orderPrice);
+                        log.info(stock + " touch the stop loss. current price=" + price + ", lossPrice=" + lossPrice + ", orderPrice=" + orderPrice);
                         tradeExecutor.placeStopLossOrder(stock, canSellQty, orderPrice);
                         stockToStopLoss.remove(stock);
                     }
                 }
                 if (stockToStopLoss.size() == 0) {
-                    System.out.println("listen stop loss end!");
-                    System.out.println("trade exit");
+                    log.info("listen stop loss end!");
+                    log.info("trade exit");
                     //                    System.exit(0);
                     return;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("listenStopLoss error. " + e.getMessage());
+            log.info("listenStopLoss error. " + e.getMessage());
         }
     }
 
     public void reconnect() {
-        System.out.println("reconnect websocket");
+        log.info("reconnect websocket");
         listenStopLoss = false;
         subscribed = false;
         reconnect = true;
         connect();
         boolean authSuccess = waitAuth();
         if (!authSuccess) {
-            System.out.println("reconnect failed!");
+            log.info("reconnect failed!");
             return;
         }
-        System.out.println("reconnect finish");
+        log.info("reconnect finish");
         tradeExecutor.reListenStopLoss();
     }
 

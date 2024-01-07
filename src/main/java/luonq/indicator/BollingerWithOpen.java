@@ -55,7 +55,7 @@ public class BollingerWithOpen {
                 }
             }
             if (stockKLines.isEmpty()) {
-//                System.out.println("has calculate " + stock);
+//                log.info("has calculate " + stock);
                 continue;
             }
 
@@ -106,7 +106,7 @@ public class BollingerWithOpen {
             }
 
             BaseUtils.writeFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, bollList);
-//            System.out.println("finish " + stock);
+//            log.info("finish " + stock);
         }
     }
 }

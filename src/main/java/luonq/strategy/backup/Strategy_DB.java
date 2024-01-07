@@ -137,6 +137,7 @@ public class Strategy_DB {
         });
 
         curBollMap = computeCurData.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.mapping(Total::toBoll, Collectors.toList())));
+        executor.shutdown();
     }
 
     private void buildCodeSet() {

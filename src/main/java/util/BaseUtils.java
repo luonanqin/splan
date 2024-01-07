@@ -9,6 +9,7 @@ import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -40,6 +41,7 @@ import static util.Constants.HIS_BASE_PATH;
 /**
  * Created by Luonanqin on 2023/2/5.
  */
+@Slf4j
 public class BaseUtils {
 
     public static void viewloadPage(ChromeDriver driver, String url, By checkBy) {
@@ -54,7 +56,7 @@ public class BaseUtils {
                     driver.findElement(checkBy);
                     return;
                 } catch (Exception ex) {
-                    System.out.println("retry load " + url);
+                    log.info("retry load " + url);
                 }
             }
         }
@@ -79,23 +81,23 @@ public class BaseUtils {
         try {
             driver.navigate().refresh();
         } finally {
-            System.out.println("refresh current page!");
+            log.info("refresh current page!");
             return;
         }
     }
 
     public static void loginBarchart(ChromeDriver driver) throws InterruptedException {
-        System.out.println("loading login page");
+        log.info("loading login page");
         viewloadPage(driver, "https://www.barchart.com/login", By.xpath("//h1[@class='sign-in-block_header']"));
         //        driver.get("https://www.barchart.com/login");
-        System.out.println("finish loading");
+        log.info("finish loading");
         //        TimeUnit.SECONDS.sleep(5);
 
         // login
-        System.out.println("input email and pwd");
+        log.info("input email and pwd");
         driver.findElement(By.cssSelector("[name='email']")).sendKeys("qinnanluo@sina.com");
         driver.findElement(By.cssSelector("[name='password']")).sendKeys("luonq134931");
-        System.out.println("start login");
+        log.info("start login");
         //        driver.findElement(By.className("login-button")).click();
         clickLoadPage(driver, By.className("login-button"), By.tagName("span"));
         // 登录后需要休眠一会儿确定已经登录
@@ -104,11 +106,11 @@ public class BaseUtils {
         //            try {
         //                MyAccount = driver.findElement(By.tagName("span")).getText();
         //                if ("My Account".equals(MyAccount)) {
-        //                    System.out.println("finish login");
+        //                    log.info("finish login");
         //                    break;
         //                }
         //            } catch (Exception e) {
-        //                System.out.println("wait login");
+        //                log.info("wait login");
         //                TimeUnit.SECONDS.sleep(1);
         //            }
         //        }
@@ -373,7 +375,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
-            //            System.out.println("can not find file: " + filePath);
+            //            log.info("can not find file: " + filePath);
             return Lists.newArrayList();
         }
 
@@ -409,7 +411,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
-            //            System.out.println("can not find file: " + filePath);
+            //            log.info("can not find file: " + filePath);
             return Lists.newArrayList();
         }
 
@@ -442,7 +444,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(filePath));
         } catch (FileNotFoundException e) {
-            //            System.out.println("can not find file: " + filePath);
+            //            log.info("can not find file: " + filePath);
             return Lists.newArrayList();
         }
 
@@ -461,7 +463,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            System.out.println("can not find file: " + file.getPath());
+            log.info("can not find file: " + file.getPath());
             return Lists.newArrayList();
         }
 
@@ -625,13 +627,13 @@ public class BaseUtils {
         // 过滤所有合股
         Set<String> mergeStock = BaseUtils.getMergeStock();
         set.removeAll(mergeStock);
-        System.out.println(String.format("filter merge stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter merge stock, the stock set size is %d", set.size()));
 
         // 过滤所有拆股
         Set<SplitStockInfo> splitStockInfo = BaseUtils.getSplitStockInfo();
         Set<String> splitStock = splitStockInfo.stream().map(SplitStockInfo::getStock).collect(Collectors.toSet());
         set.removeAll(splitStock);
-        System.out.println(String.format("filter split stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter split stock, the stock set size is %d", set.size()));
 
         // 过滤所有今年前复权因子低于0.98的
         LocalDate firstDay = LocalDate.parse("2023-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -650,7 +652,7 @@ public class BaseUtils {
                 set.remove(stock);
             }
         }
-        System.out.println(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
     }
 
     public static Map<String, List<EarningDate>> getEarningDate(String date) throws Exception {

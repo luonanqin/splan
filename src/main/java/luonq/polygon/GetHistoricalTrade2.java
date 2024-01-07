@@ -7,6 +7,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.URI;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Luonanqin on 2023/4/28.
  */
+@Slf4j
 public class GetHistoricalTrade2 {
 
     public static boolean retry = false;
@@ -104,7 +106,7 @@ public class GetHistoricalTrade2 {
                 String openDate = openLine.split(",")[0];
 
                 if (openDate.length() > 10) {
-                    System.out.println(stock + " " + openLine);
+                    log.info(stock + " " + openLine);
                     continue;
                 }
 
@@ -129,7 +131,7 @@ public class GetHistoricalTrade2 {
             }
 
             if (CollectionUtils.isEmpty(dateList)) {
-                //                System.out.println("has get " + stock);
+                //                log.info("has get " + stock);
                 continue;
             }
 
@@ -157,7 +159,7 @@ public class GetHistoricalTrade2 {
                     try {
                         String trade = getTrade(url, httpClient);
                         if (!trade.contains(",")) {
-                            System.out.println(stock + " " + trade);
+                            log.info(stock + " " + trade);
                             continue;
                         }
                         result.add(date + "," + trade);
@@ -178,9 +180,9 @@ public class GetHistoricalTrade2 {
                         fw.write(str + "\n");
                     }
                     fw.close();
-//                    System.out.println("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+//                    log.info("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
                 } catch (Exception e) {
-                    System.out.println("error: " + result);
+                    log.error("error: " + result);
                 }
             });
         }
@@ -232,7 +234,7 @@ public class GetHistoricalTrade2 {
             if (success) {
                 double avgPrice = totalAmount / totalVolumn;
                 result = String.format("%d,%.2f", totalVolumn, avgPrice);
-                //                        System.out.println("finish stock: " + stock + " date: " + date);
+                //                        log.info("finish stock: " + stock + " date: " + date);
             }
         } catch (Exception e) {
             result = "request error";
@@ -247,6 +249,6 @@ public class GetHistoricalTrade2 {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
         getData();
-        System.out.println("============ end ============");
+        log.info("============ end ============");
     }
 }

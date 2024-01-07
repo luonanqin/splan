@@ -131,11 +131,11 @@ public class WriteToDB {
         }
 
         if (CollectionUtils.isEmpty(allTotals)) {
-            System.out.println("there is no date at " + dateList);
+            log.info("there is no date at " + dateList);
             return;
         }
 
-        System.out.println(allTotals.size());
+        log.info("sync count: {}", allTotals.size());
         batchInsertFileData(allTotals, curYear);
     }
 
@@ -154,12 +154,12 @@ public class WriteToDB {
         }).filter(MapUtils::isNotEmpty).flatMap(e -> e.values().stream().flatMap(s -> s.stream())).distinct().collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(earningDateList)) {
-            System.out.println(dateList + " has no earning data");
+            log.info(dateList + " has no earning data");
             return;
         }
 
         earningDataMapper.batchInsertEarning(earningDateList);
-        System.out.println("sync earning finish. dateList=" + dateList + ", earning sum=" + earningDateList.size());
+        log.info("sync earning finish. dateList=" + dateList + ", earning sum=" + earningDateList.size());
     }
 
     public void rehabToDB() {
@@ -170,7 +170,7 @@ public class WriteToDB {
                 List<StockRehab> list = lines.stream().map(StockRehab::convert).collect(Collectors.toList());
                 rehabDataMapper.batchInsertRehab(list);
             }
-            System.out.println("finish rehabToDB. size=" + lineList.size());
+            log.info("finish rehabToDB. size=" + lineList.size());
         } catch (Exception e) {
             e.printStackTrace();
         }
