@@ -54,7 +54,7 @@ public class TradeExecutor_DB {
     }
 
     public void beginTrade() throws InterruptedException {
-        list.show();
+        log.info("begin trade: {}", list.show());
         List<Node> nodes = list.getNodes();
         /** 1.获取剩余可用现金 */
         double remainCash = tradeApi.getFunds();

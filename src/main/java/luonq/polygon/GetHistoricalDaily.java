@@ -198,7 +198,7 @@ public class GetHistoricalDaily {
                 //                log.info("has get " + stock);
                 continue;
             }
-            log.info("has get {}", stock);
+
             HttpClient httpClient = queue.take();
             cachedThread.execute(() -> {
                 List<StockKLine> dataList = null;

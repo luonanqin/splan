@@ -122,14 +122,15 @@ public class NodeList {
         map.put(stock, newNode);
     }
 
-    public void show() {
+    public String show() {
         List<String> list = Lists.newLinkedList();
         Node temp = head;
         while (temp != null) {
             list.add(temp.getName() + "=" + temp.getValue());
             temp = temp.getNext();
         }
-        log.info("Node list show: {}", StringUtils.join(list, ","));
+        System.out.println(StringUtils.join(list, ","));
+        return StringUtils.join(list, ",");
     }
 
     public List<Node> getNodes() {

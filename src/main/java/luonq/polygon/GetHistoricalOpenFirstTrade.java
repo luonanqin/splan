@@ -162,7 +162,7 @@ public class GetHistoricalOpenFirstTrade {
                             String preUrl = api + stock + "?order=asc&" + timeGte + openTS + "000000&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
                             String preTrade = getTrade(preUrl, httpClient);
                             if (!preTrade.contains(",")) {
-                                log.info(stock + " " + preTrade);
+                                log.warn(stock + " " + preTrade);
                                 continue;
                             }
                             String str = date + "," + preTrade;

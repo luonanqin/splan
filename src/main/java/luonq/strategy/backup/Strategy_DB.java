@@ -15,6 +15,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
@@ -133,10 +134,10 @@ public class Strategy_DB {
         computeCurData.addAll(_lastYear_Data.get());
         Map<String, List<Total>> curCodeTotalMap = computeCurData.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.toList()));
         curCodeTotalMap.forEach((code, totals) -> {
-            curKLineMap.put(code, totals.stream().map(Total::toKLine).collect(Collectors.toList()));
+            curKLineMap.put(code, totals.stream().map(Total::toKLine).sorted((o1, o2) -> BaseUtils.formatDateToInt(o2.getDate()) - BaseUtils.formatDateToInt(o1.getDate())).collect(Collectors.toList()));
+            curBollMap.put(code, totals.stream().map(Total::toBoll).sorted((o1, o2) -> BaseUtils.formatDateToInt(o2.getDate()) - BaseUtils.formatDateToInt(o1.getDate())).collect(Collectors.toList()));
         });
 
-        curBollMap = computeCurData.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.mapping(Total::toBoll, Collectors.toList())));
         executor.shutdown();
     }
 

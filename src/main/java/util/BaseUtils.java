@@ -500,6 +500,10 @@ public class BaseUtils {
         return Integer.parseInt(newDate.replace("/", ""));
     }
 
+    public static int formatDateToInt(String date) {
+        return Integer.parseInt(date.replaceAll("\\-", ""));
+    }
+
     public static int kLineDateToInt(StockKLine kLine) {
         return dateToInt(kLine.getDate());
     }

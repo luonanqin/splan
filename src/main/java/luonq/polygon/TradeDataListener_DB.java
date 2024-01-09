@@ -78,7 +78,7 @@ public class TradeDataListener_DB {
         node.setPrice(price);
         boolean success = list.add(node);
         if (success) {
-            list.show();
+            log.info("Node list show: {}", list.show());
             RealTimeDataWS_DB.realtimeQuoteMap.put(stock, price);
         }
     }
