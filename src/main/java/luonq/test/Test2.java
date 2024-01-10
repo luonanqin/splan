@@ -1,10 +1,13 @@
 package luonq.test;
 
-import util.BaseUtils;
-import util.Constants;
-
-import java.util.List;
-import java.util.Map;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 /**
  * Created by Luonanqin on 2023/3/26.
@@ -12,21 +15,35 @@ import java.util.Map;
 public class Test2 {
 
     public static void main(String[] args) throws Exception {
-        Map<String, String> hasOption = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "code/hasOption");
-        Map<String, String> all = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "code/list");
+        //        sendEmail("smtp.163.com", 465, "qinnanluo@163.com", "chusan5ban", "qinnanluo@sina.com", "java发送邮件测试", "测试成功");
+        sendEmail("java发送邮件测试2", "测试成功");
+    }
 
-        for (String market : all.keySet()) {
-            String allFile = all.get(market);
-            String hasFile = hasOption.get(market);
+    public static void sendEmail(String subject, String message) throws Exception {
+        String userName = "1321271684@qq.com";
+        String password = "blxcxmcerhxbhbfc";
+        Properties properties = new Properties();
 
-            List<String> allCode = BaseUtils.readFile(allFile);
-            List<String> hasCode = BaseUtils.readFile(hasFile);
+        properties.put("mail.transport.protocol", "smtp");
+        properties.put("mail.smtp.auth", "true");
+        //        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.qq.com");
+        properties.put("mail.smtp.port", 25);
 
-            for (String code : allCode) {
-                if (!hasCode.contains(code)) {
-                    System.out.println(market + " " + code);
-                }
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(userName, password);
             }
-        }
+        });
+
+        MimeMessage mimeMessage = new MimeMessage(session);
+
+        mimeMessage.addFrom(new InternetAddress[] { new InternetAddress(userName) });
+        mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("qinnanluo@sina.com"));
+        mimeMessage.setSubject(subject);
+        mimeMessage.setText(message);
+
+        Transport.send(mimeMessage);
     }
 }

@@ -163,7 +163,7 @@ public class Strategy10_3 {
                 boolean failed = false;
                 for (String day : _20day) {
                     StockKLine temp = dateToStockLineMap.get(day).get(stock);
-                    if (temp == null) {
+                    if (temp == null || temp.getVolume().doubleValue()< 100000) {
                         failed = true;
                         break;
                     }

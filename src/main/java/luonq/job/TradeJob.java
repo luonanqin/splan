@@ -7,6 +7,7 @@ import luonq.polygon.TradeExecutor;
 import luonq.polygon.TradeExecutor_DB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import util.BaseUtils;
 
 @Slf4j
 @Component
@@ -21,6 +22,7 @@ public class TradeJob {
     @XxlJob("Trade_DB.job")
     public void trade_DB() throws Exception {
         realTimeDataWS_db.init();
+        BaseUtils.sendEmail("trade finish", "");
     }
 
     @XxlJob("SellBeforeCloseMarket.job")

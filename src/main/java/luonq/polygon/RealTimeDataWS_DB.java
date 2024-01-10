@@ -295,6 +295,8 @@ public class RealTimeDataWS_DB {
             }
         }
 
+        Map<String, List<StockKLine>> curKLineMap = strategy.getCurKLineMap();
+
         // 过滤前日收盘价低于CLOSE_PRICE 和 前日成交量小于10w的
         Set<String> set = Sets.newHashSet();
         for (Total total : latestData) {
@@ -307,7 +309,9 @@ public class RealTimeDataWS_DB {
             if (parse.isBefore(standard)) {
                 continue;
             }
-            if (close > PRICE_LIMIT && volume > 100000 && close <= open) {
+            List<StockKLine> stockKLines = curKLineMap.get(code);
+            long volumnLess = stockKLines.stream().filter(k -> k.getVolume().doubleValue() < 100000).count();
+            if (close > PRICE_LIMIT && volumnLess == 0 && close <= open) {
                 set.add(code);
             }
         }

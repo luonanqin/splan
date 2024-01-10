@@ -16,6 +16,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -789,6 +797,38 @@ public class BaseUtils {
         }
         firstWorkDay = firstWorkDay.withDayOfMonth(2);
         return firstWorkDay;
+    }
+
+    public static void sendEmail(String subject, String message) {
+        String userName = "1321271684@qq.com";
+        String password = "blxcxmcerhxbhbfc";
+        Properties properties = new Properties();
+
+        properties.put("mail.transport.protocol", "smtp");
+        properties.put("mail.smtp.auth", "true");
+        //        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.qq.com");
+        properties.put("mail.smtp.port", 25);
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(userName, password);
+            }
+        });
+
+        MimeMessage mimeMessage = new MimeMessage(session);
+
+        try {
+            mimeMessage.addFrom(new InternetAddress[] { new InternetAddress(userName) });
+            mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("qinnanluo@sina.com"));
+            mimeMessage.setSubject(subject);
+            mimeMessage.setText(message);
+
+            Transport.send(mimeMessage);
+        } catch (Exception e) {
+            log.error("sendEmail error. subject={}, message={}", subject, message, e);
+        }
     }
 
     public static void main(String[] args) throws Exception {
