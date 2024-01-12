@@ -20,7 +20,6 @@ import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
@@ -825,7 +824,7 @@ public class BaseUtils {
             mimeMessage.setSubject(subject);
             mimeMessage.setText(message);
 
-            Transport.send(mimeMessage);
+//            Transport.send(mimeMessage);
         } catch (Exception e) {
             log.error("sendEmail error. subject={}, message={}", subject, message, e);
         }

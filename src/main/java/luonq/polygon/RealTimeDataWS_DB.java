@@ -310,12 +310,12 @@ public class RealTimeDataWS_DB {
                 continue;
             }
             List<StockKLine> stockKLines = curKLineMap.get(code);
-            long volumnLess = stockKLines.stream().filter(k -> k.getVolume().doubleValue() < 100000).count();
+            long volumnLess = stockKLines.stream().limit(19).filter(k -> k.getVolume().doubleValue() < 100000).count();
             if (close > PRICE_LIMIT && volumnLess == 0 && close <= open) {
                 set.add(code);
             }
         }
-        log.info(String.format("stock latest close great %d size: %d", PRICE_LIMIT, set.size()));
+        log.info(String.format("stock latest close great %d size: %d. data: %s", PRICE_LIMIT, set.size(), set));
 
         // 过滤所有OverBolling策略命中率低于HIT
         for (String stock : originRatioMap.keySet()) {
@@ -324,7 +324,7 @@ public class RealTimeDataWS_DB {
             boolean hitFailed = true;
             for (RatioBean ratio : ratioMap.values()) {
                 double ratioVal = ratio.getRatio();
-                if (ratioVal > HIT) {
+                if (ratioVal >= HIT) {
                     hitFailed = false;
                 }
             }
@@ -332,18 +332,18 @@ public class RealTimeDataWS_DB {
                 set.remove(stock);
             }
         }
-        log.info(String.format("stock overbolling hit great %f size: %d", HIT, set.size()));
+        log.info(String.format("stock overbolling hit great %f size: %d. data: %s", HIT, set.size(), set));
 
         // 过滤所有合股
         Set<String> mergeStock = BaseUtils.getMergeStock();
         set.removeAll(mergeStock);
-        log.info(String.format("filter merge stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter merge stock, the stock set size is %s. data: %s", set.size(), set));
 
         // 过滤所有拆股
         Set<SplitStockInfo> splitStockInfo = BaseUtils.getSplitStockInfo();
         Set<String> splitStock = splitStockInfo.stream().map(SplitStockInfo::getStock).collect(Collectors.toSet());
         set.removeAll(splitStock);
-        log.info(String.format("filter split stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter split stock, the stock set size is %d. data: %s", set.size(), set));
 
         // 过滤所有今年前复权因子低于0.98的
         int year = now.getYear() - 1;
@@ -369,12 +369,12 @@ public class RealTimeDataWS_DB {
                 set.remove(stock);
             }
         }
-        log.info(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter front reinstatement less 0.98 stock, the stock set size is %d. data: %s", set.size(), set));
 
         // 财报当天和财报后一天都不进行交易
         set.removeAll(todayEarningStockSet);
         set.removeAll(lastEarningStockSet);
-        log.info(String.format("filter earning and lastEarning stock, the stock set size is %d", set.size()));
+        log.info(String.format("filter earning and lastEarning stock, the stock set size is %d. data: %s", set.size(), set));
 
         // 历史搜集的无效股票
         set.removeAll(invalidStockSet);
