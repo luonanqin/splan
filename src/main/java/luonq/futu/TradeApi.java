@@ -11,6 +11,7 @@ import com.futu.openapi.FTSPI_Qot;
 import com.futu.openapi.FTSPI_Trd;
 import com.futu.openapi.pb.QotCommon;
 import com.futu.openapi.pb.QotGetBasicQot;
+import com.futu.openapi.pb.QotRequestTradeDate;
 import com.futu.openapi.pb.QotSub;
 import com.futu.openapi.pb.TrdCommon;
 import com.futu.openapi.pb.TrdGetFunds;
@@ -82,9 +83,9 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         trd.setClientInfo("javaclient", 1);  //设置客户端信息
         trd.setConnSpi(this);  //设置连接回调
         trd.setTrdSpi(this);   //设置交易回调
-        //        qot.setClientInfo("javaclient", 1);  //设置客户端信息
-        //        qot.setConnSpi(this);  //设置连接回调
-        //        qot.setQotSpi(this);   //设置行情回调
+        qot.setClientInfo("javaclient", 1);  //设置客户端信息
+        qot.setConnSpi(this);  //设置连接回调
+        qot.setQotSpi(this);   //设置行情回调
     }
 
     public void setAccountId(long accountId) {
@@ -110,7 +111,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     public void start() {
         trd.initConnect("127.0.0.1", (short) 11111, false);
-        //        qot.initConnect("127.0.0.1", (short) 11111, false);
+        qot.initConnect("127.0.0.1", (short) 11111, false);
         log.info("trade api initialize staring...");
         try {
             Thread.sleep(3000);
@@ -404,6 +405,16 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         }
     }
 
+    public void getTradeDate() {
+        QotRequestTradeDate.C2S c2s = QotRequestTradeDate.C2S.newBuilder()
+          .setMarket(QotCommon.TradeDateMarket.TradeDateMarket_US_VALUE)
+          .setBeginTime("2024-01-01")
+          .setEndTime("2024-12-31")
+          .build();
+        QotRequestTradeDate.Request req = QotRequestTradeDate.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.requestTradeDate(req);
+    }
+
     @Override
     public void onDisconnect(FTAPI_Conn client, long errCode) {
         log.info("Qot onDisConnect: {}", errCode);
@@ -617,6 +628,26 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         }
     }
 
+    @Override
+    public void onReply_RequestTradeDate(FTAPI_Conn client, int nSerialNo, QotRequestTradeDate.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("QotRequestTradeDate failed: %s\n", rsp.getRetMsg());
+        } else {
+            try {
+                //                String json = JsonFormat.printer().print(rsp);
+                //                System.out.printf("Receive QotRequestTradeDate: %s\n", json);
+                List<QotRequestTradeDate.TradeDate> tradeDateListList = rsp.getS2C().getTradeDateListList();
+                for (QotRequestTradeDate.TradeDate tradeDate : tradeDateListList) {
+                    String time = tradeDate.getTime();
+                    int tradeDateType = tradeDate.getTradeDateType();
+                    System.out.println(time + ", " + tradeDateType);
+                }
+            } catch (Exception e) {
+                log.error("onReply_RequestTradeDate error. ", e);
+            }
+        }
+    }
+
     public static List<String> readFile(String filePath) {
         List<String> lineList = Lists.newArrayList();
         BufferedReader br = null;
@@ -644,17 +675,19 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         trdDemo.useRealEnv();
         trdDemo.start();
 
+        //        trdDemo.getTradeDate();
+
         //        trdDemo.unlock();
-        //                double funds = trdDemo.getFunds();
-        //                System.out.println(funds);
+        double funds = trdDemo.getFunds();
+        System.out.println(funds);
         //        Map<String, StockPosition> positionMap = trdDemo.getPositionMap("NTES");
         //        System.out.println(positionMap);
-        long orderId = trdDemo.placeNormalBuyOrder("OLLI", 1, 60);
-        System.out.println(orderId);
-        long modifyOrderId = trdDemo.upOrderPrice(orderId, 1, 60.01);
-        System.out.println(modifyOrderId);
-        long modifyOrderId2 = trdDemo.upOrderPrice(orderId, 1, 60.02);
-        System.out.println(modifyOrderId2);
+        //        long orderId = trdDemo.placeNormalBuyOrder("OLLI", 1, 60);
+        //        System.out.println(orderId);
+        //        long modifyOrderId = trdDemo.upOrderPrice(orderId, 1, 60.01);
+        //        System.out.println(modifyOrderId);
+        //        long modifyOrderId2 = trdDemo.upOrderPrice(orderId, 1, 60.02);
+        //        System.out.println(modifyOrderId2);
         //        System.out.println(crmt);
         //        int count = trdDemo.getMaxCashBuy("AAPL", 190);
         //        System.out.println(count);
@@ -672,5 +705,6 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         //
         //            }
         //        }
+        System.out.println();
     }
 }

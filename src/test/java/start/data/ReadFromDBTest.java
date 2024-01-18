@@ -3,6 +3,7 @@ package start.data;
 import bean.Page;
 import bean.StockRehab;
 import bean.Total;
+import bean.TradeCalendar;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
@@ -12,7 +13,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import start.BaseTest;
+import util.Constants;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -77,5 +80,12 @@ public class ReadFromDBTest extends BaseTest {
             System.out.println(aapl);
         }
         System.out.println(System.currentTimeMillis());
+    }
+
+    @Test
+    public void getTradeCalendar(){
+        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
+        TradeCalendar tradeCalendar = readFromDB.getTradeCalendar(today);
+        System.out.println(tradeCalendar);
     }
 }
