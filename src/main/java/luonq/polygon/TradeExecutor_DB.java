@@ -63,94 +63,107 @@ public class TradeExecutor_DB {
         }
         log.info("remain cash: " + remainCash);
         if (CollectionUtils.isNotEmpty(nodes)) {
-            Node node = nodes.get(0);
-            String code = node.getName();
-            double price;
-            if (!RealTimeDataWS_DB.realtimeQuoteMap.containsKey(code)) {
-                log.info("can't find real-time quote: " + code);
-                price = node.getPrice();
-            } else {
-                price = RealTimeDataWS_DB.realtimeQuoteMap.get(code);
-            }
-
-            double upRatio = 0.003;
-            int multiple = 0;
-            double orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
-            log.info("first trade. orderPrice=" + orderPrice + ", multiple=" + multiple);
-            int count = tradeApi.getMaxCashBuy(code, orderPrice);
-
-            while (true) {
-                //            /** 2.用剩余可用现金计算可买数量 */
-                //            int count = (int) (remainCash / orderPrice);
-                /** 2.调用接口获取最大可买数量 */
-                if (count == TRADE_ERROR_CODE) {
-                    log.info("get max cash buy error. code=" + code + ", orderPrice=" + orderPrice);
-                    break;
-                }
-                /** 如果可买数量为0，则执行56 */
-                if (count <= 0) {
-                    log.info("there is no cash to trade. trade finish. count=" + count);
-                    break;
-                }
-
-                /** 3.用可买数量下限价单 */
-                long orderId;
-                if (realTrade) {
-                    //                orderId = tradeApi.placeMarketBuyOrder(code, count);
-                    orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
+            boolean tradeSuccess = true;
+            for (int i = 0; i < 3; i++) {
+                Node node = nodes.get(0);
+                String code = node.getName();
+                double price;
+                if (!RealTimeDataWS_DB.realtimeQuoteMap.containsKey(code)) {
+                    log.info("can't find real-time quote: " + code);
+                    price = node.getPrice();
                 } else {
-                    orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
+                    price = RealTimeDataWS_DB.realtimeQuoteMap.get(code);
                 }
-                if (orderId == TRADE_ERROR_CODE) {
-                    log.info("place order failed. code=" + code + ", count=" + count + ", orderPrice=" + orderPrice);
-                    count--;
-                    continue;
-                }
-                log.info("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId + " " + System.currentTimeMillis());
+
+                double upRatio = 0.003;
+                int multiple = 0;
+                double orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+                log.info("first trade. orderPrice=" + orderPrice + ", multiple=" + multiple);
+                int count = tradeApi.getMaxCashBuy(code, orderPrice);
 
                 while (true) {
-                    /** 4.下单完成后，十秒后获取成交状态 */
-                    OrderFill orderFill = tradeApi.getOrderFill(orderId, 4);
-                    if (orderFill == null) {
-                        /** 5.如果没有成交完成，则修改价格，并继续 */
-                        orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
-                        log.info("modify order price. orderPrice=" + orderPrice + ", multiple=" + multiple);
-
-                        while (true) {
-                            long modifyOrderId = tradeApi.upOrderPrice(orderId, count, orderPrice);
-                            log.info(code + " order has been modify. orderId=" + orderId + ", ordePrice=" + orderPrice + ", modifyOrderId=" + modifyOrderId);
-                            //                    log.info(code + " order has been canceled. orderId: " + orderId + ", cancel res code: " + modifyOrderId);
-                            if (modifyOrderId == TRADE_ERROR_CODE) {
-                                count--;
-                                log.info("minus count=" + count);
-                            } else {
-                                break;
-                            }
-                        }
-                    } else {
-                        /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
-                        log.info(code + " order is successfully executed. orderId=" + orderId);
-                        if (realTrade) {
-                            try {
-                                placeStopLossOrder(orderFill);
-                            } catch (Exception e) {
-                                log.info("real placeStopLossOrder failed");
-                            }
-                        }
-                        tradeStock.add(code);
+                    //            /** 2.用剩余可用现金计算可买数量 */
+                    //            int count = (int) (remainCash / orderPrice);
+                    /** 2.调用接口获取最大可买数量 */
+                    if (count == TRADE_ERROR_CODE) {
+                        log.info("get max cash buy error. code=" + code + ", orderPrice=" + orderPrice);
                         break;
                     }
-                }
+                    /** 如果可买数量为0，则执行56 */
+                    if (count <= 0) {
+                        log.info("there is no cash to trade. trade finish. count=" + count);
+                        break;
+                    }
 
-                if (!realTrade) {
-                    /** 模拟盘重新获取剩余可用现金 */
-                    remainCash = tradeApi.getFunds();
-                    remainCash -= cut;
-                    //            } else if (orderFill != null) {
-                    //                /** 实盘获取的剩余现金实时性不高，所以用前值减去已成交订单金额得到最新现金 */
-                    //                remainCash = remainCash - orderFill.getAvgPrice() * orderFill.getCount();
+                    /** 3.用可买数量下限价单 */
+                    long orderId;
+                    if (realTrade) {
+                        //                orderId = tradeApi.placeMarketBuyOrder(code, count);
+                        orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
+                    } else {
+                        orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
+                    }
+                    if (orderId == TRADE_ERROR_CODE) {
+                        log.info("place order failed. code=" + code + ", count=" + count + ", orderPrice=" + orderPrice);
+                        count--;
+                        continue;
+                    }
+                    log.info("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId + " " + System.currentTimeMillis());
+
+                    while (true) {
+                        /** 4.下单完成后，4秒后获取成交状态 */
+                        OrderFill orderFill = tradeApi.getOrderFill(orderId, 4);
+                        if (orderFill == null) {
+                            /** 5.如果没有成交完成，则修改价格，并继续 */
+                            orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+                            log.info("modify order price. orderPrice=" + orderPrice + ", multiple=" + multiple);
+
+                            for (int j = 0; j <= 10; j++) {
+                                long modifyOrderId = tradeApi.upOrderPrice(orderId, count, orderPrice);
+                                log.info(code + " order has been modify. orderId=" + orderId + ", ordePrice=" + orderPrice + ", modifyOrderId=" + modifyOrderId);
+                                if (modifyOrderId == TRADE_ERROR_CODE) {
+                                    count--;
+                                    log.info("minus count={}", count);
+                                } else {
+                                    break;
+                                }
+                            }
+                        } else {
+                            /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
+                            log.info(code + " order is successfully executed. orderId=" + orderId);
+                            if (realTrade) {
+                                try {
+                                    placeStopLossOrder(orderFill);
+                                } catch (Exception e) {
+                                    log.info("real placeStopLossOrder failed");
+                                }
+                            }
+                            tradeStock.add(code);
+                            break;
+                        }
+                        if (multiple == 5) {
+                            tradeApi.cancelOrder(orderId);
+                            tradeSuccess = false;
+                            break;
+                        }
+                    }
+
+                    if (!realTrade) {
+                        /** 模拟盘重新获取剩余可用现金 */
+                        remainCash = tradeApi.getFunds();
+                        remainCash -= cut;
+                        //            } else if (orderFill != null) {
+                        //                /** 实盘获取的剩余现金实时性不高，所以用前值减去已成交订单金额得到最新现金 */
+                        //                remainCash = remainCash - orderFill.getAvgPrice() * orderFill.getCount();
+                    }
+                    break;
                 }
-                break;
+                if (tradeSuccess) {
+                    log.info("trade success");
+                    break;
+                } else {
+                    log.info("retry trade. {} times", i + 1);
+                }
             }
         }
         log.info("trade end");

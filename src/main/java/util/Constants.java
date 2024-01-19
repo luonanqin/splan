@@ -39,4 +39,5 @@ public final class Constants {
     public static final String SPLIT_PATH = USER_PATH + "src/main/resources/splitData/";
 
     public static int TRADE_ERROR_CODE = -500;
+    public static int TRADE_PROHIBT_CODE = -600;
 }

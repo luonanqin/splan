@@ -49,6 +49,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static util.Constants.TRADE_ERROR_CODE;
+import static util.Constants.TRADE_PROHIBT_CODE;
 
 /**
  * Created by Luonanqin on 2022/12/22.
@@ -555,8 +556,13 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     @Override
     public void onReply_ModifyOrder(FTAPI_Conn client, int nSerialNo, TrdModifyOrder.Response rsp) {
         if (rsp.getRetType() != 0) {
-            log.error("TrdModifyOrder failed: {}", rsp.getRetMsg());
-            modifyOrderId.set(TRADE_ERROR_CODE);
+            String retMsg = rsp.getRetMsg();
+            log.error("TrdModifyOrder failed: {}", retMsg);
+            if (StringUtils.equals(retMsg, "此订单不支持此操作")) {
+                modifyOrderId.set(TRADE_PROHIBT_CODE);
+            } else {
+                modifyOrderId.set(TRADE_ERROR_CODE);
+            }
         } else {
             try {
                 modifyOrderId.set(rsp.getS2C().getOrderID());
