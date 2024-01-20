@@ -104,10 +104,13 @@ public class OpenBollingerForYear {
                 String date = kLine.getDate();
 
                 BigDecimal close = BigDecimal.valueOf(kLine.getClose());
-                m20close = m20close.add(close);
+                BigDecimal open = BigDecimal.valueOf(kLine.getOpen());
                 ma20count++;
                 if (ma20count < 20) {
+                    m20close = m20close.add(close);
                     continue;
+                } else {
+                    m20close = m20close.add(open);
                 }
 
                 double ma20 = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
@@ -133,6 +136,7 @@ public class OpenBollingerForYear {
 
                 ma20count--;
                 m20close = m20close.subtract(BigDecimal.valueOf(kLines.get(i + 20 - 1).getClose()));
+                m20close = m20close.subtract(open).add(close);
 
                 BOLL boll = BOLL.builder().date(date).md(md).mb(mb).up(up).dn(dn).build();
                 newBollList.add(0, boll.toString());

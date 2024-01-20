@@ -33,9 +33,6 @@ public class TradeJob extends BaseJob {
     @XxlJob("SellBeforeCloseMarket.job")
     public void sellBeforeCloseMarket() {
         log.info("sellBeforeCloseMarket.job start");
-        if (noTrade()) {
-            return;
-        }
         try {
             tradeExecutor_db.init();
             tradeExecutor_db.closeSell();
