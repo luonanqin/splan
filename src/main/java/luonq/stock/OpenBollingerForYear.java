@@ -59,8 +59,8 @@ public class OpenBollingerForYear {
         }
 
         for (String stock : stockToKLineMap.keySet()) {
-            if (!stock.equals("BILI")) {
-                continue;
+            if (!stock.equals("FUTU")) {
+//                continue;
             }
 
             List<StockKLine> lastKLines = BaseUtils.loadDataToKline(lastKLinePath + stock, lastYear);
@@ -108,11 +108,9 @@ public class OpenBollingerForYear {
                 ma20count++;
                 if (ma20count < 20) {
                     m20close = m20close.add(close);
-                    System.out.println(i + " " + kLine);
                     continue;
                 } else {
                     m20close = m20close.add(open);
-                    System.out.println(i + " " + kLine);
                 }
 
                 double ma20 = m20close.divide(BigDecimal.valueOf(20), 2, ROUND_HALF_UP).doubleValue();
@@ -126,7 +124,6 @@ public class OpenBollingerForYear {
                     } else {
                         c = kLines.get(j).getClose();
                     }
-                    System.out.println("j=" + j + " " + c);
                     j++;
                     avgDiffSum = avgDiffSum.add(BigDecimal.valueOf(c - ma20).pow(2));
                     times--;

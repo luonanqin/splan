@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class DeleteHistoryData {
 
     public static void main(String[] args) throws Exception {
-//        deleteOpenBoll();
+        deleteOpenBoll();
         deleteMergeOpenBoll();
     }
 
@@ -20,12 +20,12 @@ public class DeleteHistoryData {
 
         Map<String, String> openBollFileMap = BaseUtils.getFileMap(openBollDirPath);
         for (String stock : openBollFileMap.keySet()) {
-            if (!stock.equals("WRK")) {
+            if (!stock.equals("BILI")) {
 //                continue;
             }
             String openBollFile = openBollFileMap.get(stock);
             List<BOLL> bolls = BaseUtils.readBollFile(openBollFile, 2024);
-            List<BOLL> afterDeleteOpenBolls = bolls.stream().filter(b -> BaseUtils.dateToInt(b.getDate()) < 20240103).collect(Collectors.toList());
+            List<BOLL> afterDeleteOpenBolls = bolls.stream().filter(b -> BaseUtils.dateToInt(b.getDate()) < 20240119).collect(Collectors.toList());
             //            System.out.println(afterDeleteOpenBolls);
             BaseUtils.writeFile(openBollFile, afterDeleteOpenBolls.stream().map(BOLL::toString).collect(Collectors.toList()));
             System.out.println("deleteOpenBoll " + stock + " finish");
@@ -42,7 +42,7 @@ public class DeleteHistoryData {
             }
             String file = mergeOpenBollFileMap.get(stock);
             List<BOLL> bolls = BaseUtils.readBollFile(file, 2024);
-            List<BOLL> afterDelete = bolls.stream().filter(b -> BaseUtils.dateToInt(b.getDate()) < 20240103).collect(Collectors.toList());
+            List<BOLL> afterDelete = bolls.stream().filter(b -> BaseUtils.dateToInt(b.getDate()) < 20240119).collect(Collectors.toList());
 //                        System.out.println(afterDelete);
             BaseUtils.writeFile(file, afterDelete.stream().map(BOLL::toString).collect(Collectors.toList()));
             System.out.println("deleteMergeOpenBoll " + stock + " finish");
