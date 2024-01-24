@@ -159,8 +159,9 @@ public class GetHistoricalOpenFirstTrade {
                             long openTS = open.toInstant(ZoneOffset.of("+8")).toEpochMilli();
                             long openFirstLteTS = openFirstLte.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
-                            String preUrl = api + stock + "?order=asc&" + timeGte + openTS + "000000&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
-                            String preTrade = getTrade(preUrl, httpClient);
+                            long startTime = Long.valueOf(openTS + "000000");
+                            String preUrl = api + stock + "?order=asc&" + timeGte + startTime + "&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
+                            String preTrade = getTrade(preUrl, httpClient, startTime);
                             if (!preTrade.contains(",")) {
                                 log.warn(stock + " " + preTrade);
                                 continue;
@@ -185,7 +186,7 @@ public class GetHistoricalOpenFirstTrade {
                         e.printStackTrace();
                     }
                     long cost = System.currentTimeMillis() - begin;
-//                    log.info("finish " + stock + " " + cost / 1000);
+                    //                    log.info("finish " + stock + " " + cost / 1000);
                 });
             } catch (Exception e) {
                 log.error("error stock: " + stock);
@@ -195,7 +196,7 @@ public class GetHistoricalOpenFirstTrade {
         cachedThread.shutdown();
     }
 
-    private static String getTrade(String preUrl, HttpClient httpclient) {
+    private static String getTrade(String preUrl, HttpClient httpclient, long startTime) {
         GetMethod get = new GetMethod(preUrl);
         try {
             int code = 0;
@@ -213,14 +214,20 @@ public class GetHistoricalOpenFirstTrade {
             TradeResp tickerResp = JSON.parseObject(stream, TradeResp.class);
             List<Trade> results = tickerResp.getResults();
             if (CollectionUtils.isNotEmpty(results)) {
-                Trade trade = results.get(0);
-                double price = trade.getPrice();
-                long participantTimestamp = trade.getParticipant_timestamp();
-                long nano = participantTimestamp % 1000000000L;
-                long second = participantTimestamp / 1000000000L;
-                LocalDateTime time = LocalDateTime.ofEpochSecond(second, (int) nano, ZoneOffset.of("+8"));
-                String format = time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-                return price + "," + format;
+                for (int i = 0; i < results.size(); i++) {
+                    Trade trade = results.get(i);
+                    double price = trade.getPrice();
+                    long participantTimestamp = trade.getParticipant_timestamp();
+                    if (participantTimestamp < startTime) {
+                        continue;
+                    }
+                    long nano = participantTimestamp % 1000000000L;
+                    long second = participantTimestamp / 1000000000L;
+                    LocalDateTime time = LocalDateTime.ofEpochSecond(second, (int) nano, ZoneOffset.of("+8"));
+                    String format = time.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    return price + "," + format;
+                }
+                return "no data";
             } else {
                 return "no data";
             }
