@@ -1,4 +1,4 @@
-package luonq.strategy.backup;
+package luonq.strategy;
 
 import bean.BOLL;
 import bean.Bean;
@@ -48,7 +48,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
  * 结果：截止8月11日
  * openRange=7, hit=0.5, loss=0.3, sum=533925, gainCount=159, lossCount=71, successRatio=0.691304347826087
  */
-public class Strategy10_3_1 {
+public class OverBollingerDn {
 
     public static final String TEST_STOCK = "";
     public static final Set<String> SKIP_SET = Sets.newHashSet("FRC", "SIVBQ");
@@ -351,8 +351,7 @@ public class Strategy10_3_1 {
                             int avgVolume = (int) volume.doubleValue() / 360;
 
                             StockRatio stockRatio = ratioMap.get(stock);
-                            Map<Integer, RatioBean> ratioDetail =SerializationUtils.clone((HashMap<Integer, RatioBean>) stockRatio.getRatioMap());
-                            stockRatio.addBean(buildBean(kLine, boll));
+                            Map<Integer, RatioBean> ratioDetail = stockRatio.getRatioMap();
                             if (MapUtils.isEmpty(ratioDetail)) {
                                 //                                stockRatio.addBean(buildBean(kLine, boll));
                                 continue;

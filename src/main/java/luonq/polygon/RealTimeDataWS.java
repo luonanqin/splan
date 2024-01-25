@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
-import luonq.strategy.backup.Strategy10_3;
+import luonq.strategy.OverBollingerDn;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -177,7 +177,7 @@ public class RealTimeDataWS {
         try {
             String mergePath = Constants.HIS_BASE_PATH + "merge" + SEPARATOR;
             fileMap = BaseUtils.getFileMap(mergePath);
-            originRatioMap = Strategy10_3.computeHistoricalOverBollingerRatio();
+            originRatioMap = OverBollingerDn.computeHistoricalOverBollingerRatio();
             loadEarningInfo();
             stockSet = buildStockSet(fileMap);
             //            stockSet.clear();
