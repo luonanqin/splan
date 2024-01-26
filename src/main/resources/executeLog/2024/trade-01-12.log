@@ -1,0 +1,555 @@
+2024-01-12 00:00:31.058 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-12 04:58:56.810 [xxl-job, JobThread-8-1705006736346] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-01-12 04:58:56.904 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7151316576241817571
+2024-01-12 04:58:59.823 [xxl-job, JobThread-8-1705006736346] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-01-12 04:58:59.841 [xxl-job, JobThread-8-1705006736346] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-01-12 04:58:59.907 [xxl-job, JobThread-8-1705006736346] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={MOS=StockPosition(stock=MOS, canSellQty=40.0, costPrice=33.603, currPrice=33.3)}, time=2024-01-12T04:58:59.906
+2024-01-12 04:58:59.920 [xxl-job, JobThread-8-1705006736346] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=MOS, count=40.0
+2024-01-12 04:58:59.954 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-01-12 04:59:00.117 [xxl-job, JobThread-8-1705006736346] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=7066699360339744414
+2024-01-12 04:59:00.951 [xxl-job, JobThread-8-1705006736346] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=MOS, orderId=7066699360339744414
+2024-01-12 04:59:00.951 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7066699360339744414, code=MOS, name=美国美盛, count=40.0, price=0.0, avgPrice=33.3409, createTime=2024-01-11 15:59:00.014, updateTimestamp=1.705006740949958E9, status=0)
+2024-01-12 04:59:00.963 [xxl-job, JobThread-8-1705006736346] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-01-12 17:00:00.092 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-01-12 17:00:24.457 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 24s
+
+2024-01-12 17:00:24.471 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-01-12 17:01:07.442 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 42s
+
+2024-01-12 17:01:07.444 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-01-12 17:01:12.622 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 5s
+
+2024-01-12 17:01:12.626 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-01-12 17:01:57.769 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 45s
+
+2024-01-12 17:01:57.771 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-01-12 17:03:04.064 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 66s
+
+2024-01-12 17:03:04.077 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-01-12 17:03:05.574 [pool-4-thread-7] WARN  l.p.GetHistoricalOpenFirstTrade - CMRA no data
+2024-01-12 17:03:05.865 [pool-4-thread-95] WARN  l.p.GetHistoricalOpenFirstTrade - OCFCP no data
+2024-01-12 17:03:05.911 [pool-4-thread-76] WARN  l.p.GetHistoricalOpenFirstTrade - SLGC no data
+2024-01-12 17:03:06.285 [pool-4-thread-9] WARN  l.p.GetHistoricalOpenFirstTrade - FNVT no data
+2024-01-12 17:03:06.312 [pool-4-thread-63] WARN  l.p.GetHistoricalOpenFirstTrade - TGAA no data
+2024-01-12 17:03:06.672 [pool-4-thread-29] WARN  l.p.GetHistoricalOpenFirstTrade - CNDB no data
+2024-01-12 17:03:06.831 [pool-4-thread-87] WARN  l.p.GetHistoricalOpenFirstTrade - PLAO no data
+2024-01-12 17:03:06.907 [pool-4-thread-29] WARN  l.p.GetHistoricalOpenFirstTrade - CNDB no data
+2024-01-12 17:03:06.957 [pool-4-thread-13] WARN  l.p.GetHistoricalOpenFirstTrade - CNDA no data
+2024-01-12 17:03:06.959 [pool-4-thread-83] WARN  l.p.GetHistoricalOpenFirstTrade - FFNW no data
+2024-01-12 17:03:07.056 [pool-4-thread-49] WARN  l.p.GetHistoricalOpenFirstTrade - MSVB no data
+2024-01-12 17:03:07.148 [pool-4-thread-6] WARN  l.p.GetHistoricalOpenFirstTrade - PTWO no data
+2024-01-12 17:03:07.374 [pool-4-thread-20] WARN  l.p.GetHistoricalOpenFirstTrade - APXI no data
+2024-01-12 17:03:07.489 [pool-4-thread-92] WARN  l.p.GetHistoricalOpenFirstTrade - TGVC no data
+2024-01-12 17:03:07.600 [pool-4-thread-71] WARN  l.p.GetHistoricalOpenFirstTrade - PUCK no data
+2024-01-12 17:03:07.910 [pool-4-thread-11] WARN  l.p.GetHistoricalOpenFirstTrade - LCA no data
+2024-01-12 17:03:07.995 [pool-4-thread-42] WARN  l.p.GetHistoricalOpenFirstTrade - THCP no data
+2024-01-12 17:03:08.006 [pool-4-thread-61] WARN  l.p.GetHistoricalOpenFirstTrade - LCW no data
+2024-01-12 17:03:08.036 [pool-4-thread-30] WARN  l.p.GetHistoricalOpenFirstTrade - BCOW no data
+2024-01-12 17:03:08.163 [pool-4-thread-11] WARN  l.p.GetHistoricalOpenFirstTrade - LCA no data
+2024-01-12 17:03:08.286 [pool-4-thread-42] WARN  l.p.GetHistoricalOpenFirstTrade - THCP no data
+2024-01-12 17:03:08.353 [pool-4-thread-61] WARN  l.p.GetHistoricalOpenFirstTrade - LCW no data
+2024-01-12 17:03:08.425 [pool-4-thread-50] WARN  l.p.GetHistoricalOpenFirstTrade - NFYS no data
+2024-01-12 17:03:08.510 [pool-4-thread-22] WARN  l.p.GetHistoricalOpenFirstTrade - COOL no data
+2024-01-12 17:03:08.561 [pool-4-thread-42] WARN  l.p.GetHistoricalOpenFirstTrade - THCP no data
+2024-01-12 17:03:08.816 [pool-4-thread-50] WARN  l.p.GetHistoricalOpenFirstTrade - NFYS no data
+2024-01-12 17:03:08.994 [pool-4-thread-65] WARN  l.p.GetHistoricalOpenFirstTrade - BLPH no data
+2024-01-12 17:03:09.090 [pool-4-thread-76] WARN  l.p.GetHistoricalOpenFirstTrade - EMLD no data
+2024-01-12 17:03:09.304 [pool-4-thread-50] WARN  l.p.GetHistoricalOpenFirstTrade - NFYS no data
+2024-01-12 17:03:09.327 [pool-4-thread-76] WARN  l.p.GetHistoricalOpenFirstTrade - EMLD no data
+2024-01-12 17:03:09.368 [pool-4-thread-44] WARN  l.p.GetHistoricalOpenFirstTrade - MDJH no data
+2024-01-12 17:03:09.533 [pool-4-thread-99] WARN  l.p.GetHistoricalOpenFirstTrade - EVGR no data
+2024-01-12 17:03:09.678 [pool-4-thread-44] WARN  l.p.GetHistoricalOpenFirstTrade - MDJH no data
+2024-01-12 17:03:09.912 [pool-4-thread-44] WARN  l.p.GetHistoricalOpenFirstTrade - MDJH no data
+2024-01-12 17:03:09.930 [pool-4-thread-24] WARN  l.p.GetHistoricalOpenFirstTrade - ARRW no data
+2024-01-12 17:03:09.984 [pool-4-thread-91] WARN  l.p.GetHistoricalOpenFirstTrade - CPIX no data
+2024-01-12 17:03:10.030 [pool-4-thread-60] WARN  l.p.GetHistoricalOpenFirstTrade - HFBL no data
+2024-01-12 17:03:10.078 [pool-4-thread-29] WARN  l.p.GetHistoricalOpenFirstTrade - PEGR no data
+2024-01-12 17:03:10.099 [pool-4-thread-96] WARN  l.p.GetHistoricalOpenFirstTrade - RCFA no data
+2024-01-12 17:03:10.329 [pool-4-thread-29] WARN  l.p.GetHistoricalOpenFirstTrade - PEGR no data
+2024-01-12 17:03:10.351 [pool-4-thread-68] WARN  l.p.GetHistoricalOpenFirstTrade - ARTW no data
+2024-01-12 17:03:10.353 [pool-4-thread-96] WARN  l.p.GetHistoricalOpenFirstTrade - RCFA no data
+2024-01-12 17:03:10.361 [pool-4-thread-14] WARN  l.p.GetHistoricalOpenFirstTrade - WAVS no data
+2024-01-12 17:03:10.647 [pool-4-thread-14] WARN  l.p.GetHistoricalOpenFirstTrade - WAVS no data
+2024-01-12 17:03:10.654 [pool-4-thread-75] WARN  l.p.GetHistoricalOpenFirstTrade - CHEA no data
+2024-01-12 17:03:10.722 [pool-4-thread-50] WARN  l.p.GetHistoricalOpenFirstTrade - FIAC no data
+2024-01-12 17:03:10.738 [pool-4-thread-15] WARN  l.p.GetHistoricalOpenFirstTrade - LBBB no data
+2024-01-12 17:03:10.751 [pool-4-thread-96] WARN  l.p.GetHistoricalOpenFirstTrade - RCFA no data
+2024-01-12 17:03:10.819 [pool-4-thread-92] WARN  l.p.GetHistoricalOpenFirstTrade - CPTK no data
+2024-01-12 17:03:10.891 [pool-4-thread-75] WARN  l.p.GetHistoricalOpenFirstTrade - CHEA no data
+2024-01-12 17:03:10.958 [pool-4-thread-50] WARN  l.p.GetHistoricalOpenFirstTrade - FIAC no data
+2024-01-12 17:03:11.011 [pool-4-thread-2] WARN  l.p.GetHistoricalOpenFirstTrade - IROQ no data
+2024-01-12 17:03:11.048 [pool-4-thread-39] WARN  l.p.GetHistoricalOpenFirstTrade - GLLI no data
+2024-01-12 17:03:11.186 [pool-4-thread-14] WARN  l.p.GetHistoricalOpenFirstTrade - WAVS no data
+2024-01-12 17:03:11.422 [pool-4-thread-14] WARN  l.p.GetHistoricalOpenFirstTrade - WAVS no data
+2024-01-12 17:03:11.448 [pool-4-thread-44] WARN  l.p.GetHistoricalOpenFirstTrade - HGEN no data
+2024-01-12 17:03:11.565 [pool-4-thread-52] WARN  l.p.GetHistoricalOpenFirstTrade - GLST no data
+2024-01-12 17:03:11.692 [pool-4-thread-14] WARN  l.p.GetHistoricalOpenFirstTrade - WAVS no data
+2024-01-12 17:03:11.723 [pool-4-thread-40] WARN  l.p.GetHistoricalOpenFirstTrade - PFTA no data
+2024-01-12 17:03:11.763 [pool-4-thread-59] WARN  l.p.GetHistoricalOpenFirstTrade - PWUP no data
+2024-01-12 17:03:11.841 [pool-4-thread-52] WARN  l.p.GetHistoricalOpenFirstTrade - GLST no data
+2024-01-12 17:03:12.038 [pool-4-thread-59] WARN  l.p.GetHistoricalOpenFirstTrade - PWUP no data
+2024-01-12 17:03:12.071 [pool-4-thread-14] WARN  l.p.GetHistoricalOpenFirstTrade - WAVS no data
+2024-01-12 17:03:12.132 [pool-4-thread-52] WARN  l.p.GetHistoricalOpenFirstTrade - GLST no data
+2024-01-12 17:03:12.187 [pool-4-thread-32] WARN  l.p.GetHistoricalOpenFirstTrade - ACAH no data
+2024-01-12 17:03:12.193 [pool-4-thread-13] WARN  l.p.GetHistoricalOpenFirstTrade - ACAB no data
+2024-01-12 17:03:12.275 [pool-4-thread-59] WARN  l.p.GetHistoricalOpenFirstTrade - PWUP no data
+2024-01-12 17:03:12.308 [pool-4-thread-43] WARN  l.p.GetHistoricalOpenFirstTrade - AKTX no data
+2024-01-12 17:03:12.330 [pool-4-thread-89] WARN  l.p.GetHistoricalOpenFirstTrade - GMFI no data
+2024-01-12 17:03:12.360 [pool-4-thread-14] WARN  l.p.GetHistoricalOpenFirstTrade - WAVS no data
+2024-01-12 17:03:12.365 [pool-4-thread-52] WARN  l.p.GetHistoricalOpenFirstTrade - GLST no data
+2024-01-12 17:03:12.511 [pool-4-thread-59] WARN  l.p.GetHistoricalOpenFirstTrade - PWUP no data
+2024-01-12 17:03:12.573 [pool-4-thread-82] WARN  l.p.GetHistoricalOpenFirstTrade - NRAC no data
+2024-01-12 17:03:12.624 [pool-4-thread-52] WARN  l.p.GetHistoricalOpenFirstTrade - GLST no data
+2024-01-12 17:03:12.809 [pool-4-thread-82] WARN  l.p.GetHistoricalOpenFirstTrade - NRAC no data
+2024-01-12 17:03:12.820 [pool-4-thread-56] WARN  l.p.GetHistoricalOpenFirstTrade - XFIN no data
+2024-01-12 17:03:13.048 [pool-4-thread-82] WARN  l.p.GetHistoricalOpenFirstTrade - NRAC no data
+2024-01-12 17:03:13.070 [pool-4-thread-54] WARN  l.p.GetHistoricalOpenFirstTrade - CITE no data
+2024-01-12 17:03:13.163 [pool-4-thread-2] WARN  l.p.GetHistoricalOpenFirstTrade - CACO no data
+2024-01-12 17:03:13.305 [pool-4-thread-54] WARN  l.p.GetHistoricalOpenFirstTrade - CITE no data
+2024-01-12 17:03:13.328 [pool-4-thread-82] WARN  l.p.GetHistoricalOpenFirstTrade - NRAC no data
+2024-01-12 17:03:13.364 [pool-4-thread-60] WARN  l.p.GetHistoricalOpenFirstTrade - FSEA no data
+2024-01-12 17:03:13.395 [pool-4-thread-84] WARN  l.p.GetHistoricalOpenFirstTrade - HHGC no data
+2024-01-12 17:03:13.417 [pool-4-thread-11] WARN  l.p.GetHistoricalOpenFirstTrade - TCBC no data
+2024-01-12 17:03:13.550 [pool-4-thread-64] WARN  l.p.GetHistoricalOpenFirstTrade - PGSS no data
+2024-01-12 17:03:13.558 [pool-4-thread-8] WARN  l.p.GetHistoricalOpenFirstTrade - RENE no data
+2024-01-12 17:03:13.598 [pool-4-thread-93] WARN  l.p.GetHistoricalOpenFirstTrade - PPHP no data
+2024-01-12 17:03:13.604 [pool-4-thread-82] WARN  l.p.GetHistoricalOpenFirstTrade - NRAC no data
+2024-01-12 17:03:13.607 [pool-4-thread-60] WARN  l.p.GetHistoricalOpenFirstTrade - FSEA no data
+2024-01-12 17:03:13.638 [pool-4-thread-94] WARN  l.p.GetHistoricalOpenFirstTrade - PPIH no data
+2024-01-12 17:03:13.638 [pool-4-thread-84] WARN  l.p.GetHistoricalOpenFirstTrade - HHGC no data
+2024-01-12 17:03:13.796 [pool-4-thread-8] WARN  l.p.GetHistoricalOpenFirstTrade - RENE no data
+2024-01-12 17:03:13.807 [pool-4-thread-100] WARN  l.p.GetHistoricalOpenFirstTrade - AUBN no data
+2024-01-12 17:03:13.825 [pool-4-thread-64] WARN  l.p.GetHistoricalOpenFirstTrade - PGSS no data
+2024-01-12 17:03:13.838 [pool-4-thread-82] WARN  l.p.GetHistoricalOpenFirstTrade - NRAC no data
+2024-01-12 17:03:13.844 [pool-4-thread-60] WARN  l.p.GetHistoricalOpenFirstTrade - ALSA no data
+2024-01-12 17:03:13.909 [pool-4-thread-78] WARN  l.p.GetHistoricalOpenFirstTrade - OST no data
+2024-01-12 17:03:14.079 [pool-4-thread-60] WARN  l.p.GetHistoricalOpenFirstTrade - ALSA no data
+2024-01-12 17:03:14.104 [pool-4-thread-64] WARN  l.p.GetHistoricalOpenFirstTrade - PGSS no data
+2024-01-12 17:03:14.152 [pool-4-thread-82] WARN  l.p.GetHistoricalOpenFirstTrade - NRAC no data
+2024-01-12 17:03:14.314 [pool-4-thread-8] WARN  l.p.GetHistoricalOpenFirstTrade - RENE no data
+2024-01-12 17:03:14.400 [pool-4-thread-64] WARN  l.p.GetHistoricalOpenFirstTrade - PGSS no data
+2024-01-12 17:03:14.414 [pool-4-thread-17] WARN  l.p.GetHistoricalOpenFirstTrade - ADOC no data
+2024-01-12 17:03:14.421 [pool-4-thread-11] WARN  l.p.GetHistoricalOpenFirstTrade - PPYA no data
+2024-01-12 17:03:14.539 [pool-4-thread-37] WARN  l.p.GetHistoricalOpenFirstTrade - KACL no data
+2024-01-12 17:03:14.630 [pool-4-thread-44] WARN  l.p.GetHistoricalOpenFirstTrade - RFAC no data
+2024-01-12 17:03:14.789 [pool-4-thread-17] WARN  l.p.GetHistoricalOpenFirstTrade - ADOC no data
+2024-01-12 17:03:14.816 [pool-4-thread-83] WARN  l.p.GetHistoricalOpenFirstTrade - LUMO no data
+2024-01-12 17:03:14.946 [pool-4-thread-86] WARN  l.p.GetHistoricalOpenFirstTrade - SIEB no data
+2024-01-12 17:03:15.046 [pool-4-thread-72] WARN  l.p.GetHistoricalOpenFirstTrade - MGYR no data
+2024-01-12 17:03:15.169 [pool-4-thread-37] WARN  l.p.GetHistoricalOpenFirstTrade - KACL no data
+2024-01-12 17:03:15.171 [pool-4-thread-79] WARN  l.p.GetHistoricalOpenFirstTrade - NSTC no data
+2024-01-12 17:03:15.173 [pool-4-thread-10] WARN  l.p.GetHistoricalOpenFirstTrade - NSTB no data
+2024-01-12 17:03:15.231 [pool-4-thread-73] WARN  l.p.GetHistoricalOpenFirstTrade - BHAC no data
+2024-01-12 17:03:15.300 [pool-4-thread-24] WARN  l.p.GetHistoricalOpenFirstTrade - BPTS no data
+2024-01-12 17:03:15.409 [pool-4-thread-37] WARN  l.p.GetHistoricalOpenFirstTrade - KACL no data
+2024-01-12 17:03:15.417 [pool-4-thread-72] WARN  l.p.GetHistoricalOpenFirstTrade - MGYR no data
+2024-01-12 17:03:15.447 [pool-4-thread-79] WARN  l.p.GetHistoricalOpenFirstTrade - SAGA no data
+2024-01-12 17:03:15.467 [pool-4-thread-73] WARN  l.p.GetHistoricalOpenFirstTrade - BHAC no data
+2024-01-12 17:03:15.493 [pool-4-thread-35] WARN  l.p.GetHistoricalOpenFirstTrade - NSTS no data
+2024-01-12 17:03:15.500 [pool-4-thread-28] WARN  l.p.GetHistoricalOpenFirstTrade - AVHI no data
+2024-01-12 17:03:15.510 [pool-4-thread-22] WARN  l.p.GetHistoricalOpenFirstTrade - SZZL no data
+2024-01-12 17:03:15.543 [pool-4-thread-21] WARN  l.p.GetHistoricalOpenFirstTrade - AEAE no data
+2024-01-12 17:03:15.684 [pool-4-thread-37] WARN  l.p.GetHistoricalOpenFirstTrade - KACL no data
+2024-01-12 17:03:15.763 [pool-4-thread-60] WARN  l.p.GetHistoricalOpenFirstTrade - SANG no data
+2024-01-12 17:03:15.962 [pool-4-thread-62] WARN  l.p.GetHistoricalOpenFirstTrade - KBNT no data
+2024-01-12 17:03:15.962 [pool-4-thread-89] WARN  l.p.GetHistoricalOpenFirstTrade - ROSS no data
+2024-01-12 17:03:16.223 [pool-4-thread-32] WARN  l.p.GetHistoricalOpenFirstTrade - IVCA no data
+2024-01-12 17:03:16.457 [pool-4-thread-22] WARN  l.p.GetHistoricalOpenFirstTrade - IVCB no data
+2024-01-12 17:03:16.619 [pool-4-thread-24] WARN  l.p.GetHistoricalOpenFirstTrade - SBIG no data
+2024-01-12 17:03:16.859 [pool-4-thread-28] WARN  l.p.GetHistoricalOpenFirstTrade - AFBI no data
+2024-01-12 17:03:16.877 [pool-4-thread-12] WARN  l.p.GetHistoricalOpenFirstTrade - SBFG no data
+2024-01-12 17:03:16.896 [pool-4-thread-70] WARN  l.p.GetHistoricalOpenFirstTrade - BRAC no data
+2024-01-12 17:03:16.979 [pool-4-thread-24] WARN  l.p.GetHistoricalOpenFirstTrade - SBIG no data
+2024-01-12 17:03:17.135 [pool-4-thread-70] WARN  l.p.GetHistoricalOpenFirstTrade - BRAC no data
+2024-01-12 17:03:17.216 [pool-4-thread-24] WARN  l.p.GetHistoricalOpenFirstTrade - SBIG no data
+2024-01-12 17:03:17.490 [pool-4-thread-38] WARN  l.p.GetHistoricalOpenFirstTrade - BACA no data
+2024-01-12 17:03:17.495 [pool-4-thread-61] WARN  l.p.GetHistoricalOpenFirstTrade - PBBK no data
+2024-01-12 17:03:17.729 [pool-4-thread-61] WARN  l.p.GetHistoricalOpenFirstTrade - PBBK no data
+2024-01-12 17:03:17.731 [pool-4-thread-38] WARN  l.p.GetHistoricalOpenFirstTrade - BACA no data
+2024-01-12 17:03:17.842 [pool-4-thread-65] WARN  l.p.GetHistoricalOpenFirstTrade - MAQC no data
+2024-01-12 17:03:17.973 [pool-4-thread-38] WARN  l.p.GetHistoricalOpenFirstTrade - BACA no data
+2024-01-12 17:03:18.004 [pool-4-thread-61] WARN  l.p.GetHistoricalOpenFirstTrade - PBBK no data
+2024-01-12 17:03:18.090 [pool-4-thread-99] WARN  l.p.GetHistoricalOpenFirstTrade - CMCM no data
+2024-01-12 17:03:18.118 [pool-4-thread-65] WARN  l.p.GetHistoricalOpenFirstTrade - MAQC no data
+2024-01-12 17:03:18.208 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 14s
+
+2024-01-12 17:03:18.210 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-01-12 17:03:23.109 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 4s
+
+2024-01-12 17:03:23.112 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-01-12 17:04:09.405 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 46s
+
+2024-01-12 17:04:09.406 [xxl-job, JobThread-3-1705050000077] INFO  luonq.stock.Processor - get data finish
+2024-01-12 17:30:00.082 [xxl-job, JobThread-6-1705051800073] INFO  luonq.data.WriteToDB - additionToDB begin
+2024-01-12 17:30:37.462 [xxl-job, JobThread-6-1705051800073] INFO  luonq.data.WriteToDB - sync count: 4689
+2024-01-12 17:30:39.220 [xxl-job, JobThread-6-1705051800073] INFO  luonq.data.WriteToDB - additionToDB end
+2024-01-12 18:00:00.087 [xxl-job, JobThread-4-1705053600075] INFO  luonq.stock.Processor - GetRehab.getData start
+2024-01-12 18:02:57.853 [FTAPI4JNet] WARN  luonq.futu.GetRehab - QotRequestRehab failed: 未知股票 JAQC
+2024-01-12 18:19:12.987 [FTAPI4JNet] WARN  luonq.futu.GetRehab - QotRequestRehab failed: 未知股票 ENER
+2024-01-12 18:28:06.092 [FTAPI4JNet] WARN  luonq.futu.GetRehab - QotRequestRehab failed: 未知股票 EGGF
+2024-01-12 18:39:19.331 [FTAPI4JNet] WARN  luonq.futu.GetRehab - QotRequestRehab failed: 未知股票 LVOX
+2024-01-12 18:42:22.305 [FTAPI4JNet] WARN  luonq.futu.GetRehab - QotRequestRehab failed: 未知股票 CLIN
+2024-01-12 18:48:04.044 [FTAPI4JNet] WARN  luonq.futu.GetRehab - QotRequestRehab failed: 未知股票 EBIX
+2024-01-12 18:49:28.882 [FTAPI4JNet] WARN  luonq.futu.GetRehab - QotRequestRehab failed: 未知股票 OHAA
+2024-01-12 18:50:08.944 [xxl-job, JobThread-4-1705053600075] INFO  luonq.stock.Processor - GetRehab.getData end. cost: 3008s
+
+2024-01-12 20:30:00.375 [xxl-job, JobThread-10-1705062600073] INFO  luonq.data.WriteToDB - finish rehabToDB. size=3148
+2024-01-12 21:00:00.073 [xxl-job, JobThread-5-1705064400064] INFO  luonq.stock.Processor - GrabEarning.getData start
+2024-01-12 21:00:05.311 [xxl-job, JobThread-5-1705064400064] INFO  luonq.stock.Processor - GrabEarning.getData end. cost: 5s
+
+2024-01-12 21:10:00.146 [xxl-job, JobThread-9-1705065000069] INFO  luonq.data.WriteToDB - sync earning finish. dateList=[2024-01-12], earning sum=89
+2024-01-12 22:15:00.171 [xxl-job, JobThread-7-1705068900066] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-01-12 22:15:00.183 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7151577308273037809
+2024-01-12 22:15:03.181 [xxl-job, JobThread-7-1705068900066] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-01-12 22:15:03.204 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - finish initialize many time. preTradeTime=1705069680000, openTime=1705069800000, closeCheckTime=Sat Jan 13 04:59:00 CST 2024
+2024-01-12 22:15:03.287 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-01-12 22:15:06.034 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - opening websocket
+2024-01-12 22:15:06.057 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - connected
+2024-01-12 22:15:06.303 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - auth_success
+2024-01-12 22:15:07.205 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - finish init trade
+2024-01-12 22:15:10.214 [pool-7-thread-1] INFO  luonq.strategy.backup.Strategy_DB - load 2024 finish
+2024-01-12 22:16:25.791 [pool-7-thread-2] INFO  luonq.strategy.backup.Strategy_DB - load 2023 finish
+2024-01-12 22:16:27.613 [pool-7-thread-3] INFO  luonq.strategy.backup.Strategy_DB - load 2022 finish
+2024-01-12 22:16:32.425 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - stock latest close great 7 size: 877
+2024-01-12 22:16:32.437 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - stock overbolling hit great 0.500000 size: 749
+2024-01-12 22:16:32.439 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - filter merge stock, the stock set size is 749
+2024-01-12 22:16:32.443 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - filter split stock, the stock set size is 747
+2024-01-12 22:16:33.080 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - filter front reinstatement less 0.98 stock, the stock set size is 711
+2024-01-12 22:16:33.081 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - filter earning and lastEarning stock, the stock set size is 708
+2024-01-12 22:16:33.082 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - after filte: [SCS, TWST, NOVA, SNDX, DAWN, ROIV, YPF, SNDR, NVCR, TSLA, COUR, BBY, ACCD, HALO, AA, HOG, BCE, HON, AI, AM, AEHR, AR, SEE, SNCY, WMS, HPE, BA, ACDC, A, BC, GOLD, ROKU, BE, ARCO, D, AXON, ARCH, BL, K, WNC, FLR, BP, DHR, FLT, SLCA, BYND, S, HROW, T, U, BX, BDX, W, X, BZ, WRBY, FMC, AXNX, NVDA, CE, CG, CI, BEN, CP, LZB, AZTA, FNB, ARCT, FND, DD, ARES, DE, DG, APAM, SRPT, ZNTL, DNUT, DQ, AZUL, SHC, GDYN, WPM, EVBG, ED, JWN, SHW, DKS, HCSG, BGS, SIG, EW, EXEL, BHC, QRVO, FE, BHF, ATKR, SPNT, FL, DLR, FR, AXSM, HTZ, MSFT, WRK, UNP, SJM, FLNC, GD, LADR, HUN, GH, HUM, GL, WELL, HUT, AVPT, TMDX, GS, WSM, DNB, WST, AXTA, HD, SKT, ISRG, FRT, HLIT, SLG, HWC, UPS, SHAK, BKH, SCVL, DLTR, BKR, IMGN, GGAL, SMG, BKU, HASI, ACLX, ACLS, JD, UNFI, MAR, CADE, MAT, MDLZ, IONQ, PINC, DPZ, MBC, KD, ACMR, SNV, BHVN, KN, BMO, KR, AVTR, LC, BBIO, OGS, LH, HZO, LI, ODFL, MCW, BNL, MODG, BNS, PTEN, MDB, LW, SPR, MA, SPT, CTKB, UTZ, ROVR, NTLA, SNOW, MS, CTLT, OII, CENX, DTE, NE, SNPS, YELP, NI, KAR, CRGY, SRE, NU, EXPE, MFC, EXPI, LEVI, PTGX, VSTO, BURL, NCLH, ATSG, LPLA, KBR, OI, ON, SSB, OR, APLS, OKE, NEOG, PD, HAYW, PI, DVN, MGY, AAPL, ZUMZ, FLWS, NVST, DUOL, OLN, MHK, STT, NCNO, ALEC, ZBH, OMC, SUI, BSX, ARRY, PGNY, CAKE, OMI, WTTR, RF, MIR, TOST, HUBS, CALM, BTU, ONB, FLYW, RY, ALGN, SA, PRGO, PENN, EXTR, NTRA, SQ, SU, PPBI, MKC, SWK, ICE, TD, VICI, IOVA, TH, SWX, CALX, ALHC, RIOT, TS, CTRA, TT, NTST, EVRG, HBAN, KHC, CROX, ALIT, UPWK, UA, UE, SBAC, RGNX, NTRS, YETI, HSBC, ERII, TECH, FULT, SHLS, BXP, IEX, SYNA, NAPA, ORC, VZIO, CTVA, FDMT, IFF, RPAY, WH, ARWR, WM, SDGR, LPRO, MDXG, ALLY, RVLV, SWKS, BOOT, MOS, OSW, KKR, VAC, ALLE, XEL, ZIP, CARR, RIVN, ETRN, CARG, BBWI, NARI, PLAY, CRSR, GDS, KMI, RELY, RXRX, DBRG, ZI, FSLR, PCOR, KMX, EAT, FSLY, MRC, NYCB, OVV, IRDM, CRUS, KNX, EBR, GFS, LNTH, DOLE, CPRX, LBRDK, VECO, ETSY, MTB, PLCE, CPRI, RCKT, BIGC, MTG, GOOGL, NAVI, MTN, EDR, MTZ, VFC, TXRH, PCTY, VOYA, MUR, GIL, CAL, BEAM, GIS, FUTU, CAT, KRC, TRGP, KRG, OZK, TENB, ASAI, PRTA, SWTX, VKTX, CBT, RLAY, VIPS, ADEA, TDS, CCK, KSS, EGO, GRMN, CCL, BECN, NWBI, KTB, BOWL, MXL, PATH, CWEN, VIV, TRIP, GLDD, LSCC, PRVA, TFC, TGTX, RBA, XMTR, PYCR, GME, FOLD, CEG, EHAB, CUBE, ABBV, SMAR, SSNC, TGI, XOM, SOFI, RCM, NDAQ, CDAY, INDI, REXR, EWBC, ZTO, ZTS, RDN, THS, VLY, JBHT, ACI, FIBK, VMC, VRDN, ENOV, ZUO, INCY, CHH, GPK, RARE, GPN, CHK, GPS, ELS, ADP, ITW, RYAN, VNO, XRAY, CLSK, PAYC, XRX, TVTX, TNDM, EMN, AEL, RCUS, AEM, AEO, AEP, PCG, ZWS, SSRM, TROX, MGNX, BEKE, IVZ, PDD, EOG, GSK, LQDA, AGL, MGNI, SSTK, PEG, PEP, TEVA, CLF, ENTG, HOMB, GPRE, CLH, SONY, CLS, PFE, RJF, TNL, CMC, QGEN, VERV, PFS, HOPE, CMI, HIBB, MELI, AUPH, CFLT, PUBM, ADNT, RKT, ERJ, AFRM, CNK, PDCO, CSGP, CNQ, CNX, RLJ, LSXMA, VTR, PLTK, LSXMK, ESI, COF, INMD, PLTR, ZION, XYL, OKTA, NEE, PII, AMBC, CPB, CHRW, PFGC, ALB, LFST, CPE, GNRC, GLNG, LDOS, ALK, ETR, UBSI, RNA, CSIQ, RNG, TRP, IRWD, LSPD, AMD, AME, YUMC, AMH, TASK, AMN, AMP, BRKR, TSN, TSM, EBAY, EVH, CRI, CRK, TRUP, GLPI, TTC, ADTN, HOUS, TTD, NBIX, CDNA, RPM, MNDY, BERY, KEYS, AON, BALL, CSX, LEA, OTIS, LEG, SMPL, APA, NIO, APO, RRC, PNC, MRNS, EYE, JBI, GDDY, JBL, NJR, CHWY, KLIC, LBRT, PLYA, META, SEAS, CUZ, EDIT, BANC, BROS, JKHY, ASTL, ARE, MRNA, TXG, PPC, INTU, PPG, PUMP, PPL, ASB, TXT, FITB, RTX, LHX, ASO, STAA, SMTC, LIN, HAL, SEDG, SILK, BPMC, HAS, PRG, COIN, AUB, FIVE, PRU, PSA, VCYT, NOG, DCPH, PSN, AVA, PWSC, INVA, HCP, INVH, WAB, JHG, MASI, WAT, CBRE, AWI, MARA, RYN, WBS, LMT, CMCSA, AXL, COLD, COLB, LNC, NRG, WCN, AGCO, LNT, FERG, FBP, NSA, NSC, RYTM, PWR, SRCL, UAA, AZN, HGV, FCX, NOMD, PXD, TSEM, WEN, NTR, SKYW, LOVE, NUE, BRZE, UBS, DAN, UCBI, DAR, BLMN, FROG, DBI, VSAT, MNSO, MPWR, NWL, DCI, CORT, NXE, LTH, HLF, SNBR, FHN, HLT, DNOW, AGIO, SBH, ACAD, SBS, DRVN, DEI, BAH, SNAP, BAM, FIS, GOGO, AKRO, BAX, JACK, HAIN]
+2024-01-12 22:16:33.086 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - finish load last DN for BOLL
+2024-01-12 22:16:33.110 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - finish load lastest 19-days close data
+2024-01-12 22:16:33.110 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - finish init historical data
+2024-01-12 22:16:33.111 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:16:33
+2024-01-12 22:16:38.122 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:16:38
+2024-01-12 22:16:43.126 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:16:43
+2024-01-12 22:16:48.138 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:16:48
+2024-01-12 22:16:53.149 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:16:53
+2024-01-12 22:16:58.156 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:16:58
+2024-01-12 22:17:03.159 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:03
+2024-01-12 22:17:08.161 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:08
+2024-01-12 22:17:13.165 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:13
+2024-01-12 22:17:18.176 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:18
+2024-01-12 22:17:23.185 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:23
+2024-01-12 22:17:28.190 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:28
+2024-01-12 22:17:33.192 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:33
+2024-01-12 22:17:38.194 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:38
+2024-01-12 22:17:43.201 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:43
+2024-01-12 22:17:48.213 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:48
+2024-01-12 22:17:53.222 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:53
+2024-01-12 22:17:58.228 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:17:58
+2024-01-12 22:18:03.230 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:03
+2024-01-12 22:18:08.242 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:08
+2024-01-12 22:18:13.246 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:13
+2024-01-12 22:18:18.258 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:18
+2024-01-12 22:18:23.271 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:23
+2024-01-12 22:18:28.281 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:28
+2024-01-12 22:18:33.284 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:33
+2024-01-12 22:18:38.287 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:38
+2024-01-12 22:18:43.290 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:43
+2024-01-12 22:18:48.294 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:48
+2024-01-12 22:18:53.297 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:53
+2024-01-12 22:18:58.302 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:18:58
+2024-01-12 22:19:03.306 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:03
+2024-01-12 22:19:08.311 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:08
+2024-01-12 22:19:13.317 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:13
+2024-01-12 22:19:18.320 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:18
+2024-01-12 22:19:23.322 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:23
+2024-01-12 22:19:28.325 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:28
+2024-01-12 22:19:33.328 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:33
+2024-01-12 22:19:38.335 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:38
+2024-01-12 22:19:43.339 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:43
+2024-01-12 22:19:48.344 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:48
+2024-01-12 22:19:53.354 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:53
+2024-01-12 22:19:58.364 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:19:58
+2024-01-12 22:20:03.371 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:03
+2024-01-12 22:20:08.372 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:08
+2024-01-12 22:20:13.377 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:13
+2024-01-12 22:20:18.379 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:18
+2024-01-12 22:20:23.382 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:23
+2024-01-12 22:20:28.387 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:28
+2024-01-12 22:20:33.392 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:33
+2024-01-12 22:20:38.397 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:38
+2024-01-12 22:20:43.399 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:43
+2024-01-12 22:20:48.403 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:48
+2024-01-12 22:20:53.405 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:53
+2024-01-12 22:20:58.411 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:20:58
+2024-01-12 22:21:03.415 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:03
+2024-01-12 22:21:08.419 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:08
+2024-01-12 22:21:13.423 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:13
+2024-01-12 22:21:18.428 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:18
+2024-01-12 22:21:23.433 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:23
+2024-01-12 22:21:28.438 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:28
+2024-01-12 22:21:33.441 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:33
+2024-01-12 22:21:38.445 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:38
+2024-01-12 22:21:43.449 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:43
+2024-01-12 22:21:48.454 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:48
+2024-01-12 22:21:53.459 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:53
+2024-01-12 22:21:58.464 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:21:58
+2024-01-12 22:22:03.468 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:03
+2024-01-12 22:22:08.472 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:08
+2024-01-12 22:22:13.477 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:13
+2024-01-12 22:22:18.483 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:18
+2024-01-12 22:22:23.488 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:23
+2024-01-12 22:22:28.493 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:28
+2024-01-12 22:22:33.497 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:33
+2024-01-12 22:22:38.503 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:38
+2024-01-12 22:22:43.508 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:43
+2024-01-12 22:22:48.512 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:48
+2024-01-12 22:22:53.516 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:53
+2024-01-12 22:22:58.518 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:22:58
+2024-01-12 22:23:03.523 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:03
+2024-01-12 22:23:08.528 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:08
+2024-01-12 22:23:13.530 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:13
+2024-01-12 22:23:18.532 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:18
+2024-01-12 22:23:23.538 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:23
+2024-01-12 22:23:28.541 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:28
+2024-01-12 22:23:33.543 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:33
+2024-01-12 22:23:38.544 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:38
+2024-01-12 22:23:43.552 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:43
+2024-01-12 22:23:48.556 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:48
+2024-01-12 22:23:53.562 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:53
+2024-01-12 22:23:58.567 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:23:58
+2024-01-12 22:24:03.573 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:03
+2024-01-12 22:24:08.576 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:08
+2024-01-12 22:24:13.581 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:13
+2024-01-12 22:24:18.587 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:18
+2024-01-12 22:24:23.593 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:23
+2024-01-12 22:24:28.597 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:28
+2024-01-12 22:24:33.598 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:33
+2024-01-12 22:24:38.603 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:38
+2024-01-12 22:24:43.607 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:43
+2024-01-12 22:24:48.611 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:48
+2024-01-12 22:24:53.617 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:53
+2024-01-12 22:24:58.627 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:24:58
+2024-01-12 22:25:03.632 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:03
+2024-01-12 22:25:08.637 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:08
+2024-01-12 22:25:13.644 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:13
+2024-01-12 22:25:18.645 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:18
+2024-01-12 22:25:23.647 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:23
+2024-01-12 22:25:28.656 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:28
+2024-01-12 22:25:33.664 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:33
+2024-01-12 22:25:38.672 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:38
+2024-01-12 22:25:43.682 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:43
+2024-01-12 22:25:48.692 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:48
+2024-01-12 22:25:53.701 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:53
+2024-01-12 22:25:58.708 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:25:58
+2024-01-12 22:26:03.712 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:03
+2024-01-12 22:26:08.717 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:08
+2024-01-12 22:26:13.728 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:13
+2024-01-12 22:26:18.750 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:18
+2024-01-12 22:26:23.755 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:23
+2024-01-12 22:26:28.768 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:28
+2024-01-12 22:26:33.777 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:33
+2024-01-12 22:26:38.786 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:38
+2024-01-12 22:26:43.797 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:43
+2024-01-12 22:26:48.802 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:48
+2024-01-12 22:26:53.807 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:53
+2024-01-12 22:26:58.812 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:26:58
+2024-01-12 22:27:03.824 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:03
+2024-01-12 22:27:08.835 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:08
+2024-01-12 22:27:13.841 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:13
+2024-01-12 22:27:18.848 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:18
+2024-01-12 22:27:23.857 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:23
+2024-01-12 22:27:28.863 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:28
+2024-01-12 22:27:33.867 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:33
+2024-01-12 22:27:38.877 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:38
+2024-01-12 22:27:43.886 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:43
+2024-01-12 22:27:48.893 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:48
+2024-01-12 22:27:53.899 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:53
+2024-01-12 22:27:58.907 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - wait pre trade time. now is 22:27:58
+2024-01-12 22:28:03.908 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - begin subcribe stock at 22:28:03
+2024-01-12 22:28:04.072 [pool-6-thread-1] INFO  luonq.polygon.RealTimeDataWS_DB - finish subcribe real time!
+2024-01-12 22:28:41.992 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.58, ev=T, q=169767, s=50, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4927, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.6, ev=T, q=169768, s=91, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4928, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.6, ev=T, q=169769, s=50, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4929, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.6, ev=T, q=169770, s=50, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4930, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.61, ev=T, q=169771, s=50, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4931, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.61, ev=T, q=169772, s=50, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4932, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.61, ev=T, q=169773, s=50, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4933, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.62, ev=T, q=169774, s=50, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4934, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.63, ev=T, q=169775, s=300, c=[12], t=1705069722000, sym=MARA, x=11, i=4935, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.65, ev=T, q=169776, s=8, c=[12,37], t=1705069722000, sym=MARA, x=11, i=4936, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.64, ev=T, q=169777, s=57, c=[14,12,37,41], t=1705069722000, sym=MARA, x=12, i=3701, z=3}
+2024-01-12 22:28:41.994 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=21.58, ev=T, q=169778, s=50, c=[12,37], t=1705069722000, sym=MARA, x=8, i=5297, z=3}
+2024-01-12 22:28:59.943 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=27.06, ev=T, q=17251, s=20, c=[12,37], t=1705069740000, sym=AI, x=11, i=52983525365042, z=1}
+2024-01-12 22:28:59.953 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=27.06, ev=T, q=17252, s=20, c=[12,37], t=1705069740000, sym=AI, x=8, i=52983525031785, z=1}
+2024-01-12 22:28:59.954 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=27.06, ev=T, q=17253, s=20, c=[14,12,37,41], t=1705069740000, sym=AI, x=12, i=62879146792778, z=1}
+2024-01-12 22:29:26.950 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=100.1, ev=T, q=27018, s=120, c=[12], t=1705069767000, sym=XOM, trfi=202, x=4, i=71675241449265, z=1, trft=1705069767000}
+2024-01-12 22:29:26.964 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=100.0999, ev=T, q=27019, s=120, c=[12], t=1705069767000, sym=XOM, trfi=202, x=4, i=71675241449266, z=1, trft=1705069767000}
+2024-01-12 22:29:37.951 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=86.26, ev=T, q=81680, s=3, c=[14,12,37,41], t=1705069778000, sym=ROKU, x=12, i=162, z=3}
+2024-01-12 22:29:37.954 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - time is early. {p=86.26, ev=T, q=81681, s=4, c=[12,37], t=1705069778000, sym=ROKU, x=12, i=163, z=3}
+2024-01-12 22:30:00.160 [pool-6-thread-10] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=ALB, price=128.79, time=1705069800009) dn=127.626 current=1705069800159
+2024-01-12 22:30:00.166 [pool-6-thread-29] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=AUPH, price=8.0, time=1705069800005) dn=7.947 current=1705069800166
+2024-01-12 22:30:00.167 [pool-6-thread-20] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=OZK, price=47.12, time=1705069800001) dn=47.159 current=1705069800167
+2024-01-12 22:30:00.168 [pool-6-thread-15] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=TSLA, price=220.07, time=1705069800001) dn=223.955 current=1705069800168
+2024-01-12 22:30:00.170 [pool-6-thread-15] INFO  luonq.polygon.TradeDataListener_DB - Node list show: TSLA=1.7347234935589824
+2024-01-12 22:30:00.171 [pool-6-thread-73] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=HTZ, price=9.02, time=1705069800004) dn=8.962 current=1705069800171
+2024-01-12 22:30:00.241 [pool-6-thread-96] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=PENN, price=23.31, time=1705069800003) dn=23.301 current=1705069800241
+2024-01-12 22:30:00.242 [pool-6-thread-105] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=PRTA, price=34.69, time=1705069800018) dn=34.218 current=1705069800242
+2024-01-12 22:30:00.253 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribeStockSet size: 100 1705069800253
+2024-01-12 22:30:00.624 [pool-6-thread-139] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=RCM, price=9.14, time=1705069800025) dn=9.049 current=1705069800624
+2024-01-12 22:30:00.631 [pool-6-thread-148] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=NTR, price=52.71, time=1705069800153) dn=52.657 current=1705069800631
+2024-01-12 22:30:00.632 [pool-6-thread-155] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=RIOT, price=12.76, time=1705069800117) dn=13.179 current=1705069800632
+2024-01-12 22:30:00.633 [pool-6-thread-155] INFO  luonq.polygon.TradeDataListener_DB - Node list show: RIOT=3.179300402154947,TSLA=1.7347234935589824
+2024-01-12 22:30:00.716 [pool-6-thread-178] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=GPRE, price=22.25, time=1705069800201) dn=22.302 current=1705069800716
+2024-01-12 22:30:00.717 [pool-6-thread-189] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=BA, price=219.97, time=1705069800259) dn=218.89 current=1705069800717
+2024-01-12 22:30:00.717 [pool-6-thread-194] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=JACK, price=77.5, time=1705069800211) dn=77.562 current=1705069800717
+2024-01-12 22:30:00.718 [pool-6-thread-198] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=HUM, price=430.01, time=1705069800277) dn=441.075 current=1705069800718
+2024-01-12 22:30:00.718 [pool-6-thread-198] INFO  luonq.polygon.TradeDataListener_DB - Node list show: RIOT=3.179300402154947,HUM=2.5086436547072486,TSLA=1.7347234935589824
+2024-01-12 22:30:00.722 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribeStockSet size: 200 1705069800722
+2024-01-12 22:30:00.723 [pool-6-thread-219] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=CLSK, price=9.01, time=1705069800309) dn=8.816 current=1705069800723
+2024-01-12 22:30:00.744 [pool-6-thread-312] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=TD, price=60.42, time=1705069800502) dn=60.374 current=1705069800744
+2024-01-12 22:30:00.745 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribeStockSet size: 300 1705069800744
+2024-01-12 22:30:00.748 [pool-6-thread-342] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=AEHR, price=18.18, time=1705069800596) dn=17.561 current=1705069800748
+2024-01-12 22:30:00.749 [pool-6-thread-346] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=PCTY, price=153.87, time=1705069800604) dn=154.478 current=1705069800749
+2024-01-12 22:30:00.752 [pool-6-thread-369] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=NARI, price=58.91, time=1705069800677) dn=58.939 current=1705069800752
+2024-01-12 22:30:00.752 [pool-6-thread-371] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=NSA, price=37.94, time=1705069800709) dn=37.989 current=1705069800752
+2024-01-12 22:30:00.770 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribeStockSet size: 400 1705069800770
+2024-01-12 22:30:00.893 [pool-6-thread-505] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=YUMC, price=38.0, time=1705069800815) dn=37.881 current=1705069800893
+2024-01-12 22:30:00.900 [pool-6-thread-511] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=OGS, price=61.93, time=1705069800761) dn=61.656 current=1705069800900
+2024-01-12 22:30:00.905 [pool-6-thread-515] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=SPR, price=27.0, time=1705069800769) dn=26.997 current=1705069800905
+2024-01-12 22:30:00.917 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribeStockSet size: 500 1705069800917
+2024-01-12 22:30:00.937 [pool-6-thread-540] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=AGL, price=7.81, time=1705069800823) dn=7.299 current=1705069800937
+2024-01-12 22:30:00.958 [pool-6-thread-551] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=SNCY, price=13.79, time=1705069800706) dn=13.686 current=1705069800958
+2024-01-12 22:30:01.023 [pool-6-thread-589] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=MOS, price=33.62, time=1705069800893) dn=33.389 current=1705069801023
+2024-01-12 22:30:01.347 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribeStockSet size: 600 1705069801347
+2024-01-12 22:30:01.380 [pool-6-thread-655] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=ALK, price=36.04, time=1705069801015) dn=35.749 current=1705069801380
+2024-01-12 22:30:01.403 [pool-6-thread-703] INFO  luonq.polygon.TradeDataListener_DB - StockEvent(stock=GDS, price=7.12, time=1705069800604) dn=6.954 current=1705069801403
+2024-01-12 22:30:01.764 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribeStockSet size: 700 1705069801764
+2024-01-12 22:30:05.928 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:07.931 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:09.938 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:11.944 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:13.953 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:15.958 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:17.960 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:19.970 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. keep listening
+2024-01-12 22:30:21.975 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - many stock has received data. listen end!
+2024-01-12 22:30:21.979 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - =========== finish unsubscribe ===========
+2024-01-12 22:30:21.986 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - get real-time quote: [HUM, TSLA, RIOT]
+2024-01-12 22:30:22.888 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069822887): {HUM=430.01, TSLA=220.07, RIOT=12.76}
+2024-01-12 22:30:22.889 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069822889): {HUM=430.01, TSLA=220.07, RIOT=12.76}
+2024-01-12 22:30:22.889 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069822889): {HUM=430.01, TSLA=220.07, RIOT=12.76}
+2024-01-12 22:30:22.889 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069822889): {HUM=430.01, TSLA=220.07, RIOT=12.76}
+2024-01-12 22:30:22.997 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - begin trade: RIOT=3.179300402154947,HUM=2.5086436547072486,TSLA=1.7347234935589824
+2024-01-12 22:30:23.005 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823005): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.006 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823006): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.006 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823006): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.006 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823006): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.006 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823006): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.006 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823006): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.006 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823006): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.007 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823007): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.007 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823007): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.007 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823007): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.008 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823008): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.045 [FTAPI4JNet] INFO  luonq.futu.TradeApi - onReply_GetFunds: 1371.18
+2024-01-12 22:30:23.046 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - remain cash: 1371.18
+2024-01-12 22:30:23.046 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - first trade. orderPrice=12.62, multiple=1
+2024-01-12 22:30:23.074 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823074): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.074 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823074): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.58}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.075 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823075): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.140 [FTAPI4JNet] INFO  luonq.futu.TradeApi - onReply_GetMaxTrdQtys: 107
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=219.94, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=219.94, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=219.97, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=219.97, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=219.96, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=219.96, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=219.96, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.0, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.0, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.05, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.05, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.05, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.05, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.05, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.05, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.07, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.159 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823159): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.04, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.04, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.04, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.160 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823160): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.161 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823161): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.161 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823161): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.315 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - buy stock. stock=RIOT, count=107, price=12.59, orderPrice=12.62, orderId: 559250980505372527 1705069823315
+2024-01-12 22:30:23.516 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823516): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.516 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823516): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.516 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823516): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.516 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823516): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.58}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.58}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.58}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.58}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.58}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.58}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.58}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.517 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823517): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.665 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823664): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.665 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823665): {HUM=430.01, TSLA=220.06, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.09, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.1, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.09, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.09, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.09, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.09, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.09, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.09, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.666 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - quote price(time=1705069823666): {HUM=430.01, TSLA=220.08, RIOT=12.59}
+2024-01-12 22:30:23.812 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=1, fillID=0, orderID=559250980505372527, code=RIOT, name=Riot Platforms, count=107.0, price=12.62, avgPrice=12.5894, createTime=2024-01-12 09:30:23.355, updateTimestamp=1.705069823937053E9, status=0)
+2024-01-12 22:30:23.814 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - RIOT order is successfully executed. orderId=559250980505372527
+2024-01-12 22:30:23.814 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=1, fillID=0, orderID=559250980505372527, code=RIOT, name=Riot Platforms, count=107.0, price=12.62, avgPrice=12.5894, createTime=2024-01-12 09:30:23.355, updateTimestamp=1.705069823937053E9, status=0)
+2024-01-12 22:30:23.872 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - RIOT placeStopLoss market order. qty=107.0, auxPrice=11.708, orderId：7868318767479097501
+2024-01-12 22:30:23.872 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - trade end
+2024-01-12 22:30:23.872 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.TradeExecutor_DB - stop get real-time quote
+2024-01-12 22:30:24.679 [pool-6-thread-736] INFO  luonq.polygon.RealTimeDataWS_DB - unsubscribe real-time quote
+2024-01-12 22:30:33.886 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - closing websocket. reason=CloseReason[1000]
+2024-01-12 22:30:43.890 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - manual close websocket
+2024-01-12 22:30:43.968 [xxl-job, JobThread-7-1705068900066] INFO  luonq.polygon.RealTimeDataWS_DB - trade finish

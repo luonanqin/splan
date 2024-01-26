@@ -14,7 +14,7 @@ public class RatioBean implements Serializable {
 
     public void add(Bean bean) {
         beanList.add(bean);
-        long trueCount = beanList.stream().filter(c -> c.getCloseLessOpen() == 1).count();
+        long trueCount = beanList.stream().filter(c -> c.getCloseGreatOpen() == 1).count();
         int count = beanList.size();
         ratio = (double) trueCount / count;
     }

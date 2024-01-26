@@ -13,11 +13,14 @@ public class Bean implements Serializable {
     private double high;
     private double low;
     private double dn;
+    private double up;
     private double changePnt;
     private double lowDnDiffPnt;
     private double highCloseDiffPnt;
     private double openDnDiffPnt;
+    private double openUpDiffPnt;
     private double closeUpDiffPnt;
+    private int closeGreatOpen; // true=1 false=0
     private int closeLessOpen; // true=1 false=0
 
     public String toString() {

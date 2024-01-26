@@ -495,7 +495,7 @@ public class OverBollingerDnFollowNow {
         double openDnDiffPnt = BigDecimal.valueOf((dn - open) / dn).setScale(4, ROUND_DOWN).multiply(BigDecimal.valueOf(100)).doubleValue();
         bean.setOpenDnDiffPnt(openDnDiffPnt);
 
-        bean.setCloseLessOpen(close > open ? 1 : 0);
+        bean.setCloseGreatOpen(close > open ? 1 : 0);
         return bean;
     }
 }

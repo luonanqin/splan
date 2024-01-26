@@ -1,0 +1,11 @@
+2024-01-27 00:00:21.089 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-27 00:00:23.943 [main] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-01-27 00:00:23.987 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7156677262233682073
+2024-01-27 00:00:23.992 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7156677262234669693
+2024-01-27 00:00:26.951 [main] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-01-27 00:00:26.962 [main] INFO  luonq.polygon.RealTimeDataWS_DB - finish initialize many time. preTradeTime=1706279280000, openTime=1706365800000, closeCheckTime=Sat Jan 27 04:59:00 CST 2024
+2024-01-27 00:00:27.071 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-01-27 00:00:28.303 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - opening websocket
+2024-01-27 00:00:28.388 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - connected
+2024-01-27 00:00:28.624 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - auth_success
+2024-01-27 00:00:29.391 [main] INFO  luonq.polygon.RealTimeDataWS_DB - finish init trade

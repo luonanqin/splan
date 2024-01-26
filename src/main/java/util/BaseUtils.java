@@ -653,7 +653,7 @@ public class BaseUtils {
         for (String stock : map.keySet()) {
             FrontReinstatement fr = map.get(stock);
             double factor = fr.getFactor();
-            if (factor > 0.98) {
+            if (factor > 0.98 && factor < 2) {
                 continue;
             }
 
