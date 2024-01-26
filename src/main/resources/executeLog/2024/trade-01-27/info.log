@@ -9,3 +9,4 @@
 2024-01-27 00:00:28.388 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - connected
 2024-01-27 00:00:28.624 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - auth_success
 2024-01-27 00:00:29.391 [main] INFO  luonq.polygon.RealTimeDataWS_DB - finish init trade
+2024-01-27 00:04:37.590 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
