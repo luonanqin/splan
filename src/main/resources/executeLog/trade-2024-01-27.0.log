@@ -1,0 +1,44 @@
+2024-01-27 00:00:21.089 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-27 00:00:23.943 [main] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-01-27 00:00:23.987 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7156677262233682073
+2024-01-27 00:00:23.992 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7156677262234669693
+2024-01-27 00:00:26.951 [main] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-01-27 00:00:26.962 [main] INFO  luonq.polygon.RealTimeDataWS_DB - finish initialize many time. preTradeTime=1706279280000, openTime=1706365800000, closeCheckTime=Sat Jan 27 04:59:00 CST 2024
+2024-01-27 00:00:27.071 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-01-27 00:00:28.303 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - opening websocket
+2024-01-27 00:00:28.388 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - connected
+2024-01-27 00:00:28.624 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - auth_success
+2024-01-27 00:00:29.391 [main] INFO  luonq.polygon.RealTimeDataWS_DB - finish init trade
+2024-01-27 00:04:37.590 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-27 04:56:10.494 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - closing websocket. reason=CloseReason[1006,Closed abnormally.]
+2024-01-27 04:56:20.508 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - reconnect websocket
+2024-01-27 04:56:21.971 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - opening websocket
+2024-01-27 04:56:21.980 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - connected
+2024-01-27 04:56:22.224 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - auth_success
+2024-01-27 04:56:22.983 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - reconnect finish
+2024-01-27 04:56:23.254 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - begin listen stop loss: {PTCT=StopLoss(stock=PTCT, canSellQty=51.0, lossPrice=23.928)}
+2024-01-27 04:58:56.360 [xxl-job, JobThread-8-1706302736344] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-01-27 04:58:56.828 [xxl-job, JobThread-8-1706302736344] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-01-27 04:58:56.916 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7156752394304742373
+2024-01-27 04:58:56.941 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7156752394305597321
+2024-01-27 04:58:59.841 [xxl-job, JobThread-8-1706302736344] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-01-27 04:58:59.874 [xxl-job, JobThread-8-1706302736344] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-01-27 04:58:59.932 [xxl-job, JobThread-8-1706302736344] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={PTCT=StockPosition(stock=PTCT, canSellQty=51.0, costPrice=25.73, currPrice=27.05)}, time=2024-01-27T04:58:59.932
+2024-01-27 04:58:59.944 [xxl-job, JobThread-8-1706302736344] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=PTCT, count=51.0
+2024-01-27 04:58:59.991 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-01-27 04:59:00.127 [xxl-job, JobThread-8-1706302736344] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=1350792974116985996
+2024-01-27 04:59:00.526 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1350792974116985996, code=PTCT, name=PTC Therapeutics, count=51.0, price=0.0, avgPrice=27.0117, createTime=2024-01-26 15:59:00.057, updateTimestamp=1.706302740540306E9, status=0)
+2024-01-27 04:59:00.525 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1350792974116985996, code=PTCT, name=PTC Therapeutics, count=51.0, price=0.0, avgPrice=27.0117, createTime=2024-01-26 15:59:00.057, updateTimestamp=1.706302740540306E9, status=0)
+2024-01-27 04:59:00.525 [xxl-job, JobThread-8-1706302736344] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=PTCT, orderId=1350792974116985996
+2024-01-27 04:59:00.540 [xxl-job, JobThread-8-1706302736344] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-01-27 04:59:19.047 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - time: 1706302759000, data: {p=27.005, ev=T, q=4975020, s=100, t=1706302759000, sym=PTCT, trfi=202, x=4, i=11607, z=3, trft=1706302759000}
+2024-01-27 05:00:14.591 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - all stock has stop loss
+2024-01-27 05:00:14.592 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - trade exit
+2024-01-27 13:00:45.308 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - closing websocket. reason=CloseReason[1006,Closed abnormally.]
+2024-01-27 13:00:55.319 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - reconnect websocket
+2024-01-27 13:00:56.733 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - opening websocket
+2024-01-27 13:00:56.743 [Grizzly(1)] INFO  luonq.polygon.RealTimeDataWS_DB - connected
+2024-01-27 13:00:57.067 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - auth_success
+2024-01-27 13:00:57.743 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - reconnect finish
+2024-01-27 13:00:57.762 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - there is no stock need to listen stop loss
+2024-01-27 13:00:57.764 [Grizzly(2)] INFO  luonq.polygon.RealTimeDataWS_DB - trade exit

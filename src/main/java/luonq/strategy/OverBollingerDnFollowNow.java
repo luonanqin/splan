@@ -249,7 +249,7 @@ public class OverBollingerDnFollowNow {
                 String secondStr = timeSplit[2];
                 int second = Integer.valueOf(secondStr.substring(0, 2));
                 int minute = Integer.valueOf(timeSplit[1]);
-                if (minute > 30 || second > 5) {
+                if (minute > 30 || second > 19) {
                     continue;
                 }
 
@@ -406,6 +406,7 @@ public class OverBollingerDnFollowNow {
                             }
                             //                            stockRatio.addBean(buildBean(kLine, boll));
                             size++;
+                            break;
                         }
                         capital += income;
                         System.out.println("date=" + date + ", income=" + income + ", sum=" + capital * exchange);

@@ -1,4 +1,4 @@
-package luonq.strategy;
+package luonq.strategy.execute;
 
 import bean.BOLL;
 import bean.Bean;
@@ -163,7 +163,7 @@ public class OverBollingerDn {
                 boolean failed = false;
                 for (String day : _20day) {
                     StockKLine temp = dateToStockLineMap.get(day).get(stock);
-                    if (temp == null || temp.getVolume().doubleValue()< 100000) {
+                    if (temp == null || temp.getVolume().doubleValue() < 100000) {
                         failed = true;
                         break;
                     }
@@ -249,7 +249,7 @@ public class OverBollingerDn {
                 String secondStr = timeSplit[2];
                 int second = Integer.valueOf(secondStr.substring(0, 2));
                 int minute = Integer.valueOf(timeSplit[1]);
-                if (minute > 30 || second > 5) {
+                if (minute > 30 || second > 19) {
                     continue;
                 }
 
@@ -289,7 +289,7 @@ public class OverBollingerDn {
                     int gainCount = 0, lossCount = 0;
                     for (int j = 1; j < dateList.size(); j++) {
                         String date = dateList.get(j);
-                        if (date.equals("11/09/2023")) {
+                        if (date.equals("01/30/2024")) {
                             //                            System.out.println();
                         }
                         Map<String, BOLL> lastStockBollMap = Maps.newHashMap();
@@ -405,6 +405,7 @@ public class OverBollingerDn {
                             }
                             //                            stockRatio.addBean(buildBean(kLine, boll));
                             size++;
+                            break;
                         }
                         capital += income;
                         System.out.println("date=" + date + ", income=" + income + ", sum=" + capital * exchange);
