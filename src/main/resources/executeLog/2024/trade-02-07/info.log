@@ -1,0 +1,9 @@
+2024-02-07 21:54:58.647 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-02-07 21:55:53.223 [xxl-job, JobThread-5-1707314153210] INFO  luonq.job.GetDataJob - getEarning.job start
+2024-02-07 21:55:54.121 [xxl-job, JobThread-5-1707314153210] INFO  luonq.stock.Processor - GrabEarning.getData start
+2024-02-07 21:56:05.121 [xxl-job, JobThread-5-1707314153210] INFO  luonq.stock.Processor - GrabEarning.getData end. cost: 10s
+
+2024-02-07 21:56:05.216 [xxl-job, JobThread-5-1707314153210] INFO  luonq.job.GetDataJob - getEarning.job end
+2024-02-07 21:56:14.869 [xxl-job, JobThread-9-1707314174862] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job start
+2024-02-07 21:56:15.083 [xxl-job, JobThread-9-1707314174862] INFO  luonq.data.WriteToDB - sync earning finish. dateList=[2024-02-07], earning sum=258
+2024-02-07 21:56:15.093 [xxl-job, JobThread-9-1707314174862] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job end

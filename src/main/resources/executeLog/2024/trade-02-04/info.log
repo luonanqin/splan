@@ -1,0 +1,58 @@
+2024-02-07 04:58:56.090 [xxl-job, JobThread-8-1707253136077] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-02-07 04:58:56.124 [xxl-job, JobThread-8-1707253136077] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-02-07 04:58:56.131 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7160738657865791475
+2024-02-07 04:58:56.148 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7160738657866668093
+2024-02-07 04:58:59.134 [xxl-job, JobThread-8-1707253136077] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-02-07 04:58:59.135 [xxl-job, JobThread-8-1707253136077] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-02-07 04:58:59.145 [xxl-job, JobThread-8-1707253136077] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={}, time=2024-02-07T04:58:59.143
+2024-02-07 04:58:59.146 [xxl-job, JobThread-8-1707253136077] INFO  luonq.polygon.TradeExecutor_DB - position is empty. trade is end today!!!
+2024-02-07 04:58:59.146 [xxl-job, JobThread-8-1707253136077] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-02-07 04:58:59.241 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-02-07 17:00:00.084 [xxl-job, JobThread-3-1707296400073] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-02-07 17:00:00.116 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-02-07 17:01:02.998 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 62s
+
+2024-02-07 17:01:03.022 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-02-07 17:01:44.709 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 41s
+
+2024-02-07 17:01:44.709 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-02-07 17:01:48.908 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 4s
+
+2024-02-07 17:01:48.908 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-02-07 17:02:34.969 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 46s
+
+2024-02-07 17:02:34.969 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-02-07 17:05:22.647 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 167s
+
+2024-02-07 17:05:22.658 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-02-07 17:05:49.179 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 26s
+
+2024-02-07 17:05:49.182 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-02-07 17:05:53.374 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 4s
+
+2024-02-07 17:05:53.374 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-02-07 17:06:41.658 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 48s
+
+2024-02-07 17:06:41.659 [xxl-job, JobThread-3-1707296400073] INFO  luonq.stock.Processor - get data finish
+2024-02-07 17:06:41.668 [xxl-job, JobThread-3-1707296400073] INFO  luonq.job.GetDataJob - getTradeDataJobAndComputeIndicator.job end
+2024-02-07 17:30:00.079 [xxl-job, JobThread-6-1707298200071] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job start
+2024-02-07 17:30:00.114 [xxl-job, JobThread-6-1707298200071] INFO  luonq.data.WriteToDB - additionToDB begin
+2024-02-07 17:30:36.686 [xxl-job, JobThread-6-1707298200071] INFO  luonq.data.WriteToDB - sync count: 4674
+2024-02-07 17:30:37.122 [xxl-job, JobThread-6-1707298200071] INFO  luonq.data.WriteToDB - additionToDB end
+2024-02-07 17:30:37.128 [xxl-job, JobThread-6-1707298200071] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job end
+2024-02-07 18:00:00.073 [xxl-job, JobThread-4-1707300000069] INFO  luonq.job.GetDataJob - getRehab.job start
+2024-02-07 18:00:00.083 [xxl-job, JobThread-4-1707300000069] INFO  luonq.stock.Processor - GetRehab.getData start
+2024-02-07 18:50:12.131 [xxl-job, JobThread-4-1707300000069] INFO  luonq.stock.Processor - GetRehab.getData end. cost: 3012s
+
+2024-02-07 18:50:12.141 [xxl-job, JobThread-4-1707300000069] INFO  luonq.job.GetDataJob - getRehab.job end
+2024-02-07 20:30:00.100 [xxl-job, JobThread-10-1707309000090] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job start
+2024-02-07 20:30:00.289 [xxl-job, JobThread-10-1707309000090] INFO  luonq.data.WriteToDB - finish rehabToDB. size=3144
+2024-02-07 20:30:00.298 [xxl-job, JobThread-10-1707309000090] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job end
+2024-02-07 21:00:00.054 [xxl-job, JobThread-5-1707310800048] INFO  luonq.job.GetDataJob - getEarning.job start
+2024-02-07 21:00:00.062 [xxl-job, JobThread-5-1707310800048] INFO  luonq.stock.Processor - GrabEarning.getData start
+2024-02-07 21:00:01.384 [xxl-job, JobThread-5-1707310800048] INFO  luonq.stock.Processor - GrabEarning.getData end. cost: 1s
+
+2024-02-07 21:00:01.395 [xxl-job, JobThread-5-1707310800048] INFO  luonq.job.GetDataJob - getEarning.job end
+2024-02-07 21:10:00.047 [xxl-job, JobThread-9-1707311400041] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job start
+2024-02-07 21:10:00.072 [xxl-job, JobThread-9-1707311400041] INFO  luonq.data.WriteToDB - [2024-02-07] has no earning data
+2024-02-07 21:10:00.076 [xxl-job, JobThread-9-1707311400041] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job end
