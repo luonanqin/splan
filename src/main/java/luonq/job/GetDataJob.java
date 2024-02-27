@@ -13,9 +13,6 @@ public class GetDataJob extends BaseJob {
     @XxlJob("getTradeDataAndComputeIndicator.job")
     public void getTradeDataJobAndComputeIndicator() throws Exception {
         log.info("getTradeDataAndComputeIndicator.job start");
-        if (noTrade()) {
-            return;
-        }
         Processor.getData();
         BaseUtils.sendEmail("getTradeDataJobAndComputeIndicator finish", "");
         log.info("getTradeDataJobAndComputeIndicator.job end");

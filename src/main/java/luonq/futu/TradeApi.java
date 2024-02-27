@@ -463,10 +463,13 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 orderFillMap.get(orderID).offer(fill);
                 log.info("update order: {}", fill);
 
-                if (order.getTrdSide() == 1) {
+                if (fill.getTradeSide() == 1) {
+                    log.info("ready to place stop loss");
                     synchronized (stopLossStockSet) {
                         if (!stopLossStockSet.contains(fill.getCode())) {
                             placeStopLossOrder(fill);
+                        } else {
+                            log.info("stopLossStockSet contains {}", fill.getCode());
                         }
                     }
                 }

@@ -22,9 +22,6 @@ public class SyncDataToDBJob extends BaseJob{
     @XxlJob("syncDataToDB.job")
     public void syncDataToDB() throws Exception {
         log.info("syncDataToDB.job start");
-        if (noTrade()) {
-            return;
-        }
         writeToDB.additionToDB();
         BaseUtils.sendEmail("syncDataToDB finish", "");
         log.info("syncDataToDB.job end");

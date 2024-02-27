@@ -98,14 +98,14 @@ public class WriteToDB {
         Map<String, String> openTradeFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + curYear + "/openFirstTrade/");
 
         if (CollectionUtils.isEmpty(dateList)) {
-            LocalDate yesterday = LocalDate.now().minusDays(1);
-            while (true) {
-                if (yesterday.getDayOfWeek().getValue() > 5) {
-                    yesterday = yesterday.minusDays(1);
-                } else {
-                    break;
-                }
+            LocalDate today = LocalDate.now();
+            LocalDate yesterday;
+            if (today.getDayOfWeek().getValue() == 1) {
+                yesterday = today.minusDays(3);
+            } else {
+                yesterday = today.minusDays(1);
             }
+
             String yestedayDate = yesterday.format(Constants.DB_DATE_FORMATTER);
             dateList = Lists.newArrayList(yestedayDate);
             curYear = yesterday.getYear();
