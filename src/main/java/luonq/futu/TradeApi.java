@@ -25,9 +25,11 @@ import com.futu.openapi.pb.TrdUnlockTrade;
 import com.futu.openapi.pb.TrdUpdateOrder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
+import luonq.polygon.RealTimeDataWS_DB;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,10 +38,12 @@ import util.MD5Util;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -72,6 +76,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     private BlockingQueue<Map<String, StockPosition>> stockPositionBlock = new LinkedBlockingQueue<>();
     private BlockingQueue<Long> stopLossOrder = new LinkedBlockingQueue<>();
     private AtomicInteger maxCashBuy = new AtomicInteger(-2);
+    private Set<String> stopLossStockSet = Sets.newHashSet();
 
     FTAPI_Conn_Trd trd = new FTAPI_Conn_Trd();
     FTAPI_Conn_Qot qot = new FTAPI_Conn_Qot();
@@ -99,6 +104,10 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     public void useSimulateEnv() {
         tradeEnv = TrdCommon.TrdEnv.TrdEnv_Simulate_VALUE;
+    }
+
+    public void clearStopLossStockSet() {
+        stopLossStockSet.clear();
     }
 
     public OrderFill getOrderFill(long orderId, long timeoutForSecond) {
@@ -453,10 +462,34 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 }
                 orderFillMap.get(orderID).offer(fill);
                 log.info("update order: {}", fill);
+
+                if (order.getTrdSide() == 1) {
+                    synchronized (stopLossStockSet) {
+                        if (!stopLossStockSet.contains(fill.getCode())) {
+                            placeStopLossOrder(fill);
+                        }
+                    }
+                }
             } catch (Exception e) {
                 log.error("onPush_UpdateOrder error.", e);
             }
         }
+    }
+
+    public void placeStopLossOrder(OrderFill orderFill) {
+        if (orderFill == null) {
+            log.info("order fill is null");
+            return;
+        }
+
+        String code = orderFill.getCode();
+        double canSellQty = orderFill.getCount();
+        double costPrice = orderFill.getAvgPrice();
+        double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS_DB.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
+
+        long orderId = placeOrderForLossMarket(code, canSellQty, auxPrice);
+        log.info(code + " placeStopLoss market order. qty=" + canSellQty + ", auxPrice=" + auxPrice + ", orderId：" + orderId);
+        stopLossStockSet.add(code);
     }
 
     // 解锁回调

@@ -47,6 +47,7 @@ public class TradeExecutor_DB {
         tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.unlock();
+        tradeApi.clearStopLossStockSet();
     }
 
     public void setTradeStock(List<String> stocks) {
@@ -133,7 +134,7 @@ public class TradeExecutor_DB {
                             log.info(code + " order is successfully executed. orderId=" + orderId);
                             if (realTrade) {
                                 try {
-                                    placeStopLossOrder(orderFill);
+                                    //                                    placeStopLossOrder(orderFill);
                                 } catch (Exception e) {
                                     log.info("real placeStopLossOrder failed");
                                 }

@@ -37,6 +37,9 @@ public class TradeDataListener_DB {
     public void cal(StockEvent event) {
         String stock = event.getStock();
         Double price = event.getPrice();
+        if (price < RealTimeDataWS_DB.PRICE_LIMIT) {
+            return;
+        }
 
         Double m19closeSum = RealTimeDataWS_DB.stockToM19CloseSum.get(stock);
         List<Double> m19closeList = RealTimeDataWS_DB.stockToM19Close.get(stock);

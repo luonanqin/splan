@@ -311,7 +311,7 @@ public class RealTimeDataWS_DB {
             }
             List<StockKLine> stockKLines = curKLineMap.get(code);
             long volumnLess = stockKLines.stream().limit(19).filter(k -> k.getVolume().doubleValue() < 100000).count();
-            if (close > PRICE_LIMIT && volumnLess == 0 && close <= open) {
+            if (volumnLess == 0 && close <= open) {
                 set.add(code);
             }
         }

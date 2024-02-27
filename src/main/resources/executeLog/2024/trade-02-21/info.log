@@ -1,0 +1,62 @@
+2024-02-22 04:58:56.068 [xxl-job, JobThread-8-1708549136052] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-02-22 04:58:56.090 [xxl-job, JobThread-8-1708549136052] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-02-22 04:58:56.099 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7166174475711009632
+2024-02-22 04:58:56.104 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7166174475712380032
+2024-02-22 04:58:59.096 [xxl-job, JobThread-8-1708549136052] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-02-22 04:58:59.097 [xxl-job, JobThread-8-1708549136052] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-02-22 04:58:59.128 [xxl-job, JobThread-8-1708549136052] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={ROKU=StockPosition(stock=ROKU, canSellQty=37.0, costPrice=66.811, currPrice=64.33)}, time=2024-02-22T04:58:59.128
+2024-02-22 04:58:59.128 [xxl-job, JobThread-8-1708549136052] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=ROKU, count=37.0
+2024-02-22 04:58:59.208 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-02-22 04:58:59.273 [xxl-job, JobThread-8-1708549136052] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=5599928887188702253
+2024-02-22 04:58:59.824 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5599928887188702253, code=ROKU, name=Roku Inc, count=37.0, price=0.0, avgPrice=63.9311, createTime=2024-02-21 15:58:59.262, updateTimestamp=1.708549139895693E9, status=0)
+2024-02-22 04:58:59.825 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5599928887188702253, code=ROKU, name=Roku Inc, count=37.0, price=0.0, avgPrice=63.9311, createTime=2024-02-21 15:58:59.262, updateTimestamp=1.708549139895693E9, status=0)
+2024-02-22 04:58:59.825 [xxl-job, JobThread-8-1708549136052] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=ROKU, orderId=5599928887188702253
+2024-02-22 04:58:59.826 [xxl-job, JobThread-8-1708549136052] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-02-22 17:00:00.068 [xxl-job, JobThread-3-1708592400056] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-02-22 17:00:00.105 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-02-22 17:00:45.371 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 45s
+
+2024-02-22 17:00:45.376 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-02-22 17:01:29.489 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 44s
+
+2024-02-22 17:01:29.490 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-02-22 17:01:34.205 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 4s
+
+2024-02-22 17:01:34.208 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-02-22 17:02:24.106 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 49s
+
+2024-02-22 17:02:24.109 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-02-22 17:03:33.044 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 68s
+
+2024-02-22 17:03:33.052 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-02-22 17:03:49.269 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 16s
+
+2024-02-22 17:03:49.270 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-02-22 17:03:53.729 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 4s
+
+2024-02-22 17:03:53.730 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-02-22 17:04:44.963 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 51s
+
+2024-02-22 17:04:44.964 [xxl-job, JobThread-3-1708592400056] INFO  luonq.stock.Processor - get data finish
+2024-02-22 17:04:44.972 [xxl-job, JobThread-3-1708592400056] INFO  luonq.job.GetDataJob - getTradeDataJobAndComputeIndicator.job end
+2024-02-22 17:30:00.073 [xxl-job, JobThread-6-1708594200065] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job start
+2024-02-22 17:30:00.115 [xxl-job, JobThread-6-1708594200065] INFO  luonq.data.WriteToDB - additionToDB begin
+2024-02-22 17:30:38.759 [xxl-job, JobThread-6-1708594200065] INFO  luonq.data.WriteToDB - sync count: 4663
+2024-02-22 17:30:39.319 [xxl-job, JobThread-6-1708594200065] INFO  luonq.data.WriteToDB - additionToDB end
+2024-02-22 17:30:39.329 [xxl-job, JobThread-6-1708594200065] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job end
+2024-02-22 18:00:00.068 [xxl-job, JobThread-4-1708596000061] INFO  luonq.job.GetDataJob - getRehab.job start
+2024-02-22 18:00:00.097 [xxl-job, JobThread-4-1708596000061] INFO  luonq.stock.Processor - GetRehab.getData start
+2024-02-22 18:50:06.822 [xxl-job, JobThread-4-1708596000061] INFO  luonq.stock.Processor - GetRehab.getData end. cost: 3006s
+
+2024-02-22 18:50:06.830 [xxl-job, JobThread-4-1708596000061] INFO  luonq.job.GetDataJob - getRehab.job end
+2024-02-22 20:30:00.074 [xxl-job, JobThread-10-1708605000062] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job start
+2024-02-22 20:30:00.307 [xxl-job, JobThread-10-1708605000062] INFO  luonq.data.WriteToDB - finish rehabToDB. size=3145
+2024-02-22 20:30:00.316 [xxl-job, JobThread-10-1708605000062] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job end
+2024-02-22 21:00:00.045 [xxl-job, JobThread-5-1708606800040] INFO  luonq.job.GetDataJob - getEarning.job start
+2024-02-22 21:00:00.062 [xxl-job, JobThread-5-1708606800040] INFO  luonq.stock.Processor - GrabEarning.getData start
+2024-02-22 21:00:12.473 [xxl-job, JobThread-5-1708606800040] INFO  luonq.stock.Processor - GrabEarning.getData end. cost: 12s
+
+2024-02-22 21:00:12.492 [xxl-job, JobThread-5-1708606800040] INFO  luonq.job.GetDataJob - getEarning.job end
+2024-02-22 21:10:00.062 [xxl-job, JobThread-9-1708607400058] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job start
+2024-02-22 21:10:00.138 [xxl-job, JobThread-9-1708607400058] INFO  luonq.data.WriteToDB - sync earning finish. dateList=[2024-02-22], earning sum=335
+2024-02-22 21:10:00.142 [xxl-job, JobThread-9-1708607400058] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job end

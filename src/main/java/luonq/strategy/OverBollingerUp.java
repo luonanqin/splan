@@ -37,7 +37,7 @@ public class OverBollingerUp {
     public static void main(String[] args) throws Exception {
         double exchange = 6.94;
         double init = 10000 / exchange;
-        int beforeYear = 2023, afterYear = 2021;
+        int beforeYear = 2024, afterYear = 2022;
         double capital = init;
         Map<String, StockUpRatio> originRatioMap = computeHistoricalOverBollingerRatio();
         Set<String> invalidStockSet = Sets.newHashSet("FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
@@ -188,7 +188,7 @@ public class OverBollingerUp {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {
                 continue;
             }
-            List<String> lineList = BaseUtils.readFile(Constants.TRADE_OPEN_PATH + "2023/" + stock);
+            List<String> lineList = BaseUtils.readFile(Constants.TRADE_OPEN_PATH + beforeYear + "/" + stock);
             for (String line : lineList) {
                 String[] split = line.split(",");
                 String date = split[0];
@@ -210,7 +210,7 @@ public class OverBollingerUp {
         }
         // 加载开盘有真实交易的股票(5秒内有交易的才算有效开盘)
         Map<String, Map<String, SimpleTrade>> dateToOpenTradeMap = Maps.newHashMap();
-//        Map<String, String> openFirstFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/openFirstTrade");
+        //        Map<String, String> openFirstFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/openFirstTrade");
         Map<String, String> openFirstFileMap = BaseUtils.getFileMap(Constants.TRADE_PATH + "openFirstTrade");
         for (String stock : openFirstFileMap.keySet()) {
             List<String> lines = BaseUtils.readFile(openFirstFileMap.get(stock));
@@ -228,7 +228,7 @@ public class OverBollingerUp {
                 double price = Double.parseDouble(split[1]);
                 String tradeTime = split[2];
                 String[] timeSplit = tradeTime.split(":");
-                if (timeSplit.length<3) {
+                if (timeSplit.length < 3) {
                     continue;
                 }
                 String secondStr = timeSplit[2];
@@ -267,7 +267,7 @@ public class OverBollingerUp {
                     double hit = hitRatio.get(i);
 
                     if (hit != 0.5d || lossRange != 0.07d || openR != 7) {
-//                        continue;
+                        //                        continue;
                     }
                     Map<String, StockUpRatio> ratioMap = SerializationUtils.clone((HashMap<String, StockUpRatio>) originRatioMap);
 
@@ -374,13 +374,13 @@ public class OverBollingerUp {
                             if (lossRatio > lossRange) {
                                 double loss = -count * open * lossRange;
                                 income += loss;
-//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
+                                //                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss * exchange);
                                 //                                                        System.out.println(String.format("loss lossRatio=%d", (int)(lossRatio*100)));
                                 lossCount++;
                             } else {
                                 double gain = count * (open - close);
                                 income += gain;
-//                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
+                                //                                System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain * exchange);
 
                                 if (gain >= 0) {
                                     gainCount++;
@@ -393,7 +393,7 @@ public class OverBollingerUp {
                             break;
                         }
                         capital += income;
-//                        System.out.println("date=" + date + ", income=" + income + ", sum=" + capital * exchange);
+                        //                        System.out.println("date=" + date + ", income=" + income + ", sum=" + capital * exchange);
                         //                        System.out.println(date+" "+size);
                     }
                     double successRatio = (double) gainCount / (gainCount + lossCount);
@@ -409,7 +409,7 @@ public class OverBollingerUp {
         String mergePath = Constants.HIS_BASE_PATH + "merge/";
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(mergePath);
 
-        int beforeYear = 2022, afterYear = 2020;
+        int beforeYear = 2023, afterYear = 2021;
         Map<String, StockUpRatio> stockUpRatioMap = Maps.newHashMap();
         for (String stock : dailyFileMap.keySet()) {
             if (StringUtils.isNotBlank(TEST_STOCK) && !stock.equals(TEST_STOCK)) {

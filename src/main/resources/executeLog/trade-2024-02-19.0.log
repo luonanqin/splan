@@ -1,0 +1,14 @@
+2024-02-19 17:00:00.093 [xxl-job, JobThread-3-1708333200073] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-02-19 17:00:00.111 [xxl-job, JobThread-3-1708333200073] INFO  luonq.job.BaseJob - no trading today!
+2024-02-19 17:30:00.034 [xxl-job, JobThread-6-1708335000029] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job start
+2024-02-19 17:30:00.045 [xxl-job, JobThread-6-1708335000029] INFO  luonq.job.BaseJob - no trading today!
+2024-02-19 18:00:00.050 [xxl-job, JobThread-4-1708336800037] INFO  luonq.job.GetDataJob - getRehab.job start
+2024-02-19 18:00:00.066 [xxl-job, JobThread-4-1708336800037] INFO  luonq.job.BaseJob - no trading today!
+2024-02-19 20:30:00.056 [xxl-job, JobThread-10-1708345800049] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job start
+2024-02-19 20:30:00.067 [xxl-job, JobThread-10-1708345800049] INFO  luonq.job.BaseJob - no trading today!
+2024-02-19 21:00:00.033 [xxl-job, JobThread-5-1708347600028] INFO  luonq.job.GetDataJob - getEarning.job start
+2024-02-19 21:00:00.039 [xxl-job, JobThread-5-1708347600028] INFO  luonq.job.BaseJob - no trading today!
+2024-02-19 21:10:00.036 [xxl-job, JobThread-9-1708348200030] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job start
+2024-02-19 21:10:00.046 [xxl-job, JobThread-9-1708348200030] INFO  luonq.job.BaseJob - no trading today!
+2024-02-19 22:15:00.057 [xxl-job, JobThread-7-1708352100048] INFO  luonq.job.TradeJob - trade_DB.job start
+2024-02-19 22:15:00.062 [xxl-job, JobThread-7-1708352100048] INFO  luonq.job.BaseJob - no trading today!
