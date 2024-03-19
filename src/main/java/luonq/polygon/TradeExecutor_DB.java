@@ -134,7 +134,7 @@ public class TradeExecutor_DB {
                             log.info(code + " order is successfully executed. orderId=" + orderId);
                             if (realTrade) {
                                 try {
-                                    //                                    placeStopLossOrder(orderFill);
+                                    placeStopLossOrder(orderFill);
                                 } catch (Exception e) {
                                     log.info("real placeStopLossOrder failed");
                                 }

@@ -1,0 +1,49 @@
+2024-03-14 03:26:52.390 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1726957471392788272, code=TNGX, name=Tango Therapeutics, count=164.0, price=0.0, avgPrice=9.2917, createTime=2024-03-13 09:30:21.982, updateTimestamp=1.710358012484895E9, status=0)
+2024-03-14 03:26:52.406 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1726957471392788272, code=TNGX, name=Tango Therapeutics, count=164.0, price=0.0, avgPrice=9.2917, createTime=2024-03-13 09:30:21.982, updateTimestamp=1.710358012484895E9, status=0)
+2024-03-14 03:26:52.407 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1726957471392788272, code=TNGX, name=Tango Therapeutics, count=164.0, price=0.0, avgPrice=9.2917, createTime=2024-03-13 09:30:21.982, updateTimestamp=1.710358012484895E9, status=0)
+2024-03-14 03:26:52.407 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1726957471392788272, code=TNGX, name=Tango Therapeutics, count=164.0, price=0.0, avgPrice=9.2917, createTime=2024-03-13 09:30:21.982, updateTimestamp=1.710358012484895E9, status=0)
+2024-03-14 03:26:52.407 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1726957471392788272, code=TNGX, name=Tango Therapeutics, count=164.0, price=0.0, avgPrice=9.2917, createTime=2024-03-13 09:30:21.982, updateTimestamp=1.710358012484895E9, status=0)
+2024-03-14 03:26:52.407 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1726957471392788272, code=TNGX, name=Tango Therapeutics, count=164.0, price=0.0, avgPrice=9.2917, createTime=2024-03-13 09:30:21.982, updateTimestamp=1.710358012484895E9, status=0)
+2024-03-14 03:26:52.407 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1726957471392788272, code=TNGX, name=Tango Therapeutics, count=164.0, price=0.0, avgPrice=9.2917, createTime=2024-03-13 09:30:21.982, updateTimestamp=1.710358012484895E9, status=0)
+2024-03-14 03:58:56.095 [xxl-job, JobThread-8-1710359936083] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-03-14 03:58:56.109 [xxl-job, JobThread-8-1710359936083] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-03-14 03:58:56.115 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7173769521469948872
+2024-03-14 03:58:56.117 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7173769521467474631
+2024-03-14 03:58:59.116 [xxl-job, JobThread-8-1710359936083] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-03-14 03:58:59.118 [xxl-job, JobThread-8-1710359936083] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-03-14 03:58:59.132 [xxl-job, JobThread-8-1710359936083] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={}, time=2024-03-14T03:58:59.130
+2024-03-14 03:58:59.132 [xxl-job, JobThread-8-1710359936083] INFO  luonq.polygon.TradeExecutor_DB - position is empty. trade is end today!!!
+2024-03-14 03:58:59.132 [xxl-job, JobThread-8-1710359936083] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-03-14 03:58:59.225 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-03-14 16:00:00.117 [xxl-job, JobThread-3-1710403200098] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-03-14 16:00:00.118 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-03-14 16:00:49.427 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 49s
+
+2024-03-14 16:00:49.428 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-03-14 16:00:53.411 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 3s
+
+2024-03-14 16:00:53.417 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-03-14 16:00:57.247 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 3s
+
+2024-03-14 16:00:57.248 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-03-14 16:01:40.790 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 43s
+
+2024-03-14 16:01:40.790 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-03-14 16:01:42.306 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 1s
+
+2024-03-14 16:01:42.307 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-03-14 16:01:43.321 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 1s
+
+2024-03-14 16:01:46.432 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-03-14 16:01:50.503 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 4s
+
+2024-03-14 16:01:50.504 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-03-14 16:02:34.359 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 43s
+
+2024-03-14 16:02:34.360 [xxl-job, JobThread-3-1710403200098] INFO  luonq.stock.Processor - get data finish
+2024-03-14 16:02:34.370 [xxl-job, JobThread-3-1710403200098] INFO  luonq.job.GetDataJob - getTradeDataJobAndComputeIndicator.job end
+2024-03-14 16:30:00.093 [xxl-job, JobThread-6-1710405000084] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job start
+2024-03-14 16:30:00.094 [xxl-job, JobThread-6-1710405000084] INFO  luonq.data.WriteToDB - additionToDB begin
+2024-03-14 16:30:39.393 [xxl-job, JobThread-6-1710405000084] INFO  luonq.data.WriteToDB - there is no date at [2024-03-13]
+2024-03-14 16:30:39.394 [xxl-job, JobThread-6-1710405000084] INFO  luonq.data.WriteToDB - additionToDB end
+2024-03-14 16:30:39.401 [xxl-job, JobThread-6-1710405000084] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job end

@@ -1,12 +1,9 @@
 package luonq.test;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import luonq.polygon.EarningPipeline;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -14,8 +11,6 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.Selectable;
-import util.BaseUtils;
-import util.Constants;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -81,11 +76,11 @@ public class GrabEarningTest2 implements PageProcessor {
 
     @Override
     public Site getSite() {
-        return Site.me().setSleepTime(100).setRetryTimes(3);
+        return Site.me().setSleepTime(100).setRetryTimes(3).setTimeOut(100000000);
     }
 
     public static void main(String[] args) throws Exception {
-        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.ERROR);
+//        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.ERROR);
         getData();
     }
 
@@ -98,10 +93,11 @@ public class GrabEarningTest2 implements PageProcessor {
         EarningPipeline pipeline = new EarningPipeline();
 
         Spider.create(pageProcessor)
-          .addUrl("https://www.futunn.com/quote-api/quote-v2/get-financial-list?beginDate=20240129&market=0&stockType=0&from=0&count=20")
+          .addUrl("https://api.nasdaq.com/api/calendar/earnings?date=2020-02-28")
 //          .addPipeline(pipeline)
           .run();
-        List<String> res = pipeline.getRes();
-        BaseUtils.writeFile(Constants.HIS_BASE_PATH + "earning/" + day, res);
+        System.out.println();
+//        List<String> res = pipeline.getRes();
+//        BaseUtils.writeFile(Constants.HIS_BASE_PATH + "earning/" + day, res);
     }
 }

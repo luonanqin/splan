@@ -1,0 +1,4 @@
+2024-02-27 21:52:26.616 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-02-27 21:53:07.942 [main] INFO  luonq.data.WriteToDB - sync count: 4667
+2024-02-27 22:45:33.432 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-02-27 23:14:59.564 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.

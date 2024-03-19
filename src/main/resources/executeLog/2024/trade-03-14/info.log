@@ -1,0 +1,16 @@
+2024-03-16 03:58:56.144 [xxl-job, JobThread-8-1710532736129] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-03-16 03:58:56.164 [xxl-job, JobThread-8-1710532736129] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-03-16 03:58:56.174 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7174494297433734807
+2024-03-16 03:58:56.189 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7174494297439265254
+2024-03-16 03:58:59.167 [xxl-job, JobThread-8-1710532736129] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-03-16 03:58:59.172 [xxl-job, JobThread-8-1710532736129] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-03-16 03:58:59.195 [xxl-job, JobThread-8-1710532736129] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={IGT=StockPosition(stock=IGT, canSellQty=68.0, costPrice=20.74, currPrice=20.56)}, time=2024-03-16T03:58:59.193
+2024-03-16 03:58:59.196 [xxl-job, JobThread-8-1710532736129] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=IGT, count=68.0
+2024-03-16 03:58:59.277 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-03-16 03:58:59.352 [xxl-job, JobThread-8-1710532736129] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=8679052144455345910
+2024-03-16 03:58:59.711 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=8679052144455345910, code=IGT, name=国际博彩科技, count=68.0, price=0.0, avgPrice=20.5108, createTime=2024-03-15 15:58:59.313, updateTimestamp=1.710532739734902E9, status=0)
+2024-03-16 03:58:59.714 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=8679052144455345910, code=IGT, name=国际博彩科技, count=68.0, price=0.0, avgPrice=20.5108, createTime=2024-03-15 15:58:59.313, updateTimestamp=1.710532739734902E9, status=0)
+2024-03-16 03:58:59.715 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=8679052144455345910, code=IGT, name=国际博彩科技, count=68.0, price=0.0, avgPrice=20.5108, createTime=2024-03-15 15:58:59.313, updateTimestamp=1.710532739734902E9, status=0)
+2024-03-16 03:58:59.716 [xxl-job, JobThread-8-1710532736129] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=IGT, orderId=8679052144455345910
+2024-03-16 03:58:59.716 [xxl-job, JobThread-8-1710532736129] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-03-16 03:58:59.716 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=8679052144455345910, code=IGT, name=国际博彩科技, count=68.0, price=0.0, avgPrice=20.5108, createTime=2024-03-15 15:58:59.313, updateTimestamp=1.710532739734902E9, status=0)

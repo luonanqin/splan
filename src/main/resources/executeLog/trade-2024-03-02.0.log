@@ -1,0 +1,15 @@
+2024-03-02 04:58:56.094 [xxl-job, JobThread-8-1709326736071] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-03-02 04:58:56.120 [xxl-job, JobThread-8-1709326736071] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-03-02 04:58:56.136 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7169435966639741246
+2024-03-02 04:58:56.139 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7169435966632469946
+2024-03-02 04:58:59.130 [xxl-job, JobThread-8-1709326736071] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-03-02 04:58:59.133 [xxl-job, JobThread-8-1709326736071] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-03-02 04:58:59.144 [xxl-job, JobThread-8-1709326736071] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={AAN=StockPosition(stock=AAN, canSellQty=275.0, costPrice=7.79, currPrice=7.41)}, time=2024-03-02T04:58:59.143
+2024-03-02 04:58:59.145 [xxl-job, JobThread-8-1709326736071] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=AAN, count=275.0
+2024-03-02 04:58:59.258 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-03-02 04:58:59.312 [xxl-job, JobThread-8-1709326736071] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=5025664554540973644
+2024-03-02 04:58:59.994 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5025664554540973644, code=AAN, name=Aaron's, Inc., count=275.0, price=0.0, avgPrice=7.3105, createTime=2024-03-01 15:58:59.224, updateTimestamp=1.709326739863462E9, status=0)
+2024-03-02 04:58:59.995 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5025664554540973644, code=AAN, name=Aaron's, Inc., count=275.0, price=0.0, avgPrice=7.3105, createTime=2024-03-01 15:58:59.224, updateTimestamp=1.709326739863462E9, status=0)
+2024-03-02 04:58:59.996 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5025664554540973644, code=AAN, name=Aaron's, Inc., count=275.0, price=0.0, avgPrice=7.3105, createTime=2024-03-01 15:58:59.224, updateTimestamp=1.709326739863462E9, status=0)
+2024-03-02 04:58:59.996 [xxl-job, JobThread-8-1709326736071] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=AAN, orderId=5025664554540973644
+2024-03-02 04:58:59.997 [xxl-job, JobThread-8-1709326736071] INFO  luonq.job.TradeJob - tradeExecutor_db sell
