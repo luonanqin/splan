@@ -5,8 +5,10 @@ import bean.StockKLine;
 import bean.Total;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
  * 计算收益：开盘5分钟后卖出，收盘前买回，高于卖出价固定百分比进行止损
  */
 @Component
+@Slf4j
 public class Strategy17 {
 
     @Autowired
@@ -37,9 +40,10 @@ public class Strategy17 {
     private Map<String, List<StockKLine>> codeKLineMap = Maps.newHashMap();
     private Map<String, List<BOLL>> codeBollMap = Maps.newHashMap();
     private Set<String> allCode;
+    private String calcYear = "2023";
 
     private void init() {
-        allYearDate = readFromDB.getAllYearDate("2023");
+        allYearDate = readFromDB.getAllYearDate(calcYear);
         codeTotalMap = allYearDate.stream().collect(Collectors.groupingBy(Total::getCode, Collectors.toList()));
         codeTotalMap.forEach((code, totals) -> {
             codeKLineMap.put(code, totals.stream().map(Total::toKLine).sorted(Comparator.comparingInt(o -> BaseUtils.formatDateToInt(o.getDate()))).collect(Collectors.toList()));
@@ -65,15 +69,16 @@ public class Strategy17 {
 
     public void main() throws Exception {
         buildCodeSet();
+        Map<String, Map<String, Double>> _5minDataMap = get5minData();
         init();
-
         //        System.out.printf("code\tdate\tclose\tcloseRatio\thighLowRatio\tcloseDnRatio\tvolMutiple\topenGain\tcloseGain\tnextGain\topenGainRatio\tcloseGainRatio\tnextGainRatio\n");
         //        Map<String, Double> map = Maps.newTreeMap(Comparator.comparingInt(BaseUtils::formatDateToInt));
         Map<String/* code */, Double/* successRatio */> map = Maps.newHashMap();
         for (String code : allCode) {
             List<StockKLine> stockKLines = codeKLineMap.get(code);
             List<BOLL> bolls = codeBollMap.get(code);
-            if (CollectionUtils.isEmpty(stockKLines) || CollectionUtils.isEmpty(bolls)) {
+            Map<String, Double> datePriceMap = _5minDataMap.get(code);
+            if (CollectionUtils.isEmpty(stockKLines) || CollectionUtils.isEmpty(bolls) || MapUtils.isEmpty(datePriceMap)) {
                 continue;
             }
 
@@ -83,6 +88,10 @@ public class Strategy17 {
             for (int i = 1; i < stockKLines.size() - 1; i++) {
                 StockKLine kLine = stockKLines.get(i);
                 String date = kLine.getDate();
+                Double _5minPrice = datePriceMap.get(date);
+                if (_5minPrice == null) {
+                    continue;
+                }
                 //                BOLL boll = dateToBollMap.get(date);
                 //                if (boll == null) {
                 //                    continue;
@@ -115,9 +124,61 @@ public class Strategy17 {
 
                 double diff = (prevClose / open - 1) * 100;
                 if (diff > 10) {
-                    System.out.println(date + "\t" + code + "\t" + open + "\t" + close);
+                    boolean _5minLessClose = _5minPrice < close;
+                    boolean _5minLessOpen = _5minPrice < open;
+                    boolean _5minGreatLow = _5minPrice > low;
+                    double openRatio = 100 * (1 - _5minPrice / open);
+                    double lowRatio = _5minGreatLow ? 100 * (1 - low / _5minPrice) : 0;
+                    System.out.println(date +
+                      "\t" + code +
+                      "\t" + open +
+                      "\t" + close +
+                      "\t" + _5minPrice +
+                      "\t" + _5minLessClose +
+                      "\t" + _5minLessOpen +
+                      "\t" + _5minGreatLow +
+                      "\t" + openRatio +
+                      "\t" + lowRatio
+                    );
                 }
             }
         }
+    }
+
+    public Map<String/* code */, Map<String/* date */, Double/* price */>> get5minData() {
+        Map<String, Map<String, Double>> result = Maps.newHashMap();
+
+        try {
+            Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + calcYear + "/open5MinTrade");
+            for (String code : fileMap.keySet()) {
+                String filePath = fileMap.get(code);
+                List<String> lines = BaseUtils.readFile(filePath);
+                Map<String, Double> priceMap = Maps.newHashMap();
+                for (String line : lines) {
+                    String[] split = line.split(",");
+                    if (split.length < 3) {
+                        continue;
+                    }
+
+                    String date = BaseUtils.formatDate(split[0]);
+                    double price = Double.valueOf(split[2]);
+                    priceMap.put(date, price);
+                }
+
+                result.put(code, priceMap);
+            }
+        } catch (Exception e) {
+            log.error("get5minData error", e);
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        double a=10000;
+        for (int i = 0; i < 89; i++) {
+            a*=1.02;
+        }
+        System.out.println(a);
     }
 }

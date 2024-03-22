@@ -35,7 +35,7 @@ import static util.Constants.SPLIT_PATH;
 public class WriteToDB {
 
     @Autowired
-    private StockDataMapper stockDataMapper;
+    private StockDataMapper     stockDataMapper;
 
     @Autowired
     private EarningDataMapper earningDataMapper;
@@ -283,7 +283,7 @@ public class WriteToDB {
         for (StockKLine kLine : kLines) {
             Total total = new Total();
             String date = kLine.getDate();
-            String formatDate = kLine.getFormatDate();
+            String formatDate = BaseUtils.formatDate(date);
             if (CollectionUtils.isNotEmpty(dateList) && !dateList.contains(formatDate)) {
                 continue;
             }

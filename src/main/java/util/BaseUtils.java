@@ -830,6 +830,14 @@ public class BaseUtils {
         }
     }
 
+    /**
+     * MM/dd/yyyy -> yyyy-MM-dd
+     */
+    public static String formatDate(String date){
+        LocalDate oDate = LocalDate.parse(date, Constants.FORMATTER);
+        return oDate.format(Constants.DB_DATE_FORMATTER);
+    }
+
     public static void main(String[] args) throws Exception {
         Map<String, List<EarningDate>> map = getEarningDate("2023-11-16");
         System.out.println(map);
