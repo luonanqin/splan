@@ -1,0 +1,220 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7072538628572378291
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3697
+stock overbolling hit great 0.500000 size: 3446
+filter merge stock, the stock set size is 3446
+filter split stock, the stock set size is 3438
+filter front reinstatement less 0.98 stock, the stock set size is 3263
+finish initialize many time. preTradeTime=1686230880000, openTime=1686231000000, closeCheckTime=Fri Jun 09 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:27:59
+begin subcribe stock at 21:28:04
+finish subcribe real time!
+time is early
+{p=9.23, ev=T, q=178978, s=50, c=[12,37], t=1686230894000, sym=PACW, x=12, i=1312, z=3}
+time is early
+{p=9.22, ev=T, q=178979, s=14, c=[12,37], t=1686230894000, sym=PACW, x=12, i=1313, z=3}
+time is early
+{p=9.22, ev=T, q=178980, s=50, c=[12,37], t=1686230894000, sym=PACW, x=12, i=1314, z=3}
+time is early
+{p=9.22, ev=T, q=178981, s=45, c=[12,37], t=1686230894000, sym=PACW, x=12, i=1315, z=3}
+time is early
+{p=9.22, ev=T, q=178982, s=5, c=[12,37], t=1686230894000, sym=PACW, x=12, i=1316, z=3}
+time is early
+{p=9.24, ev=T, q=178983, s=50, c=[12,37], t=1686230894000, sym=PACW, x=8, i=1032, z=3}
+time is early
+{p=9.23, ev=T, q=178984, s=50, c=[12,37], t=1686230894000, sym=PACW, x=19, i=215, z=3}
+time is early
+{p=9.23, ev=T, q=178985, s=50, c=[12,37], t=1686230894000, sym=PACW, x=8, i=1033, z=3}
+time is early
+{p=9.22, ev=T, q=178986, s=34, c=[12,37], t=1686230894000, sym=PACW, x=19, i=216, z=3}
+time is early
+{p=9.23, ev=T, q=178987, s=50, c=[12,37], t=1686230894000, sym=PACW, x=8, i=1034, z=3}
+time is early
+{p=9.22, ev=T, q=178988, s=16, c=[12,37], t=1686230894000, sym=PACW, x=19, i=217, z=3}
+time is early
+{p=9.22, ev=T, q=178989, s=19, c=[12,37], t=1686230894000, sym=PACW, x=8, i=1035, z=3}
+time is early
+{p=9.22, ev=T, q=178990, s=50, c=[12,37], t=1686230894000, sym=PACW, x=19, i=218, z=3}
+time is early
+{p=9.23, ev=T, q=178991, s=1, c=[12,37], t=1686230894000, sym=PACW, x=18, i=21, z=3}
+time is early
+{p=9.23, ev=T, q=178992, s=1, c=[12,37], t=1686230894000, sym=PACW, x=7, i=18, z=3}
+time is early
+{p=9.22, ev=T, q=178993, s=31, c=[12,37], t=1686230894000, sym=PACW, x=8, i=1036, z=3}
+time is early
+{p=41.07, ev=T, q=180112, s=300, c=[12], t=1686230929000, sym=MBLY, x=19, i=247, z=3}
+time is early
+{p=14.52, ev=T, q=32620, s=50, c=[14,12,37,41], t=1686230940000, sym=PLTR, x=18, i=52983525028703, z=1}
+time is early
+{p=177.75, ev=T, q=251315, s=8, c=[14,12,37,41], t=1686230958000, sym=AAPL, x=11, i=3982, z=3}
+time is early
+{p=12.11, ev=T, q=173380, s=100, c=[12], t=1686230959000, sym=STER, x=12, i=250, z=3}
+time is early
+{p=12.11, ev=T, q=173381, s=50, c=[12,37], t=1686230959000, sym=STER, x=12, i=251, z=3}
+time is early
+{p=261.19, ev=T, q=180927, s=18, c=[14,12,37,41], t=1686230970000, sym=META, x=8, i=1704, z=3}
+time is early
+{p=80.88, ev=T, q=19847, s=72, c=[12,37], t=1686230991000, sym=GGG, x=8, i=52983525033069, z=1}
+unsubcribeStockSet size: 100 1686231000431
+unsubcribeStockSet size: 200 1686231000448
+STAA price=51.89 dn=52.048
+unsubcribeStockSet size: 300 1686231000451
+unsubcribeStockSet size: 400 1686231000467
+STAA=0.003035659391331103
+unsubcribeStockSet size: 500 1686231000488
+unsubcribeStockSet size: 600 1686231000644
+LMNR price=15.17 dn=15.381
+unsubcribeStockSet size: 700 1686231000833
+LMNR=0.013718223782588928,STAA=0.003035659391331103
+UNFI price=22.7 dn=24.142
+UNFI=0.05972993124016238,LMNR=0.013718223782588928,STAA=0.003035659391331103
+MELI price=1205.84 dn=1206.214
+unsubcribeStockSet size: 800 1686231000857
+SCWX price=7.32 dn=7.646
+UNFI=0.05972993124016238,SCWX=0.04263667277007581,LMNR=0.013718223782588928,STAA=0.003035659391331103
+unsubcribeStockSet size: 900 1686231000989
+CPB price=46.32 dn=47.249
+UNFI=0.05972993124016238,SCWX=0.04263667277007581,CPB=0.019661791783953143,LMNR=0.013718223782588928,STAA=0.003035659391331103
+SMAR price=39.695 dn=40.623
+UNFI=0.05972993124016238,SCWX=0.04263667277007581,SMAR=0.022844201560692154,CPB=0.019661791783953143,LMNR=0.013718223782588928,STAA=0.003035659391331103
+unsubcribeStockSet size: 1000 1686231001015
+unsubcribeStockSet size: 1100 1686231001160
+HCP price=26.23 dn=28.818
+HCP=0.08980498299673818,UNFI=0.05972993124016238,SCWX=0.04263667277007581,SMAR=0.022844201560692154,CPB=0.019661791783953143,LMNR=0.013718223782588928,STAA=0.003035659391331103
+NVCR price=48.565 dn=51.145
+HCP=0.08980498299673818,UNFI=0.05972993124016238,NVCR=0.050444813764786496,SCWX=0.04263667277007581,SMAR=0.022844201560692154,CPB=0.019661791783953143,LMNR=0.013718223782588928,STAA=0.003035659391331103
+unsubcribeStockSet size: 1200 1686231001374
+CASY price=216.12 dn=218.89
+unsubcribeStockSet size: 1300 1686231001430
+unsubcribeStockSet size: 1400 1686231001581
+unsubcribeStockSet size: 1500 1686231001622
+unsubcribeStockSet size: 1600 1686231001730
+unsubcribeStockSet size: 1700 1686231001773
+unsubcribeStockSet size: 1800 1686231001814
+unsubcribeStockSet size: 1900 1686231001909
+unsubcribeStockSet size: 2000 1686231001948
+NVRO price=23.13 dn=23.605
+unsubcribeStockSet size: 2100 1686231001982
+unsubcribeStockSet size: 2200 1686231002096
+unsubcribeStockSet size: 2300 1686231002141
+unsubcribeStockSet size: 2400 1686231002190
+unsubcribeStockSet size: 2500 1686231002307
+unsubcribeStockSet size: 2600 1686231002376
+unsubcribeStockSet size: 2700 1686231002520
+KVSA price=10.12 dn=10.157
+HCP=0.08980498299673818,UNFI=0.05972993124016238,NVCR=0.050444813764786496,SCWX=0.04263667277007581,SMAR=0.022844201560692154,CPB=0.019661791783953143,LMNR=0.013718223782588928,KVSA=0.0036428079157232265,STAA=0.003035659391331103
+unsubcribeStockSet size: 2800 1686231002697
+unsubcribeStockSet size: 2900 1686231002921
+CERT price=18.57 dn=18.919
+HCP=0.08980498299673818,UNFI=0.05972993124016238,NVCR=0.050444813764786496,SCWX=0.04263667277007581,SMAR=0.022844201560692154,CPB=0.019661791783953143,CERT=0.018447063798298018,LMNR=0.013718223782588928,KVSA=0.0036428079157232265,STAA=0.003035659391331103
+unsubcribeStockSet size: 3000 1686231003204
+listen end!
+unsubcribeStockSet size: 3100 1686231010644
+unsubcribeStockSet size: 3200 1686231010645
+=========== finish unsubscribe ===========
+HCP=0.08980498299673818,UNFI=0.05972993124016238,NVCR=0.050444813764786496,SCWX=0.04263667277007581,SMAR=0.022844201560692154,CPB=0.019661791783953143,CERT=0.018447063798298018,LMNR=0.013718223782588928,KVSA=0.0036428079157232265,STAA=0.003035659391331103
+remain cash: 8723.180000000051
+buy stock. stock=HCP, count=329, price=26.23, orderPrice=26.49, orderId: 7089680072789902347
+update order: OrderFill(tradeSide=1, fillID=0, orderID=7089680072789902347, code=HCP, name=HashiCorp, count=329.0, price=26.49, createTime=2023-06-08 09:30:11, updateTimestamp=1.686231013E9, status=0)
+HCP order is successfully executed. orderId: 7089680072789902347
+buy stock. stock=UNFI, count=5, price=22.7, orderPrice=22.92, orderId: 7089680077084869642
+UNFI order has been canceled. orderId: 7089680077084869642, cancel res code: 0
+buy stock. stock=NVCR, count=2, price=48.565, orderPrice=49.05, orderId: 7089680081379836937
+update order: OrderFill(tradeSide=1, fillID=0, orderID=7089680081379836937, code=NVCR, name=Novocure, count=2.0, price=49.05, createTime=2023-06-08 09:30:25, updateTimestamp=1.686231027E9, status=0)
+NVCR order is successfully executed. orderId: 7089680081379836937
+buy stock. stock=SCWX, count=3, price=7.32, orderPrice=7.39, orderId: 7089680085674804232
+SCWX order has been canceled. orderId: 7089680085674804232, cancel res code: 0
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {NVCR=StopLoss(stock=NVCR, canSellQty=2.0, lossPrice=43.651), HCP=StopLoss(stock=HCP, canSellQty=329.0, lossPrice=23.508)}
+{p=25.53, ev=T, q=149574, s=150, t=1686231143000, sym=HCP, trfi=202, x=4, i=1166, z=3, trft=1686231143000}
+{p=26.465, ev=T, q=494649, s=100, t=1686232167000, sym=HCP, trfi=202, x=4, i=4945, z=3, trft=1686232167000}
+{p=26.65, ev=T, q=574030, s=500, c=[14,41], t=1686232415000, sym=HCP, x=8, i=1809, z=3}
+{p=26.65, ev=T, q=574031, s=100, c=[14,41], t=1686232415000, sym=HCP, x=8, i=1810, z=3}
+{p=26.65, ev=T, q=607158, s=200, c=[14,41], t=1686232506000, sym=HCP, x=12, i=5554, z=3}
+{p=26.65, ev=T, q=607159, s=100, c=[14,41], t=1686232506000, sym=HCP, x=12, i=5555, z=3}
+{p=26.58, ev=T, q=630084, s=100, t=1686232581000, sym=HCP, trfi=202, x=4, i=5843, z=3, trft=1686232581000}
+{p=26.2, ev=T, q=670946, s=42, c=[14,37,41], t=1686232716000, sym=HCP, x=12, i=6045, z=3}
+{p=26.22, ev=T, q=670947, s=4, c=[14,37,41], t=1686232716000, sym=HCP, x=11, i=3958, z=3}
+{p=26.21, ev=T, q=670948, s=27, c=[14,37,41], t=1686232716000, sym=HCP, x=11, i=3959, z=3}
+{p=26.21, ev=T, q=670949, s=38, c=[14,37,41], t=1686232716000, sym=HCP, x=11, i=3960, z=3}
+{p=26.2, ev=T, q=670950, s=42, c=[14,37,41], t=1686232716000, sym=HCP, x=21, i=834, z=3}
+{p=26.2, ev=T, q=670951, s=42, c=[14,37,41], t=1686232716000, sym=HCP, x=8, i=2015, z=3}
+{p=26.2, ev=T, q=670952, s=18, c=[14,37,41], t=1686232716000, sym=HCP, x=11, i=3961, z=3}
+{p=26.005, ev=T, q=744174, s=62, c=[37], t=1686232983000, sym=HCP, x=12, i=6551, z=3}
+{p=44.8385, ev=T, q=1262631, s=5, c=[37], t=1686233506000, sym=NVCR, trfi=202, x=4, i=2323, z=3, trft=1686233506000}
+{p=44.46, ev=T, q=1347734, s=1, c=[37], t=1686233761000, sym=NVCR, x=11, i=1182, z=3}
+NVCR touch the stop loss. current price=43.6, lossPrice=43.651, orderPrice=43.21
+NVCR placeStopLoss limit order. qty=2.0, price=43.21, orderId: 7089758262669265287
+update order: OrderFill(tradeSide=2, fillID=0, orderID=7089758262669265287, code=NVCR, name=Novocure, count=2.0, price=43.21, createTime=2023-06-08 10:25:41, updateTimestamp=1.686234345E9, status=0)
+{p=26.085, ev=T, q=1261439, s=1, c=[37], t=1686234928000, sym=HCP, x=12, i=9979, z=3}
+{p=26.33, ev=T, q=1433371, s=100, t=1686235642000, sym=HCP, trfi=202, x=4, i=11234, z=3, trft=1686235642000}
+{p=26.76, ev=T, q=1911550, s=3, c=[14,37,41], t=1686237702000, sym=HCP, x=11, i=6748, z=3}
+{p=26.38, ev=T, q=2284708, s=100, c=[14,41], t=1686239410000, sym=HCP, x=21, i=1886, z=3}
+{p=26.43, ev=T, q=2356483, s=100, t=1686239773000, sym=HCP, trfi=202, x=4, i=15789, z=3, trft=1686239773000}
+{p=26.6, ev=T, q=2502497, s=100, c=[14,41], t=1686240487000, sym=HCP, x=11, i=7687, z=3}
+{p=26.6, ev=T, q=2502498, s=129, c=[14,41], t=1686240487000, sym=HCP, x=11, i=7688, z=3}
+{p=26.48, ev=T, q=2767840, s=3, c=[37], t=1686241909000, sym=HCP, trfi=202, x=4, i=17781, z=3, trft=1686241909000}
+{p=26.64, ev=T, q=2821621, s=50, c=[14,37,41], t=1686242185000, sym=HCP, x=19, i=5422, z=3}
+{p=26.63, ev=T, q=2821622, s=50, c=[14,37,41], t=1686242185000, sym=HCP, x=18, i=799, z=3}
+{p=26.65, ev=T, q=2821623, s=50, c=[37], t=1686242185000, sym=HCP, x=15, i=3182, z=3}
+{p=26.67, ev=T, q=2821624, s=50, c=[37], t=1686242185000, sym=HCP, x=7, i=1177, z=3}
+{p=26.65, ev=T, q=2821625, s=50, c=[37], t=1686242185000, sym=HCP, trfi=202, x=4, i=18001, z=3, trft=1686242185000}
+{p=26.32, ev=T, q=2884021, s=75, c=[14,37,41], t=1686242532000, sym=HCP, x=12, i=18916, z=3}
+{p=26.32, ev=T, q=2884022, s=100, c=[14,41], t=1686242532000, sym=HCP, x=12, i=18917, z=3}
+{p=26.32, ev=T, q=2884023, s=244, c=[14,41], t=1686242532000, sym=HCP, x=11, i=8433, z=3}
+{p=26.32, ev=T, q=2884024, s=52, c=[14,37,41], t=1686242532000, sym=HCP, x=11, i=8434, z=3}
+{p=26.32, ev=T, q=2884025, s=148, c=[14,41], t=1686242532000, sym=HCP, x=11, i=8435, z=3}
+{p=26.32, ev=T, q=2884026, s=214, c=[14,41], t=1686242532000, sym=HCP, x=11, i=8436, z=3}
+{p=26.32, ev=T, q=2884027, s=214, c=[14,41], t=1686242532000, sym=HCP, x=11, i=8437, z=3}
+{p=26.32, ev=T, q=2884028, s=100, c=[14,41], t=1686242532000, sym=HCP, x=12, i=18918, z=3}
+{p=26.32, ev=T, q=2884029, s=48, c=[14,37,41], t=1686242532000, sym=HCP, x=12, i=18919, z=3}
+{p=26.32, ev=T, q=2884030, s=200, t=1686242532000, sym=HCP, x=10, i=1056, z=3}
+{p=26.32, ev=T, q=2884031, s=1372, t=1686242532000, sym=HCP, x=11, i=8438, z=3}
+{p=26.32, ev=T, q=2884032, s=100, t=1686242532000, sym=HCP, x=11, i=8439, z=3}
+{p=26.32, ev=T, q=2884033, s=114, t=1686242532000, sym=HCP, x=11, i=8440, z=3}
+{p=26.32, ev=T, q=2884034, s=148, c=[14,41], t=1686242532000, sym=HCP, x=12, i=18920, z=3}
+{p=26.32, ev=T, q=2884035, s=95, c=[14,37,41], t=1686242532000, sym=HCP, x=12, i=18921, z=3}
+{p=26.32, ev=T, q=2884036, s=50, c=[37], t=1686242532000, sym=HCP, x=15, i=3235, z=3}
+{p=26.22, ev=T, q=3054972, s=100, t=1686243457000, sym=HCP, x=15, i=3422, z=3}
+{p=26.24, ev=T, q=3133009, s=400, t=1686243907000, sym=HCP, trfi=202, x=4, i=19537, z=3, trft=1686243907000}
+{p=26.1275, ev=T, q=3256440, s=300, c=[10,2,41], t=1686244595000, sym=HCP, trfi=202, x=4, i=20189, z=3, trft=1686244595000}
+{p=26.21, ev=T, q=3382623, s=26, c=[14,37,41], t=1686245233000, sym=HCP, x=21, i=2641, z=3}
+{p=25.955, ev=T, q=3441239, s=100, t=1686245549000, sym=HCP, trfi=202, x=4, i=21235, z=3, trft=1686245549000}
+{p=25.645, ev=T, q=3557084, s=7, c=[37], t=1686246155000, sym=HCP, x=12, i=22778, z=3}
+{p=25.505, ev=T, q=3634783, s=1200, t=1686246562000, sym=HCP, trfi=202, x=4, i=22458, z=3, trft=1686246562000}
+{p=25.505, ev=T, q=3634784, s=800, t=1686246562000, sym=HCP, trfi=202, x=4, i=22459, z=3, trft=1686246562000}
+{p=25.33, ev=T, q=3747064, s=100, t=1686247191000, sym=HCP, trfi=202, x=4, i=23456, z=3, trft=1686247191000}
+{p=25.33, ev=T, q=3747065, s=100, t=1686247191000, sym=HCP, x=10, i=1313, z=3}
+{p=25.33, ev=T, q=3747066, s=100, t=1686247191000, sym=HCP, x=15, i=4040, z=3}
+{p=25.3099, ev=T, q=3960667, s=1, c=[37], t=1686248384000, sym=HCP, trfi=202, x=4, i=24498, z=3, trft=1686248384000}
+{p=25.24, ev=T, q=4002639, s=100, c=[14,41], t=1686248608000, sym=HCP, x=8, i=6376, z=3}
+{p=25.25, ev=T, q=4072724, s=100, t=1686248981000, sym=HCP, x=8, i=6432, z=3}
+{p=25.32, ev=T, q=4116566, s=1, c=[37], t=1686249207000, sym=HCP, trfi=202, x=4, i=25220, z=3, trft=1686249206999}
+{p=25.345, ev=T, q=4381464, s=4, c=[37], t=1686250550000, sym=HCP, trfi=202, x=4, i=26338, z=3, trft=1686250550000}
+{p=25.36, ev=T, q=4483179, s=100, t=1686251053000, sym=HCP, trfi=202, x=4, i=26729, z=3, trft=1686251053000}
+{p=25.53, ev=T, q=4585805, s=100, t=1686251495000, sym=HCP, x=19, i=7514, z=3}
+{p=25.65, ev=T, q=4595869, s=20, c=[37], t=1686251541000, sym=HCP, x=12, i=28562, z=3}
+{p=25.65, ev=T, q=4595870, s=80, c=[37], t=1686251541000, sym=HCP, x=12, i=28563, z=3}
+{p=25.65, ev=T, q=4595871, s=200, t=1686251541000, sym=HCP, x=12, i=28564, z=3}
+{p=25.65, ev=T, q=4595872, s=135, t=1686251541000, sym=HCP, x=8, i=6730, z=3}
+{p=25.65, ev=T, q=4595873, s=2, c=[37], t=1686251541000, sym=HCP, x=11, i=11681, z=3}
+{p=25.65, ev=T, q=4595874, s=1, c=[37], t=1686251541000, sym=HCP, x=11, i=11682, z=3}
+{p=25.63, ev=T, q=4602376, s=75, c=[37], t=1686251567000, sym=HCP, trfi=202, x=4, i=27372, z=3, trft=1686251567000}
+{p=25.63, ev=T, q=4602377, s=96, c=[37], t=1686251567000, sym=HCP, trfi=202, x=4, i=27373, z=3, trft=1686251567000}
+{p=25.7906, ev=T, q=5240760, s=1, c=[37], t=1686253695000, sym=HCP, trfi=202, x=4, i=30283, z=3, trft=1686253695000}
+{p=25.67, ev=T, q=5361478, s=100, t=1686253916000, sym=HCP, trfi=202, x=4, i=30688, z=3, trft=1686253916000}
+ready to sell before close market. position={HCP=StockPosition(stock=HCP, canSellQty=329.0, costPrice=26.12, currPrice=25.47)}, time=2023-06-09T03:59:00.141
+before close sell stock. stock=HCP, count=329.0, currentPrice=25.47, orderPrice=25.21
+before close sell stock. stock=HCP, orderId：7090196581263249921
+update order: OrderFill(tradeSide=2, fillID=0, orderID=7090196581263249921, code=HCP, name=HashiCorp, count=329.0, price=25.21, createTime=2023-06-08 15:59:00, updateTimestamp=1.686254343E9, status=0)
+all stock has stop loss
+trade exit

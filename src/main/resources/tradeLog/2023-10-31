@@ -1,0 +1,147 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7125110031795907967
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1698758880000, openTime=1698759000000, closeCheckTime=Wed Nov 01 03:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1214
+stock overbolling hit great 0.500000 size: 1035
+filter merge stock, the stock set size is 1035
+filter split stock, the stock set size is 1032
+filter front reinstatement less 0.98 stock, the stock set size is 974
+filter earning and lastEarning stock, the stock set size is 906
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+wait pre trade time. now is 21:24:11
+wait pre trade time. now is 21:24:16
+wait pre trade time. now is 21:24:21
+wait pre trade time. now is 21:24:26
+wait pre trade time. now is 21:24:31
+wait pre trade time. now is 21:24:36
+wait pre trade time. now is 21:24:41
+wait pre trade time. now is 21:24:46
+wait pre trade time. now is 21:24:51
+wait pre trade time. now is 21:24:56
+wait pre trade time. now is 21:25:01
+wait pre trade time. now is 21:25:06
+wait pre trade time. now is 21:25:11
+wait pre trade time. now is 21:25:16
+wait pre trade time. now is 21:25:21
+wait pre trade time. now is 21:25:26
+wait pre trade time. now is 21:25:31
+wait pre trade time. now is 21:25:36
+wait pre trade time. now is 21:25:41
+wait pre trade time. now is 21:25:46
+wait pre trade time. now is 21:25:51
+wait pre trade time. now is 21:25:56
+wait pre trade time. now is 21:26:01
+wait pre trade time. now is 21:26:06
+wait pre trade time. now is 21:26:11
+wait pre trade time. now is 21:26:16
+wait pre trade time. now is 21:26:21
+wait pre trade time. now is 21:26:26
+wait pre trade time. now is 21:26:31
+wait pre trade time. now is 21:26:36
+wait pre trade time. now is 21:26:41
+wait pre trade time. now is 21:26:46
+wait pre trade time. now is 21:26:51
+wait pre trade time. now is 21:26:56
+wait pre trade time. now is 21:27:01
+wait pre trade time. now is 21:27:06
+wait pre trade time. now is 21:27:11
+wait pre trade time. now is 21:27:16
+wait pre trade time. now is 21:27:21
+wait pre trade time. now is 21:27:26
+wait pre trade time. now is 21:27:31
+wait pre trade time. now is 21:27:36
+wait pre trade time. now is 21:27:41
+wait pre trade time. now is 21:27:46
+wait pre trade time. now is 21:27:51
+wait pre trade time. now is 21:27:56
+begin subcribe stock at 21:28:01
+finish subcribe real time!
+StockEvent(stock=SRPT, price=57.58, time=1698759000002) dn=85.283 1698759000567
+StockEvent(stock=RGNX, price=13.59, time=1698759000014) dn=14.121 1698759000570
+StockEvent(stock=HAS, price=44.3, time=1698759000013) dn=45.052 1698759000616
+HAS=1.6691822782562427
+StockEvent(stock=GOGL, price=7.23, time=1698759000013) dn=7.297 1698759000836
+StockEvent(stock=THRM, price=41.63, time=1698759000014) dn=41.684 1698759000838
+unsubscribeStockSet size: 100 1698759000913
+StockEvent(stock=ACLS, price=126.1, time=1698759000048) dn=126.768 1698759001114
+StockEvent(stock=CCB, price=37.08, time=1698759000013) dn=37.492 1698759001134
+StockEvent(stock=OSIS, price=104.97, time=1698759000093) dn=105.76 1698759001307
+StockEvent(stock=DAN, price=11.7, time=1698759000147) dn=11.746 1698759001343
+StockEvent(stock=FNV, price=125.0, time=1698759000155) dn=126.256 1698759001407
+StockEvent(stock=WALD, price=7.92, time=1698759000050) dn=8.144 1698759001582
+WALD=2.7504911591355623,HAS=1.6691822782562427
+StockEvent(stock=O, price=46.51, time=1698759000179) dn=47.152 1698759001678
+unsubscribeStockSet size: 200 1698759001848
+StockEvent(stock=OLED, price=138.66, time=1698759000321) dn=138.903 1698759002119
+StockEvent(stock=ACMR, price=13.145, time=1698759000325) dn=13.642 1698759002119
+ACMR=3.643160826858231,WALD=2.7504911591355623,HAS=1.6691822782562427
+StockEvent(stock=BMY, price=51.265, time=1698759000348) dn=51.522 1698759002204
+unsubscribeStockSet size: 300 1698759003576
+StockEvent(stock=PEB, price=11.82, time=1698759000602) dn=11.888 1698759003608
+StockEvent(stock=ALGM, price=26.34, time=1698759000594) dn=26.358 1698759004185
+StockEvent(stock=SAVE, price=13.13, time=1698759000626) dn=13.861 1698759004186
+StockEvent(stock=GFS, price=50.0, time=1698759000618) dn=50.006 1698759004306
+StockEvent(stock=CODI, price=16.92, time=1698759000644) dn=16.955 1698759004306
+StockEvent(stock=AVTR, price=17.2, time=1698759000644) dn=17.61 1698759004402
+StockEvent(stock=XPRO, price=15.79, time=1698759000653) dn=15.918 1698759004643
+unsubscribeStockSet size: 400 1698759004793
+StockEvent(stock=WU, price=10.99, time=1698759000652) dn=11.214 1698759004917
+StockEvent(stock=ALSN, price=50.76, time=1698759000659) dn=50.877 1698759005119
+StockEvent(stock=KNSL, price=332.98, time=1698759000661) dn=346.785 1698759005359
+StockEvent(stock=AZTA, price=44.35, time=1698759000640) dn=44.957 1698759006526
+StockEvent(stock=ELME, price=12.77, time=1698759000641) dn=12.774 1698759006527
+unsubscribeStockSet size: 500 1698759006526
+StockEvent(stock=EVTC, price=32.01, time=1698759000756) dn=32.178 1698759007701
+unsubscribeStockSet size: 600 1698759007899
+StockEvent(stock=VRE, price=13.3, time=1698759000697) dn=13.357 1698759008326
+StockEvent(stock=PRVA, price=20.77, time=1698759000745) dn=20.788 1698759008365
+StockEvent(stock=AZUL, price=7.1, time=1698759000682) dn=7.108 1698759008955
+StockEvent(stock=HOG, price=26.0, time=1698759000769) dn=26.032 1698759009194
+StockEvent(stock=KEX, price=74.09, time=1698759000815) dn=74.604 1698759009308
+unsubscribeStockSet size: 700 1698759009775
+StockEvent(stock=MPX, price=10.07, time=1698759000890) dn=10.309 1698759009778
+StockEvent(stock=PNM, price=42.49, time=1698759000848) dn=42.562 1698759010121
+StockEvent(stock=KRUS, price=57.25, time=1698759000926) dn=57.609 1698759011132
+unsubscribeStockSet size: 800 1698759012274
+StockEvent(stock=EXPO, price=73.8, time=1698759001185) dn=74.399 1698759015273
+now time is over! listen end!
+unsubscribeStockSet size: 900 1698759030034
+=========== finish unsubscribe ===========
+get real-time quote: [ACMR, WALD, HAS]
+ACMR=3.643160826858231,WALD=2.7504911591355623,HAS=1.6691822782562427
+remain cash: 7925.270000000019
+buy stock. stock=ACMR, count=597, price=13.145, orderPrice=13.27, orderId: 2620089193800982100 1698759031244
+ACMR order is successfully executed. orderId: 2620089193800982100
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2620089193800982100, code=ACMR, name=ACM Research, count=597.0, price=13.27, avgPrice=13.16, createTime=2023-10-31 09:30:31, updateTimestamp=1.698759031E9, status=0)
+buy stock. stock=WALD, count=7, price=7.92, orderPrice=7.99, orderId: 2620089198095949399 1698759031845
+WALD order is successfully executed. orderId: 2620089198095949399
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2620089198095949399, code=WALD, name=Waldencast, count=7.0, price=7.99, avgPrice=7.9399999999999995, createTime=2023-10-31 09:30:31, updateTimestamp=1.698759036E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+being listen stop loss: {ACMR=StopLoss(stock=ACMR, canSellQty=597.0, lossPrice=12.238), WALD=StopLoss(stock=WALD, canSellQty=7.0, lossPrice=7.384)}
+{p=13.23, ev=T, q=284675, s=20, c=[37], t=1698759379000, sym=ACMR, trfi=202, x=4, i=256, z=3, trft=1698759379000}
+{p=13.23, ev=T, q=284676, s=20, c=[37], t=1698759379000, sym=ACMR, trfi=202, x=4, i=257, z=3, trft=1698759379000}
+{p=13.08, ev=T, q=403458, s=100, t=1698759696000, sym=ACMR, trfi=202, x=4, i=421, z=3, trft=1698759696000}
+WALD touch the stop loss. current price=7.3515, lossPrice=7.384, orderPrice=7.31
+WALD placeStopLoss limit order. qty=7.0, price=7.31, orderId: 2629520718610931552
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2629520718610931552, code=WALD, name=Waldencast, count=7.0, price=7.31, avgPrice=7.35, createTime=2023-10-31 15:45:42, updateTimestamp=1.698781544E9, status=0)
+WALD don't need stop loss. it'll be unsubscribe
+ready to sell before close market. position={ACMR=StockPosition(stock=ACMR, canSellQty=597.0, costPrice=13.16, currPrice=13.61)}, time=2023-11-01T03:59:00.012
+before close sell stock. stock=ACMR, count=597.0, currentPrice=13.61, orderPrice=13.47
+before close sell stock. stock=ACMR, orderId：2629521848187330147
+closeCheckPosition failed! WALD position is not exist!
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2629521848187330147, code=ACMR, name=ACM Research, count=597.0, price=13.47, avgPrice=13.59, createTime=2023-10-31 15:59:00, updateTimestamp=1.698782345E9, status=0)
+{p=13.595, ev=T, q=5590506, s=21, c=[37], t=1698782382000, sym=ACMR, trfi=202, x=4, i=6052, z=3, trft=1698782382000}
+{p=13.57, ev=T, q=5640918, s=1355, t=1698782400000, sym=ACMR, x=12, i=5448, z=3}
+all stock has stop loss
+trade exit

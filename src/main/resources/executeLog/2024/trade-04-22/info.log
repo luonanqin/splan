@@ -1,0 +1,22 @@
+2024-04-27 03:58:56.106 [xxl-job, JobThread-8-1714161536092] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-04-27 03:58:56.136 [xxl-job, JobThread-8-1714161536092] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-04-27 03:58:56.148 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7189714587673003106
+2024-04-27 03:58:56.153 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7189714587676882059
+2024-04-27 03:58:59.147 [xxl-job, JobThread-8-1714161536092] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-04-27 03:58:59.150 [xxl-job, JobThread-8-1714161536092] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-04-27 03:58:59.162 [xxl-job, JobThread-8-1714161536092] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={RS=StockPosition(stock=RS, canSellQty=7.0, costPrice=291.945, currPrice=290.33)}, time=2024-04-27T03:58:59.161
+2024-04-27 03:58:59.163 [xxl-job, JobThread-8-1714161536092] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=RS, count=7.0
+2024-04-27 03:58:59.238 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-04-27 03:58:59.298 [xxl-job, JobThread-8-1714161536092] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=3557468319104579718
+2024-04-27 03:58:59.720 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.721 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.721 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.722 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.722 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.723 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.724 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.725 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.725 [xxl-job, JobThread-8-1714161536092] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=RS, orderId=3557468319104579718
+2024-04-27 03:58:59.725 [xxl-job, JobThread-8-1714161536092] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-04-27 03:58:59.726 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)
+2024-04-27 03:58:59.726 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3557468319104579718, code=RS, name=Reliance, count=7.0, price=0.0, avgPrice=290.22, createTime=2024-04-26 15:58:59.219, updateTimestamp=1.714161539687497E9, status=0)

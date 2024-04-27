@@ -1,0 +1,14 @@
+2024-01-20 00:28:26.399 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-20 00:52:21.956 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-20 00:52:24.527 [main] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-01-20 04:58:56.560 [xxl-job, JobThread-8-1705697936530] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-01-20 04:58:57.715 [xxl-job, JobThread-8-1705697936530] INFO  luonq.job.BaseJob - no trading today!
+2024-01-20 21:47:05.382 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-20 23:30:07.769 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-20 23:30:09.759 [main] INFO  luonq.data.WriteToDB - sync count: 1
+2024-01-20 23:35:32.667 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-20 23:36:13.089 [main] INFO  luonq.data.WriteToDB - sync count: 51690
+2024-01-20 23:36:50.582 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-20 23:41:43.746 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-01-20 23:54:40.155 [main] INFO  luonq.polygon.RealTimeDataWS_DB - finish load lastest 19-days close data
+2024-01-20 23:54:40.162 [main] INFO  luonq.polygon.RealTimeDataWS_DB - finish init historical data

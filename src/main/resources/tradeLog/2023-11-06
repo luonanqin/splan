@@ -1,0 +1,114 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7127278704954888155
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1699280880000, openTime=1699281000000, closeCheckTime=Tue Nov 07 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 831
+stock overbolling hit great 0.500000 size: 669
+filter merge stock, the stock set size is 669
+filter split stock, the stock set size is 668
+filter front reinstatement less 0.98 stock, the stock set size is 632
+filter earning and lastEarning stock, the stock set size is 588
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+StockEvent(stock=BMBL, price=12.62, time=1699281000004) dn=12.639 current=1699281000129
+BMBL=0.15032834876177015
+StockEvent(stock=RELY, price=19.61, time=1699281000009) dn=19.99 current=1699281000139
+RELY=1.900950475237614,BMBL=0.15032834876177015
+StockEvent(stock=SIGI, price=99.0, time=1699281000010) dn=99.944 current=1699281000176
+StockEvent(stock=AVDX, price=7.5, time=1699281000087) dn=7.795 current=1699281000177
+AVDX=3.784477228992943,RELY=1.900950475237614,BMBL=0.15032834876177015
+unsubscribeStockSet size: 100 1699281000304
+StockEvent(stock=UI, price=106.66, time=1699281000445) dn=107.781 current=1699281000521
+AVDX=3.784477228992943,RELY=1.900950475237614,UI=1.0400719978474957,BMBL=0.15032834876177015
+StockEvent(stock=CRTO, price=23.89, time=1699281000498) dn=24.537 current=1699281000640
+unsubscribeStockSet size: 200 1699281000655
+unsubscribeStockSet size: 300 1699281000862
+StockEvent(stock=CCRN, price=19.69, time=1699281000605) dn=19.984 current=1699281000878
+AVDX=3.784477228992943,RELY=1.900950475237614,CCRN=1.4711769415532447,UI=1.0400719978474957,BMBL=0.15032834876177015
+StockEvent(stock=OLIT, price=8.56, time=1699281000685) dn=9.199 current=1699281000922
+unsubscribeStockSet size: 400 1699281000997
+StockEvent(stock=HQY, price=64.61, time=1699281000669) dn=65.06 current=1699281001000
+StockEvent(stock=RGR, price=45.55, time=1699281000812) dn=46.491 current=1699281001062
+AVDX=3.784477228992943,RGR=2.024047665139495,RELY=1.900950475237614,CCRN=1.4711769415532447,UI=1.0400719978474957,BMBL=0.15032834876177015
+StockEvent(stock=NRT, price=7.75, time=1699281000974) dn=7.874 current=1699281001150
+AVDX=3.784477228992943,RGR=2.024047665139495,RELY=1.900950475237614,NRT=1.574803149606295,CCRN=1.4711769415532447,UI=1.0400719978474957,BMBL=0.15032834876177015
+unsubscribeStockSet size: 500 1699281001212
+StockEvent(stock=PBT, price=18.85, time=1699281001082) dn=18.877 current=1699281001261
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [AVDX, RGR, RELY, NRT, CCRN, UI, BMBL]
+AVDX=3.784477228992943,RGR=2.024047665139495,RELY=1.900950475237614,NRT=1.574803149606295,CCRN=1.4711769415532447,UI=1.0400719978474957,BMBL=0.15032834876177015
+remain cash: 7564.430000000051
+buy stock. stock=AVDX, count=999, price=7.5, orderPrice=7.57, orderId: 2688044948346246634 1699281022979
+AVDX order has been canceled. orderId: 2688044948346246634, cancel res code: 0
+buy stock. stock=RGR, count=164, price=45.55, orderPrice=46.0, orderId: 2688044952641213925 1699281038197
+RGR order is successfully executed. orderId: 2688044952641213925
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2688044952641213925, code=RGR, name=斯特姆-鲁格, count=164.0, price=46.0, avgPrice=45.73, createTime=2023-11-06 09:30:38, updateTimestamp=1.699281041E9, status=0)
+buy stock. stock=RELY, count=3, price=19.698, orderPrice=19.89, orderId: 2688045480922190435 1699281041180
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2688045480922190435, code=RELY, name=Remitly Global, count=3.0, price=19.89, avgPrice=19.7, createTime=2023-11-06 09:30:41, updateTimestamp=1.699281045E9, status=0)
+RELY order is successfully executed. orderId: 2688045480922190435
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {RELY=StopLoss(stock=RELY, canSellQty=3.0, lossPrice=18.32), RGR=StopLoss(stock=RGR, canSellQty=164.0, lossPrice=42.528)}
+{p=20.65, ev=T, q=489584, s=10, c=[14,37,41], t=1699282207000, sym=RELY, x=10, i=141, z=3}
+{p=45.43, ev=T, q=700338, s=2, c=[37], t=1699284724000, sym=RGR, x=12, i=62879349893962, z=1}
+{p=45.43, ev=T, q=700339, s=5, c=[37], t=1699284724000, sym=RGR, x=12, i=62879349893963, z=1}
+{p=45.43, ev=T, q=700340, s=100, t=1699284724000, sym=RGR, trfi=202, x=4, i=71679987824206, z=1, trft=1699284724000}
+{p=20.5988, ev=T, q=1367601, s=1, c=[37], t=1699285669000, sym=RELY, trfi=202, x=4, i=2487, z=3, trft=1699285669000}
+{p=20.492, ev=T, q=1574106, s=100, t=1699286764000, sym=RELY, trfi=202, x=4, i=2879, z=3, trft=1699286764000}
+{p=20.46, ev=T, q=1702757, s=30, c=[14,37,41], t=1699287467000, sym=RELY, x=12, i=2993, z=3}
+{p=20.44, ev=T, q=1835717, s=12, c=[37], t=1699288199000, sym=RELY, x=21, i=557, z=3}
+{p=20.44, ev=T, q=1835718, s=5, c=[37], t=1699288199000, sym=RELY, x=21, i=558, z=3}
+{p=20.44, ev=T, q=1835719, s=12, c=[14,37,41], t=1699288199000, sym=RELY, x=21, i=559, z=3}
+{p=20.06, ev=T, q=3285411, s=100, t=1699297236000, sym=RELY, x=15, i=961, z=3}
+{p=20.06, ev=T, q=3285412, s=6, c=[37], t=1699297236000, sym=RELY, x=15, i=962, z=3}
+{p=20.06, ev=T, q=3285413, s=70, c=[37], t=1699297236000, sym=RELY, x=15, i=963, z=3}
+{p=20.06, ev=T, q=3285414, s=100, t=1699297236000, sym=RELY, x=15, i=964, z=3}
+{p=20.06, ev=T, q=3285415, s=6, c=[37], t=1699297236000, sym=RELY, x=15, i=965, z=3}
+{p=20.065, ev=T, q=3285416, s=50, c=[14,37,41], t=1699297236000, sym=RELY, x=10, i=418, z=3}
+{p=20.065, ev=T, q=3285417, s=27, c=[14,37,41], t=1699297236000, sym=RELY, x=10, i=419, z=3}
+{p=20.06, ev=T, q=3285418, s=18, c=[37], t=1699297236000, sym=RELY, x=15, i=966, z=3}
+{p=20.06, ev=T, q=3285419, s=100, t=1699297236000, sym=RELY, x=15, i=967, z=3}
+{p=20.06, ev=T, q=3285420, s=100, t=1699297236000, sym=RELY, trfi=202, x=4, i=5577, z=3, trft=1699297236000}
+{p=20.06, ev=T, q=3285421, s=25, c=[37], t=1699297236000, sym=RELY, trfi=202, x=4, i=5578, z=3, trft=1699297236000}
+{p=20.01, ev=T, q=3359372, s=1, c=[37], t=1699297679000, sym=RELY, trfi=202, x=4, i=5677, z=3, trft=1699297679000}
+{p=19.8, ev=T, q=3925608, s=1, c=[37], t=1699300906000, sym=RELY, trfi=202, x=4, i=6567, z=3, trft=1699300906000}
+{p=19.77, ev=T, q=4294876, s=45, c=[14,37,41], t=1699302677000, sym=RELY, x=19, i=1853, z=3}
+{p=19.77, ev=T, q=4294877, s=100, c=[14,41], t=1699302677000, sym=RELY, x=12, i=6416, z=3}
+{p=19.78, ev=T, q=4294878, s=100, c=[14,41], t=1699302677000, sym=RELY, x=12, i=6417, z=3}
+{p=19.78, ev=T, q=4294879, s=102, c=[14,41], t=1699302677000, sym=RELY, x=12, i=6418, z=3}
+{p=19.78, ev=T, q=4294880, s=100, c=[14,41], t=1699302677000, sym=RELY, x=21, i=1240, z=3}
+{p=19.78, ev=T, q=4294881, s=5, c=[14,37,41], t=1699302677000, sym=RELY, x=21, i=1241, z=3}
+{p=19.77, ev=T, q=4294882, s=25, c=[37], t=1699302677000, sym=RELY, x=19, i=1854, z=3}
+{p=19.77, ev=T, q=4294883, s=70, c=[14,37,41], t=1699302677000, sym=RELY, x=10, i=544, z=3}
+{p=19.78, ev=T, q=4294884, s=154, c=[14,41], t=1699302677000, sym=RELY, x=20, i=155, z=3}
+{p=19.77, ev=T, q=4294885, s=75, c=[14,37,41], t=1699302677000, sym=RELY, x=19, i=1855, z=3}
+{p=19.74, ev=T, q=4306890, s=100, c=[14,41], t=1699302729000, sym=RELY, x=12, i=6438, z=3}
+{p=19.725, ev=T, q=4472160, s=2, c=[37], t=1699303327000, sym=RELY, x=15, i=1383, z=3}
+{p=19.785, ev=T, q=4828320, s=100, t=1699304137000, sym=RELY, trfi=202, x=4, i=8263, z=3, trft=1699304137000}
+{p=19.78, ev=T, q=4865608, s=100, t=1699304193000, sym=RELY, trfi=202, x=4, i=8314, z=3, trft=1699304193000}
+ready to sell before close market. position={RELY=StockPosition(stock=RELY, canSellQty=3.0, costPrice=19.701, currPrice=19.741), RGR=StockPosition(stock=RGR, canSellQty=164.0, costPrice=45.73, currPrice=46.11)}, time=2023-11-07T04:59:00.039
+before close sell stock. stock=RGR, count=164.0, currentPrice=46.11, orderPrice=45.64
+before close sell stock. stock=RGR, orderId：2697331303259998451
+before close sell stock. stock=RELY, count=3.0, currentPrice=19.741, orderPrice=19.54
+before close sell stock. stock=RELY, orderId：2697331307554965746
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2697331307554965746, code=RELY, name=Remitly Global, count=3.0, price=19.54, avgPrice=19.76, createTime=2023-11-06 15:59:00, updateTimestamp=1.699304344E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2697331303259998451, code=RGR, name=斯特姆-鲁格, count=164.0, price=45.64, avgPrice=45.65, createTime=2023-11-06 15:59:00, updateTimestamp=1.699304377E9, status=0)
+{p=45.61, ev=T, q=3543628, s=68, c=[37], t=1699304378000, sym=RGR, trfi=202, x=4, i=71705759799109, z=1, trft=1699304378000}
+all stock has stop loss
+trade exit

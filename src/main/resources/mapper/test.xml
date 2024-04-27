@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.TestMapper">
+
+    <insert id="insertTest">
+        insert into `2023-11-01` (`code`) value ("test")
+    </insert>
+
+    <insert id="insertTest2">
+        insert into `${date}` (`code`, `create_time`, `update_time`) value (#{code}, now(), now())
+    </insert>
+
+    <select id="showTables">
+        show tables like '${date}'
+    </select>
+
+    <insert id="createTable">
+        CREATE TABLE ${date} (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '股票代码',
+        `open` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '开盘',
+        `close` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '收盘',
+        `high` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '最高',
+        `low` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '最低',
+        `volume` bigint NOT NULL DEFAULT '0' COMMENT '成交量',
+        `open_trade` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '真实开盘成交价',
+        `open_trade_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '真实开盘成交时间',
+        `f1min_avg_price` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '第一分钟成交均价',
+        `f1min_volume` bigint NOT NULL DEFAULT '0' COMMENT '第一分钟成交量',
+        `md` decimal(10,10) NOT NULL DEFAULT '0.0000000000' COMMENT '布林线20日标准差',
+        `mb` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '布林线中轨',
+        `up` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '布林线上轨',
+        `dn` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '布林线下轨',
+        `open_md` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `open_mb` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `open_up` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `open_dn` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `ma5` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '5日均线',
+        `ma10` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '10日均线',
+        `ma20` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '20日均线',
+        `ma30` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '30日均线',
+        `ma60` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '60日均线',
+        `create_time` datetime NOT NULL COMMENT '创建时间',
+        `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uk_code` (`code`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    </insert>
+</mapper>

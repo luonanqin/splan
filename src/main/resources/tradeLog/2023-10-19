@@ -1,0 +1,27 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7120777683756609327
+trade api initialize finish start!
+unlock success
+stock latest close great 7 size: 1956
+stock overbolling hit great 0.500000 size: 1635
+filter merge stock, the stock set size is 1635
+filter split stock, the stock set size is 1632
+filter front reinstatement less 0.98 stock, the stock set size is 1553
+filter earning and lastEarning stock, the stock set size is 1553
+finish initialize many time. preTradeTime=1697722080000, openTime=1697722200000, closeCheckTime=Fri Oct 20 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+opening websocket
+connected
+auth_success
+=========== finish unsubscribe ===========
+SMTC=11.39645159,XPEV=4.128736291,BIDU=3.5455979586
+remain cash: 9315
+by stock. stock=SMTC, count=554, price=16.63, orderPrice=16.79
+update order: OrderFill(tradeSide=1, fillID=0, code=SMTC, name=先科电子, count=544, price=16.79, avgPrice=16.76)
+by stock. stock=XPEV, count=1, price=13.375, orderPrice=13.5
+update order: OrderFill(tradeSide=1, fillID=0, code=XPEV, name=小鹏汽车, count=1, price=13.5, avgPrice=13.39)
+there is no case to trade. trade finish
+trade end
+being listen stop loss: {XPEV=StopLoss(stock=XPEV, canSellQty=1.0, lossPrice=12.457)}

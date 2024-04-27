@@ -1,0 +1,22 @@
+2024-03-22 03:58:56.091 [xxl-job, JobThread-8-1711051136078] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-03-22 03:58:56.117 [xxl-job, JobThread-8-1711051136078] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-03-22 03:58:56.129 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7176668624430032894
+2024-03-22 03:58:56.132 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7176668624432166231
+2024-03-22 03:58:59.122 [xxl-job, JobThread-8-1711051136078] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-03-22 03:58:59.125 [xxl-job, JobThread-8-1711051136078] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-03-22 03:58:59.142 [xxl-job, JobThread-8-1711051136078] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={STVN=StockPosition(stock=STVN, canSellQty=60.0, costPrice=26.349, currPrice=28.84)}, time=2024-03-22T03:58:59.139
+2024-03-22 03:58:59.142 [xxl-job, JobThread-8-1711051136078] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=STVN, count=60.0
+2024-03-22 03:58:59.219 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-03-22 03:58:59.306 [xxl-job, JobThread-8-1711051136078] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=4886301112905969745
+2024-03-22 03:58:59.857 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.860 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.861 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.861 [xxl-job, JobThread-8-1711051136078] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=STVN, orderId=4886301112905969745
+2024-03-22 03:58:59.861 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4886301112905969745, code=STVN, name=Stevanato Group, count=60.0, price=0.0, avgPrice=28.4139, createTime=2024-03-21 15:58:59.356, updateTimestamp=1.71105113994103E9, status=0)
+2024-03-22 03:58:59.861 [xxl-job, JobThread-8-1711051136078] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-03-22 16:00:00.103 [xxl-job, JobThread-3-1711094400074] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-03-22 16:00:00.105 [xxl-job, JobThread-3-1711094400074] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start

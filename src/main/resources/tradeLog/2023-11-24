@@ -1,0 +1,155 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7133820380303784808
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1700836080000, openTime=1700836200000, closeCheckTime=Sat Nov 25 01:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1175
+stock overbolling hit great 0.500000 size: 998
+filter merge stock, the stock set size is 998
+filter split stock, the stock set size is 995
+filter front reinstatement less 0.98 stock, the stock set size is 940
+filter earning and lastEarning stock, the stock set size is 935
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:03
+finish subcribe real time!
+time is early. {p=31.35, ev=T, q=71072, s=2, c=[14,12,37,41], t=1700836140000, sym=CVNA, x=11, i=52983525099826, z=1}
+{p=31.35, ev=T, q=71072, s=2, c=[14,12,37,41], t=1700836140000, sym=CVNA, x=11, i=52983525099826, z=1}
+time is early. {p=15.39, ev=T, q=56067, s=100, c=[12], t=1700836173000, sym=SNDX, x=12, i=1, z=3}
+{p=15.39, ev=T, q=56067, s=100, c=[12], t=1700836173000, sym=SNDX, x=12, i=1, z=3}
+unsubscribeStockSet size: 100 1700836200471
+StockEvent(stock=CENTA, price=35.71, time=1700836200003) dn=36.068 current=1700836200498
+CENTA=0.9925695907729761
+unsubscribeStockSet size: 200 1700836200509
+unsubscribeStockSet size: 300 1700836200609
+unsubscribeStockSet size: 400 1700836201088
+unsubscribeStockSet size: 500 1700836201159
+StockEvent(stock=URBN, price=31.82, time=1700836200660) dn=32.254 current=1700836201170
+URBN=1.3455695417622544,CENTA=0.9925695907729761
+unsubscribeStockSet size: 600 1700836201217
+unsubscribeStockSet size: 700 1700836201246
+StockEvent(stock=MCS, price=14.47, time=1700836200822) dn=14.528 current=1700836201248
+unsubscribeStockSet size: 800 1700836201255
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+unsubscribeStockSet size: 900 1700836221002
+=========== finish unsubscribe ===========
+get real-time quote: [CENTA, URBN]
+quote price(time=1700836221251): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221259): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221260): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221316): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221317): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221318): {CENTA=35.71, URBN=31.82}
+quote price(time=1700836221436): {CENTA=35.71, URBN=32.18}
+quote price(time=1700836221437): {CENTA=35.71, URBN=32.18}
+quote price(time=1700836221941): {CENTA=35.71, URBN=32.17}
+URBN=1.3455695417622544,CENTA=0.9925695907729761
+onReply_GetFunds: 997465.14
+remain cash: 7465.140000000014
+buy stock. stock=URBN, count=229, price=32.17, orderPrice=32.49, orderId: 6414614704452901522 1700836223313
+quote price(time=1700836223959): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836223959): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836223959): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836224978): {CENTA=35.71, URBN=32.17}
+quote price(time=1700836224978): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836224978): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836224978): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225483): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225484): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.19}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.1}
+quote price(time=1700836225986): {CENTA=35.71, URBN=32.1}
+URBN order is successfully executed. orderId: 6414614704452901522
+update order: OrderFill(tradeSide=1, fillID=0, orderID=6414614704452901522, code=URBN, name=都市服饰, count=229.0, price=32.49, avgPrice=32.1, createTime=2023-11-24 09:30:23, updateTimestamp=1.700836228E9, status=0)
+onReply_GetFunds: 990111.25
+buy stock. stock=CENTA, count=3, price=35.71, orderPrice=36.06, orderId: 6414614708747868819 1700836228596
+quote price(time=1700836232039): {CENTA=35.71, URBN=32.1}
+CENTA order is successfully executed. orderId: 6414614708747868819
+update order: OrderFill(tradeSide=1, fillID=0, orderID=6414614708747868819, code=CENTA, name=Central Garden & Pet-A, count=3.0, price=36.06, avgPrice=35.98, createTime=2023-11-24 09:30:28, updateTimestamp=1.700836233E9, status=0)
+onReply_GetFunds: 990001.3
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {CENTA=StopLoss(stock=CENTA, canSellQty=3.0, lossPrice=33.461), URBN=StopLoss(stock=URBN, canSellQty=229.0, lossPrice=29.852)}
+{p=32.14, ev=T, q=164919, s=110, t=1700836268000, sym=URBN, trfi=202, x=4, i=98, z=3, trft=1700836268000}
+{p=31.895, ev=T, q=204099, s=200, t=1700836372000, sym=URBN, x=12, i=151, z=3}
+{p=31.895, ev=T, q=204100, s=63, c=[37], t=1700836372000, sym=URBN, x=12, i=152, z=3}
+{p=31.895, ev=T, q=204102, s=200, t=1700836372000, sym=URBN, x=12, i=153, z=3}
+{p=32.425, ev=T, q=3024795, s=2, c=[37], t=1700848466000, sym=URBN, trfi=202, x=4, i=6178, z=3, trft=1700848466000}
+ready to sell before close market. position={CENTA=StockPosition(stock=CENTA, canSellQty=3.0, costPrice=35.978, currPrice=36.075), URBN=StockPosition(stock=URBN, canSellQty=229.0, costPrice=32.1, currPrice=32.495)}, time=2023-11-25T01:59:00.009
+before close sell stock. stock=URBN, count=229.0, currentPrice=32.495, orderPrice=32.17
+before close sell stock. stock=URBN, orderId：6414835263909242517
+before close sell stock. stock=CENTA, count=3.0, currentPrice=36.075, orderPrice=35.71
+before close sell stock. stock=CENTA, orderId：6414835268204209818
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6414835263909242517, code=URBN, name=都市服饰, count=229.0, price=32.17, avgPrice=32.5, createTime=2023-11-24 12:59:00, updateTimestamp=1.700848741E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=6414835268204209818, code=CENTA, name=Central Garden & Pet-A, count=3.0, price=35.71, avgPrice=36.03, createTime=2023-11-24 12:59:00, updateTimestamp=1.700848742E9, status=0)
+{p=32.505, ev=T, q=3181666, s=53, c=[37], t=1700848766000, sym=URBN, trfi=202, x=4, i=6457, z=3, trft=1700848766000}
+all stock has stop loss
+trade exit

@@ -1,0 +1,99 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7142517829688441135
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1702909680000, openTime=1702909800000, closeCheckTime=Tue Dec 19 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1918
+stock overbolling hit great 0.500000 size: 1626
+filter merge stock, the stock set size is 1626
+filter split stock, the stock set size is 1623
+filter front reinstatement less 0.98 stock, the stock set size is 1525
+filter earning and lastEarning stock, the stock set size is 1520
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:03
+finish subcribe real time!
+time is early. {p=28.48, ev=T, q=156254, s=75, c=[14,12,37,41], t=1702909738000, sym=INSM, x=12, i=7, z=3}
+{p=28.48, ev=T, q=156254, s=75, c=[14,12,37,41], t=1702909738000, sym=INSM, x=12, i=7, z=3}
+time is early. {p=28.48, ev=T, q=156255, s=25, c=[14,12,37,41], t=1702909738000, sym=INSM, x=12, i=8, z=3}
+{p=28.48, ev=T, q=156255, s=25, c=[14,12,37,41], t=1702909738000, sym=INSM, x=12, i=8, z=3}
+time is early. {p=28.48, ev=T, q=156256, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=1, z=3}
+{p=28.48, ev=T, q=156256, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=1, z=3}
+time is early. {p=28.48, ev=T, q=156257, s=13, c=[14,12,37,41], t=1702909738000, sym=INSM, x=19, i=1, z=3}
+{p=28.48, ev=T, q=156257, s=13, c=[14,12,37,41], t=1702909738000, sym=INSM, x=19, i=1, z=3}
+time is early. {p=28.48, ev=T, q=156258, s=13, c=[14,12,37,41], t=1702909738000, sym=INSM, x=19, i=2, z=3}
+{p=28.48, ev=T, q=156258, s=13, c=[14,12,37,41], t=1702909738000, sym=INSM, x=19, i=2, z=3}
+time is early. {p=28.48, ev=T, q=156259, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=2, z=3}
+{p=28.48, ev=T, q=156259, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=2, z=3}
+time is early. {p=28.48, ev=T, q=156260, s=13, c=[14,12,37,41], t=1702909738000, sym=INSM, x=19, i=3, z=3}
+{p=28.48, ev=T, q=156260, s=13, c=[14,12,37,41], t=1702909738000, sym=INSM, x=19, i=3, z=3}
+time is early. {p=28.48, ev=T, q=156261, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=3, z=3}
+{p=28.48, ev=T, q=156261, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=3, z=3}
+time is early. {p=28.48, ev=T, q=156262, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=4, z=3}
+{p=28.48, ev=T, q=156262, s=10, c=[14,12,37,41], t=1702909738000, sym=INSM, x=8, i=4, z=3}
+time is early. {p=49.14, ev=T, q=71477, s=1, c=[12,37], t=1702909757000, sym=WPM, trfi=201, x=4, i=79371806133846, z=1, trft=1702909757000}
+{p=49.14, ev=T, q=71477, s=1, c=[12,37], t=1702909757000, sym=WPM, trfi=201, x=4, i=79371806133846, z=1, trft=1702909757000}
+unsubscribeStockSet size: 100 1702909800129
+unsubscribeStockSet size: 200 1702909800159
+StockEvent(stock=EXC, price=35.39, time=1702909800007) dn=36.232 current=1702909800232
+unsubscribeStockSet size: 300 1702909800295
+StockEvent(stock=MANH, price=214.82, time=1702909800268) dn=215.364 current=1702909800417
+unsubscribeStockSet size: 400 1702909800507
+StockEvent(stock=CAH, price=101.09, time=1702909800371) dn=101.756 current=1702909800549
+unsubscribeStockSet size: 500 1702909800629
+StockEvent(stock=SCHL, price=36.89, time=1702909800410) dn=36.928 current=1702909800652
+SCHL=0.10290294627382124
+StockEvent(stock=AEE, price=71.95, time=1702909800528) dn=72.913 current=1702909800690
+unsubscribeStockSet size: 600 1702909800710
+StockEvent(stock=TH, price=9.2, time=1702909800569) dn=9.313 current=1702909800777
+unsubscribeStockSet size: 700 1702909800820
+unsubscribeStockSet size: 800 1702909800926
+StockEvent(stock=RACE, price=345.95, time=1702909800686) dn=350.278 current=1702909800962
+unsubscribeStockSet size: 900 1702909801005
+unsubscribeStockSet size: 1000 1702909801095
+StockEvent(stock=UFCS, price=19.62, time=1702909800857) dn=19.736 current=1702909801168
+unsubscribeStockSet size: 1100 1702909801199
+StockEvent(stock=RLI, price=127.74, time=1702909800826) dn=127.773 current=1702909801207
+StockEvent(stock=OLLI, price=68.8, time=1702909800892) dn=69.207 current=1702909801230
+OLLI=0.5880908000635723,SCHL=0.10290294627382124
+StockEvent(stock=NRC, price=39.13, time=1702909800833) dn=39.735 current=1702909801285
+unsubscribeStockSet size: 1200 1702909801344
+StockEvent(stock=FCN, price=200.78, time=1702909801022) dn=203.908 current=1702909801412
+StockEvent(stock=HQY, price=62.74, time=1702909801007) dn=63.006 current=1702909801412
+unsubscribeStockSet size: 1300 1702909801510
+unsubscribeStockSet size: 1400 1702909801875
+unsubscribeStockSet size: 1500 1702909802345
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [SCHL, OLLI]
+quote price(time=1702909821055): {SCHL=36.89, OLLI=68.8}
+quote price(time=1702909821058): {SCHL=36.89, OLLI=68.8}
+quote price(time=1702909821058): {SCHL=36.89, OLLI=68.8}
+quote price(time=1702909821060): {SCHL=36.89, OLLI=68.8}
+quote price(time=1702909821070): {SCHL=36.89, OLLI=68.8}
+quote price(time=1702909821071): {SCHL=36.89, OLLI=68.8}
+quote price(time=1702909821280): {SCHL=37.12, OLLI=68.8}
+OLLI=0.5880908000635723,SCHL=0.10290294627382124
+onReply_GetFunds: 1257.2
+remain cash: 1257.2
+first trade. orderPrice=68.8, multiple=1
+onReply_GetMaxTrdQtys: 18
+buy stock. stock=OLLI, count=18, price=68.8, orderPrice=68.8, orderId: 6578112417134435530 1702909822168
+quote price(time=1702909826093): {SCHL=37.12, OLLI=69.64}
+quote price(time=1702909826094): {SCHL=37.12, OLLI=69.65}
+modify order price. orderPrice=68.8, multiple=2
+OLLI order has been modify. orderId=6578112417134435530, ordePrice=68.8, modifyOrderId=0
+update order: OrderFill(tradeSide=1, fillID=0, orderID=6578112417134435530, code=OLLI, name=Ollie's Bargain Outlet, count=18.0, price=69.21, avgPrice=69.21, createTime=2023-12-18 09:30:22.080, updateTimestamp=1.702909848608786E9, status=0)
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+

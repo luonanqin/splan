@@ -1,0 +1,15 @@
+2024-04-10 03:58:56.091 [xxl-job, JobThread-8-1712692736073] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-04-10 03:58:56.119 [xxl-job, JobThread-8-1712692736073] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-04-10 03:58:56.130 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7183553993884816614
+2024-04-10 03:58:56.132 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7183553993891049062
+2024-04-10 03:58:59.131 [xxl-job, JobThread-8-1712692736073] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-04-10 03:58:59.134 [xxl-job, JobThread-8-1712692736073] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-04-10 03:58:59.146 [xxl-job, JobThread-8-1712692736073] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={ZGN=StockPosition(stock=ZGN, canSellQty=157.0, costPrice=12.13, currPrice=11.965)}, time=2024-04-10T03:58:59.144
+2024-04-10 03:58:59.147 [xxl-job, JobThread-8-1712692736073] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=ZGN, count=157.0
+2024-04-10 03:58:59.230 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-04-10 03:58:59.311 [xxl-job, JobThread-8-1712692736073] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=4988179387251461666
+2024-04-10 03:58:59.654 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4988179387251461666, code=ZGN, name=Ermenegildo Zegna NV, count=157.0, price=0.0, avgPrice=12.0313, createTime=2024-04-09 15:58:59.252, updateTimestamp=1.712692739674077E9, status=0)
+2024-04-10 03:58:59.655 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4988179387251461666, code=ZGN, name=Ermenegildo Zegna NV, count=157.0, price=0.0, avgPrice=12.0313, createTime=2024-04-09 15:58:59.252, updateTimestamp=1.712692739674077E9, status=0)
+2024-04-10 03:58:59.656 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4988179387251461666, code=ZGN, name=Ermenegildo Zegna NV, count=157.0, price=0.0, avgPrice=12.0313, createTime=2024-04-09 15:58:59.252, updateTimestamp=1.712692739674077E9, status=0)
+2024-04-10 03:58:59.656 [xxl-job, JobThread-8-1712692736073] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=ZGN, orderId=4988179387251461666
+2024-04-10 03:58:59.656 [xxl-job, JobThread-8-1712692736073] INFO  luonq.job.TradeJob - tradeExecutor_db sell

@@ -1,0 +1,74 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7125470121571313492
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1698845280000, openTime=1698845400000, closeCheckTime=Thu Nov 02 03:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 758
+stock overbolling hit great 0.500000 size: 628
+filter merge stock, the stock set size is 628
+filter split stock, the stock set size is 627
+filter front reinstatement less 0.98 stock, the stock set size is 594
+filter earning and lastEarning stock, the stock set size is 512
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+wait pre trade time. now is 21:27:57
+begin subcribe stock at 21:28:02
+finish subcribe real time!
+there is no msg. continue
+time is early. {p=65.46, ev=T, q=24196, s=800, c=[12], t=1698845394000, sym=SHEL, x=11, i=52983525158992, z=1}
+{p=65.46, ev=T, q=24196, s=800, c=[12], t=1698845394000, sym=SHEL, x=11, i=52983525158992, z=1}
+unsubscribeStockSet size: 100 1698845400383
+StockEvent(stock=ZI, price=12.7199, time=1698845400243) dn=13.614 current=1698845400402
+ZI=6.567504039958864
+StockEvent(stock=ON, price=62.585, time=1698845400363) dn=65.329 current=1698845400530
+StockEvent(stock=FNV, price=121.61, time=1698845400506) dn=123.588 current=1698845400593
+StockEvent(stock=SAVE, price=11.47, time=1698845400527) dn=12.404 current=1698845400612
+unsubscribeStockSet size: 200 1698845400695
+StockEvent(stock=SBSI, price=26.7, time=1698845400506) dn=26.715 current=1698845400746
+StockEvent(stock=DAN, price=11.46, time=1698845400659) dn=11.479 current=1698845400821
+unsubscribeStockSet size: 300 1698845400885
+unsubscribeStockSet size: 400 1698845401044
+StockEvent(stock=CTLT, price=34.35, time=1698845401060) dn=35.26 current=1698845401461
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+unsubscribeStockSet size: 500 1698845421059
+=========== finish unsubscribe ===========
+get real-time quote: [ZI]
+ZI=6.567504039958864
+remain cash: 8158.239999999991
+buy stock. stock=ZI, count=635, price=12.7199, orderPrice=12.84, orderId: 2630184106376420064 1698845422268
+ZI order is successfully executed. orderId: 2630184106376420064
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2630184106376420064, code=ZI, name=ZoomInfo, count=635.0, price=12.84, avgPrice=12.61, createTime=2023-11-01 09:30:22, updateTimestamp=1.698845425E9, status=0)
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {ZI=StopLoss(stock=ZI, canSellQty=635.0, lossPrice=11.727)}
+{p=12.785, ev=T, q=241445, s=100, t=1698845471000, sym=ZI, x=8, i=88, z=3}
+{p=12.865, ev=T, q=275711, s=200, t=1698845529000, sym=ZI, trfi=201, x=4, i=60, z=3, trft=1698845528999}
+{p=12.65, ev=T, q=716148, s=100, t=1698846526000, sym=ZI, trfi=202, x=4, i=1679, z=3, trft=1698846526000}
+{p=12.51, ev=T, q=1050688, s=3, c=[37], t=1698847336000, sym=ZI, trfi=202, x=4, i=3055, z=3, trft=1698847336000}
+{p=12.51, ev=T, q=1050689, s=3, c=[37], t=1698847336000, sym=ZI, trfi=202, x=4, i=3056, z=3, trft=1698847336000}
+{p=12.485, ev=T, q=1837953, s=300, t=1698849334000, sym=ZI, x=15, i=974, z=3}
+{p=12.485, ev=T, q=1837954, s=100, t=1698849334000, sym=ZI, x=15, i=975, z=3}
+{p=12.54, ev=T, q=2019548, s=500, t=1698849891000, sym=ZI, trfi=201, x=4, i=964, z=3, trft=1698849890999}
+{p=12.58, ev=T, q=2281552, s=100, t=1698850764000, sym=ZI, x=8, i=1749, z=3}
+{p=12.495, ev=T, q=2526412, s=100, t=1698851710000, sym=ZI, x=15, i=1447, z=3}
+{p=12.4188, ev=T, q=2585533, s=40, c=[37], t=1698851965000, sym=ZI, trfi=202, x=4, i=7323, z=3, trft=1698851965000}
+ready to sell before close market. position={ZI=StockPosition(stock=ZI, canSellQty=635.0, costPrice=12.61, currPrice=12.495)}, time=2023-11-02T03:59:00.105
+before close sell stock. stock=ZI, count=635.0, currentPrice=12.495, orderPrice=12.37
+before close sell stock. stock=ZI, orderId：2639544751338126326
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2639544751338126326, code=ZI, name=ZoomInfo, count=635.0, price=12.37, avgPrice=12.53, createTime=2023-11-01 15:59:00, updateTimestamp=1.698868741E9, status=0)
+all stock has stop loss
+trade exit
+sendToTradeDataListener error. null

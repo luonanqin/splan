@@ -1,0 +1,151 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7130920569990517143
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1700144880000, openTime=1700145000000, closeCheckTime=Fri Nov 17 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1077
+stock overbolling hit great 0.500000 size: 913
+filter merge stock, the stock set size is 913
+filter split stock, the stock set size is 910
+filter front reinstatement less 0.98 stock, the stock set size is 867
+filter earning and lastEarning stock, the stock set size is 852
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:01
+finish subcribe real time!
+time is early. {p=61.1, ev=T, q=235582, s=11, c=[12,37], t=1700144899000, sym=CAMT, x=11, i=89, z=3}
+{p=61.1, ev=T, q=235582, s=11, c=[12,37], t=1700144899000, sym=CAMT, x=11, i=89, z=3}
+time is early. {p=7.3, ev=T, q=68388, s=100, c=[14,12,41], t=1700144983000, sym=SOFI, x=8, i=459, z=3}
+{p=7.3, ev=T, q=68388, s=100, c=[14,12,41], t=1700144983000, sym=SOFI, x=8, i=459, z=3}
+StockEvent(stock=ALKS, price=22.09, time=1700145000003) dn=22.596 current=1700145000545
+ALKS=2.239334395468225
+unsubscribeStockSet size: 100 1700145000701
+unsubscribeStockSet size: 200 1700145001120
+unsubscribeStockSet size: 300 1700145002778
+unsubscribeStockSet size: 400 1700145003321
+StockEvent(stock=MTRX, price=10.24, time=1700145000553) dn=10.276 current=1700145003323
+unsubscribeStockSet size: 500 1700145003686
+unsubscribeStockSet size: 600 1700145003958
+unsubscribeStockSet size: 700 1700145004670
+unsubscribeStockSet size: 800 1700145007154
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [ALKS]
+ALKS=2.239334395468225
+remain cash: 7011.560000000056
+buy stock. stock=ALKS, count=314, price=22.09, orderPrice=22.31, orderId: 5149968864110733032 1700145022125
+quote price(time=1700145027666): {ALKS=22.09}
+quote price(time=1700145027666): {ALKS=22.09}
+quote price(time=1700145027666): {ALKS=22.09}
+quote price(time=1700145027666): {ALKS=22.09}
+quote price(time=1700145027667): {ALKS=22.09}
+quote price(time=1700145027667): {ALKS=22.09}
+quote price(time=1700145027668): {ALKS=22.09}
+quote price(time=1700145027669): {ALKS=22.09}
+quote price(time=1700145027671): {ALKS=22.09}
+quote price(time=1700145027673): {ALKS=22.09}
+quote price(time=1700145027730): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+quote price(time=1700145027731): {ALKS=22.09}
+ALKS order is successfully executed. orderId: 5149968864110733032
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5149968864110733032, code=ALKS, name=阿尔凯默斯, count=314.0, price=22.31, avgPrice=22.23, createTime=2023-11-16 09:30:22, updateTimestamp=1.700145028E9, status=0)
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {ALKS=StopLoss(stock=ALKS, canSellQty=314.0, lossPrice=20.673)}
+{p=23.29, ev=T, q=2094663, s=100, t=1700150047000, sym=ALKS, trfi=202, x=4, i=1822, z=3, trft=1700150047000}
+{p=23.16, ev=T, q=2110565, s=9, c=[14,37,41], t=1700150119000, sym=ALKS, x=12, i=1986, z=3}
+{p=23.16, ev=T, q=2110566, s=18, c=[14,37,41], t=1700150119000, sym=ALKS, x=12, i=1987, z=3}
+{p=23.15, ev=T, q=2110567, s=40, c=[14,37,41], t=1700150119000, sym=ALKS, x=12, i=1988, z=3}
+{p=23.15, ev=T, q=2110568, s=60, c=[14,37,41], t=1700150119000, sym=ALKS, x=12, i=1989, z=3}
+{p=23.15, ev=T, q=2110569, s=60, c=[14,37,41], t=1700150119000, sym=ALKS, x=19, i=507, z=3}
+{p=23.15, ev=T, q=2110570, s=40, c=[14,37,41], t=1700150119000, sym=ALKS, x=19, i=508, z=3}
+{p=23.15, ev=T, q=2110571, s=100, c=[14,41], t=1700150119000, sym=ALKS, x=19, i=509, z=3}
+{p=23.15, ev=T, q=2110572, s=8, c=[37], t=1700150119000, sym=ALKS, x=19, i=510, z=3}
+{p=23.14, ev=T, q=2110573, s=100, c=[14,41], t=1700150119000, sym=ALKS, x=7, i=150, z=3}
+{p=23.14, ev=T, q=2110574, s=20, c=[14,37,41], t=1700150119000, sym=ALKS, x=18, i=30, z=3}
+{p=23.14, ev=T, q=2110575, s=80, c=[14,37,41], t=1700150119000, sym=ALKS, x=18, i=31, z=3}
+{p=23.15, ev=T, q=2110576, s=100, t=1700150119000, sym=ALKS, x=11, i=746, z=3}
+{p=23.07, ev=T, q=2328382, s=25, c=[14,37,41], t=1700151050000, sym=ALKS, x=19, i=632, z=3}
+{p=23.07, ev=T, q=2328383, s=100, c=[14,41], t=1700151050000, sym=ALKS, x=19, i=633, z=3}
+{p=23.07, ev=T, q=2328384, s=100, c=[14,41], t=1700151050000, sym=ALKS, x=19, i=634, z=3}
+{p=23.08, ev=T, q=2328385, s=33, c=[37], t=1700151050000, sym=ALKS, x=12, i=2256, z=3}
+{p=23.08, ev=T, q=2328386, s=5, c=[37], t=1700151050000, sym=ALKS, x=12, i=2257, z=3}
+{p=23.08, ev=T, q=2328387, s=3, c=[37], t=1700151050000, sym=ALKS, x=12, i=2258, z=3}
+{p=23.08, ev=T, q=2328388, s=20, c=[37], t=1700151050000, sym=ALKS, x=12, i=2259, z=3}
+{p=23.08, ev=T, q=2328389, s=39, c=[37], t=1700151050000, sym=ALKS, x=12, i=2260, z=3}
+{p=23.07, ev=T, q=2328390, s=10, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2261, z=3}
+{p=23.07, ev=T, q=2328391, s=2, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2262, z=3}
+{p=23.07, ev=T, q=2328392, s=8, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2263, z=3}
+{p=23.07, ev=T, q=2328393, s=15, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2264, z=3}
+{p=23.07, ev=T, q=2328394, s=3, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2265, z=3}
+{p=23.08, ev=T, q=2328395, s=42, c=[37], t=1700151050000, sym=ALKS, x=21, i=445, z=3}
+{p=23.08, ev=T, q=2328396, s=100, t=1700151050000, sym=ALKS, x=21, i=446, z=3}
+{p=23.08, ev=T, q=2328397, s=41, c=[37], t=1700151050000, sym=ALKS, x=19, i=635, z=3}
+{p=23.08, ev=T, q=2328398, s=7, c=[37], t=1700151050000, sym=ALKS, x=7, i=179, z=3}
+{p=23.08, ev=T, q=2328399, s=44, c=[37], t=1700151050000, sym=ALKS, x=8, i=135, z=3}
+{p=23.08, ev=T, q=2328400, s=11, c=[37], t=1700151050000, sym=ALKS, x=18, i=39, z=3}
+{p=23.07, ev=T, q=2328401, s=41, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2266, z=3}
+{p=23.07, ev=T, q=2328402, s=44, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2267, z=3}
+{p=23.07, ev=T, q=2328403, s=7, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2268, z=3}
+{p=23.07, ev=T, q=2328404, s=3, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2269, z=3}
+{p=23.07, ev=T, q=2328405, s=39, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2270, z=3}
+{p=23.07, ev=T, q=2328406, s=3, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2271, z=3}
+{p=23.08, ev=T, q=2328407, s=45, c=[37], t=1700151050000, sym=ALKS, x=20, i=91, z=3}
+{p=23.08, ev=T, q=2328408, s=2, c=[37], t=1700151050000, sym=ALKS, x=12, i=2272, z=3}
+{p=23.09, ev=T, q=2328409, s=100, t=1700151050000, sym=ALKS, x=12, i=2273, z=3}
+{p=23.07, ev=T, q=2328410, s=13, c=[14,37,41], t=1700151050000, sym=ALKS, x=20, i=92, z=3}
+{p=23.07, ev=T, q=2328411, s=1, c=[14,37,41], t=1700151050000, sym=ALKS, x=20, i=93, z=3}
+{p=23.08, ev=T, q=2328412, s=100, c=[14,41], t=1700151050000, sym=ALKS, x=12, i=2274, z=3}
+{p=23.08, ev=T, q=2328413, s=4, c=[37], t=1700151050000, sym=ALKS, x=15, i=477, z=3}
+{p=23.08, ev=T, q=2328414, s=100, t=1700151050000, sym=ALKS, trfi=202, x=4, i=2144, z=3, trft=1700151050000}
+{p=23.08, ev=T, q=2328415, s=37, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2275, z=3}
+{p=23.08, ev=T, q=2328416, s=4, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2276, z=3}
+{p=23.08, ev=T, q=2328417, s=4, c=[14,37,41], t=1700151050000, sym=ALKS, x=12, i=2277, z=3}
+{p=23.09, ev=T, q=2328418, s=100, t=1700151050000, sym=ALKS, trfi=202, x=4, i=2145, z=3, trft=1700151050000}
+TrdGetPositionList failed: 网络中断
+ready to sell before close market. position={ALKS=StockPosition(stock=ALKS, canSellQty=314.0, costPrice=22.23, currPrice=23.38)}, time=2023-11-17T04:59:10.040
+before close sell stock. stock=ALKS, count=314.0, currentPrice=23.38, orderPrice=23.14
+before close sell stock. stock=ALKS, orderId：5159548350544031835
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5159548350544031835, code=ALKS, name=阿尔凯默斯, count=314.0, price=23.14, avgPrice=23.35, createTime=2023-11-16 15:59:10, updateTimestamp=1.700168351E9, status=0)
+

@@ -1,0 +1,172 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7072922915409833665
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3693
+stock overbolling hit great 0.500000 size: 2983
+filter merge stock, the stock set size is 2983
+filter split stock, the stock set size is 2976
+filter front reinstatement less 0.98 stock, the stock set size is 2828
+finish initialize many time. preTradeTime=1686317280000, openTime=1686317400000, closeCheckTime=Sat Jun 10 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:27:56
+begin subcribe stock at 21:28:01
+finish subcribe real time!
+time is early
+{p=24.7, ev=T, q=137195, s=124, c=[12], t=1686317285000, sym=SAVA, x=12, i=11, z=3}
+time is early
+{p=122.04, ev=T, q=68814, s=10, c=[12,37], t=1686317291000, sym=GOOGL, x=11, i=3419, z=3}
+time is early
+{p=122, ev=T, q=68815, s=5, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=370, z=3}
+time is early
+{p=19.15, ev=T, q=168027, s=50, c=[14,12,37,41], t=1686317291000, sym=AFRM, x=12, i=660, z=3}
+time is early
+{p=122, ev=T, q=68816, s=3, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=371, z=3}
+time is early
+{p=122, ev=T, q=68817, s=5, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=372, z=3}
+time is early
+{p=122, ev=T, q=68818, s=1, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=373, z=3}
+time is early
+{p=122, ev=T, q=68819, s=5, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=374, z=3}
+time is early
+{p=122, ev=T, q=68820, s=1, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=375, z=3}
+time is early
+{p=122, ev=T, q=68821, s=1, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=376, z=3}
+time is early
+{p=122, ev=T, q=68822, s=4, c=[14,12,37,41], t=1686317291000, sym=GOOGL, x=19, i=377, z=3}
+time is early
+{p=249.07, ev=T, q=330573, s=1, c=[14,12,37,41], t=1686317305000, sym=TSLA, x=12, i=38611, z=3}
+time is early
+{p=181.39, ev=T, q=168539, s=197, c=[14,12,41], t=1686317320000, sym=AAPL, x=11, i=3911, z=3}
+time is early
+{p=64.43, ev=T, q=69284, s=100, c=[12], t=1686317334000, sym=DOCU, x=11, i=3770, z=3}
+time is early
+{p=249.02, ev=T, q=331950, s=1, c=[12,37], t=1686317344000, sym=TSLA, trfi=202, x=4, i=22103, z=3, trft=1686317344000}
+time is early
+{p=14.25, ev=T, q=139118, s=50, c=[14,12,37,41], t=1686317374000, sym=RIVN, x=8, i=383, z=3}
+time is early
+{p=32.35, ev=T, q=333100, s=5, c=[12,37], t=1686317376000, sym=UPST, x=12, i=373, z=3}
+time is early
+{p=13.38, ev=T, q=169673, s=50, c=[12,37], t=1686317381000, sym=BYND, x=11, i=399, z=3}
+time is early
+{p=13.39, ev=T, q=169674, s=340, c=[12], t=1686317381000, sym=BYND, x=11, i=400, z=3}
+time is early
+{p=13.39, ev=T, q=169675, s=100, c=[12], t=1686317381000, sym=BYND, x=11, i=401, z=3}
+time is early
+{p=13.4, ev=T, q=169676, s=5, c=[12,37], t=1686317381000, sym=BYND, x=11, i=402, z=3}
+time is early
+{p=13.4, ev=T, q=169677, s=100, c=[12], t=1686317381000, sym=BYND, x=11, i=403, z=3}
+time is early
+{p=13.4, ev=T, q=169678, s=5, c=[12,37], t=1686317381000, sym=BYND, x=11, i=404, z=3}
+time is early
+{p=13.4, ev=T, q=169679, s=300, c=[12], t=1686317381000, sym=BYND, x=11, i=405, z=3}
+time is early
+{p=13.4, ev=T, q=169680, s=50, c=[12,37], t=1686317381000, sym=BYND, x=11, i=406, z=3}
+time is early
+{p=13.45, ev=T, q=169681, s=1, c=[12,37], t=1686317381000, sym=BYND, x=11, i=407, z=3}
+time is early
+{p=13.44, ev=T, q=169682, s=49, c=[14,12,37,41], t=1686317381000, sym=BYND, x=12, i=252, z=3}
+time is early
+{p=6.82, ev=T, q=30028, s=289, c=[12,60], t=1686317398000, sym=QS, x=8, i=52983525030985, z=1}
+time is early
+{p=6.82, ev=T, q=30029, s=20, c=[12,37,60], t=1686317398000, sym=QS, x=12, i=62879133817146, z=1}
+SMAR price=40.24 dn=40.628
+unsubcribeStockSet size: 100 1686317400346
+unsubcribeStockSet size: 200 1686317400448
+CERT price=17.29 dn=17.862
+unsubcribeStockSet size: 300 1686317400584
+CMTL price=10.33 dn=10.552
+unsubcribeStockSet size: 400 1686317400721
+FWRG price=16.6 dn=16.82
+FWRG=0.013079667063020146
+TECH price=79.26 dn=79.655
+unsubcribeStockSet size: 500 1686317400874
+unsubcribeStockSet size: 600 1686317401132
+PMTS price=23.14 dn=23.446
+unsubcribeStockSet size: 700 1686317401446
+unsubcribeStockSet size: 800 1686317401763
+SCWX price=6.81 dn=7.179
+SCWX=0.05139991642290022,FWRG=0.013079667063020146
+unsubcribeStockSet size: 900 1686317402000
+ZYXI price=8.82 dn=8.892
+unsubcribeStockSet size: 1000 1686317402191
+CASY price=217.86 dn=218.257
+EAT price=35.275 dn=35.35
+DSGX price=74.08 dn=74.213
+unsubcribeStockSet size: 1100 1686317402315
+unsubcribeStockSet size: 1200 1686317402471
+DCP price=41.4 dn=41.416
+unsubcribeStockSet size: 1300 1686317402602
+UNFI price=21.625 dn=22.823
+unsubcribeStockSet size: 1400 1686317402763
+unsubcribeStockSet size: 1500 1686317402883
+unsubcribeStockSet size: 1600 1686317403074
+unsubcribeStockSet size: 1700 1686317403143
+CPB price=46.51 dn=46.672
+unsubcribeStockSet size: 1800 1686317403271
+unsubcribeStockSet size: 1900 1686317403478
+unsubcribeStockSet size: 2000 1686317403695
+unsubcribeStockSet size: 2100 1686317403786
+GTX price=7.75 dn=7.756
+TTC price=95.535 dn=96.276
+unsubcribeStockSet size: 2200 1686317403991
+unsubcribeStockSet size: 2300 1686317404192
+AMSWA price=11.78 dn=11.913
+unsubcribeStockSet size: 2400 1686317404700
+NVCR price=45.71 dn=45.995
+unsubcribeStockSet size: 2500 1686317405004
+unsubcribeStockSet size: 2600 1686317405260
+TCOA price=10.225 dn=10.256
+listen end!
+unsubcribeStockSet size: 2700 1686317410307
+unsubcribeStockSet size: 2800 1686317410312
+=========== finish unsubscribe ===========
+SCWX=0.05139991642290022,FWRG=0.013079667063020146
+remain cash: 8579.119999999995
+buy stock. stock=SCWX, count=1248, price=6.81, orderPrice=6.87, orderId: 7099778339801813138
+SCWX order has been canceled. orderId: 7099778339801813138, cancel res code: 0
+buy stock. stock=FWRG, count=511, price=16.6, orderPrice=16.76, orderId: 7099778344096780435
+update order: OrderFill(tradeSide=1, fillID=0, orderID=7099778344096780435, code=FWRG, name=First Watch Restaurant, count=511.0, price=16.76, createTime=2023-06-09 09:30:21, updateTimestamp=1.686317426E9, status=0)
+FWRG order is successfully executed. orderId: 7099778344096780435
+trade end
+being listen stop loss: {FWRG=StopLoss(stock=FWRG, canSellQty=511.0, lossPrice=14.94)}
+{p=16.93, ev=T, q=935086, s=100, t=1686320433000, sym=FWRG, trfi=202, x=4, i=869, z=3, trft=1686320433000}
+{p=16.9155, ev=T, q=1104419, s=4, c=[37], t=1686321099000, sym=FWRG, trfi=202, x=4, i=1016, z=3, trft=1686321099000}
+{p=16.76, ev=T, q=1165397, s=10, c=[37], t=1686321325000, sym=FWRG, trfi=202, x=4, i=1157, z=3, trft=1686321325000}
+{p=16.73, ev=T, q=1190783, s=100, c=[14,41], t=1686321427000, sym=FWRG, x=12, i=1413, z=3}
+{p=16.74, ev=T, q=1190784, s=2, c=[14,37,41], t=1686321427000, sym=FWRG, x=12, i=1414, z=3}
+{p=16.74, ev=T, q=1190785, s=20, c=[14,37,41], t=1686321427000, sym=FWRG, x=12, i=1415, z=3}
+{p=16.74, ev=T, q=1190786, s=22, c=[14,37,41], t=1686321427000, sym=FWRG, x=7, i=115, z=3}
+{p=16.74, ev=T, q=1190787, s=22, c=[14,37,41], t=1686321427000, sym=FWRG, x=8, i=151, z=3}
+{p=16.71, ev=T, q=1190788, s=100, t=1686321427000, sym=FWRG, trfi=202, x=4, i=1235, z=3, trft=1686321427000}
+{p=16.67, ev=T, q=1854161, s=100, t=1686324271000, sym=FWRG, trfi=202, x=4, i=1727, z=3, trft=1686324271000}
+{p=16.7, ev=T, q=2053062, s=31, c=[37], t=1686325138000, sym=FWRG, x=12, i=2310, z=3}
+{p=16.7, ev=T, q=2053063, s=1, c=[37], t=1686325138000, sym=FWRG, x=12, i=2311, z=3}
+{p=16.7, ev=T, q=2053064, s=14, c=[37], t=1686325138000, sym=FWRG, x=12, i=2312, z=3}
+{p=16.7, ev=T, q=2053065, s=16, c=[37], t=1686325138000, sym=FWRG, x=12, i=2313, z=3}
+{p=16.72, ev=T, q=2142889, s=100, t=1686325588000, sym=FWRG, trfi=202, x=4, i=1866, z=3, trft=1686325588000}
+{p=16.725, ev=T, q=2151150, s=100, t=1686325618000, sym=FWRG, trfi=202, x=4, i=1872, z=3, trft=1686325618000}
+{p=16.75, ev=T, q=2154567, s=1, c=[37], t=1686325634000, sym=FWRG, trfi=202, x=4, i=1879, z=3, trft=1686325634000}
+{p=16.68, ev=T, q=2559428, s=100, t=1686327845000, sym=FWRG, trfi=202, x=4, i=2029, z=3, trft=1686327845000}
+{p=16.63, ev=T, q=2973929, s=32, c=[14,37,41], t=1686330220000, sym=FWRG, x=12, i=2887, z=3}
+{p=16.63, ev=T, q=2973930, s=32, c=[14,37,41], t=1686330220000, sym=FWRG, x=12, i=2888, z=3}
+{p=16.65, ev=T, q=3104090, s=51, c=[14,37,41], t=1686331018000, sym=FWRG, x=2, i=80, z=3}
+{p=16.65, ev=T, q=3104091, s=99, c=[14,37,41], t=1686331018000, sym=FWRG, x=2, i=81, z=3}
+{p=16.65, ev=T, q=3104092, s=1, c=[14,37,41], t=1686331018000, sym=FWRG, x=2, i=82, z=3}
+{p=16.64, ev=T, q=3377118, s=15, c=[37], t=1686332696000, sym=FWRG, trfi=202, x=4, i=2349, z=3, trft=1686332696000}
+{p=16.65, ev=T, q=3481089, s=6, c=[37], t=1686333283000, sym=FWRG, x=15, i=594, z=3}
+{p=16.65, ev=T, q=3481090, s=13, c=[37], t=1686333283000, sym=FWRG, x=15, i=595, z=3}
+{p=16.52, ev=T, q=3939453, s=50, c=[37], t=1686335883000, sym=FWRG, x=12, i=3499, z=3}
+ready to sell before close market. position={FWRG=StockPosition(stock=FWRG, canSellQty=511.0, costPrice=16.6, currPrice=16.58)}, time=2023-06-10T03:59:00.200
+before close sell stock. stock=FWRG, count=511.0, currentPrice=16.58, orderPrice=16.41
+before close sell stock. stock=FWRG, orderId：7109214949784906788
+update order: OrderFill(tradeSide=2, fillID=0, orderID=7109214949784906788, code=FWRG, name=First Watch Restaurant, count=511.0, price=16.41, createTime=2023-06-09 15:59:00, updateTimestamp=1.686340741E9, status=0)
+all stock has stop loss
+trade exit
+
+Process finished with exit code 0

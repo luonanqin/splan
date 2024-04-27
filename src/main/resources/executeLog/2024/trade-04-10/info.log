@@ -1,0 +1,18 @@
+2024-04-13 03:58:56.068 [xxl-job, JobThread-8-1712951936051] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-04-13 03:58:56.106 [xxl-job, JobThread-8-1712951936051] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-04-13 03:58:56.113 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7184641157422362353
+2024-04-13 03:58:56.117 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7184641157423136433
+2024-04-13 03:58:59.116 [xxl-job, JobThread-8-1712951936051] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-04-13 03:58:59.122 [xxl-job, JobThread-8-1712951936051] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-04-13 03:58:59.138 [xxl-job, JobThread-8-1712951936051] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={ZTS=StockPosition(stock=ZTS, canSellQty=12.0, costPrice=155.52, currPrice=150.0)}, time=2024-04-13T03:58:59.137
+2024-04-13 03:58:59.139 [xxl-job, JobThread-8-1712951936051] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=ZTS, count=12.0
+2024-04-13 03:58:59.213 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-04-13 03:58:59.293 [xxl-job, JobThread-8-1712951936051] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=3508193375199174498
+2024-04-13 03:58:59.704 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3508193375199174498, code=ZTS, name=Zoetis, count=12.0, price=0.0, avgPrice=149.9013, createTime=2024-04-12 15:58:59.200, updateTimestamp=1.712951939665679E9, status=0)
+2024-04-13 03:58:59.705 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3508193375199174498, code=ZTS, name=Zoetis, count=12.0, price=0.0, avgPrice=149.9013, createTime=2024-04-12 15:58:59.200, updateTimestamp=1.712951939665679E9, status=0)
+2024-04-13 03:58:59.706 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3508193375199174498, code=ZTS, name=Zoetis, count=12.0, price=0.0, avgPrice=149.9013, createTime=2024-04-12 15:58:59.200, updateTimestamp=1.712951939665679E9, status=0)
+2024-04-13 03:58:59.706 [xxl-job, JobThread-8-1712951936051] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=ZTS, orderId=3508193375199174498
+2024-04-13 03:58:59.706 [xxl-job, JobThread-8-1712951936051] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-04-13 03:58:59.706 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3508193375199174498, code=ZTS, name=Zoetis, count=12.0, price=0.0, avgPrice=149.9013, createTime=2024-04-12 15:58:59.200, updateTimestamp=1.712951939665679E9, status=0)
+2024-04-13 03:58:59.707 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3508193375199174498, code=ZTS, name=Zoetis, count=12.0, price=0.0, avgPrice=149.9013, createTime=2024-04-12 15:58:59.200, updateTimestamp=1.712951939665679E9, status=0)
+2024-04-13 03:58:59.708 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3508193375199174498, code=ZTS, name=Zoetis, count=12.0, price=0.0, avgPrice=149.9013, createTime=2024-04-12 15:58:59.200, updateTimestamp=1.712951939665679E9, status=0)

@@ -1,0 +1,44 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7141068966466423237
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1702564080000, openTime=1702564200000, closeCheckTime=Fri Dec 15 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 210
+stock overbolling hit great 0.500000 size: 185
+filter merge stock, the stock set size is 185
+filter split stock, the stock set size is 185
+filter front reinstatement less 0.98 stock, the stock set size is 178
+filter earning and lastEarning stock, the stock set size is 177
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:04
+finish subcribe real time!
+there is no msg. continue
+there is no msg. continue
+time is early. {p=8, ev=T, q=317549, s=100, c=[12], t=1702564192000, sym=GTX, x=12, i=22, z=3}
+{p=8, ev=T, q=317549, s=100, c=[12], t=1702564192000, sym=GTX, x=12, i=22, z=3}
+unsubscribeStockSet size: 100 1702564200904
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: []
+
+onReply_GetFunds: 1242.66
+remain cash: 1242.66
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish

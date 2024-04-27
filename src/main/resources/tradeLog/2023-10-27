@@ -1,0 +1,146 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7123651509842299137
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1698413280000, openTime=1698413400000, closeCheckTime=Sat Oct 28 03:59:00 CST 2023
+unlock success
+Oct 27, 2023 8:47:54 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+stock latest close great 7 size: 1218
+stock overbolling hit great 0.500000 size: 1033
+filter merge stock, the stock set size is 1033
+filter split stock, the stock set size is 1029
+filter front reinstatement less 0.98 stock, the stock set size is 994
+filter earning and lastEarning stock, the stock set size is 885
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+finish init trade
+wait pre trade time. now is 21:27:43
+wait pre trade time. now is 21:27:48
+wait pre trade time. now is 21:27:53
+wait pre trade time. now is 21:27:58
+begin subcribe stock at 21:28:03
+finish subcribe real time!
+time is early. {p=583.66, ev=T, q=139446, s=3, c=[14,12,37,41], t=1698413365000, sym=LRCX, x=12, i=116, z=3}
+{p=583.66, ev=T, q=139446, s=3, c=[14,12,37,41], t=1698413365000, sym=LRCX, x=12, i=116, z=3}
+time is early. {p=18.83, ev=T, q=74170, s=50, c=[14,12,37,41], t=1698413370000, sym=PENN, x=2, i=1, z=3}
+{p=18.83, ev=T, q=74170, s=50, c=[14,12,37,41], t=1698413370000, sym=PENN, x=2, i=1, z=3}
+StockEvent(stock=GOOG, price=124.03, time=1698413400000) dn=125.723
+GOOG=1.3466112008144873
+StockEvent(stock=AAPL, price=166.91, time=1698413400000) dn=167.391
+StockEvent(stock=GOOGL, price=122.88, time=1698413400000) dn=124.657
+GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=LBTYK, price=16.58, time=1698413400023) dn=16.636
+StockEvent(stock=EBAY, price=38.4, time=1698413400002) dn=38.585
+StockEvent(stock=ERII, price=15.18, time=1698413400081) dn=15.325
+StockEvent(stock=RDNT, price=25.82, time=1698413400081) dn=26.136
+StockEvent(stock=RMBS, price=49.17, time=1698413400100) dn=49.616
+unsubscribeStockSet size: 100 1698413400385
+StockEvent(stock=CAR, price=161.21, time=1698413400162) dn=161.267
+StockEvent(stock=PRTA, price=34.12, time=1698413400118) dn=35.851
+StockEvent(stock=SLP, price=33.33, time=1698413400172) dn=35.052
+StockEvent(stock=HOLX, price=65.79, time=1698413400194) dn=65.815
+StockEvent(stock=MU, price=64.94, time=1698413400179) dn=65.136
+StockEvent(stock=CERT, price=12.49, time=1698413400167) dn=12.627
+StockEvent(stock=RXST, price=21.07, time=1698413400305) dn=21.502
+RXST=2.0091154311226798,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+unsubscribeStockSet size: 200 1698413400531
+StockEvent(stock=CSCO, price=51.64, time=1698413400225) dn=51.686
+StockEvent(stock=RGEN, price=122.59, time=1698413400319) dn=124.743
+RXST=2.0091154311226798,RGEN=1.7259485502192442,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=IRBT, price=33.61, time=1698413400321) dn=33.657
+StockEvent(stock=JNJ, price=148.36, time=1698413400430) dn=148.499
+StockEvent(stock=WDC, price=38.56, time=1698413400401) dn=39.406
+StockEvent(stock=WSM, price=144.87, time=1698413400475) dn=145.21
+StockEvent(stock=ZTS, price=158.47, time=1698413400490) dn=159.55
+StockEvent(stock=TTD, price=67.15, time=1698413400426) dn=67.276
+StockEvent(stock=EWCZ, price=14.51, time=1698413400415) dn=14.569
+unsubscribeStockSet size: 300 1698413400676
+StockEvent(stock=TYRA, price=11.0, time=1698413400387) dn=11.17
+RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=ANET, price=172.935, time=1698413400525) dn=175.03
+StockEvent(stock=FOUR, price=45.15, time=1698413400544) dn=45.329
+StockEvent(stock=ALGN, price=193.0, time=1698413400478) dn=212.885
+ALGN=9.34072386499753,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,GOOG=1.3466112008144873
+StockEvent(stock=TDOC, price=16.26, time=1698413400478) dn=16.613
+StockEvent(stock=OPCH, price=27.99, time=1698413400457) dn=28.355
+unsubscribeStockSet size: 400 1698413400822
+StockEvent(stock=RUSHA, price=34.89, time=1698413400609) dn=35.367
+ALGN=9.34072386499753,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+StockEvent(stock=WU, price=11.775, time=1698413400604) dn=12.132
+StockEvent(stock=AKAM, price=101.59, time=1698413400609) dn=101.666
+StockEvent(stock=TTWO, price=133.76, time=1698413400645) dn=134.172
+StockEvent(stock=CSQ, price=12.7, time=1698413400680) dn=12.715
+StockEvent(stock=CHX, price=29.76, time=1698413400696) dn=30.426
+ALGN=9.34072386499753,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+StockEvent(stock=PINS, price=24.33, time=1698413400650) dn=24.397
+StockEvent(stock=IGT, price=25.84, time=1698413400722) dn=26.837
+ALGN=9.34072386499753,IGT=3.715020307784029,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+unsubscribeStockSet size: 500 1698413400969
+StockEvent(stock=XENE, price=31.04, time=1698413400682) dn=31.18
+StockEvent(stock=CTVA, price=47.53, time=1698413400559) dn=47.851
+StockEvent(stock=TRU, price=44.705, time=1698413400770) dn=45.573
+StockEvent(stock=DT, price=44.15, time=1698413400723) dn=44.212
+StockEvent(stock=LTH, price=11.87, time=1698413400731) dn=12.165
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,RUSHA=1.3487149037238013,GOOG=1.3466112008144873
+StockEvent(stock=MBUU, price=45.28, time=1698413400723) dn=45.863
+StockEvent(stock=BOOT, price=68.93, time=1698413400692) dn=68.974
+unsubscribeStockSet size: 600 1698413401093
+StockEvent(stock=AAC, price=9.75, time=1698413400792) dn=10.067
+StockEvent(stock=GPN, price=104.78, time=1698413400769) dn=105.146
+StockEvent(stock=GIB, price=94.71, time=1698413400714) dn=94.781
+StockEvent(stock=FIS, price=47.91, time=1698413400659) dn=47.91
+StockEvent(stock=CNNE, price=16.19, time=1698413400873) dn=16.232
+StockEvent(stock=ALSN, price=51.23, time=1698413400857) dn=53.01
+StockEvent(stock=NTAP, price=71.51, time=1698413400891) dn=71.727
+StockEvent(stock=HAE, price=83.06, time=1698413400837) dn=83.589
+StockEvent(stock=RDY, price=64.39, time=1698413400901) dn=64.764
+unsubscribeStockSet size: 700 1698413401259
+StockEvent(stock=EVH, price=23.87, time=1698413400803) dn=24.199
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,EVH=1.3595603124096063,RUSHA=1.3487149037238013
+StockEvent(stock=LBTYA, price=15.19, time=1698413400982) dn=15.278
+StockEvent(stock=MCFT, price=20.5, time=1698413400854) dn=20.676
+StockEvent(stock=RXO, price=17.62, time=1698413400814) dn=17.658
+StockEvent(stock=CSGS, price=48.2, time=1698413400902) dn=48.299
+StockEvent(stock=DAVA, price=49.36, time=1698413400971) dn=49.475
+StockEvent(stock=CCCS, price=10.94, time=1698413400922) dn=11.037
+unsubscribeStockSet size: 800 1698413401418
+StockEvent(stock=GBX, price=33.21, time=1698413400928) dn=33.741
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,GBX=1.5737530008002099,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,EVH=1.3595603124096063
+StockEvent(stock=IDXX, price=398.05, time=1698413401054) dn=401.765
+StockEvent(stock=DUOL, price=141.54, time=1698413401077) dn=142.636
+StockEvent(stock=GSHD, price=66.43, time=1698413401323) dn=66.469
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [ALGN, IGT, LTH, CHX, RXST, RGEN, GBX, TYRA, GOOGL, EVH]
+ALGN=9.34072386499753,IGT=3.715020307784029,LTH=2.4249897246198104,CHX=2.1889173732991414,RXST=2.0091154311226798,RGEN=1.7259485502192442,GBX=1.5737530008002099,TYRA=1.5219337511190683,GOOGL=1.4255116038409403,EVH=1.3595603124096063
+remain cash: 8019.910000000033
+buy stock. stock=ALGN, count=41, price=193.19, orderPrice=195.12, orderId: 1413374520697030974 1698413406531
+ALGN order is successfully executed. orderId: 1413374520697030974
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1413374520697030974, code=ALGN, name=艾利科技, count=41.0, price=195.12, avgPrice=193.18, createTime=2023-10-27 09:30:06, updateTimestamp=1.698413411E9, status=0)
+buy stock. stock=IGT, count=3, price=25.84, orderPrice=26.09, orderId: 1413374524991998269 1698413411877
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1413374524991998269, code=IGT, name=国际博彩科技, count=3.0, price=26.09, avgPrice=26.0, createTime=2023-10-27 09:30:11, updateTimestamp=1.698413416E9, status=0)
+IGT order is successfully executed. orderId: 1413374524991998269
+buy stock. stock=LTH, count=8, price=11.87, orderPrice=11.98, orderId: 1413374529286965564 1698413417504
+LTH order is successfully executed. orderId: 1413374529286965564
+update order: OrderFill(tradeSide=1, fillID=0, orderID=1413374529286965564, code=LTH, name=Life Time, count=8.0, price=11.98, avgPrice=11.93, createTime=2023-10-27 09:30:16, updateTimestamp=1.698413421E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+being listen stop loss: {LTH=StopLoss(stock=LTH, canSellQty=8.0, lossPrice=11.094), IGT=StopLoss(stock=IGT, canSellQty=3.0, lossPrice=24.18), ALGN=StopLoss(stock=ALGN, canSellQty=41.0, lossPrice=179.657)}
+unsubscribe real-time quote
+ready to sell before close market. position={LTH=StockPosition(stock=LTH, canSellQty=8.0, costPrice=11.93, currPrice=11.28), IGT=StockPosition(stock=IGT, canSellQty=3.0, costPrice=25.998, currPrice=26.955), ALGN=StockPosition(stock=ALGN, canSellQty=41.0, costPrice=193.18, currPrice=190.87)}, time=2023-10-28T03:59:00.485
+before close sell stock. stock=ALGN, count=41.0, currentPrice=190.87, orderPrice=188.96
+before close sell stock. stock=ALGN, orderId：1422735187672567667
+before close sell stock. stock=IGT, count=3.0, currentPrice=26.955, orderPrice=26.68
+before close sell stock. stock=IGT, orderId：1422735191967534962
+before close sell stock. stock=LTH, count=8.0, currentPrice=11.28, orderPrice=11.16
+before close sell stock. stock=LTH, orderId：1422735715953543413
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1422735187672567667, code=ALGN, name=艾利科技, count=41.0, price=188.96, avgPrice=190.6, createTime=2023-10-27 15:59:00, updateTimestamp=1.698436744E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1422735191967534962, code=IGT, name=国际博彩科技, count=3.0, price=26.68, avgPrice=26.95, createTime=2023-10-27 15:59:00, updateTimestamp=1.698436744E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1422735715953543413, code=LTH, name=Life Time, count=8.0, price=11.16, avgPrice=11.44, createTime=2023-10-27 15:59:00, updateTimestamp=1.698436744E9, status=0)
+all stock has stop loss
+trade exit

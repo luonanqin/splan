@@ -1,0 +1,91 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7143243193813862374
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1703082480000, openTime=1703082600000, closeCheckTime=Thu Dec 21 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 551
+stock overbolling hit great 0.500000 size: 473
+filter merge stock, the stock set size is 473
+filter split stock, the stock set size is 473
+filter front reinstatement less 0.98 stock, the stock set size is 454
+filter earning and lastEarning stock, the stock set size is 451
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:02
+finish subcribe real time!
+time is early. {p=261.22, ev=T, q=21627, s=20, c=[12,37], t=1703082575000, sym=CRM, x=8, i=52983525036922, z=1}
+{p=261.22, ev=T, q=21627, s=20, c=[12,37], t=1703082575000, sym=CRM, x=8, i=52983525036922, z=1}
+time is early. {p=261.02, ev=T, q=21628, s=20, c=[12,37], t=1703082575000, sym=CRM, x=8, i=52983525037104, z=1}
+{p=261.02, ev=T, q=21628, s=20, c=[12,37], t=1703082575000, sym=CRM, x=8, i=52983525037104, z=1}
+time is early. {p=261.01, ev=T, q=21629, s=10, c=[12,37], t=1703082575000, sym=CRM, x=8, i=52983525037105, z=1}
+{p=261.01, ev=T, q=21629, s=10, c=[12,37], t=1703082575000, sym=CRM, x=8, i=52983525037105, z=1}
+time is early. {p=73.56, ev=T, q=83559, s=5, c=[12,37], t=1703082581000, sym=EDU, x=11, i=52983543449940, z=1}
+{p=73.56, ev=T, q=83559, s=5, c=[12,37], t=1703082581000, sym=EDU, x=11, i=52983543449940, z=1}
+time is early. {p=73.56, ev=T, q=83560, s=10, c=[12,37], t=1703082581000, sym=EDU, x=11, i=52983543449941, z=1}
+{p=73.56, ev=T, q=83560, s=10, c=[12,37], t=1703082581000, sym=EDU, x=11, i=52983543449941, z=1}
+time is early. {p=73.56, ev=T, q=83561, s=5, c=[12,37], t=1703082581000, sym=EDU, x=11, i=52983543449942, z=1}
+{p=73.56, ev=T, q=83561, s=5, c=[12,37], t=1703082581000, sym=EDU, x=11, i=52983543449942, z=1}
+time is early. {p=73.56, ev=T, q=83562, s=191, c=[14,12,41], t=1703082581000, sym=EDU, x=11, i=52983543450160, z=1}
+{p=73.56, ev=T, q=83562, s=191, c=[14,12,41], t=1703082581000, sym=EDU, x=11, i=52983543450160, z=1}
+time is early. {p=73.49, ev=T, q=83563, s=5, c=[12,37], t=1703082581000, sym=EDU, x=19, i=52983525028153, z=1}
+{p=73.49, ev=T, q=83563, s=5, c=[12,37], t=1703082581000, sym=EDU, x=19, i=52983525028153, z=1}
+time is early. {p=73.49, ev=T, q=83564, s=5, c=[12,37], t=1703082581000, sym=EDU, x=19, i=52983525028154, z=1}
+{p=73.49, ev=T, q=83564, s=5, c=[12,37], t=1703082581000, sym=EDU, x=19, i=52983525028154, z=1}
+time is early. {p=73.49, ev=T, q=83565, s=5, c=[12,37], t=1703082581000, sym=EDU, x=19, i=52983525028155, z=1}
+{p=73.49, ev=T, q=83565, s=5, c=[12,37], t=1703082581000, sym=EDU, x=19, i=52983525028155, z=1}
+time is early. {p=73.49, ev=T, q=83566, s=10, c=[14,12,37,41], t=1703082581000, sym=EDU, x=8, i=52983525037154, z=1}
+{p=73.49, ev=T, q=83566, s=10, c=[14,12,37,41], t=1703082581000, sym=EDU, x=8, i=52983525037154, z=1}
+time is early. {p=73.49, ev=T, q=83567, s=191, c=[14,12,41], t=1703082581000, sym=EDU, x=8, i=52983525037155, z=1}
+{p=73.49, ev=T, q=83567, s=191, c=[14,12,41], t=1703082581000, sym=EDU, x=8, i=52983525037155, z=1}
+unsubscribeStockSet size: 100 1703082600236
+StockEvent(stock=CCJ, price=43.66, time=1703082600228) dn=43.698 current=1703082600294
+StockEvent(stock=ARGX, price=346.0, time=1703082600490) dn=396.121 current=1703082600630
+unsubscribeStockSet size: 200 1703082600820
+unsubscribeStockSet size: 300 1703082600980
+StockEvent(stock=UNH, price=523.6, time=1703082601055) dn=523.617 current=1703082601183
+UNH=0.00324664783609758
+unsubscribeStockSet size: 400 1703082601218
+StockEvent(stock=AON, price=290.98, time=1703082601132) dn=303.075 current=1703082601335
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [UNH]
+quote price(time=1703082620251): {UNH=523.6}
+quote price(time=1703082620252): {UNH=523.6}
+quote price(time=1703082620253): {UNH=523.6}
+quote price(time=1703082620280): {UNH=523.6}
+quote price(time=1703082620683): {UNH=523.58}
+UNH=0.00324664783609758
+onReply_GetFunds: 1331.73
+remain cash: 1331.73
+first trade. orderPrice=525.15, multiple=1
+onReply_GetMaxTrdQtys: 2
+buy stock. stock=UNH, count=2, price=523.58, orderPrice=525.15, orderId: 300994469957821708 1703082621373
+UNH order is successfully executed. orderId=300994469957821708
+update order: OrderFill(tradeSide=1, fillID=0, orderID=300994469957821708, code=UNH, name=联合健康, count=2.0, price=525.15, avgPrice=523.47, createTime=2023-12-20 09:30:21.297, updateTimestamp=1.703082621753522E9, status=0)
+UNH placeStopLoss market order. qty=2.0, auxPrice=486.827, orderId：8435854101567502821
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+ready to sell before close market. position={UNH=StockPosition(stock=UNH, canSellQty=2.0, costPrice=523.47, currPrice=519.5)}, time=2023-12-21T04:58:59.655
+before close sell stock for market price. stock=UNH, count=2.0
+unlock success
+sell stock orderId=8434970479773407712
+sell stock success. stock=UNH, orderId?8434970479773407712
+update order: OrderFill(tradeSide=2, fillID=0, orderID=8434970479773407712, code=UNH, name=????, count=2.0, price=0.0, avgPrice=516.72, createTime=2023-12-20 15:58:59.846, updateTimestamp=1.703105940252079E9, status=0)
+tradeExecutor_db sell

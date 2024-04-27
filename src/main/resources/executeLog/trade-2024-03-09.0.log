@@ -1,0 +1,14 @@
+2024-03-09 04:58:56.096 [xxl-job, JobThread-8-1709931536079] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-03-09 04:58:56.119 [xxl-job, JobThread-8-1709931536079] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-03-09 04:58:56.131 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7171972681680348253
+2024-03-09 04:58:56.140 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7171972681681645969
+2024-03-09 04:58:59.125 [xxl-job, JobThread-8-1709931536079] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-03-09 04:58:59.136 [xxl-job, JobThread-8-1709931536079] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-03-09 04:58:59.180 [xxl-job, JobThread-8-1709931536079] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={VSCO=StockPosition(stock=VSCO, canSellQty=94.0, costPrice=17.629, currPrice=18.08)}, time=2024-03-09T04:58:59.179
+2024-03-09 04:58:59.181 [xxl-job, JobThread-8-1709931536079] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=VSCO, count=94.0
+2024-03-09 04:58:59.245 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-03-09 04:58:59.340 [xxl-job, JobThread-8-1709931536079] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=2955526745710308991
+2024-03-09 04:58:59.718 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=2955526745710308991, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=18.0809, createTime=2024-03-08 15:58:59.313, updateTimestamp=1.709931539777307E9, status=0)
+2024-03-09 04:58:59.719 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=2955526745710308991, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=18.0809, createTime=2024-03-08 15:58:59.313, updateTimestamp=1.709931539777307E9, status=0)
+2024-03-09 04:58:59.720 [xxl-job, JobThread-8-1709931536079] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=VSCO, orderId=2955526745710308991
+2024-03-09 04:58:59.720 [xxl-job, JobThread-8-1709931536079] INFO  luonq.job.TradeJob - tradeExecutor_db sell

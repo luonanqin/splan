@@ -1,0 +1,117 @@
+finish initialize many time. preTradeTime=1699367280000, openTime=1699367400000, closeCheckTime=Wed Nov 08 04:59:00 CST 2023
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1832
+stock overbolling hit great 0.500000 size: 1546
+filter merge stock, the stock set size is 1546
+filter split stock, the stock set size is 1543
+filter front reinstatement less 0.98 stock, the stock set size is 1454
+filter earning and lastEarning stock, the stock set size is 1304
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+wait pre trade time. now is 22:27:57
+begin subcribe stock at 22:28:02
+finish subcribe real time!
+time is early. {p=48.94, ev=T, q=22974, s=100, c=[12], t=1699367290000, sym=CPRI, x=19, i=52983525029749, z=1}
+{p=48.94, ev=T, q=22974, s=100, c=[12], t=1699367290000, sym=CPRI, x=19, i=52983525029749, z=1}
+time is early. {p=48.93, ev=T, q=22975, s=50, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=19, i=52983525029750, z=1}
+{p=48.93, ev=T, q=22975, s=50, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=19, i=52983525029750, z=1}
+time is early. {p=48.93, ev=T, q=22976, s=50, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=19, i=52983525029751, z=1}
+{p=48.93, ev=T, q=22976, s=50, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=19, i=52983525029751, z=1}
+time is early. {p=48.94, ev=T, q=22977, s=100, c=[12], t=1699367290000, sym=CPRI, x=8, i=52983525035366, z=1}
+{p=48.94, ev=T, q=22977, s=100, c=[12], t=1699367290000, sym=CPRI, x=8, i=52983525035366, z=1}
+time is early. {p=48.93, ev=T, q=22978, s=100, c=[12], t=1699367290000, sym=CPRI, x=19, i=52983525029752, z=1}
+{p=48.93, ev=T, q=22978, s=100, c=[12], t=1699367290000, sym=CPRI, x=19, i=52983525029752, z=1}
+time is early. {p=48.94, ev=T, q=22979, s=88, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=12, i=62879133554514, z=1}
+{p=48.94, ev=T, q=22979, s=88, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=12, i=62879133554514, z=1}
+time is early. {p=48.93, ev=T, q=22980, s=12, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=12, i=62879133554515, z=1}
+{p=48.93, ev=T, q=22980, s=12, c=[14,12,37,41], t=1699367290000, sym=CPRI, x=12, i=62879133554515, z=1}
+unsubscribeStockSet size: 100 1699367400371
+StockEvent(stock=CCRN, price=18.78, time=1699367400004) dn=19.122 current=1699367400375
+CCRN=1.7885158456228363
+unsubscribeStockSet size: 200 1699367400378
+StockEvent(stock=TH, price=12.63, time=1699367400135) dn=12.731 current=1699367400380
+StockEvent(stock=FOXF, price=60.85, time=1699367400006) dn=62.26 current=1699367400381
+FOXF=2.2646964343077363,CCRN=1.7885158456228363
+StockEvent(stock=CPG, price=7.38, time=1699367400312) dn=7.623 current=1699367400381
+CPG=3.1877213695395556,FOXF=2.2646964343077363,CCRN=1.7885158456228363
+StockEvent(stock=AGL, price=12.99, time=1699367400380) dn=13.899 current=1699367400623
+unsubscribeStockSet size: 300 1699367400690
+StockEvent(stock=EB, price=7.395, time=1699367400532) dn=7.523 current=1699367400695
+StockEvent(stock=VET, price=13.6, time=1699367400540) dn=13.716 current=1699367400814
+unsubscribeStockSet size: 400 1699367400815
+StockEvent(stock=MLTX, price=36.32, time=1699367400528) dn=39.33 current=1699367400836
+MLTX=7.653190948385452,CPG=3.1877213695395556,FOXF=2.2646964343077363,CCRN=1.7885158456228363
+StockEvent(stock=BILL, price=62.5, time=1699367400644) dn=63.194 current=1699367400839
+StockEvent(stock=CPRI, price=48.88, time=1699367400638) dn=49.847 current=1699367400839
+unsubscribeStockSet size: 500 1699367400839
+StockEvent(stock=BMEA, price=9.42, time=1699367400601) dn=9.489 current=1699367400839
+StockEvent(stock=SEM, price=21.56, time=1699367400650) dn=21.609 current=1699367400840
+StockEvent(stock=AMN, price=65.61, time=1699367400678) dn=66.734 current=1699367400969
+StockEvent(stock=RMAX, price=9.72, time=1699367400689) dn=10.078 current=1699367400969
+StockEvent(stock=SM, price=38.22, time=1699367400638) dn=38.274 current=1699367400969
+unsubscribeStockSet size: 600 1699367400971
+StockEvent(stock=CPE, price=34.34, time=1699367400673) dn=35.036 current=1699367400971
+MLTX=7.653190948385452,CPG=3.1877213695395556,FOXF=2.2646964343077363,CPE=1.9865281424820125,CCRN=1.7885158456228363
+StockEvent(stock=HLIO, price=43.52, time=1699367400683) dn=44.382 current=1699367400972
+MLTX=7.653190948385452,CPG=3.1877213695395556,FOXF=2.2646964343077363,CPE=1.9865281424820125,HLIO=1.9422288315082574,CCRN=1.7885158456228363
+unsubscribeStockSet size: 700 1699367401090
+StockEvent(stock=DAC, price=65.0, time=1699367400679) dn=65.102 current=1699367401090
+StockEvent(stock=PBF, price=44.361, time=1699367400688) dn=44.481 current=1699367401096
+unsubscribeStockSet size: 800 1699367401097
+unsubscribeStockSet size: 900 1699367401183
+StockEvent(stock=PUMP, price=9.61, time=1699367400644) dn=9.802 current=1699367401184
+StockEvent(stock=CRC, price=49.96, time=1699367400817) dn=50.23 current=1699367401220
+StockEvent(stock=ASIX, price=25.15, time=1699367400871) dn=25.307 current=1699367401220
+unsubscribeStockSet size: 1000 1699367401223
+StockEvent(stock=CRTO, price=23.38, time=1699367400867) dn=23.69 current=1699367401223
+StockEvent(stock=DVAX, price=13.46, time=1699367400889) dn=13.585 current=1699367401230
+unsubscribeStockSet size: 1100 1699367401230
+StockEvent(stock=PBT, price=17.7, time=1699367401017) dn=18.18 current=1699367401519
+MLTX=7.653190948385452,CPG=3.1877213695395556,PBT=2.640264026402643,FOXF=2.2646964343077363,CPE=1.9865281424820125,HLIO=1.9422288315082574,CCRN=1.7885158456228363
+unsubscribeStockSet size: 1200 1699367401525
+StockEvent(stock=KRYS, price=104.8, time=1699367401284) dn=104.863 current=1699367401625
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [MLTX, CPG, PBT, FOXF, CPE, HLIO, CCRN]
+MLTX=7.653190948385452,CPG=3.1877213695395556,PBT=2.640264026402643,FOXF=2.2646964343077363,CPE=1.9865281424820125,HLIO=1.9422288315082574,CCRN=1.7885158456228363
+remain cash: 7542.400000000023
+buy stock. stock=MLTX, count=206, price=36.1901, orderPrice=36.55, orderId: 3875227544236974007 1699367423917
+MLTX order has been canceled. orderId: 3875227544236974007, cancel res code: 0
+buy stock. stock=CPG, count=1023, price=7.3, orderPrice=7.37, orderId: 3875227552826908601 1699367439145
+CPG order is successfully executed. orderId: 3875227552826908601
+update order: OrderFill(tradeSide=1, fillID=0, orderID=3875227552826908601, code=CPG, name=新月点能源, count=1023.0, price=7.37, avgPrice=7.3, createTime=2023-11-07 09:30:39, updateTimestamp=1.69936744E9, status=0)
+buy stock. stock=PBT, count=3, price=17.7, orderPrice=17.87, orderId: 3875227557121875896 1699367440511
+PBT order is successfully executed. orderId: 3875227557121875896
+update order: OrderFill(tradeSide=1, fillID=0, orderID=3875227557121875896, code=PBT, name=帕米亚盆地皇室信托, count=3.0, price=17.87, avgPrice=17.68, createTime=2023-11-07 09:30:40, updateTimestamp=1.699367445E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {PBT=StopLoss(stock=PBT, canSellQty=3.0, lossPrice=16.442), CPG=StopLoss(stock=CPG, canSellQty=1023.0, lossPrice=6.789)}
+{p=7.265, ev=T, q=138689, s=40, c=[37], t=1699368123000, sym=CPG, x=11, i=52983525493811, z=1}
+{p=7.265, ev=T, q=138690, s=340, t=1699368123000, sym=CPG, x=11, i=52983525493812, z=1}
+{p=7.325, ev=T, q=273801, s=100, t=1699369140000, sym=CPG, x=12, i=62879249940814, z=1}
+ready to sell before close market. position={PBT=StockPosition(stock=PBT, canSellQty=3.0, costPrice=17.68, currPrice=17.65), CPG=StockPosition(stock=CPG, canSellQty=1023.0, costPrice=7.3, currPrice=7.18)}, time=2023-11-08T04:59:00.042
+before close sell stock. stock=PBT, count=3.0, currentPrice=17.65, orderPrice=17.47
+{p=17.64, ev=T, q=3147013, s=3, c=[37], t=1699390740000, sym=PBT, trfi=202, x=4, i=71705573016407, z=1, trft=1699390740000}
+before close sell stock. stock=PBT, orderId：3875669230085308466
+before close sell stock. stock=CPG, count=1023.0, currentPrice=7.18, orderPrice=7.1
+before close sell stock. stock=CPG, orderId：3875669754071318714
+update order: OrderFill(tradeSide=2, fillID=0, orderID=3875669230085308466, code=PBT, name=帕米亚盆地皇室信托, count=3.0, price=17.47, avgPrice=17.62, createTime=2023-11-07 15:59:00, updateTimestamp=1.699390741E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=3875669754071318714, code=CPG, name=新月点能源, count=1023.0, price=7.1, avgPrice=7.17, createTime=2023-11-07 15:59:00, updateTimestamp=1.699390741E9, status=0)
+{p=7.175, ev=T, q=2656814, s=28, c=[37,60], t=1699390749000, sym=CPG, x=8, i=52983526013028, z=1}
+all stock has stop loss
+trade exit
+closing websocket. reason=CloseReason[1000]
+manual close websocket

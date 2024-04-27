@@ -1,0 +1,14 @@
+2024-03-23 03:58:56.070 [xxl-job, JobThread-8-1711137536055] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-03-23 03:58:56.095 [xxl-job, JobThread-8-1711137536055] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-03-23 03:58:56.118 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7177031012201604078
+2024-03-23 03:58:56.129 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7177031012200752269
+2024-03-23 03:58:59.105 [xxl-job, JobThread-8-1711137536055] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-03-23 03:58:59.109 [xxl-job, JobThread-8-1711137536055] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-03-23 03:58:59.150 [xxl-job, JobThread-8-1711137536055] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={LEGN=StockPosition(stock=LEGN, canSellQty=29.0, costPrice=57.945, currPrice=58.635)}, time=2024-03-23T03:58:59.149
+2024-03-23 03:58:59.150 [xxl-job, JobThread-8-1711137536055] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=LEGN, count=29.0
+2024-03-23 03:58:59.207 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-03-23 03:58:59.330 [xxl-job, JobThread-8-1711137536055] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=3424279086956562843
+2024-03-23 03:58:59.675 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3424279086956562843, code=LEGN, name=传奇生物, count=29.0, price=0.0, avgPrice=58.16, createTime=2024-03-22 15:58:59.267, updateTimestamp=1.711137539702795E9, status=0)
+2024-03-23 03:58:59.677 [xxl-job, JobThread-8-1711137536055] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=LEGN, orderId=3424279086956562843
+2024-03-23 03:58:59.677 [xxl-job, JobThread-8-1711137536055] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-03-23 03:58:59.677 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3424279086956562843, code=LEGN, name=传奇生物, count=29.0, price=0.0, avgPrice=58.16, createTime=2024-03-22 15:58:59.267, updateTimestamp=1.711137539702795E9, status=0)

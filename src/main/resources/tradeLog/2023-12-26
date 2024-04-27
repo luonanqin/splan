@@ -1,0 +1,50 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7145416754523860783
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1703600880000, openTime=1703601000000, closeCheckTime=Wed Dec 27 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1073
+stock overbolling hit great 0.500000 size: 906
+filter merge stock, the stock set size is 906
+filter split stock, the stock set size is 906
+filter front reinstatement less 0.98 stock, the stock set size is 844
+filter earning and lastEarning stock, the stock set size is 843
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:02
+finish subcribe real time!
+time is early. {p=265.34, ev=T, q=14888, s=2, c=[14,12,37,41], t=1703600940000, sym=CRM, x=8, i=52983525035620, z=1}
+{p=265.34, ev=T, q=14888, s=2, c=[14,12,37,41], t=1703600940000, sym=CRM, x=8, i=52983525035620, z=1}
+unsubscribeStockSet size: 100 1703601000125
+StockEvent(stock=OLK, price=25.27, time=1703601000073) dn=25.41 current=1703601000225
+unsubscribeStockSet size: 200 1703601000426
+unsubscribeStockSet size: 300 1703601000703
+unsubscribeStockSet size: 400 1703601000880
+unsubscribeStockSet size: 500 1703601000927
+unsubscribeStockSet size: 600 1703601001023
+unsubscribeStockSet size: 700 1703601001107
+unsubscribeStockSet size: 800 1703601001376
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: []
+quote price(time=1703601021925): {}
+
+remain cash: 1319.02
+onReply_GetFunds: 1319.02
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish

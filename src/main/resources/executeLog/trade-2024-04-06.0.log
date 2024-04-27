@@ -1,0 +1,19 @@
+2024-04-06 03:58:56.084 [xxl-job, JobThread-8-1712347136069] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-04-06 03:58:56.114 [xxl-job, JobThread-8-1712347136069] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-04-06 03:58:56.124 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7182104442403296843
+2024-04-06 03:58:56.128 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7182104442403061928
+2024-04-06 03:58:59.124 [xxl-job, JobThread-8-1712347136069] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-04-06 03:58:59.125 [xxl-job, JobThread-8-1712347136069] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-04-06 03:58:59.135 [xxl-job, JobThread-8-1712347136069] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={SQ=StockPosition(stock=SQ, canSellQty=24.0, costPrice=73.18, currPrice=76.76)}, time=2024-04-06T03:58:59.134
+2024-04-06 03:58:59.136 [xxl-job, JobThread-8-1712347136069] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=SQ, count=24.0
+2024-04-06 03:58:59.215 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-04-06 03:58:59.305 [xxl-job, JobThread-8-1712347136069] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=5677092821667747747
+2024-04-06 03:58:59.857 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5677092821667747747, code=SQ, name=Block, count=24.0, price=0.0, avgPrice=77.055, createTime=2024-04-05 15:58:59.245, updateTimestamp=1.712347139868442E9, status=0)
+2024-04-06 03:58:59.858 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5677092821667747747, code=SQ, name=Block, count=24.0, price=0.0, avgPrice=77.055, createTime=2024-04-05 15:58:59.245, updateTimestamp=1.712347139868442E9, status=0)
+2024-04-06 03:58:59.858 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5677092821667747747, code=SQ, name=Block, count=24.0, price=0.0, avgPrice=77.055, createTime=2024-04-05 15:58:59.245, updateTimestamp=1.712347139868442E9, status=0)
+2024-04-06 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5677092821667747747, code=SQ, name=Block, count=24.0, price=0.0, avgPrice=77.055, createTime=2024-04-05 15:58:59.245, updateTimestamp=1.712347139868442E9, status=0)
+2024-04-06 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5677092821667747747, code=SQ, name=Block, count=24.0, price=0.0, avgPrice=77.055, createTime=2024-04-05 15:58:59.245, updateTimestamp=1.712347139868442E9, status=0)
+2024-04-06 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5677092821667747747, code=SQ, name=Block, count=24.0, price=0.0, avgPrice=77.055, createTime=2024-04-05 15:58:59.245, updateTimestamp=1.712347139868442E9, status=0)
+2024-04-06 03:58:59.859 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5677092821667747747, code=SQ, name=Block, count=24.0, price=0.0, avgPrice=77.055, createTime=2024-04-05 15:58:59.245, updateTimestamp=1.712347139868442E9, status=0)
+2024-04-06 03:58:59.859 [xxl-job, JobThread-8-1712347136069] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=SQ, orderId=5677092821667747747
+2024-04-06 03:58:59.860 [xxl-job, JobThread-8-1712347136069] INFO  luonq.job.TradeJob - tradeExecutor_db sell

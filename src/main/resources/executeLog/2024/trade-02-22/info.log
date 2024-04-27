@@ -1,0 +1,14 @@
+2024-02-23 04:58:56.088 [xxl-job, JobThread-8-1708635536073] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-02-23 04:58:56.118 [xxl-job, JobThread-8-1708635536073] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-02-23 04:58:56.135 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7166536863691485997
+2024-02-23 04:58:56.141 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7166536863694184088
+2024-02-23 04:58:59.127 [xxl-job, JobThread-8-1708635536073] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-02-23 04:58:59.145 [xxl-job, JobThread-8-1708635536073] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-02-23 04:58:59.179 [xxl-job, JobThread-8-1708635536073] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={YELP=StockPosition(stock=YELP, canSellQty=64.0, costPrice=37.62, currPrice=36.5)}, time=2024-02-23T04:58:59.179
+2024-02-23 04:58:59.179 [xxl-job, JobThread-8-1708635536073] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=YELP, count=64.0
+2024-02-23 04:58:59.248 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-02-23 04:58:59.332 [xxl-job, JobThread-8-1708635536073] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=6158562253119820198
+2024-02-23 04:58:59.668 [xxl-job, JobThread-8-1708635536073] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=YELP, orderId=6158562253119820198
+2024-02-23 04:58:59.668 [xxl-job, JobThread-8-1708635536073] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-02-23 04:58:59.669 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=6158562253119820198, code=YELP, name=Yelp Inc, count=64.0, price=0.0, avgPrice=36.445, createTime=2024-02-22 15:58:59.350, updateTimestamp=1.708635539760085E9, status=0)
+2024-02-23 04:58:59.675 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=6158562253119820198, code=YELP, name=Yelp Inc, count=64.0, price=0.0, avgPrice=36.445, createTime=2024-02-22 15:58:59.350, updateTimestamp=1.708635539760085E9, status=0)

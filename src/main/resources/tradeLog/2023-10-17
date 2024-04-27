@@ -1,0 +1,237 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7120036492424656625
+trade api initialize finish start!
+unlock success
+stock latest close great 7 size: 3446
+stock overbolling hit great 0.500000 size: 2803
+filter merge stock, the stock set size is 2803
+filter split stock, the stock set size is 2796
+filter front reinstatement less 0.98 stock, the stock set size is 2655
+finish initialize many time. preTradeTime=1697549280000, openTime=1697549400000, closeCheckTime=Wed Oct 18 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Oct 17, 2023 9:23:50 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:27:08
+wait pre trade time. now is 21:27:13
+wait pre trade time. now is 21:27:18
+wait pre trade time. now is 21:27:23
+wait pre trade time. now is 21:27:28
+wait pre trade time. now is 21:27:33
+wait pre trade time. now is 21:27:38
+wait pre trade time. now is 21:27:43
+wait pre trade time. now is 21:27:48
+wait pre trade time. now is 21:27:53
+wait pre trade time. now is 21:27:58
+begin subcribe stock at 21:28:03
+finish subcribe real time!
+time is early
+{p=108.83, ev=T, q=143890, s=20, c=[12,37], t=1697549294000, sym=QCOM, x=19, i=68, z=3}
+time is early
+{p=108.79, ev=T, q=143891, s=20, c=[12,37], t=1697549294000, sym=QCOM, x=19, i=69, z=3}
+time is early
+{p=210.89, ev=T, q=241511, s=20, c=[12,37], t=1697549295000, sym=ADSK, x=12, i=19, z=3}
+time is early
+{p=27.05, ev=T, q=40786, s=37, c=[14,12,37,41], t=1697549323000, sym=BAC, x=11, i=52983525428815, z=1}
+time is early
+{p=27.05, ev=T, q=40787, s=100, c=[14,12,41], t=1697549323000, sym=BAC, x=11, i=52983525428816, z=1}
+time is early
+{p=27.05, ev=T, q=40788, s=63, c=[14,12,37,41], t=1697549323000, sym=BAC, x=11, i=52983525428817, z=1}
+time is early
+{p=14.14, ev=T, q=23360, s=5, c=[12,37], t=1697549363000, sym=IONQ, x=12, i=62879147117378, z=1}
+time is early
+{p=284.77, ev=T, q=244234, s=1, c=[14,12,37,41], t=1697549370000, sym=AMGN, x=12, i=24, z=3}
+time is early
+{p=284.77, ev=T, q=244235, s=1, c=[14,12,37,41], t=1697549370000, sym=AMGN, x=12, i=25, z=3}
+time is early
+{p=284.77, ev=T, q=244236, s=1, c=[14,12,37,41], t=1697549370000, sym=AMGN, x=12, i=26, z=3}
+time is early
+{p=284.77, ev=T, q=244237, s=1, c=[14,12,37,41], t=1697549370000, sym=AMGN, x=12, i=27, z=3}
+time is early
+{p=284.77, ev=T, q=244238, s=1, c=[14,12,37,41], t=1697549370000, sym=AMGN, x=12, i=28, z=3}
+time is early
+{p=284.77, ev=T, q=244239, s=3, c=[12,37], t=1697549370000, sym=AMGN, x=12, i=29, z=3}
+time is early
+{p=284.76, ev=T, q=244240, s=1, c=[12,37], t=1697549370000, sym=AMGN, x=12, i=30, z=3}
+time is early
+{p=591, ev=T, q=244377, s=5, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=885, z=3}
+time is early
+{p=591, ev=T, q=244378, s=5, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=886, z=3}
+time is early
+{p=591, ev=T, q=244379, s=3, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=887, z=3}
+time is early
+{p=591, ev=T, q=244380, s=4, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=888, z=3}
+time is early
+{p=591, ev=T, q=244381, s=3, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=889, z=3}
+time is early
+{p=591, ev=T, q=244382, s=4, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=890, z=3}
+time is early
+{p=591, ev=T, q=244383, s=5, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=891, z=3}
+time is early
+{p=591, ev=T, q=244384, s=5, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=892, z=3}
+time is early
+{p=591, ev=T, q=244385, s=5, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=893, z=3}
+time is early
+{p=591, ev=T, q=244386, s=3, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=894, z=3}
+time is early
+{p=591, ev=T, q=244387, s=4, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=895, z=3}
+time is early
+{p=591, ev=T, q=244388, s=4, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=896, z=3}
+time is early
+{p=591, ev=T, q=244389, s=3, c=[14,12,37,41], t=1697549373000, sym=ASML, x=12, i=897, z=3}
+time is early
+{p=104, ev=T, q=145669, s=16, c=[12,37], t=1697549393000, sym=PDD, x=19, i=6, z=3}
+StockEvent(stock=IDYA, price=24.36, time=1697549400003) dn=24.394
+IDYA=0.13937853570549694
+StockEvent(stock=VSTO, price=24.79, time=1697549400005) dn=26.779
+StockEvent(stock=SGH, price=14.35, time=1697549400001) dn=15.264
+StockEvent(stock=MRVI, price=7.49, time=1697549400003) dn=7.495
+unsubcribeStockSet size: 100 1697549400865
+StockEvent(stock=MRNA, price=90.51, time=1697549400006) dn=93.129
+MRNA=2.812228199594111,IDYA=0.13937853570549694
+StockEvent(stock=MKSI, price=78.92, time=1697549400001) dn=79.253
+unsubcribeStockSet size: 200 1697549400893
+StockEvent(stock=SAVA, price=12.73, time=1697549400004) dn=13.569
+SAVA=6.183211732625841,MRNA=2.812228199594111,IDYA=0.13937853570549694
+StockEvent(stock=SWKS, price=94.42, time=1697549400004) dn=94.603
+StockEvent(stock=ADI, price=169.49, time=1697549400035) dn=170.124
+SAVA=6.183211732625841,MRNA=2.812228199594111,ADI=0.372669347064486,IDYA=0.13937853570549694
+unsubcribeStockSet size: 300 1697549400910
+StockEvent(stock=SHYF, price=13.9, time=1697549400062) dn=14.028
+unsubcribeStockSet size: 400 1697549400943
+StockEvent(stock=PLPC, price=141.51, time=1697549400061) dn=142.124
+SAVA=6.183211732625841,MRNA=2.812228199594111,PLPC=0.4320171118178523,ADI=0.372669347064486,IDYA=0.13937853570549694
+StockEvent(stock=QRVO, price=90.79, time=1697549400072) dn=91.176
+SAVA=6.183211732625841,MRNA=2.812228199594111,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486,IDYA=0.13937853570549694
+StockEvent(stock=VICR, price=53.43, time=1697549400076) dn=53.713
+SAVA=6.183211732625841,MRNA=2.812228199594111,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486,IDYA=0.13937853570549694
+StockEvent(stock=SLAB, price=108.93, time=1697549400105) dn=109.923
+SAVA=6.183211732625841,MRNA=2.812228199594111,SLAB=0.9033596244643933,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486,IDYA=0.13937853570549694
+unsubcribeStockSet size: 500 1697549400994
+StockEvent(stock=KLIC, price=45.62, time=1697549400045) dn=45.623
+StockEvent(stock=NTCT, price=21.15, time=1697549400148) dn=23.954
+unsubcribeStockSet size: 600 1697549401032
+StockEvent(stock=JAMF, price=15.72, time=1697549400061) dn=15.768
+StockEvent(stock=QTRX, price=19.87, time=1697549400072) dn=19.919
+SAVA=6.183211732625841,MRNA=2.812228199594111,SLAB=0.9033596244643933,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486,QTRX=0.24599628495406137,IDYA=0.13937853570549694
+StockEvent(stock=PDFS, price=30.0, time=1697549400134) dn=30.145
+StockEvent(stock=ALRM, price=57.12, time=1697549400150) dn=57.47
+SAVA=6.183211732625841,MRNA=2.812228199594111,SLAB=0.9033596244643933,ALRM=0.609013398294765,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486,QTRX=0.24599628495406137,IDYA=0.13937853570549694
+StockEvent(stock=BNTX, price=96.06, time=1697549400143) dn=97.115
+SAVA=6.183211732625841,MRNA=2.812228199594111,BNTX=1.0863409360036995,SLAB=0.9033596244643933,ALRM=0.609013398294765,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486,QTRX=0.24599628495406137
+StockEvent(stock=CONX, price=10.38, time=1697549400142) dn=10.382
+unsubcribeStockSet size: 700 1697549401375
+StockEvent(stock=CRMT, price=81.1, time=1697549400232) dn=81.355
+unsubcribeStockSet size: 800 1697549401398
+StockEvent(stock=PNC, price=117.1, time=1697549400416) dn=117.508
+SAVA=6.183211732625841,MRNA=2.812228199594111,BNTX=1.0863409360036995,SLAB=0.9033596244643933,ALRM=0.609013398294765,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486,PNC=0.34721040269598774
+StockEvent(stock=HIFS, price=157.97, time=1697549400381) dn=161.413
+unsubcribeStockSet size: 900 1697549401418
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,BNTX=1.0863409360036995,SLAB=0.9033596244643933,ALRM=0.609013398294765,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825,ADI=0.372669347064486
+StockEvent(stock=NVMI, price=101.96, time=1697549400399) dn=103.308
+StockEvent(stock=MANU, price=17.71, time=1697549400512) dn=17.863
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,BNTX=1.0863409360036995,SLAB=0.9033596244643933,MANU=0.8565190617477394,ALRM=0.609013398294765,VICR=0.5268743134809101,PLPC=0.4320171118178523,QRVO=0.4233570237781825
+unsubcribeStockSet size: 1000 1697549401446
+StockEvent(stock=BDC, price=75.1, time=1697549400554) dn=76.48
+StockEvent(stock=GOCO, price=12.56, time=1697549400571) dn=12.95
+unsubcribeStockSet size: 1100 1697549401496
+StockEvent(stock=CNK, price=16.32, time=1697549400652) dn=16.403
+StockEvent(stock=HWM, price=44.41, time=1697549400673) dn=44.47
+StockEvent(stock=ACEL, price=10.11, time=1697549400685) dn=10.186
+unsubcribeStockSet size: 1200 1697549401505
+StockEvent(stock=JELD, price=11.91, time=1697549400692) dn=12.019
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,BNTX=1.0863409360036995,JELD=0.9068974124303184,SLAB=0.9033596244643933,MANU=0.8565190617477394,ALRM=0.609013398294765,VICR=0.5268743134809101,PLPC=0.4320171118178523
+StockEvent(stock=ZTO, price=23.58, time=1697549400698) dn=23.625
+StockEvent(stock=CMC, price=42.2, time=1697549400705) dn=42.624
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,BNTX=1.0863409360036995,CMC=0.9947447447447435,JELD=0.9068974124303184,SLAB=0.9033596244643933,MANU=0.8565190617477394,ALRM=0.609013398294765,VICR=0.5268743134809101
+unsubcribeStockSet size: 1300 1697549401513
+StockEvent(stock=PAGS, price=7.64, time=1697549400708) dn=7.741
+unsubcribeStockSet size: 1400 1697549401538
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,PAGS=1.3047409895362354,BNTX=1.0863409360036995,CMC=0.9947447447447435,JELD=0.9068974124303184,SLAB=0.9033596244643933,MANU=0.8565190617477394,ALRM=0.609013398294765
+unsubcribeStockSet size: 1500 1697549401547
+StockEvent(stock=IEX, price=201.24, time=1697549400769) dn=201.403
+StockEvent(stock=BIDU, price=121.32, time=1697549400753) dn=123.331
+unsubcribeStockSet size: 1600 1697549401556
+StockEvent(stock=PHR, price=16.1, time=1697549400753) dn=16.244
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,PAGS=1.3047409895362354,BNTX=1.0863409360036995,CMC=0.9947447447447435,JELD=0.9068974124303184,SLAB=0.9033596244643933,PHR=0.8864811622752915,MANU=0.8565190617477394
+StockEvent(stock=RYI, price=27.1, time=1697549400793) dn=27.479
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,RYI=1.3792350522216885,PAGS=1.3047409895362354,BNTX=1.0863409360036995,CMC=0.9947447447447435,JELD=0.9068974124303184,SLAB=0.9033596244643933,PHR=0.8864811622752915
+StockEvent(stock=TMST, price=20.06, time=1697549400796) dn=20.141
+StockEvent(stock=CRSR, price=13.315, time=1697549400799) dn=13.348
+StockEvent(stock=LXFR, price=9.5, time=1697549400755) dn=9.529
+unsubcribeStockSet size: 1700 1697549401574
+StockEvent(stock=ATI, price=37.15, time=1697549400682) dn=37.335
+StockEvent(stock=AFRI, price=10.55, time=1697549400806) dn=10.635
+StockEvent(stock=UCTT, price=26.39, time=1697549400709) dn=26.674
+SAVA=6.183211732625841,MRNA=2.812228199594111,HIFS=2.13303761159263,RYI=1.3792350522216885,PAGS=1.3047409895362354,BNTX=1.0863409360036995,UCTT=1.0647072055184785,CMC=0.9947447447447435,JELD=0.9068974124303184,SLAB=0.9033596244643933
+unsubcribeStockSet size: 1800 1697549401629
+StockEvent(stock=KN, price=13.79, time=1697549400849) dn=13.869
+StockEvent(stock=JANX, price=8.57, time=1697549400838) dn=8.571
+StockEvent(stock=OMI, price=14.6, time=1697549400863) dn=14.607
+StockEvent(stock=VSH, price=23.59, time=1697549400854) dn=23.624
+unsubcribeStockSet size: 1900 1697549401641
+StockEvent(stock=FOR, price=24.5, time=1697549400670) dn=24.651
+unsubcribeStockSet size: 2000 1697549401665
+StockEvent(stock=TARO, price=34.04, time=1697549400756) dn=34.191
+unsubcribeStockSet size: 2100 1697549401675
+StockEvent(stock=KE, price=26.0, time=1697549400973) dn=26.028
+StockEvent(stock=TMO, price=479.0, time=1697549400940) dn=481.314
+StockEvent(stock=MTW, price=13.89, time=1697549400985) dn=13.89
+unsubcribeStockSet size: 2200 1697549401690
+unsubcribeStockSet size: 2300 1697549401731
+StockEvent(stock=ITRN, price=26.44, time=1697549401291) dn=27.209
+SAVA=6.183211732625841,ITRN=2.8262707192473018,MRNA=2.812228199594111,HIFS=2.13303761159263,RYI=1.3792350522216885,PAGS=1.3047409895362354,BNTX=1.0863409360036995,UCTT=1.0647072055184785,CMC=0.9947447447447435,JELD=0.9068974124303184
+StockEvent(stock=JAKK, price=16.7, time=1697549401313) dn=16.754
+StockEvent(stock=ICHR, price=28.9, time=1697549401346) dn=28.921
+StockEvent(stock=IRAA, price=10.32, time=1697549424788) dn=10.338
+now time is over! listen end!
+unsubcribeStockSet size: 2400 1697549431091
+unsubcribeStockSet size: 2500 1697549431092
+unsubcribeStockSet size: 2600 1697549431092
+=========== finish unsubscribe ===========
+SAVA=6.183211732625841,ITRN=2.8262707192473018,MRNA=2.812228199594111,HIFS=2.13303761159263,RYI=1.3792350522216885,PAGS=1.3047409895362354,BNTX=1.0863409360036995,UCTT=1.0647072055184785,CMC=0.9947447447447435,JELD=0.9068974124303184
+remain cash: 8192.689999999944
+buy stock. stock=SAVA, count=637, price=12.73, orderPrice=12.85, orderId: 128899525094702054
+update order: OrderFill(tradeSide=1, fillID=0, orderID=128899525094702054, code=SAVA, name=Cassava Sciences, count=637.0, price=12.85, avgPrice=12.77, createTime=2023-10-17 09:30:31, updateTimestamp=1.697549435E9, status=0)
+SAVA order is successfully executed. orderId: 128899525094702054
+buy stock. stock=ITRN, count=1, price=26.44, orderPrice=26.7, orderId: 128899529389669349
+ITRN order has been canceled. orderId: 128899529389669349, cancel res code: 0
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {SAVA=StopLoss(stock=SAVA, canSellQty=637.0, lossPrice=11.876)}
+{p=13.645, ev=T, q=465683, s=90, c=[37], t=1697550277000, sym=SAVA, trfi=202, x=4, i=835, z=3, trft=1697550277000}
+{p=13.7001, ev=T, q=512040, s=26, c=[37], t=1697550430000, sym=SAVA, trfi=202, x=4, i=1008, z=3, trft=1697550430000}
+{p=13.72, ev=T, q=565069, s=3, c=[14,37,41], t=1697550606000, sym=SAVA, x=12, i=655, z=3}
+{p=13.72, ev=T, q=565070, s=3, c=[14,37,41], t=1697550606000, sym=SAVA, x=12, i=656, z=3}
+{p=13.72, ev=T, q=565075, s=2, c=[14,37,41], t=1697550606000, sym=SAVA, x=8, i=477, z=3}
+{p=13.72, ev=T, q=565076, s=13, c=[14,37,41], t=1697550606000, sym=SAVA, x=8, i=478, z=3}
+{p=13.72, ev=T, q=565077, s=1, c=[14,37,41], t=1697550606000, sym=SAVA, x=8, i=479, z=3}
+{p=14.0314, ev=T, q=1130021, s=76, c=[37], t=1697552714000, sym=SAVA, trfi=202, x=4, i=2373, z=3, trft=1697552714000}
+{p=13.985, ev=T, q=1232941, s=2, c=[37], t=1697553176000, sym=SAVA, x=11, i=482, z=3}
+{p=13.985, ev=T, q=1232942, s=1, c=[37], t=1697553176000, sym=SAVA, trfi=202, x=4, i=2537, z=3, trft=1697553176000}
+{p=14.0086, ev=T, q=1233181, s=1, c=[37], t=1697553178000, sym=SAVA, trfi=202, x=4, i=2538, z=3, trft=1697553178000}
+{p=14.0401, ev=T, q=1297430, s=3, c=[37], t=1697553431000, sym=SAVA, trfi=202, x=4, i=2654, z=3, trft=1697553431000}
+{p=14.25, ev=T, q=1361968, s=1, c=[37], t=1697553750000, sym=SAVA, x=12, i=1930, z=3}
+{p=14.25, ev=T, q=1361969, s=1, c=[37], t=1697553750000, sym=SAVA, x=12, i=1931, z=3}
+{p=14.25, ev=T, q=1361970, s=1, c=[37], t=1697553750000, sym=SAVA, x=12, i=1932, z=3}
+{p=14.25, ev=T, q=1361971, s=4, c=[37], t=1697553750000, sym=SAVA, x=12, i=1933, z=3}
+{p=14.25, ev=T, q=1361972, s=50, c=[14,37,41], t=1697553750000, sym=SAVA, x=8, i=1039, z=3}
+{p=14.25, ev=T, q=1361973, s=2, c=[37], t=1697553750000, sym=SAVA, x=12, i=1934, z=3}
+{p=14.25, ev=T, q=1361974, s=1, c=[14,37,41], t=1697553750000, sym=SAVA, x=8, i=1040, z=3}
+{p=14.25, ev=T, q=1361975, s=50, c=[14,37,41], t=1697553750000, sym=SAVA, x=8, i=1041, z=3}
+{p=14.25, ev=T, q=1361976, s=169, c=[14,41], t=1697553750000, sym=SAVA, x=8, i=1042, z=3}
+{p=14.29, ev=T, q=1907836, s=14, c=[37], t=1697556396000, sym=SAVA, x=12, i=2664, z=3}
+{p=14.29, ev=T, q=1907837, s=1, c=[37], t=1697556396000, sym=SAVA, x=19, i=702, z=3}
+{p=14.29, ev=T, q=1907838, s=16, c=[37], t=1697556396000, sym=SAVA, x=19, i=703, z=3}
+{p=14.28, ev=T, q=5059731, s=8, c=[37], t=1697572728000, sym=SAVA, trfi=202, x=4, i=7940, z=3, trft=1697572728000}
+ready to sell before close market. position={SAVA=StockPosition(stock=SAVA, canSellQty=637.0, costPrice=12.77, currPrice=14.22)}, time=2023-10-18T03:59:00.670
+before close sell stock. stock=SAVA, count=637.0, currentPrice=14.22, orderPrice=14.07
+before close sell stock. stock=SAVA, orderId：129268054762214499
+update order: OrderFill(tradeSide=2, fillID=0, orderID=129268054762214499, code=SAVA, name=Cassava Sciences, count=637.0, price=14.07, avgPrice=14.27, createTime=2023-10-17 15:59:00, updateTimestamp=1.697572744E9, status=0)
+{p=14.3, ev=T, q=5127060, s=61, c=[37], t=1697572782000, sym=SAVA, x=12, i=6566, z=3}
+all stock has stop loss
+trade exit

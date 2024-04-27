@@ -1,0 +1,63 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7145779915064490264
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1703687280000, openTime=1703687400000, closeCheckTime=Thu Dec 28 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 525
+stock overbolling hit great 0.500000 size: 458
+filter merge stock, the stock set size is 458
+filter split stock, the stock set size is 458
+filter front reinstatement less 0.98 stock, the stock set size is 434
+filter earning and lastEarning stock, the stock set size is 432
+after filte: [FRSH, SCS, CMRE, LEGN, YPF, TGTX, BILL, BILI, HALO, WLY, AL, AAL, WMG, AAP, TGH, SNCY, XOM, WMT, GOLD, GNK, ABG, WNC, FICO, CECO, DHT, BYND, BV, W, BZ, Z, SFM, AXNX, URGN, ATHM, RDY, BEP, ACN, ITOS, VRDN, ENOV, INCY, GPC, FAST, ALXO, VIST, ELF, AMZN, CHH, INFA, RARE, PLMR, REZI, BFH, DK, EWCZ, GPS, NTCT, PBF, PBH, ACGL, EA, DKNG, AEE, BGNE, AVNS, MSCI, AEL, TCOM, AEO, RGA, HCSG, REYN, LFMD, PCH, DECK, BEKE, FL, FIGS, MSFT, PDD, HARP, GH, GOOG, HOLI, AGO, BLZE, TME, WSM, LULU, SSTK, LQDT, PEN, CLVT, EPC, STVN, FRO, AFRI, EVEX, FOUR, SLB, AMSWA, HLIO, CLS, CEIX, TNK, TNP, QNST, WTW, VERX, SQSP, SPOT, CRDO, DINO, VSH, GGAL, BSIG, TOL, MELI, ZIMV, AIZ, VERA, ADNT, JD, FTI, PGR, HOOD, EVER, CNK, MAT, CSGS, CSGP, AMAM, IONS, IONQ, ARKO, PINC, BMA, PHR, SAVE, SAVA, OFIX, GWW, SOI, KW, BMY, CHRW, AMBA, NEM, IART, CVNA, NEO, IRTC, DRH, MCS, LI, TTWO, MCW, XPEV, ANET, SPB, SPH, ABNB, NBHC, LZ, MA, CTKB, RNR, INOD, HNRG, YUMC, ROVR, HRZN, TASK, BRKR, ORCL, MX, AMX, ROP, CENX, EBAY, SNPS, YELP, ANF, EGLE, KAR, CRK, TRUP, NR, TTD, UVE, EXPD, AKAM, EXPE, CWST, BMBL, SRI, ANGO, XNCR, MUSA, MNDY, OC, BERY, AMED, NCLH, NRIX, RPT, ATSG, VSTM, AON, PDFS, LEA, GKOS, NEOG, LEG, BRC, PD, APLD, CDNS, BUSE, FTDR, APP, AAPL, MTRX, AMGN, DUOL, PNM, OLK, MHK, NCNO, NGVT, ALEC, CUK, CHWY, LBRT, DOCU, JBT, META, METC, JRVR, PGNY, BLCO, NKE, EDIT, OMI, IAC, EPAC, NTNX, RH, IAS, KEX, BTU, TXG, FLYW, INTU, ALGT, NETI, KIDS, HCAT, QLYS, EXTR, ASC, IBP, ASH, DYN, BUR, SIMO, KFY, SR, CLBT, LSTR, HAE, MANH, MLCO, IIIV, NMM, LIN, HAL, SWX, BVH, TK, EHTH, RIOT, APPF, ATR, MSTR, TW, CROX, UA, BWA, COIN, JAZZ, ORLY, RGNX, LOPE, VCYT, AMLX, DCPH, PSN, AVA, VC, AVD, LKQ, GABC, EVTC, FBIN, KMPR, OSPN, ORI, HDB, GSHD, ALKT, AHCO, ALKS, BASE, RPAY, SHOO, LMND, ESNT, GRFS, WU, NCTY, WW, OMCL, RYI, RVLV, CMCSA, IGT, CPNG, VAC, AXS, RXST, PVH, BIDU, TSCO, BBWI, NARI, BCYC, LNW, FERG, IRBT, XPRO, YY, KMB, ALNY, ZG, SRCL, FCN, GEO, FVRR, UAA, GES, AVAV, LOW, HGV, AZO, KMX, IMXI, LYFT, PXD, TSEM, UAL, ROCK, REPL, PANL, FUSN, JLL, DOMO, KNX, SBGI, USCB, CASY, VLRS, DOLE, MLKN, MSM, DAL, SCHL, ETSY, LXFR, CNNE, TAL, GOOGL, TAP, NAVI, MTN, VEEV, DASH, NVT, URBN, PSTG, TREX, TBI, CPSI, NWE, DNLI, DCI, BEAM, CORT, FUTU, MYGN, ADBE, MNRO, SGRY, CWAN, STLD, OPRX, EFC, SNBR, UTHR, BNTX, VKTX, FWONA, AGIO, FWONK, ALSN, ACAD, ONON, VIPS, RMBL, SBS, HMN, RMBS, CCJ, SNAP, EGO, CCL, BECN, CMPS, SCI, STNG, JACK]
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:00
+finish subcribe real time!
+time is early. {p=146.23, ev=T, q=89745, s=9, c=[14,12,37,41], t=1703687282000, sym=PDD, x=12, i=149, z=3}
+{p=146.23, ev=T, q=89745, s=9, c=[14,12,37,41], t=1703687282000, sym=PDD, x=12, i=149, z=3}
+time is early. {p=192.38, ev=T, q=348833, s=25, c=[14,12,37,41], t=1703687360000, sym=AAPL, x=12, i=1993, z=3}
+{p=192.38, ev=T, q=348833, s=25, c=[14,12,37,41], t=1703687360000, sym=AAPL, x=12, i=1993, z=3}
+StockEvent(stock=CROX, price=96.88, time=1703687400001) dn=97.256 current=1703687400134
+CROX=0.38660853829070163
+unsubscribeStockSet size: 100 1703687400240
+unsubscribeStockSet size: 200 1703687400692
+StockEvent(stock=OLK, price=25.24, time=1703687400716) dn=25.288 current=1703687400830
+unsubscribeStockSet size: 300 1703687400859
+unsubscribeStockSet size: 400 1703687401144
+many stock has received data. keep listening
+receive all open price! start trade!
+=========== finish unsubscribe ===========
+get real-time quote: [CROX]
+quote price(time=1703687406942): {CROX=96.88}
+quote price(time=1703687406943): {CROX=96.88}
+quote price(time=1703687407625): {CROX=96.67}
+CROX=0.38660853829070163
+onReply_GetFunds: 1319.02
+remain cash: 1319.02
+first trade. orderPrice=96.96, multiple=1
+onReply_GetMaxTrdQtys: 13
+buy stock. stock=CROX, count=13, price=96.67, orderPrice=96.96, orderId: 587505602099986133 1703687408057
+CROX order is successfully executed. orderId=587505602099986133
+update order: OrderFill(tradeSide=1, fillID=0, orderID=587505602099986133, code=CROX, name=卡骆驰, count=13.0, price=96.96, avgPrice=96.6315, createTime=2023-12-27 09:30:08.027, updateTimestamp=1.703687408542896E9, status=0)
+CROX placeStopLoss market order. qty=13.0, auxPrice=89.867, orderId：1920942147236390277
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+unlock success
+ready to sell before close market. position={CROX=StockPosition(stock=CROX, canSellQty=13.0, costPrice=96.632, currPrice=94.325)}, time=2023-12-28T04:58:59.367
+before close sell stock for market price. stock=CROX, count=13.0
+sell stock orderId=4427834824110890841
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4427834824110890841, code=CROX, name=???, count=13.0, price=0.0, avgPrice=94.4017, createTime=2023-12-27 15:58:59.520, updateTimestamp=1.703710739940071E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=4427834824110890841, code=CROX, name=???, count=13.0, price=0.0, avgPrice=94.4017, createTime=2023-12-27 15:58:59.520, updateTimestamp=1.703710739940071E9, status=0)
+sell stock success. stock=CROX, orderId=4427834824110890841
+tradeExecutor_db sell

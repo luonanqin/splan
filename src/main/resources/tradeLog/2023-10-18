@@ -1,0 +1,141 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7120398149305592202
+trade api initialize finish start!
+unlock success
+stock latest close great 7 size: 3456
+stock overbolling hit great 0.500000 size: 2812
+filter merge stock, the stock set size is 2812
+filter split stock, the stock set size is 2805
+filter front reinstatement less 0.98 stock, the stock set size is 2665
+filter earning and lastEarning stock, the stock set size is 2665
+finish initialize many time. preTradeTime=1697635680000, openTime=1697635800000, closeCheckTime=Thu Oct 19 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Oct 18, 2023 9:20:58 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:27:27
+wait pre trade time. now is 21:27:32
+wait pre trade time. now is 21:27:37
+wait pre trade time. now is 21:27:42
+wait pre trade time. now is 21:27:47
+wait pre trade time. now is 21:27:52
+wait pre trade time. now is 21:27:57
+begin subcribe stock at 21:28:02
+finish subcribe real time!
+time is early
+{p=7.62, ev=T, q=220579, s=10, c=[12,37], t=1697635692000, sym=PLUG, trfi=202, x=4, i=182, z=3, trft=1697635692000}
+time is early
+{p=175.41, ev=T, q=172318, s=15, c=[12,37], t=1697635694000, sym=AAPL, x=12, i=2130, z=3}
+time is early
+{p=175.41, ev=T, q=172319, s=50, c=[12,37], t=1697635694000, sym=AAPL, x=12, i=2131, z=3}
+time is early
+{p=175.41, ev=T, q=172320, s=50, c=[12,37], t=1697635694000, sym=AAPL, x=12, i=2132, z=3}
+time is early
+{p=175.41, ev=T, q=172321, s=50, c=[12,37], t=1697635694000, sym=AAPL, x=12, i=2133, z=3}
+time is early
+{p=175.4, ev=T, q=172322, s=126, c=[12], t=1697635694000, sym=AAPL, x=12, i=2134, z=3}
+time is early
+{p=175.42, ev=T, q=172323, s=9, c=[12,37], t=1697635694000, sym=AAPL, x=11, i=2502, z=3}
+time is early
+{p=175.45, ev=T, q=172372, s=1, c=[14,12,37,41], t=1697635696000, sym=AAPL, x=8, i=1640, z=3}
+time is early
+{p=175.45, ev=T, q=172373, s=31, c=[12,37], t=1697635696000, sym=AAPL, x=8, i=1641, z=3}
+time is early
+{p=123.11, ev=T, q=175191, s=100, c=[12], t=1697635790000, sym=ABNB, x=11, i=237, z=3}
+time is early
+{p=123.11, ev=T, q=175192, s=9, c=[14,12,37,41], t=1697635790000, sym=ABNB, x=19, i=32, z=3}
+StockEvent(stock=CLDX, price=24.06, time=1697635800004) dn=24.485
+CLDX=1.7357565856646957
+unsubcribeStockSet size: 100 1697635800380
+StockEvent(stock=JANX, price=7.75, time=1697635800005) dn=8.034
+JANX=3.5349763505103398,CLDX=1.7357565856646957
+StockEvent(stock=NFLX, price=351.31, time=1697635800000) dn=352.229
+StockEvent(stock=RGEN, price=144.2, time=1697635800006) dn=145.883
+unsubcribeStockSet size: 200 1697635800397
+StockEvent(stock=NRDS, price=8.05, time=1697635800001) dn=8.062
+StockEvent(stock=MRNA, price=85.55, time=1697635800004) dn=88.779
+StockEvent(stock=JD, price=26.24, time=1697635800021) dn=26.423
+unsubcribeStockSet size: 300 1697635800398
+StockEvent(stock=ALRM, price=56.99, time=1697635800003) dn=57.084
+unsubcribeStockSet size: 400 1697635800402
+StockEvent(stock=AGIO, price=22.38, time=1697635800068) dn=22.464
+StockEvent(stock=CHRW, price=83.34, time=1697635800004) dn=83.722
+StockEvent(stock=UAL, price=38.02, time=1697635800007) dn=38.19
+StockEvent(stock=PHAT, price=9.09, time=1697635800070) dn=9.31
+StockEvent(stock=NTCT, price=23.07, time=1697635800088) dn=23.931
+StockEvent(stock=SLAB, price=105.28, time=1697635800109) dn=107.447
+JANX=3.5349763505103398,SLAB=2.016808286876322,CLDX=1.7357565856646957
+unsubcribeStockSet size: 500 1697635800436
+StockEvent(stock=CDMO, price=7.71, time=1697635800109) dn=7.763
+unsubcribeStockSet size: 600 1697635800451
+StockEvent(stock=SWKS, price=94.47, time=1697635800056) dn=94.529
+unsubcribeStockSet size: 700 1697635800525
+StockEvent(stock=BIDU, price=117.2, time=1697635800236) dn=120.218
+JANX=3.5349763505103398,BIDU=2.510439368480594,SLAB=2.016808286876322,CLDX=1.7357565856646957
+unsubcribeStockSet size: 800 1697635800667
+unsubcribeStockSet size: 900 1697635800704
+StockEvent(stock=MKSI, price=78.84, time=1697635800249) dn=78.996
+StockEvent(stock=NVMI, price=102.28, time=1697635800387) dn=102.833
+unsubcribeStockSet size: 1000 1697635800799
+unsubcribeStockSet size: 1100 1697635800835
+unsubcribeStockSet size: 1200 1697635800862
+StockEvent(stock=ACR, price=7.22, time=1697635800671) dn=7.581
+ACR=4.76190476190477,JANX=3.5349763505103398,BIDU=2.510439368480594,SLAB=2.016808286876322,CLDX=1.7357565856646957
+StockEvent(stock=ALC, price=72.94, time=1697635800689) dn=73.124
+StockEvent(stock=KLIC, price=45.33, time=1697635800612) dn=45.341
+StockEvent(stock=UCTT, price=26.43, time=1697635800600) dn=26.464
+unsubcribeStockSet size: 1300 1697635800980
+unsubcribeStockSet size: 1400 1697635801295
+unsubcribeStockSet size: 1500 1697635801321
+StockEvent(stock=RYAN, price=46.45, time=1697635800775) dn=46.545
+StockEvent(stock=ATHM, price=28.07, time=1697635800798) dn=28.079
+StockEvent(stock=IEX, price=201.11, time=1697635800695) dn=201.116
+unsubcribeStockSet size: 1600 1697635801325
+StockEvent(stock=VSTO, price=24.56, time=1697635800769) dn=25.606
+unsubcribeStockSet size: 1700 1697635801367
+StockEvent(stock=CPLP, price=13.16, time=1697635800722) dn=13.434
+unsubcribeStockSet size: 1800 1697635801371
+StockEvent(stock=HTHT, price=34.25, time=1697635800837) dn=34.449
+StockEvent(stock=PAGS, price=7.63, time=1697635800817) dn=7.665
+unsubcribeStockSet size: 1900 1697635801381
+unsubcribeStockSet size: 2000 1697635801389
+StockEvent(stock=CRMT, price=76.65, time=1697635800937) dn=78.222
+ACR=4.76190476190477,JANX=3.5349763505103398,BIDU=2.510439368480594,SLAB=2.016808286876322,CRMT=2.0096648001840767,CLDX=1.7357565856646957
+unsubcribeStockSet size: 2100 1697635801500
+StockEvent(stock=UNF, price=155.49, time=1697635800935) dn=156.263
+StockEvent(stock=TEX, price=49.67, time=1697635800981) dn=50.754
+ACR=4.76190476190477,JANX=3.5349763505103398,BIDU=2.510439368480594,TEX=2.135792252827356,SLAB=2.016808286876322,CRMT=2.0096648001840767,CLDX=1.7357565856646957
+StockEvent(stock=MLCO, price=8.2, time=1697635800893) dn=8.282
+unsubcribeStockSet size: 2200 1697635801552
+unsubcribeStockSet size: 2300 1697635801723
+StockEvent(stock=HWKN, price=57.22, time=1697635801265) dn=57.393
+StockEvent(stock=HIFS, price=159.38, time=1697635801272) dn=159.588
+StockEvent(stock=CHH, price=115.54, time=1697635825946) dn=116.266
+now time is over! listen end!
+unsubcribeStockSet size: 2400 1697635830160
+unsubcribeStockSet size: 2500 1697635830160
+unsubcribeStockSet size: 2600 1697635830161
+=========== finish unsubscribe ===========
+ACR=4.76190476190477,JANX=3.5349763505103398,BIDU=2.510439368480594,TEX=2.135792252827356,SLAB=2.016808286876322,CRMT=2.0096648001840767,CLDX=1.7357565856646957
+remain cash: 9131.589999999967
+buy stock. stock=ACR, count=1252, price=7.22, orderPrice=7.29, orderId: 138850384464379996
+ACR order is successfully executed. orderId: 138850384464379996
+update order: OrderFill(tradeSide=1, fillID=0, orderID=138850384464379996, code=ACR, name=ACRES Commercial, count=1252.0, price=7.29, avgPrice=7.22, createTime=2023-10-18 09:30:30, updateTimestamp=1.697635832E9, status=0)
+buy stock. stock=JANX, count=9, price=7.75, orderPrice=7.82, orderId: 138850388759347293
+JANX order has been canceled. orderId: 138850388759347293, cancel res code: 0
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {ACR=StopLoss(stock=ACR, canSellQty=1252.0, lossPrice=6.714)}
+CHH don't need stop loss. it'll be unsubscribe
+CHH don't need stop loss. it'll be unsubscribe
+CHH don't need stop loss. it'll be unsubscribe
+CHH don't need stop loss. it'll be unsubscribe
+CHH don't need stop loss. it'll be unsubscribe
+CHH don't need stop loss. it'll be unsubscribe
+CHH don't need stop loss. it'll be unsubscribe
+CARS don't need stop loss. it'll be unsubscribe
+CARS don't need stop loss. it'll be unsubscribe

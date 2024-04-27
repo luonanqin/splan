@@ -1,0 +1,87 @@
+
+finish initialize many time. preTradeTime=1698931680000, openTime=1698931800000, closeCheckTime=Fri Nov 03 03:59:00 CST 2023
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 958
+stock overbolling hit great 0.500000 size: 834
+filter merge stock, the stock set size is 834
+filter split stock, the stock set size is 833
+filter front reinstatement less 0.98 stock, the stock set size is 808
+filter earning and lastEarning stock, the stock set size is 614
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+wait pre trade time. now is 21:27:56
+begin subcribe stock at 21:28:01
+finish subcribe real time!
+time is early. {p=145.85, ev=T, q=65631, s=2, c=[12,37], t=1698931799000, sym=SNOW, x=8, i=52983525242944, z=1}
+{p=145.85, ev=T, q=65631, s=2, c=[12,37], t=1698931799000, sym=SNOW, x=8, i=52983525242944, z=1}
+time is early. {p=142.7, ev=T, q=31109, s=66, c=[12,37], t=1698931799000, sym=HES, x=11, i=52983525167684, z=1}
+{p=142.7, ev=T, q=31109, s=66, c=[12,37], t=1698931799000, sym=HES, x=11, i=52983525167684, z=1}
+StockEvent(stock=HQY, price=68.49, time=1698931800006) dn=68.753 current=1698931799909
+unsubscribeStockSet size: 100 1698931799960
+StockEvent(stock=DGII, price=23.78, time=1698931800092) dn=23.848 current=1698931800000
+StockEvent(stock=ZI, price=12.76, time=1698931800170) dn=12.982 current=1698931800158
+StockEvent(stock=CPNG, price=16.24, time=1698931800349) dn=16.315 current=1698931800245
+CPNG=0.45969966288693126
+unsubscribeStockSet size: 200 1698931800273
+StockEvent(stock=VFC, price=13.3, time=1698931800389) dn=13.35 current=1698931800279
+StockEvent(stock=CTG, price=10.3, time=1698931800399) dn=10.33 current=1698931800322
+unsubscribeStockSet size: 300 1698931800532
+StockEvent(stock=FNV, price=120.01, time=1698931800716) dn=120.893 current=1698931800718
+unsubscribeStockSet size: 400 1698931800719
+StockEvent(stock=MTZ, price=49.19, time=1698931800758) dn=51.182 current=1698931800753
+MTZ=3.891993278887117,CPNG=0.45969966288693126
+StockEvent(stock=SAVE, price=11.25, time=1698931800697) dn=11.573 current=1698931800759
+MTZ=3.891993278887117,SAVE=2.790979002851468,CPNG=0.45969966288693126
+StockEvent(stock=CTLT, price=32.87, time=1698931800671) dn=33.097 current=1698931800776
+unsubscribeStockSet size: 500 1698931800894
+StockEvent(stock=NRT, price=7.96, time=1698931800986) dn=8.947 current=1698931801005
+StockEvent(stock=ASH, price=71.0, time=1698931800920) dn=72.972 current=1698931801120
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+unsubscribeStockSet size: 600 1698931820953
+=========== finish unsubscribe ===========
+get real-time quote: [MTZ, SAVE, CPNG]
+MTZ=3.891993278887117,SAVE=2.790979002851468,CPNG=0.45969966288693126
+remain cash: 8090.900000000023
+buy stock. stock=MTZ, count=162, price=49.19, orderPrice=49.68, orderId: 2649347082150418970 1698931823014
+MTZ order is successfully executed. orderId: 2649347082150418970
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2649347082150418970, code=MTZ, name=MasTec, count=162.0, price=49.68, avgPrice=49.49, createTime=2023-11-02 09:30:22, updateTimestamp=1.698931828E9, status=0)
+buy stock. stock=SAVE, count=6, price=11.28, orderPrice=11.39, orderId: 2649347086445386261 1698931828336
+SAVE order is successfully executed. orderId: 2649347086445386261
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2649347086445386261, code=SAVE, name=Spirit Airlines, count=6.0, price=11.39, avgPrice=11.28, createTime=2023-11-02 09:30:28, updateTimestamp=1.698931833E9, status=0)
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {MTZ=StopLoss(stock=MTZ, canSellQty=162.0, lossPrice=46.025), SAVE=StopLoss(stock=SAVE, canSellQty=6.0, lossPrice=10.49)}
+{p=47.8, ev=T, q=362514, s=100, c=[14,41,60], t=1698933013000, sym=MTZ, x=10, i=52983526274638, z=1}
+{p=47.8, ev=T, q=362515, s=97, c=[37,60], t=1698933013000, sym=MTZ, x=12, i=62879267509593, z=1}
+{p=47.8, ev=T, q=362516, s=100, c=[14,41,60], t=1698933013000, sym=MTZ, x=10, i=52983526274639, z=1}
+{p=47.8, ev=T, q=362517, s=101, c=[14,41,60], t=1698933013000, sym=MTZ, x=10, i=52983526274640, z=1}
+{p=11.72, ev=T, q=434523, s=47, c=[37], t=1698933020000, sym=SAVE, x=12, i=62879267631970, z=1}
+{p=11.61, ev=T, q=549076, s=100, t=1698933459000, sym=SAVE, trfi=202, x=4, i=71675877606967, z=1, trft=1698933459000}
+{p=11.62, ev=T, q=599087, s=3, c=[37], t=1698933673000, sym=SAVE, x=12, i=62879315477594, z=1}
+MTZ touch the stop loss. current price=46.02, lossPrice=46.025, orderPrice=45.56
+MTZ placeStopLoss limit order. qty=162.0, price=45.56, orderId: 2649493351559291411
+MTZ don't need stop loss. it'll be unsubscribe
+MTZ don't need stop loss. it'll be unsubscribe
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2649493351559291411, code=MTZ, name=MasTec, count=162.0, price=45.56, avgPrice=46.06, createTime=2023-11-02 10:10:03, updateTimestamp=1.698934208E9, status=0)
+ready to sell before close market. position={SAVE=StockPosition(stock=SAVE, canSellQty=6.0, costPrice=11.28, currPrice=11.125)}, time=2023-11-03T03:59:00.046
+before close sell stock. stock=SAVE, count=6.0, currentPrice=11.125, orderPrice=11.01
+before close sell stock. stock=SAVE, orderId：2658779736536762891
+update order: OrderFill(tradeSide=2, fillID=0, orderID=2658779736536762891, code=SAVE, name=Spirit Airlines, count=6.0, price=11.01, avgPrice=11.11, createTime=2023-11-02 15:59:00, updateTimestamp=1.698955141E9, status=0)
+{p=11.1, ev=T, q=4605676, s=100, t=1698955200000, sym=SAVE, x=10, i=52983559181377, z=1}
+all stock has stop loss
+trade exit
+closing websocket. reason=CloseReason[1000]
+manual close websocket

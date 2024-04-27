@@ -1,0 +1,480 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7102997277452354294
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3692
+stock overbolling hit great 0.600000 size: 3379
+filter merge stock, the stock set size is 3379
+filter split stock, the stock set size is 3371
+filter front reinstatement less 0.98 stock, the stock set size is 3196
+finish initialize many time. preTradeTime=1693488480000, openTime=1693488600000, closeCheckTime=Fri Sep 01 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Aug 31, 2023 8:55:57 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 20:56:00
+wait pre trade time. now is 20:56:05
+wait pre trade time. now is 20:56:10
+wait pre trade time. now is 20:56:15
+wait pre trade time. now is 20:56:20
+wait pre trade time. now is 20:56:25
+wait pre trade time. now is 20:56:30
+wait pre trade time. now is 20:56:35
+wait pre trade time. now is 20:56:40
+wait pre trade time. now is 20:56:45
+wait pre trade time. now is 20:56:50
+wait pre trade time. now is 20:56:55
+wait pre trade time. now is 20:57:00
+wait pre trade time. now is 20:57:05
+wait pre trade time. now is 20:57:10
+wait pre trade time. now is 20:57:15
+wait pre trade time. now is 20:57:20
+wait pre trade time. now is 20:57:25
+wait pre trade time. now is 20:57:30
+wait pre trade time. now is 20:57:35
+wait pre trade time. now is 20:57:40
+wait pre trade time. now is 20:57:45
+wait pre trade time. now is 20:57:50
+wait pre trade time. now is 20:57:55
+wait pre trade time. now is 20:58:00
+wait pre trade time. now is 20:58:05
+wait pre trade time. now is 20:58:10
+wait pre trade time. now is 20:58:16
+wait pre trade time. now is 20:58:21
+wait pre trade time. now is 20:58:26
+wait pre trade time. now is 20:58:31
+wait pre trade time. now is 20:58:36
+wait pre trade time. now is 20:58:41
+wait pre trade time. now is 20:58:46
+wait pre trade time. now is 20:58:51
+wait pre trade time. now is 20:58:56
+wait pre trade time. now is 20:59:01
+wait pre trade time. now is 20:59:06
+wait pre trade time. now is 20:59:11
+wait pre trade time. now is 20:59:16
+wait pre trade time. now is 20:59:21
+wait pre trade time. now is 20:59:26
+wait pre trade time. now is 20:59:31
+wait pre trade time. now is 20:59:36
+wait pre trade time. now is 20:59:41
+wait pre trade time. now is 20:59:46
+wait pre trade time. now is 20:59:51
+wait pre trade time. now is 20:59:56
+wait pre trade time. now is 21:00:01
+wait pre trade time. now is 21:00:06
+wait pre trade time. now is 21:00:11
+wait pre trade time. now is 21:00:16
+wait pre trade time. now is 21:00:21
+wait pre trade time. now is 21:00:26
+wait pre trade time. now is 21:00:31
+wait pre trade time. now is 21:00:36
+wait pre trade time. now is 21:00:41
+wait pre trade time. now is 21:00:46
+wait pre trade time. now is 21:00:51
+wait pre trade time. now is 21:00:56
+wait pre trade time. now is 21:01:01
+wait pre trade time. now is 21:01:06
+wait pre trade time. now is 21:01:11
+wait pre trade time. now is 21:01:16
+wait pre trade time. now is 21:01:21
+wait pre trade time. now is 21:01:26
+wait pre trade time. now is 21:01:31
+wait pre trade time. now is 21:01:36
+wait pre trade time. now is 21:01:41
+wait pre trade time. now is 21:01:46
+wait pre trade time. now is 21:01:51
+wait pre trade time. now is 21:01:56
+wait pre trade time. now is 21:02:01
+wait pre trade time. now is 21:02:06
+wait pre trade time. now is 21:02:11
+wait pre trade time. now is 21:02:16
+wait pre trade time. now is 21:02:21
+wait pre trade time. now is 21:02:26
+wait pre trade time. now is 21:02:31
+wait pre trade time. now is 21:02:36
+wait pre trade time. now is 21:02:41
+wait pre trade time. now is 21:02:46
+wait pre trade time. now is 21:02:51
+wait pre trade time. now is 21:02:56
+wait pre trade time. now is 21:03:01
+wait pre trade time. now is 21:03:06
+wait pre trade time. now is 21:03:11
+wait pre trade time. now is 21:03:16
+wait pre trade time. now is 21:03:21
+wait pre trade time. now is 21:03:26
+wait pre trade time. now is 21:03:31
+wait pre trade time. now is 21:03:36
+wait pre trade time. now is 21:03:41
+wait pre trade time. now is 21:03:46
+wait pre trade time. now is 21:03:51
+wait pre trade time. now is 21:03:56
+wait pre trade time. now is 21:04:01
+wait pre trade time. now is 21:04:06
+wait pre trade time. now is 21:04:11
+wait pre trade time. now is 21:04:16
+wait pre trade time. now is 21:04:21
+wait pre trade time. now is 21:04:26
+wait pre trade time. now is 21:04:31
+wait pre trade time. now is 21:04:36
+wait pre trade time. now is 21:04:41
+wait pre trade time. now is 21:04:46
+wait pre trade time. now is 21:04:51
+wait pre trade time. now is 21:04:56
+wait pre trade time. now is 21:05:01
+wait pre trade time. now is 21:05:06
+wait pre trade time. now is 21:05:11
+wait pre trade time. now is 21:05:16
+wait pre trade time. now is 21:05:21
+wait pre trade time. now is 21:05:26
+wait pre trade time. now is 21:05:31
+wait pre trade time. now is 21:05:36
+wait pre trade time. now is 21:05:41
+wait pre trade time. now is 21:05:46
+wait pre trade time. now is 21:05:51
+wait pre trade time. now is 21:05:56
+wait pre trade time. now is 21:06:01
+wait pre trade time. now is 21:06:06
+wait pre trade time. now is 21:06:11
+wait pre trade time. now is 21:06:16
+wait pre trade time. now is 21:06:21
+wait pre trade time. now is 21:06:26
+wait pre trade time. now is 21:06:31
+wait pre trade time. now is 21:06:36
+wait pre trade time. now is 21:06:41
+wait pre trade time. now is 21:06:46
+wait pre trade time. now is 21:06:51
+wait pre trade time. now is 21:06:56
+wait pre trade time. now is 21:07:01
+wait pre trade time. now is 21:07:06
+wait pre trade time. now is 21:07:11
+wait pre trade time. now is 21:07:16
+wait pre trade time. now is 21:07:21
+wait pre trade time. now is 21:07:26
+wait pre trade time. now is 21:07:31
+wait pre trade time. now is 21:07:36
+wait pre trade time. now is 21:07:41
+wait pre trade time. now is 21:07:46
+wait pre trade time. now is 21:07:51
+wait pre trade time. now is 21:07:56
+wait pre trade time. now is 21:08:01
+wait pre trade time. now is 21:08:06
+wait pre trade time. now is 21:08:11
+wait pre trade time. now is 21:08:16
+wait pre trade time. now is 21:08:21
+wait pre trade time. now is 21:08:26
+wait pre trade time. now is 21:08:31
+wait pre trade time. now is 21:08:36
+wait pre trade time. now is 21:08:41
+wait pre trade time. now is 21:08:46
+wait pre trade time. now is 21:08:51
+wait pre trade time. now is 21:08:56
+wait pre trade time. now is 21:09:01
+wait pre trade time. now is 21:09:06
+wait pre trade time. now is 21:09:11
+wait pre trade time. now is 21:09:16
+wait pre trade time. now is 21:09:21
+wait pre trade time. now is 21:09:26
+wait pre trade time. now is 21:09:31
+wait pre trade time. now is 21:09:36
+wait pre trade time. now is 21:09:41
+wait pre trade time. now is 21:09:46
+wait pre trade time. now is 21:09:51
+wait pre trade time. now is 21:09:56
+wait pre trade time. now is 21:10:01
+wait pre trade time. now is 21:10:06
+wait pre trade time. now is 21:10:11
+wait pre trade time. now is 21:10:16
+wait pre trade time. now is 21:10:21
+wait pre trade time. now is 21:10:26
+wait pre trade time. now is 21:10:31
+wait pre trade time. now is 21:10:36
+wait pre trade time. now is 21:10:41
+wait pre trade time. now is 21:10:46
+wait pre trade time. now is 21:10:51
+wait pre trade time. now is 21:10:56
+wait pre trade time. now is 21:11:01
+wait pre trade time. now is 21:11:06
+wait pre trade time. now is 21:11:11
+wait pre trade time. now is 21:11:16
+wait pre trade time. now is 21:11:21
+wait pre trade time. now is 21:11:26
+wait pre trade time. now is 21:11:31
+wait pre trade time. now is 21:11:36
+wait pre trade time. now is 21:11:41
+wait pre trade time. now is 21:11:46
+wait pre trade time. now is 21:11:51
+wait pre trade time. now is 21:11:56
+wait pre trade time. now is 21:12:01
+wait pre trade time. now is 21:12:06
+wait pre trade time. now is 21:12:11
+wait pre trade time. now is 21:12:16
+wait pre trade time. now is 21:12:21
+wait pre trade time. now is 21:12:26
+wait pre trade time. now is 21:12:31
+wait pre trade time. now is 21:12:36
+wait pre trade time. now is 21:12:41
+wait pre trade time. now is 21:12:46
+wait pre trade time. now is 21:12:51
+wait pre trade time. now is 21:12:56
+wait pre trade time. now is 21:13:01
+wait pre trade time. now is 21:13:06
+wait pre trade time. now is 21:13:11
+wait pre trade time. now is 21:13:16
+wait pre trade time. now is 21:13:22
+wait pre trade time. now is 21:13:27
+wait pre trade time. now is 21:13:32
+wait pre trade time. now is 21:13:37
+wait pre trade time. now is 21:13:42
+wait pre trade time. now is 21:13:47
+wait pre trade time. now is 21:13:52
+wait pre trade time. now is 21:13:57
+wait pre trade time. now is 21:14:02
+wait pre trade time. now is 21:14:07
+wait pre trade time. now is 21:14:12
+wait pre trade time. now is 21:14:17
+wait pre trade time. now is 21:14:22
+wait pre trade time. now is 21:14:27
+wait pre trade time. now is 21:14:32
+wait pre trade time. now is 21:14:37
+wait pre trade time. now is 21:14:42
+wait pre trade time. now is 21:14:47
+wait pre trade time. now is 21:14:52
+wait pre trade time. now is 21:14:57
+wait pre trade time. now is 21:15:02
+wait pre trade time. now is 21:15:07
+wait pre trade time. now is 21:15:12
+wait pre trade time. now is 21:15:17
+wait pre trade time. now is 21:15:22
+wait pre trade time. now is 21:15:27
+wait pre trade time. now is 21:15:32
+wait pre trade time. now is 21:15:37
+wait pre trade time. now is 21:15:42
+wait pre trade time. now is 21:15:47
+wait pre trade time. now is 21:15:52
+wait pre trade time. now is 21:15:57
+wait pre trade time. now is 21:16:02
+wait pre trade time. now is 21:16:07
+wait pre trade time. now is 21:16:12
+wait pre trade time. now is 21:16:17
+wait pre trade time. now is 21:16:22
+wait pre trade time. now is 21:16:27
+wait pre trade time. now is 21:16:32
+wait pre trade time. now is 21:16:37
+wait pre trade time. now is 21:16:42
+wait pre trade time. now is 21:16:47
+wait pre trade time. now is 21:16:52
+wait pre trade time. now is 21:16:57
+wait pre trade time. now is 21:17:02
+wait pre trade time. now is 21:17:07
+wait pre trade time. now is 21:17:12
+wait pre trade time. now is 21:17:17
+wait pre trade time. now is 21:17:22
+wait pre trade time. now is 21:17:27
+wait pre trade time. now is 21:17:32
+wait pre trade time. now is 21:17:37
+wait pre trade time. now is 21:17:42
+wait pre trade time. now is 21:17:47
+wait pre trade time. now is 21:17:52
+wait pre trade time. now is 21:17:57
+wait pre trade time. now is 21:18:02
+wait pre trade time. now is 21:18:07
+wait pre trade time. now is 21:18:12
+wait pre trade time. now is 21:18:17
+wait pre trade time. now is 21:18:22
+wait pre trade time. now is 21:18:27
+wait pre trade time. now is 21:18:32
+wait pre trade time. now is 21:18:37
+wait pre trade time. now is 21:18:42
+wait pre trade time. now is 21:18:47
+wait pre trade time. now is 21:18:52
+wait pre trade time. now is 21:18:57
+wait pre trade time. now is 21:19:02
+wait pre trade time. now is 21:19:07
+wait pre trade time. now is 21:19:12
+wait pre trade time. now is 21:19:17
+wait pre trade time. now is 21:19:22
+wait pre trade time. now is 21:19:27
+wait pre trade time. now is 21:19:32
+wait pre trade time. now is 21:19:37
+wait pre trade time. now is 21:19:42
+wait pre trade time. now is 21:19:47
+wait pre trade time. now is 21:19:52
+wait pre trade time. now is 21:19:57
+wait pre trade time. now is 21:20:02
+wait pre trade time. now is 21:20:07
+wait pre trade time. now is 21:20:12
+wait pre trade time. now is 21:20:17
+wait pre trade time. now is 21:20:22
+wait pre trade time. now is 21:20:27
+wait pre trade time. now is 21:20:32
+wait pre trade time. now is 21:20:37
+wait pre trade time. now is 21:20:42
+wait pre trade time. now is 21:20:47
+wait pre trade time. now is 21:20:52
+wait pre trade time. now is 21:20:57
+wait pre trade time. now is 21:21:02
+wait pre trade time. now is 21:21:07
+wait pre trade time. now is 21:21:12
+wait pre trade time. now is 21:21:17
+wait pre trade time. now is 21:21:22
+wait pre trade time. now is 21:21:27
+wait pre trade time. now is 21:21:32
+wait pre trade time. now is 21:21:37
+wait pre trade time. now is 21:21:42
+wait pre trade time. now is 21:21:47
+wait pre trade time. now is 21:21:52
+wait pre trade time. now is 21:21:57
+wait pre trade time. now is 21:22:02
+wait pre trade time. now is 21:22:07
+wait pre trade time. now is 21:22:12
+wait pre trade time. now is 21:22:17
+wait pre trade time. now is 21:22:22
+wait pre trade time. now is 21:22:27
+wait pre trade time. now is 21:22:32
+wait pre trade time. now is 21:22:37
+wait pre trade time. now is 21:22:42
+wait pre trade time. now is 21:22:47
+wait pre trade time. now is 21:22:52
+wait pre trade time. now is 21:22:57
+wait pre trade time. now is 21:23:02
+wait pre trade time. now is 21:23:07
+wait pre trade time. now is 21:23:12
+wait pre trade time. now is 21:23:17
+wait pre trade time. now is 21:23:22
+wait pre trade time. now is 21:23:27
+wait pre trade time. now is 21:23:32
+wait pre trade time. now is 21:23:37
+wait pre trade time. now is 21:23:42
+wait pre trade time. now is 21:23:47
+wait pre trade time. now is 21:23:52
+wait pre trade time. now is 21:23:57
+wait pre trade time. now is 21:24:02
+wait pre trade time. now is 21:24:07
+wait pre trade time. now is 21:24:12
+wait pre trade time. now is 21:24:17
+wait pre trade time. now is 21:24:22
+wait pre trade time. now is 21:24:27
+wait pre trade time. now is 21:24:32
+wait pre trade time. now is 21:24:37
+wait pre trade time. now is 21:24:42
+wait pre trade time. now is 21:24:47
+wait pre trade time. now is 21:24:52
+wait pre trade time. now is 21:24:57
+wait pre trade time. now is 21:25:02
+wait pre trade time. now is 21:25:07
+wait pre trade time. now is 21:25:12
+wait pre trade time. now is 21:25:17
+wait pre trade time. now is 21:25:22
+wait pre trade time. now is 21:25:27
+wait pre trade time. now is 21:25:32
+wait pre trade time. now is 21:25:37
+wait pre trade time. now is 21:25:42
+wait pre trade time. now is 21:25:47
+wait pre trade time. now is 21:25:52
+wait pre trade time. now is 21:25:57
+wait pre trade time. now is 21:26:02
+wait pre trade time. now is 21:26:07
+wait pre trade time. now is 21:26:12
+wait pre trade time. now is 21:26:17
+wait pre trade time. now is 21:26:22
+wait pre trade time. now is 21:26:27
+wait pre trade time. now is 21:26:32
+wait pre trade time. now is 21:26:37
+wait pre trade time. now is 21:26:42
+wait pre trade time. now is 21:26:47
+wait pre trade time. now is 21:26:52
+wait pre trade time. now is 21:26:57
+wait pre trade time. now is 21:27:02
+wait pre trade time. now is 21:27:07
+wait pre trade time. now is 21:27:12
+wait pre trade time. now is 21:27:18
+wait pre trade time. now is 21:27:23
+wait pre trade time. now is 21:27:28
+wait pre trade time. now is 21:27:33
+wait pre trade time. now is 21:27:38
+wait pre trade time. now is 21:27:43
+wait pre trade time. now is 21:27:48
+wait pre trade time. now is 21:27:53
+wait pre trade time. now is 21:27:58
+begin subcribe stock at 21:28:03
+finish subcribe real time!
+time is early
+{p=120.93, ev=T, q=29317, s=5, c=[14,12,37,41], t=1693488500000, sym=DLTR, x=12, i=137, z=3}
+time is early
+{p=120.91, ev=T, q=29318, s=5, c=[14,12,37,41], t=1693488500000, sym=DLTR, x=12, i=138, z=3}
+time is early
+{p=120.89, ev=T, q=29319, s=8, c=[14,12,37,41], t=1693488500000, sym=DLTR, x=12, i=139, z=3}
+time is early
+{p=120.86, ev=T, q=29320, s=482, c=[14,12,41], t=1693488500000, sym=DLTR, x=12, i=140, z=3}
+time is early
+{p=120.95, ev=T, q=29321, s=10, c=[12,37], t=1693488500000, sym=DLTR, x=11, i=403, z=3}
+time is early
+{p=120.9, ev=T, q=29322, s=1, c=[14,12,37,41], t=1693488500000, sym=DLTR, x=11, i=404, z=3}
+time is early
+{p=57.62, ev=T, q=169339, s=10, c=[14,12,37,41], t=1693488569000, sym=ASO, x=11, i=312, z=3}
+time is early
+{p=57.51, ev=T, q=169340, s=10, c=[14,12,37,41], t=1693488569000, sym=ASO, x=11, i=313, z=3}
+time is early
+{p=17.13, ev=T, q=36129, s=26, c=[12,37], t=1693488572000, sym=IONQ, x=12, i=62879133619812, z=1}
+StockEvent(stock=AMBA, price=60.21, time=1693488600006) dn=62.213
+AMBA=3.219584331249096
+unsubcribeStockSet size: 100 1693488600161
+unsubcribeStockSet size: 200 1693488600165
+unsubcribeStockSet size: 300 1693488600168
+StockEvent(stock=PAHC, price=14.25, time=1693488600010) dn=14.579
+unsubcribeStockSet size: 400 1693488600240
+unsubcribeStockSet size: 500 1693488600294
+unsubcribeStockSet size: 600 1693488600304
+unsubcribeStockSet size: 700 1693488600333
+StockEvent(stock=DG, price=128.61, time=1693488600147) dn=143.133
+StockEvent(stock=HPQ, price=29.3, time=1693488600189) dn=29.396
+unsubcribeStockSet size: 800 1693488600422
+StockEvent(stock=PDCO, price=30.84, time=1693488600233) dn=31.543
+StockEvent(stock=DLTH, price=6.91, time=1693488600192) dn=7.153
+unsubcribeStockSet size: 900 1693488600444
+StockEvent(stock=SWKH, price=15.52, time=1693488600349) dn=15.609
+unsubcribeStockSet size: 1000 1693488600526
+StockEvent(stock=MDWD, price=8.4, time=1693488600398) dn=8.414
+unsubcribeStockSet size: 1100 1693488600601
+unsubcribeStockSet size: 1200 1693488600703
+StockEvent(stock=MBUU, price=50.07, time=1693488600536) dn=50.421
+unsubcribeStockSet size: 1300 1693488600755
+unsubcribeStockSet size: 1400 1693488600798
+StockEvent(stock=BOX, price=27.12, time=1693488600670) dn=27.998
+unsubcribeStockSet size: 1500 1693488600839
+unsubcribeStockSet size: 1600 1693488600884
+unsubcribeStockSet size: 1700 1693488600914
+StockEvent(stock=LE, price=7.96, time=1693488600770) dn=8.621
+LE=7.667323976336856,AMBA=3.219584331249096
+unsubcribeStockSet size: 1800 1693488600965
+unsubcribeStockSet size: 1900 1693488600983
+unsubcribeStockSet size: 2000 1693488601024
+unsubcribeStockSet size: 2100 1693488601043
+StockEvent(stock=ASAI, price=11.85, time=1693488600832) dn=11.855
+unsubcribeStockSet size: 2200 1693488601058
+unsubcribeStockSet size: 2300 1693488601100
+unsubcribeStockSet size: 2400 1693488601140
+StockEvent(stock=MPX, price=14.2, time=1693488600950) dn=14.514
+unsubcribeStockSet size: 2500 1693488601175
+unsubcribeStockSet size: 2600 1693488601207
+StockEvent(stock=MCFT, price=21.07, time=1693488600972) dn=22.31
+unsubcribeStockSet size: 2700 1693488601254
+unsubcribeStockSet size: 2800 1693488601386
+StockEvent(stock=ACOR, price=11.6, time=1693488601132) dn=11.973
+unsubcribeStockSet size: 2900 1693488602886
+now time is over! listen end!
+unsubcribeStockSet size: 3000 1693488631036
+unsubcribeStockSet size: 3100 1693488631037
+=========== finish unsubscribe ===========
+LE=7.667323976336856,AMBA=3.219584331249096
+remain cash: 7433.810000000056
+buy stock. stock=LE, count=925, price=7.96, orderPrice=8.03, orderId: 6776583977559481766
+LE order has been canceled. orderId: 6776583977559481766, cancel res code: 0
+buy stock. stock=AMBA, count=122, price=60.21, orderPrice=60.81, orderId: 6776583990444383653
+AMBA order has been canceled. orderId: 6776583990444383653, cancel res code: 0
+trade end
+there is no position that need to be listened

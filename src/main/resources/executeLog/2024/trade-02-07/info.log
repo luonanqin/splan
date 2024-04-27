@@ -1,0 +1,50 @@
+2024-02-21 04:58:56.116 [xxl-job, JobThread-8-1708462736100] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-02-21 04:58:56.135 [xxl-job, JobThread-8-1708462736100] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-02-21 04:58:56.147 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7165812088035941565
+2024-02-21 04:58:56.150 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7165812088036053065
+2024-02-21 04:58:59.138 [xxl-job, JobThread-8-1708462736100] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-02-21 04:58:59.142 [xxl-job, JobThread-8-1708462736100] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-02-21 04:58:59.151 [xxl-job, JobThread-8-1708462736100] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={}, time=2024-02-21T04:58:59.149
+2024-02-21 04:58:59.151 [xxl-job, JobThread-8-1708462736100] INFO  luonq.polygon.TradeExecutor_DB - position is empty. trade is end today!!!
+2024-02-21 04:58:59.151 [xxl-job, JobThread-8-1708462736100] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-02-21 04:58:59.249 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-02-21 15:28:57.935 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.943 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.943 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.943 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.943 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.943 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.956 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.957 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.961 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.968 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:28:57.980 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-02-21 15:29:13.540 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.551 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.553 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.564 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.565 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.577 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.578 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.581 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.583 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.583 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.583 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.583 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.583 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.584 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.584 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.584 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.589 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.591 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.591 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.593 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.593 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.593 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.595 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.595 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.595 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.595 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.597 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.597 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256
+2024-02-21 15:29:13.598 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: 47244640256

@@ -1,0 +1,63 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7143967777739087163
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1703255280000, openTime=1703255400000, closeCheckTime=Sat Dec 23 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 744
+stock overbolling hit great 0.500000 size: 624
+filter merge stock, the stock set size is 624
+filter split stock, the stock set size is 624
+filter front reinstatement less 0.98 stock, the stock set size is 581
+filter earning and lastEarning stock, the stock set size is 575
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:02
+finish subcribe real time!
+time is early. {p=99.41, ev=T, q=35667, s=1, c=[14,12,37,41], t=1703255306000, sym=CROX, x=12, i=360, z=3}
+{p=99.41, ev=T, q=35667, s=1, c=[14,12,37,41], t=1703255306000, sym=CROX, x=12, i=360, z=3}
+unsubscribeStockSet size: 100 1703255400233
+unsubscribeStockSet size: 200 1703255400815
+unsubscribeStockSet size: 300 1703255400986
+StockEvent(stock=EDU, price=67.73, time=1703255400726) dn=69.713 current=1703255401058
+StockEvent(stock=AON, price=289.12, time=1703255400732) dn=291.889 current=1703255401169
+AON=0.9486482875339616
+unsubscribeStockSet size: 400 1703255401198
+unsubscribeStockSet size: 500 1703255401505
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [AON]
+AON=0.9486482875339616
+onReply_GetFunds: 1312.84
+remain cash: 1312.84
+first trade. orderPrice=289.98, multiple=1
+onReply_GetMaxTrdQtys: 4
+buy stock. stock=AON, count=4, price=289.12, orderPrice=289.98, orderId: 2369098465405091183 1703255423134
+AON order is successfully executed. orderId=2369098465405091183
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2369098465405091183, code=AON, name=怡安保险, count=4.0, price=289.98, avgPrice=288.8, createTime=2023-12-22 09:30:23.032, updateTimestamp=1.703255423474499E9, status=0)
+AON placeStopLoss market order. qty=4.0, auxPrice=268.584, orderId：7072470328387562060
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+ready to sell before close market. position={AON=StockPosition(stock=AON, canSellQty=4.0, costPrice=288.8, currPrice=291.42)}, time=2023-12-23T04:58:59.268
+before close sell stock for market price. stock=AON, count=4.0
+unlock success
+sell stock orderId=8709111239157959443
+update order: OrderFill(tradeSide=2, fillID=0, orderID=8709111239157959443, code=AON, name=????, count=4.0, price=0.0, avgPrice=291.3509, createTime=2023-12-22 15:58:59.357, updateTimestamp=1.703278739763887E9, status=0)
+sell stock success. stock=AON, orderId?8709111239157959443
+tradeExecutor_db sell

@@ -1,0 +1,318 @@
+Console output is saving to: /Users/Luonanqin/study/intellij_idea_workspaces/splan/src/main/resources/tradeLog
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7100101647845030283
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3687
+stock overbolling hit great 0.600000 size: 3373
+filter merge stock, the stock set size is 3373
+filter split stock, the stock set size is 3365
+filter front reinstatement less 0.98 stock, the stock set size is 3191
+finish initialize many time. preTradeTime=1692797280000, openTime=1692797400000, closeCheckTime=Thu Aug 24 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Aug 23, 2023 9:09:49 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:27:57
+begin subcribe stock at 21:28:02
+finish subcribe real time!
+time is early
+{p=49.44, ev=T, q=89778, s=1, c=[14,12,37,41], t=1692797299000, sym=ANF, x=12, i=62879133621084, z=1}
+time is early
+{p=323.44, ev=T, q=118288, s=10, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1865, z=3}
+time is early
+{p=323.44, ev=T, q=118289, s=10, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1866, z=3}
+time is early
+{p=323.44, ev=T, q=118290, s=20, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1867, z=3}
+time is early
+{p=323.44, ev=T, q=118291, s=10, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1868, z=3}
+time is early
+{p=323.48, ev=T, q=118292, s=24, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1869, z=3}
+time is early
+{p=323.48, ev=T, q=118293, s=26, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1870, z=3}
+time is early
+{p=323.49, ev=T, q=118294, s=8, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1871, z=3}
+time is early
+{p=323.49, ev=T, q=118295, s=34, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1872, z=3}
+time is early
+{p=323.49, ev=T, q=118296, s=58, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1873, z=3}
+time is early
+{p=323.49, ev=T, q=118297, s=200, c=[14,12,41], t=1692797311000, sym=MSFT, x=12, i=1874, z=3}
+time is early
+{p=323.49, ev=T, q=118298, s=50, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1875, z=3}
+time is early
+{p=323.49, ev=T, q=118299, s=400, c=[14,12,41], t=1692797311000, sym=MSFT, x=12, i=1876, z=3}
+time is early
+{p=323.5, ev=T, q=118300, s=192, c=[14,12,41], t=1692797311000, sym=MSFT, x=12, i=1877, z=3}
+time is early
+{p=323.5, ev=T, q=118301, s=8, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1878, z=3}
+time is early
+{p=323.5, ev=T, q=118302, s=2, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1879, z=3}
+time is early
+{p=323.5, ev=T, q=118303, s=28, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1880, z=3}
+time is early
+{p=323.5, ev=T, q=118304, s=50, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1881, z=3}
+time is early
+{p=323.6, ev=T, q=118305, s=12, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1882, z=3}
+time is early
+{p=323.49, ev=T, q=118306, s=30, c=[12,37], t=1692797311000, sym=MSFT, x=11, i=1312, z=3}
+time is early
+{p=323.5, ev=T, q=118307, s=50, c=[12,37], t=1692797311000, sym=MSFT, x=11, i=1313, z=3}
+time is early
+{p=323.5, ev=T, q=118308, s=50, c=[12,37], t=1692797311000, sym=MSFT, x=11, i=1314, z=3}
+time is early
+{p=323.6, ev=T, q=118309, s=18, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=12, i=1883, z=3}
+time is early
+{p=323.5, ev=T, q=118310, s=50, c=[12,37], t=1692797311000, sym=MSFT, x=11, i=1315, z=3}
+time is early
+{p=323.55, ev=T, q=118311, s=34, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1316, z=3}
+time is early
+{p=323.55, ev=T, q=118312, s=34, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1317, z=3}
+time is early
+{p=323.56, ev=T, q=118313, s=20, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1318, z=3}
+time is early
+{p=323.57, ev=T, q=118314, s=30, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1319, z=3}
+time is early
+{p=323.6, ev=T, q=118315, s=50, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1320, z=3}
+time is early
+{p=323.63, ev=T, q=118316, s=10, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1321, z=3}
+time is early
+{p=323.64, ev=T, q=118317, s=34, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1322, z=3}
+time is early
+{p=323.65, ev=T, q=118318, s=10, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1323, z=3}
+time is early
+{p=323.68, ev=T, q=118319, s=20, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1324, z=3}
+time is early
+{p=323.74, ev=T, q=118320, s=10, c=[14,12,37,41], t=1692797311000, sym=MSFT, x=11, i=1325, z=3}
+time is early
+{p=323.8, ev=T, q=118321, s=390, c=[14,12,41], t=1692797311000, sym=MSFT, x=11, i=1326, z=3}
+time is early
+{p=323.8, ev=T, q=118322, s=320, c=[14,12,41], t=1692797311000, sym=MSFT, x=11, i=1327, z=3}
+time is early
+{p=59.43, ev=T, q=118441, s=50, c=[14,12,37,41], t=1692797313000, sym=MRVL, x=12, i=161, z=3}
+time is early
+{p=59.44, ev=T, q=118442, s=186, c=[14,12,41], t=1692797313000, sym=MRVL, x=12, i=162, z=3}
+time is early
+{p=59.44, ev=T, q=118443, s=200, c=[14,12,41], t=1692797313000, sym=MRVL, x=12, i=163, z=3}
+time is early
+{p=5.13, ev=T, q=76513, s=100, c=[14,12,41], t=1692797358000, sym=PTON, x=21, i=350, z=3}
+time is early
+{p=109.34, ev=T, q=76667, s=104, c=[14,12,41], t=1692797371000, sym=QCOM, x=12, i=450, z=3}
+time is early
+{p=109.34, ev=T, q=76668, s=100, c=[14,12,41], t=1692797371000, sym=QCOM, x=12, i=451, z=3}
+time is early
+{p=109.33, ev=T, q=76669, s=138, c=[14,12,41], t=1692797371000, sym=QCOM, x=12, i=452, z=3}
+time is early
+{p=109.33, ev=T, q=76670, s=513, c=[14,12,41], t=1692797371000, sym=QCOM, x=12, i=453, z=3}
+time is early
+{p=109.33, ev=T, q=76671, s=513, c=[14,12,41], t=1692797371000, sym=QCOM, x=12, i=454, z=3}
+time is early
+{p=109.33, ev=T, q=76672, s=36, c=[14,12,37,41], t=1692797371000, sym=QCOM, x=12, i=455, z=3}
+time is early
+{p=9.15, ev=T, q=119775, s=1, c=[12,37], t=1692797381000, sym=NVAX, x=8, i=403, z=3}
+time is early
+{p=15.876, ev=T, q=45062, s=200, c=[12], t=1692797382000, sym=FL, x=2, i=62879130140758, z=1}
+time is early
+{p=9.86, ev=T, q=231684, s=500, c=[12], t=1692797385000, sym=WW, x=12, i=3, z=3}
+time is early
+{p=9.85, ev=T, q=231685, s=300, c=[12], t=1692797385000, sym=WW, x=17, i=1, z=3}
+time is early
+{p=9.85, ev=T, q=231686, s=300, c=[12], t=1692797385000, sym=WW, x=2, i=1, z=3}
+time is early
+{p=852, ev=T, q=120082, s=11, c=[12,37], t=1692797387000, sym=AVGO, x=12, i=130, z=3}
+StockEvent(stock=CAL, price=25.06, time=1692797400002) dn=25.543
+CAL=1.8909290216497694
+StockEvent(stock=GPS, price=9.45, time=1692797400002) dn=9.699
+StockEvent(stock=RIG, price=7.69, time=1692797400002) dn=7.77
+StockEvent(stock=NKE, price=97.02, time=1692797400002) dn=100.434
+NKE=3.3992472668618214,CAL=1.8909290216497694
+StockEvent(stock=ULTA, price=428.0, time=1692797400001) dn=428.217
+StockEvent(stock=CBSH, price=48.56, time=1692797400005) dn=48.669
+StockEvent(stock=DKS, price=108.76, time=1692797400007) dn=118.746
+DKS=8.409546426827001,NKE=3.3992472668618214,CAL=1.8909290216497694
+StockEvent(stock=HIBB, price=38.44, time=1692797400002) dn=40.191
+DKS=8.409546426827001,HIBB=4.35669677290937,NKE=3.3992472668618214,CAL=1.8909290216497694
+unsubcribeStockSet size: 100 1692797400471
+StockEvent(stock=PSEC, price=6.01, time=1692797400001) dn=6.016
+unsubcribeStockSet size: 200 1692797400483
+StockEvent(stock=UBSI, price=28.92, time=1692797400008) dn=29.125
+StockEvent(stock=LANC, price=167.9, time=1692797400012) dn=175.356
+StockEvent(stock=LKFN, price=52.56, time=1692797400006) dn=53.153
+StockEvent(stock=M, price=12.54, time=1692797400027) dn=13.307
+StockEvent(stock=PCT, price=8.76, time=1692797400007) dn=8.874
+unsubcribeStockSet size: 300 1692797400498
+StockEvent(stock=NSSC, price=23.4, time=1692797400006) dn=24.392
+DKS=8.409546426827001,HIBB=4.35669677290937,NSSC=4.066907182682851,NKE=3.3992472668618214,CAL=1.8909290216497694
+StockEvent(stock=INBK, price=18.7, time=1692797400024) dn=18.824
+StockEvent(stock=NTRS, price=74.3, time=1692797400028) dn=74.453
+StockEvent(stock=KRNY, price=7.55, time=1692797400006) dn=7.574
+StockEvent(stock=COST, price=539.49, time=1692797400033) dn=541.775
+StockEvent(stock=ZION, price=33.09, time=1692797400029) dn=33.123
+unsubcribeStockSet size: 400 1692797400512
+StockEvent(stock=MYFW, price=18.74, time=1692797400050) dn=18.895
+StockEvent(stock=HBAN, price=10.64, time=1692797400035) dn=10.671
+StockEvent(stock=CPRT, price=44.16, time=1692797400034) dn=49.781
+StockEvent(stock=UCBI, price=26.5, time=1692797400052) dn=26.565
+StockEvent(stock=AMAL, price=17.73, time=1692797400048) dn=17.817
+StockEvent(stock=FMNB, price=12.42, time=1692797400055) dn=12.505
+StockEvent(stock=TSCO, price=213.46, time=1692797400036) dn=214.683
+unsubcribeStockSet size: 500 1692797400527
+StockEvent(stock=WSBC, price=25.04, time=1692797400076) dn=25.129
+unsubcribeStockSet size: 600 1692797400543
+StockEvent(stock=LBTYK, price=18.63, time=1692797400091) dn=18.696
+StockEvent(stock=MLKN, price=18.44, time=1692797400074) dn=18.504
+StockEvent(stock=RGP, price=15.5, time=1692797400067) dn=15.576
+StockEvent(stock=CMPR, price=62.39, time=1692797400066) dn=62.477
+StockEvent(stock=GOGL, price=7.13, time=1692797400074) dn=7.207
+unsubcribeStockSet size: 700 1692797400559
+StockEvent(stock=THRY, price=22.33, time=1692797400077) dn=22.447
+StockEvent(stock=NBTB, price=34.23, time=1692797400086) dn=34.545
+StockEvent(stock=FIBK, price=25.23, time=1692797400087) dn=25.347
+StockEvent(stock=HCSG, price=12.1, time=1692797400109) dn=12.105
+unsubcribeStockSet size: 800 1692797400581
+StockEvent(stock=WEN, price=20.38, time=1692797400108) dn=20.402
+StockEvent(stock=SCVL, price=22.49, time=1692797400112) dn=22.845
+StockEvent(stock=IBTX, price=40.26, time=1692797400105) dn=40.588
+unsubcribeStockSet size: 900 1692797400651
+StockEvent(stock=SLB, price=55.75, time=1692797400162) dn=56.008
+StockEvent(stock=WSFS, price=39.69, time=1692797400104) dn=39.785
+StockEvent(stock=ASO, price=50.5, time=1692797400186) dn=52.191
+unsubcribeStockSet size: 1000 1692797400667
+StockEvent(stock=THFF, price=35.76, time=1692797400157) dn=35.849
+StockEvent(stock=MGYR, price=10.78, time=1692797400176) dn=10.861
+StockEvent(stock=LTRPB, price=30.86, time=1692797400203) dn=31.844
+DKS=8.409546426827001,HIBB=4.35669677290937,NSSC=4.066907182682851,NKE=3.3992472668618214,LTRPB=3.0900640623037363,CAL=1.8909290216497694
+StockEvent(stock=CAC, price=32.67, time=1692797400277) dn=32.727
+unsubcribeStockSet size: 1100 1692797400741
+StockEvent(stock=FL, price=15.91, time=1692797400210) dn=20.6
+StockEvent(stock=PINC, price=23.57, time=1692797400306) dn=24.088
+StockEvent(stock=TCBK, price=34.65, time=1692797400324) dn=34.847
+StockEvent(stock=WABC, price=43.98, time=1692797400304) dn=44.008
+StockEvent(stock=GIL, price=28.785, time=1692797400327) dn=29.003
+StockEvent(stock=SRE, price=71.79, time=1692797400384) dn=81.005
+unsubcribeStockSet size: 1200 1692797400785
+StockEvent(stock=PBFS, price=8.94, time=1692797400423) dn=8.988
+StockEvent(stock=FCAP, price=32.02, time=1692797400414) dn=32.716
+DKS=8.409546426827001,HIBB=4.35669677290937,NSSC=4.066907182682851,NKE=3.3992472668618214,LTRPB=3.0900640623037363,FCAP=2.1273994375840504,CAL=1.8909290216497694
+StockEvent(stock=FBP, price=13.46, time=1692797400451) dn=13.505
+StockEvent(stock=SSBK, price=22.39, time=1692797400429) dn=22.493
+StockEvent(stock=BK, price=42.835, time=1692797400455) dn=42.942
+StockEvent(stock=BBCP, price=7.5, time=1692797400418) dn=7.57
+StockEvent(stock=NSTS, price=8.89, time=1692797400461) dn=8.898
+StockEvent(stock=GPC, price=152.73, time=1692797400456) dn=152.98
+StockEvent(stock=FFIC, price=13.93, time=1692797400447) dn=13.946
+StockEvent(stock=TOWN, price=23.13, time=1692797400359) dn=23.383
+StockEvent(stock=PFIS, price=44.22, time=1692797400441) dn=44.233
+unsubcribeStockSet size: 1300 1692797400805
+StockEvent(stock=CSIQ, price=27.05, time=1692797400492) dn=27.682
+DKS=8.409546426827001,HIBB=4.35669677290937,NSSC=4.066907182682851,NKE=3.3992472668618214,LTRPB=3.0900640623037363,CSIQ=2.283072032367596,FCAP=2.1273994375840504,CAL=1.8909290216497694
+StockEvent(stock=BC, price=79.9, time=1692797400540) dn=80.551
+StockEvent(stock=CTBI, price=35.01, time=1692797400525) dn=35.25
+StockEvent(stock=DE, price=385.5, time=1692797400536) dn=388.147
+StockEvent(stock=SMR, price=6.23, time=1692797400559) dn=6.26
+StockEvent(stock=DGICA, price=14.29, time=1692797400493) dn=14.373
+StockEvent(stock=CCB, price=42.85, time=1692797400511) dn=43.021
+unsubcribeStockSet size: 1400 1692797400851
+StockEvent(stock=RF, price=18.375, time=1692797400567) dn=18.614
+unsubcribeStockSet size: 1500 1692797400868
+StockEvent(stock=HRI, price=121.27, time=1692797400669) dn=122.341
+StockEvent(stock=COTY, price=10.72, time=1692797400699) dn=10.752
+StockEvent(stock=UA, price=6.46, time=1692797400696) dn=6.616
+DKS=8.409546426827001,HIBB=4.35669677290937,NSSC=4.066907182682851,NKE=3.3992472668618214,LTRPB=3.0900640623037363,UA=2.3579201934703704,CSIQ=2.283072032367596,FCAP=2.1273994375840504,CAL=1.8909290216497694
+unsubcribeStockSet size: 1600 1692797400888
+StockEvent(stock=KMX, price=78.97, time=1692797400699) dn=79.307
+StockEvent(stock=GNTY, price=29.64, time=1692797400699) dn=29.651
+StockEvent(stock=HTH, price=29.11, time=1692797400696) dn=29.219
+StockEvent(stock=BBY, price=73.91, time=1692797400737) dn=74.611
+StockEvent(stock=CADE, price=22.05, time=1692797400739) dn=22.269
+unsubcribeStockSet size: 1700 1692797400933
+StockEvent(stock=TGH, price=39.28, time=1692797400736) dn=39.522
+StockEvent(stock=UAA, price=7.06, time=1692797400705) dn=7.256
+StockEvent(stock=ASB, price=16.54, time=1692797400727) dn=16.601
+unsubcribeStockSet size: 1800 1692797400984
+StockEvent(stock=NBHC, price=31.3, time=1692797400737) dn=31.353
+StockEvent(stock=BHLB, price=21.08, time=1692797400736) dn=21.138
+StockEvent(stock=SYF, price=31.79, time=1692797400748) dn=31.994
+unsubcribeStockSet size: 1900 1692797400999
+StockEvent(stock=VABK, price=34.14, time=1692797400583) dn=34.533
+StockEvent(stock=GES, price=18.12, time=1692797400756) dn=18.484
+DKS=8.409546426827001,HIBB=4.35669677290937,NSSC=4.066907182682851,NKE=3.3992472668618214,LTRPB=3.0900640623037363,UA=2.3579201934703704,CSIQ=2.283072032367596,FCAP=2.1273994375840504,GES=1.9692707206232458,CAL=1.8909290216497694
+unsubcribeStockSet size: 2000 1692797401019
+StockEvent(stock=DOLE, price=11.99, time=1692797400806) dn=12.108
+unsubcribeStockSet size: 2100 1692797401038
+StockEvent(stock=NE, price=50.03, time=1692797400827) dn=50.513
+StockEvent(stock=CSL, price=259.59, time=1692797400817) dn=260.563
+StockEvent(stock=SFBS, price=54.89, time=1692797400767) dn=55.646
+StockEvent(stock=OFG, price=29.88, time=1692797400830) dn=29.935
+StockEvent(stock=RGA, price=135.43, time=1692797400833) dn=135.518
+unsubcribeStockSet size: 2200 1692797401049
+StockEvent(stock=FDX, price=258.76, time=1692797400828) dn=258.873
+StockEvent(stock=BORR, price=7.01, time=1692797400847) dn=7.08
+StockEvent(stock=SKX, price=48.34, time=1692797400862) dn=49.018
+StockEvent(stock=FIGS, price=6.29, time=1692797400873) dn=6.3
+StockEvent(stock=AUBN, price=21.03, time=1692797400862) dn=21.122
+StockEvent(stock=BBUC, price=17.9, time=1692797400870) dn=18.025
+unsubcribeStockSet size: 2300 1692797401067
+StockEvent(stock=VLGEA, price=22.83, time=1692797400875) dn=22.833
+StockEvent(stock=SCHW, price=56.45, time=1692797400897) dn=56.541
+StockEvent(stock=FBK, price=30.33, time=1692797400788) dn=30.407
+StockEvent(stock=OOMA, price=13.69, time=1692797400745) dn=13.734
+StockEvent(stock=SIG, price=69.995, time=1692797400879) dn=70.658
+unsubcribeStockSet size: 2400 1692797401092
+StockEvent(stock=LZB, price=29.21, time=1692797400910) dn=29.429
+unsubcribeStockSet size: 2500 1692797401117
+StockEvent(stock=GO, price=31.91, time=1692797400900) dn=32.08
+StockEvent(stock=FHN, price=12.24, time=1692797400860) dn=12.253
+unsubcribeStockSet size: 2600 1692797401183
+StockEvent(stock=SPFI, price=26.13, time=1692797400934) dn=26.136
+unsubcribeStockSet size: 2700 1692797401217
+StockEvent(stock=PBT, price=21.8, time=1692797400995) dn=21.962
+StockEvent(stock=LBTYA, price=17.31, time=1692797401025) dn=17.44
+StockEvent(stock=KEX, price=78.53, time=1692797400898) dn=78.621
+StockEvent(stock=RNST, price=28.05, time=1692797400956) dn=28.22
+StockEvent(stock=AVO, price=9.73, time=1692797401080) dn=9.768
+StockEvent(stock=MOV, price=25.66, time=1692797400947) dn=26.109
+unsubcribeStockSet size: 2800 1692797401310
+StockEvent(stock=ESGR, price=244.66, time=1692797401116) dn=245.001
+StockEvent(stock=GIII, price=19.16, time=1692797401116) dn=19.418
+StockEvent(stock=AMTB, price=18.73, time=1692797401134) dn=18.745
+StockEvent(stock=ARKO, price=7.63, time=1692797401099) dn=7.721
+StockEvent(stock=BANF, price=94.07, time=1692797401155) dn=94.347
+StockEvent(stock=CFB, price=10.61, time=1692797401267) dn=10.61
+StockEvent(stock=FHTX, price=7.25, time=1692797401305) dn=7.295
+StockEvent(stock=EFSC, price=38.7, time=1692797401317) dn=38.879
+StockEvent(stock=MVBF, price=24.46, time=1692797401322) dn=24.46
+StockEvent(stock=RES, price=7.955, time=1692797401505) dn=7.97
+StockEvent(stock=FSRX, price=10.2, time=1692797402050) dn=10.212
+unsubcribeStockSet size: 2900 1692797402935
+SA time is 1692797436210, price is 11.64.listen end!
+unsubcribeStockSet size: 3000 1692797436329
+unsubcribeStockSet size: 3100 1692797436331
+=========== finish unsubscribe ===========
+DKS=8.409546426827001,HIBB=4.35669677290937,NSSC=4.066907182682851,NKE=3.3992472668618214,LTRPB=3.0900640623037363,UA=2.3579201934703704,CSIQ=2.283072032367596,FCAP=2.1273994375840504,GES=1.9692707206232458,CAL=1.8909290216497694
+remain cash: 7800.280000000028
+buy stock. stock=DKS, count=71, price=108.76, orderPrice=109.84, orderId: 5502282672822821570
+DKS order is successfully executed. orderId: 5502282672822821570
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5502282672822821570, code=DKS, name=迪克体育用品, count=71.0, price=109.84, avgPrice=108.67, createTime=2023-08-23 09:30:36, updateTimestamp=1.69279744E9, status=0)
+buy stock. stock=HIBB, count=2, price=38.44, orderPrice=38.82, orderId: 5502282677117788865
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5502282677117788865, code=HIBB, name=希贝特体育, count=2.0, price=38.82, avgPrice=38.25, createTime=2023-08-23 09:30:41, updateTimestamp=1.692797445E9, status=0)
+HIBB order is successfully executed. orderId: 5502282677117788865
+there is no cash to trade. trade finish
+trade end
+beginListenStopLoss failed! HIBB position is not exist!
+being listen stop loss: {DKS=StopLoss(stock=DKS, canSellQty=71.0, lossPrice=97.803)}
+{p=107.1799, ev=T, q=103484, s=100, c=[60], t=1692797587000, sym=DKS, trfi=202, x=4, i=71675306658643, z=1, trft=1692797587000}
+{p=107.5244, ev=T, q=106457, s=15, c=[37,60], t=1692797615000, sym=DKS, trfi=202, x=4, i=71675308165172, z=1, trft=1692797614999}
+ready to sell before close market. position={HIBB=StockPosition(stock=HIBB, canSellQty=2.0, costPrice=38.25, currPrice=37.66), DKS=StockPosition(stock=DKS, canSellQty=71.0, costPrice=108.67, currPrice=110.47)}, time=2023-08-24T03:59:00.590
+before close sell stock. stock=DKS, count=71.0, currentPrice=110.47, orderPrice=109.36
+before close sell stock. stock=DKS, orderId：5511641062928844240
+before close sell stock. stock=HIBB, count=2.0, currentPrice=37.66, orderPrice=37.28
+before close sell stock. stock=HIBB, orderId：5511641067223811537
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5511641062928844240, code=DKS, name=迪克体育用品, count=71.0, price=109.36, avgPrice=111.19, createTime=2023-08-23 15:59:00, updateTimestamp=1.692820744E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5511641067223811537, code=HIBB, name=希贝特体育, count=2.0, price=37.28, avgPrice=37.5, createTime=2023-08-23 15:59:00, updateTimestamp=1.692820744E9, status=0)
+all stock has stop loss
+trade exit

@@ -1,0 +1,95 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7142880393014834454
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1702996080000, openTime=1702996200000, closeCheckTime=Wed Dec 20 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1525
+stock overbolling hit great 0.500000 size: 1297
+filter merge stock, the stock set size is 1297
+filter split stock, the stock set size is 1294
+filter front reinstatement less 0.98 stock, the stock set size is 1212
+filter earning and lastEarning stock, the stock set size is 1206
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:03
+finish subcribe real time!
+time is early. {p=51.9, ev=T, q=217719, s=5, c=[14,12,37,41], t=1702996091000, sym=FUTU, x=12, i=113, z=3}
+{p=51.9, ev=T, q=217719, s=5, c=[14,12,37,41], t=1702996091000, sym=FUTU, x=12, i=113, z=3}
+time is early. {p=51.9, ev=T, q=217720, s=5, c=[14,12,37,41], t=1702996091000, sym=FUTU, x=12, i=114, z=3}
+{p=51.9, ev=T, q=217720, s=5, c=[14,12,37,41], t=1702996091000, sym=FUTU, x=12, i=114, z=3}
+time is early. {p=51.9, ev=T, q=217721, s=5, c=[14,12,37,41], t=1702996091000, sym=FUTU, x=12, i=115, z=3}
+{p=51.9, ev=T, q=217721, s=5, c=[14,12,37,41], t=1702996091000, sym=FUTU, x=12, i=115, z=3}
+time is early. {p=49.15, ev=T, q=20730, s=70, c=[12,37], t=1702996185000, sym=X, x=11, i=52983525225555, z=1}
+{p=49.15, ev=T, q=20730, s=70, c=[12,37], t=1702996185000, sym=X, x=11, i=52983525225555, z=1}
+time is early. {p=14.26, ev=T, q=84162, s=100, c=[12], t=1702996193000, sym=NOVA, x=12, i=62879146861131, z=1}
+{p=14.26, ev=T, q=84162, s=100, c=[12], t=1702996193000, sym=NOVA, x=12, i=62879146861131, z=1}
+time is early. {p=107.05, ev=T, q=35152, s=1, c=[12,37], t=1702996199000, sym=OSK, x=8, i=52983525034070, z=1}
+{p=107.05, ev=T, q=35152, s=1, c=[12,37], t=1702996199000, sym=OSK, x=8, i=52983525034070, z=1}
+unsubscribeStockSet size: 100 1702996200132
+StockEvent(stock=UNH, price=525.13, time=1702996200003) dn=526.677 current=1702996200133
+UNH=0.29372841418934664
+StockEvent(stock=ASLE, price=12.98, time=1702996200006) dn=13.055 current=1702996200158
+ASLE=0.5744925315970838,UNH=0.29372841418934664
+StockEvent(stock=SCHL, price=35.78, time=1702996200010) dn=36.049 current=1702996200162
+SCHL=0.746206552192844,ASLE=0.5744925315970838,UNH=0.29372841418934664
+unsubscribeStockSet size: 200 1702996200172
+StockEvent(stock=PNT, price=12.45, time=1702996200033) dn=12.796 current=1702996200177
+StockEvent(stock=EXC, price=34.43, time=1702996200125) dn=35.131 current=1702996200276
+StockEvent(stock=AEE, price=71.14, time=1702996200350) dn=71.671 current=1702996200391
+SCHL=0.746206552192844,AEE=0.740885434834181,ASLE=0.5744925315970838,UNH=0.29372841418934664
+unsubscribeStockSet size: 300 1702996200460
+unsubscribeStockSet size: 400 1702996200608
+unsubscribeStockSet size: 500 1702996200736
+unsubscribeStockSet size: 600 1702996200818
+unsubscribeStockSet size: 700 1702996200888
+unsubscribeStockSet size: 800 1702996200947
+unsubscribeStockSet size: 900 1702996201006
+unsubscribeStockSet size: 1000 1702996201129
+unsubscribeStockSet size: 1100 1702996201230
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [AEE, SCHL, ASLE, UNH]
+quote price(time=1702996224205): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224214): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224217): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224218): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224218): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224218): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224218): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224218): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+quote price(time=1702996224218): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=525.13}
+SCHL=0.746206552192844,AEE=0.740885434834181,ASLE=0.5744925315970838,UNH=0.29372841418934664
+onReply_GetFunds: 1283.64
+remain cash: 1283.64
+first trade. orderPrice=35.88, multiple=1
+onReply_GetMaxTrdQtys: 35
+buy stock. stock=SCHL, count=35, price=35.78, orderPrice=35.88, orderId: 8669160408337526672 1702996224774
+quote price(time=1702996225003): {AEE=71.14, SCHL=35.78, ASLE=12.98, UNH=523.92}
+update order: OrderFill(tradeSide=1, fillID=0, orderID=8669160408337526672, code=SCHL, name=学乐集团, count=35.0, price=35.88, avgPrice=35.725, createTime=2023-12-19 09:30:24.741, updateTimestamp=1.702996225374342E9, status=0)
+SCHL order is successfully executed. orderId=8669160408337526672
+SCHL placeStopLoss market order. qty=35.0, auxPrice=33.224, orderId：545474803460979538
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+ready to sell before close market. position={SCHL=StockPosition(stock=SCHL, canSellQty=35.0, costPrice=35.725, currPrice=37.37)}, time=2023-12-20T04:59:00.238
+before close sell stock for market price. stock=SCHL, count=35.0
+unlock success
+sell stock orderId=1014291012889609381
+sell stock success. stock=SCHL, orderId?1014291012889609381
+update order: OrderFill(tradeSide=2, fillID=0, orderID=1014291012889609381, code=SCHL, name=????, count=35.0, price=0.0, avgPrice=37.2198, createTime=2023-12-19 15:59:00.372, updateTimestamp=1.703019540805626E9, status=0)

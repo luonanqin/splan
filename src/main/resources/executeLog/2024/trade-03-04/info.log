@@ -1,0 +1,19 @@
+2024-03-08 04:58:56.080 [xxl-job, JobThread-8-1709845136063] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-03-08 04:58:56.103 [xxl-job, JobThread-8-1709845136063] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-03-08 04:58:56.111 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7171610293742242938
+2024-03-08 04:58:56.120 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7171610293741748988
+2024-03-08 04:58:59.109 [xxl-job, JobThread-8-1709845136063] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-03-08 04:58:59.110 [xxl-job, JobThread-8-1709845136063] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-03-08 04:58:59.117 [xxl-job, JobThread-8-1709845136063] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={VSCO=StockPosition(stock=VSCO, canSellQty=94.0, costPrice=18.7, currPrice=17.995)}, time=2024-03-08T04:58:59.117
+2024-03-08 04:58:59.118 [xxl-job, JobThread-8-1709845136063] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=VSCO, count=94.0
+2024-03-08 04:58:59.219 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-03-08 04:58:59.264 [xxl-job, JobThread-8-1709845136063] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=7680553819371035614
+2024-03-08 04:58:59.777 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7680553819371035614, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=17.9909, createTime=2024-03-07 15:58:59.303, updateTimestamp=1.709845139877745E9, status=0)
+2024-03-08 04:58:59.778 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7680553819371035614, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=17.9909, createTime=2024-03-07 15:58:59.303, updateTimestamp=1.709845139877745E9, status=0)
+2024-03-08 04:58:59.778 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7680553819371035614, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=17.9909, createTime=2024-03-07 15:58:59.303, updateTimestamp=1.709845139877745E9, status=0)
+2024-03-08 04:58:59.779 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7680553819371035614, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=17.9909, createTime=2024-03-07 15:58:59.303, updateTimestamp=1.709845139877745E9, status=0)
+2024-03-08 04:58:59.779 [xxl-job, JobThread-8-1709845136063] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=VSCO, orderId=7680553819371035614
+2024-03-08 04:58:59.780 [xxl-job, JobThread-8-1709845136063] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-03-08 04:58:59.780 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7680553819371035614, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=17.9909, createTime=2024-03-07 15:58:59.303, updateTimestamp=1.709845139877745E9, status=0)
+2024-03-08 04:58:59.780 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7680553819371035614, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=17.9909, createTime=2024-03-07 15:58:59.303, updateTimestamp=1.709845139877745E9, status=0)
+2024-03-08 04:58:59.780 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7680553819371035614, code=VSCO, name=维多利亚的秘密, count=94.0, price=0.0, avgPrice=17.9909, createTime=2024-03-07 15:58:59.303, updateTimestamp=1.709845139877745E9, status=0)

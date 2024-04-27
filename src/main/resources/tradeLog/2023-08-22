@@ -1,0 +1,462 @@
+Console output is saving to: /Users/Luonanqin/study/intellij_idea_workspaces/splan/src/main/resources/tradeLog
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7099739497779406185
+trade api initialize finish start!
+unlock success
+stock latest close great 6 size: 3687
+stock overbolling hit great 0.600000 size: 3373
+filter merge stock, the stock set size is 3373
+filter split stock, the stock set size is 3365
+filter front reinstatement less 0.98 stock, the stock set size is 3190
+finish initialize many time. preTradeTime=1692710880000, openTime=1692711000000, closeCheckTime=Wed Aug 23 03:59:00 CST 2023
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init method
+Aug 22, 2023 9:10:47 PM org.glassfish.tyrus.container.grizzly.client.GrizzlyClientSocket addProxies
+INFO: Socks proxy is not supported, please file new issue at https://java.net/jira/browse/TYRUS. Proxy 'SOCKS @ 127.0.0.1:5000' will be ignored.
+opening websocket
+connected
+auth_success
+wait pre trade time. now is 21:10:50
+wait pre trade time. now is 21:10:55
+wait pre trade time. now is 21:11:00
+wait pre trade time. now is 21:11:05
+wait pre trade time. now is 21:11:10
+wait pre trade time. now is 21:11:15
+wait pre trade time. now is 21:11:20
+wait pre trade time. now is 21:11:25
+wait pre trade time. now is 21:11:30
+wait pre trade time. now is 21:11:35
+wait pre trade time. now is 21:11:40
+wait pre trade time. now is 21:11:45
+wait pre trade time. now is 21:11:50
+wait pre trade time. now is 21:11:55
+wait pre trade time. now is 21:12:00
+wait pre trade time. now is 21:12:05
+wait pre trade time. now is 21:12:10
+wait pre trade time. now is 21:12:15
+wait pre trade time. now is 21:12:20
+wait pre trade time. now is 21:12:25
+wait pre trade time. now is 21:12:30
+wait pre trade time. now is 21:12:35
+wait pre trade time. now is 21:12:40
+wait pre trade time. now is 21:12:45
+wait pre trade time. now is 21:12:50
+wait pre trade time. now is 21:12:55
+wait pre trade time. now is 21:13:00
+wait pre trade time. now is 21:13:05
+wait pre trade time. now is 21:13:10
+wait pre trade time. now is 21:13:15
+wait pre trade time. now is 21:13:20
+wait pre trade time. now is 21:13:25
+wait pre trade time. now is 21:13:30
+wait pre trade time. now is 21:13:35
+wait pre trade time. now is 21:13:40
+wait pre trade time. now is 21:13:45
+wait pre trade time. now is 21:13:50
+wait pre trade time. now is 21:13:55
+wait pre trade time. now is 21:14:00
+wait pre trade time. now is 21:14:05
+wait pre trade time. now is 21:14:10
+wait pre trade time. now is 21:14:15
+wait pre trade time. now is 21:14:20
+wait pre trade time. now is 21:14:25
+wait pre trade time. now is 21:14:30
+wait pre trade time. now is 21:14:35
+wait pre trade time. now is 21:14:40
+wait pre trade time. now is 21:14:45
+wait pre trade time. now is 21:14:51
+wait pre trade time. now is 21:14:56
+wait pre trade time. now is 21:15:01
+wait pre trade time. now is 21:15:06
+wait pre trade time. now is 21:15:11
+wait pre trade time. now is 21:15:16
+wait pre trade time. now is 21:15:21
+wait pre trade time. now is 21:15:26
+wait pre trade time. now is 21:15:31
+wait pre trade time. now is 21:15:36
+wait pre trade time. now is 21:15:41
+wait pre trade time. now is 21:15:46
+wait pre trade time. now is 21:15:51
+wait pre trade time. now is 21:15:56
+wait pre trade time. now is 21:16:01
+wait pre trade time. now is 21:16:06
+wait pre trade time. now is 21:16:11
+wait pre trade time. now is 21:16:16
+wait pre trade time. now is 21:16:21
+wait pre trade time. now is 21:16:26
+wait pre trade time. now is 21:16:31
+wait pre trade time. now is 21:16:36
+wait pre trade time. now is 21:16:41
+wait pre trade time. now is 21:16:46
+wait pre trade time. now is 21:16:51
+wait pre trade time. now is 21:16:56
+wait pre trade time. now is 21:17:01
+wait pre trade time. now is 21:17:06
+wait pre trade time. now is 21:17:11
+wait pre trade time. now is 21:17:16
+wait pre trade time. now is 21:17:21
+wait pre trade time. now is 21:17:26
+wait pre trade time. now is 21:17:31
+wait pre trade time. now is 21:17:36
+wait pre trade time. now is 21:17:41
+wait pre trade time. now is 21:17:46
+wait pre trade time. now is 21:17:51
+wait pre trade time. now is 21:17:56
+wait pre trade time. now is 21:18:01
+wait pre trade time. now is 21:18:06
+wait pre trade time. now is 21:18:11
+wait pre trade time. now is 21:18:16
+wait pre trade time. now is 21:18:21
+wait pre trade time. now is 21:18:26
+wait pre trade time. now is 21:18:31
+wait pre trade time. now is 21:18:36
+wait pre trade time. now is 21:18:41
+wait pre trade time. now is 21:18:46
+wait pre trade time. now is 21:18:51
+wait pre trade time. now is 21:18:56
+wait pre trade time. now is 21:19:01
+wait pre trade time. now is 21:19:06
+wait pre trade time. now is 21:19:11
+wait pre trade time. now is 21:19:16
+wait pre trade time. now is 21:19:21
+wait pre trade time. now is 21:19:26
+wait pre trade time. now is 21:19:31
+wait pre trade time. now is 21:19:36
+wait pre trade time. now is 21:19:41
+wait pre trade time. now is 21:19:46
+wait pre trade time. now is 21:19:51
+wait pre trade time. now is 21:19:56
+wait pre trade time. now is 21:20:01
+wait pre trade time. now is 21:20:06
+wait pre trade time. now is 21:20:11
+wait pre trade time. now is 21:20:16
+wait pre trade time. now is 21:20:21
+wait pre trade time. now is 21:20:26
+wait pre trade time. now is 21:20:31
+wait pre trade time. now is 21:20:36
+wait pre trade time. now is 21:20:41
+wait pre trade time. now is 21:20:46
+wait pre trade time. now is 21:20:51
+wait pre trade time. now is 21:20:56
+wait pre trade time. now is 21:21:01
+wait pre trade time. now is 21:21:06
+wait pre trade time. now is 21:21:11
+wait pre trade time. now is 21:21:16
+wait pre trade time. now is 21:21:21
+wait pre trade time. now is 21:21:26
+wait pre trade time. now is 21:21:31
+wait pre trade time. now is 21:21:36
+wait pre trade time. now is 21:21:41
+wait pre trade time. now is 21:21:46
+wait pre trade time. now is 21:21:51
+wait pre trade time. now is 21:21:56
+wait pre trade time. now is 21:22:01
+wait pre trade time. now is 21:22:06
+wait pre trade time. now is 21:22:11
+wait pre trade time. now is 21:22:16
+wait pre trade time. now is 21:22:21
+wait pre trade time. now is 21:22:26
+wait pre trade time. now is 21:22:31
+wait pre trade time. now is 21:22:36
+wait pre trade time. now is 21:22:41
+wait pre trade time. now is 21:22:46
+wait pre trade time. now is 21:22:51
+wait pre trade time. now is 21:22:56
+wait pre trade time. now is 21:23:01
+wait pre trade time. now is 21:23:06
+wait pre trade time. now is 21:23:11
+wait pre trade time. now is 21:23:16
+wait pre trade time. now is 21:23:21
+wait pre trade time. now is 21:23:26
+wait pre trade time. now is 21:23:31
+wait pre trade time. now is 21:23:36
+wait pre trade time. now is 21:23:41
+wait pre trade time. now is 21:23:46
+wait pre trade time. now is 21:23:51
+wait pre trade time. now is 21:23:56
+wait pre trade time. now is 21:24:01
+wait pre trade time. now is 21:24:06
+wait pre trade time. now is 21:24:11
+wait pre trade time. now is 21:24:16
+wait pre trade time. now is 21:24:21
+wait pre trade time. now is 21:24:26
+wait pre trade time. now is 21:24:31
+wait pre trade time. now is 21:24:36
+wait pre trade time. now is 21:24:41
+wait pre trade time. now is 21:24:46
+wait pre trade time. now is 21:24:51
+wait pre trade time. now is 21:24:56
+wait pre trade time. now is 21:25:01
+wait pre trade time. now is 21:25:06
+wait pre trade time. now is 21:25:11
+wait pre trade time. now is 21:25:16
+wait pre trade time. now is 21:25:21
+wait pre trade time. now is 21:25:26
+wait pre trade time. now is 21:25:31
+wait pre trade time. now is 21:25:36
+wait pre trade time. now is 21:25:41
+wait pre trade time. now is 21:25:46
+wait pre trade time. now is 21:25:51
+wait pre trade time. now is 21:25:56
+wait pre trade time. now is 21:26:01
+wait pre trade time. now is 21:26:06
+wait pre trade time. now is 21:26:11
+wait pre trade time. now is 21:26:16
+wait pre trade time. now is 21:26:21
+wait pre trade time. now is 21:26:26
+wait pre trade time. now is 21:26:31
+wait pre trade time. now is 21:26:36
+wait pre trade time. now is 21:26:41
+wait pre trade time. now is 21:26:46
+wait pre trade time. now is 21:26:51
+wait pre trade time. now is 21:26:56
+wait pre trade time. now is 21:27:01
+wait pre trade time. now is 21:27:06
+wait pre trade time. now is 21:27:11
+wait pre trade time. now is 21:27:16
+wait pre trade time. now is 21:27:21
+wait pre trade time. now is 21:27:26
+wait pre trade time. now is 21:27:31
+wait pre trade time. now is 21:27:36
+wait pre trade time. now is 21:27:41
+wait pre trade time. now is 21:27:46
+wait pre trade time. now is 21:27:51
+wait pre trade time. now is 21:27:56
+begin subcribe stock at 21:28:01
+finish subcribe real time!
+time is early
+{p=117.2, ev=T, q=91217, s=10, c=[14,12,37,41], t=1692710892000, sym=DKS, x=11, i=52983525364017, z=1}
+time is early
+{p=117.2, ev=T, q=91218, s=89, c=[14,12,37,41], t=1692710892000, sym=DKS, x=12, i=62879133624174, z=1}
+time is early
+{p=481.71, ev=T, q=178835, s=500, c=[12], t=1692710895000, sym=NVDA, trfi=202, x=4, i=9142, z=3, trft=1692710895000}
+time is early
+{p=16.18, ev=T, q=113090, s=50, c=[12,37], t=1692710940000, sym=PRDO, x=12, i=3, z=3}
+time is early
+{p=21.6179, ev=T, q=180137, s=1, c=[12,37], t=1692710941000, sym=NSSC, trfi=202, x=4, i=209, z=3, trft=1692710941000}
+time is early
+{p=240.32, ev=T, q=255456, s=3, c=[12,37], t=1692710944000, sym=TSLA, x=11, i=25716, z=3}
+time is early
+{p=93.35, ev=T, q=23262, s=5, c=[14,12,37,41], t=1692710953000, sym=TSM, x=12, i=62879133682030, z=1}
+time is early
+{p=11.25, ev=T, q=123436, s=1, c=[12,37], t=1692710961000, sym=ADTX, trfi=202, x=4, i=157, z=3, trft=1692710961000}
+time is early
+{p=7.31, ev=T, q=35039, s=100, c=[14,12,41], t=1692710963000, sym=SOS, x=11, i=52983525297745, z=1}
+time is early
+{p=7.31, ev=T, q=35040, s=173, c=[14,12,41], t=1692710963000, sym=SOS, x=11, i=52983525297746, z=1}
+time is early
+{p=116.79, ev=T, q=91897, s=100, c=[14,12,41], t=1692710969000, sym=DKS, x=11, i=52983525365071, z=1}
+time is early
+{p=116.87, ev=T, q=91898, s=24, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365072, z=1}
+time is early
+{p=116.87, ev=T, q=91899, s=10, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365073, z=1}
+time is early
+{p=116.88, ev=T, q=91900, s=12, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365074, z=1}
+time is early
+{p=116.9, ev=T, q=91901, s=50, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365075, z=1}
+time is early
+{p=116.9, ev=T, q=91902, s=10, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365076, z=1}
+time is early
+{p=116.9, ev=T, q=91903, s=10, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365077, z=1}
+time is early
+{p=116.96, ev=T, q=91904, s=12, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365078, z=1}
+time is early
+{p=116.98, ev=T, q=91905, s=1, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365296, z=1}
+time is early
+{p=116.98, ev=T, q=91906, s=61, c=[14,12,37,41], t=1692710969000, sym=DKS, x=11, i=52983525365297, z=1}
+time is early
+{p=144, ev=T, q=256005, s=1, c=[14,12,37,41], t=1692710970000, sym=ZS, x=12, i=62, z=3}
+time is early
+{p=144, ev=T, q=256006, s=1, c=[14,12,37,41], t=1692710970000, sym=ZS, x=12, i=63, z=3}
+time is early
+{p=144, ev=T, q=256007, s=1, c=[14,12,37,41], t=1692710970000, sym=ZS, x=12, i=64, z=3}
+time is early
+{p=144, ev=T, q=256008, s=1, c=[14,12,37,41], t=1692710970000, sym=ZS, x=12, i=65, z=3}
+time is early
+{p=144, ev=T, q=256009, s=1, c=[14,12,37,41], t=1692710970000, sym=ZS, x=12, i=66, z=3}
+time is early
+{p=135.09, ev=T, q=123885, s=180, c=[14,12,41], t=1692710983000, sym=AMZN, x=12, i=1900, z=3}
+time is early
+{p=490.1, ev=T, q=142597, s=4, c=[12,37], t=1692710987000, sym=INTU, x=11, i=41, z=3}
+time is early
+{p=490.09, ev=T, q=142598, s=16, c=[12,37], t=1692710987000, sym=INTU, x=11, i=42, z=3}
+time is early
+{p=15.76, ev=T, q=15374, s=5, c=[14,12,37,41], t=1692710988000, sym=CCL, x=11, i=52983525101642, z=1}
+time is early
+{p=15.76, ev=T, q=15375, s=100, c=[14,12,41], t=1692710988000, sym=CCL, x=11, i=52983525101643, z=1}
+time is early
+{p=15.76, ev=T, q=15376, s=50, c=[14,12,37,41], t=1692710988000, sym=CCL, x=11, i=52983525101644, z=1}
+time is early
+{p=15.77, ev=T, q=15377, s=3, c=[14,12,37,41], t=1692710988000, sym=CCL, x=12, i=62879133689948, z=1}
+time is early
+{p=15.76, ev=T, q=15378, s=1, c=[14,12,37,41], t=1692710988000, sym=CCL, x=12, i=62879133689949, z=1}
+time is early
+{p=15.75, ev=T, q=15379, s=1, c=[12,37], t=1692710988000, sym=CCL, x=12, i=62879133689950, z=1}
+time is early
+{p=15.75, ev=T, q=15380, s=20, c=[12,37], t=1692710988000, sym=CCL, x=12, i=62879133689951, z=1}
+time is early
+{p=15.75, ev=T, q=15381, s=200, c=[12], t=1692710988000, sym=CCL, x=12, i=62879133689952, z=1}
+time is early
+{p=15.76, ev=T, q=15382, s=7, c=[12,37], t=1692710988000, sym=CCL, x=8, i=52983525030503, z=1}
+time is early
+{p=15.76, ev=T, q=15383, s=6, c=[12,37], t=1692710988000, sym=CCL, x=8, i=52983525030504, z=1}
+time is early
+{p=15.75, ev=T, q=15384, s=2, c=[14,12,37,41], t=1692710988000, sym=CCL, x=11, i=52983525101645, z=1}
+time is early
+{p=116.68, ev=T, q=92208, s=1, c=[14,12,37,41], t=1692710990000, sym=DKS, x=11, i=52983525421122, z=1}
+time is early
+{p=116.65, ev=T, q=92209, s=10, c=[14,12,37,41], t=1692710990000, sym=DKS, x=11, i=52983525421123, z=1}
+time is early
+{p=116.61, ev=T, q=92210, s=5, c=[14,12,37,41], t=1692710990000, sym=DKS, x=11, i=52983525421124, z=1}
+time is early
+{p=116.57, ev=T, q=92211, s=8, c=[14,12,37,41], t=1692710990000, sym=DKS, x=11, i=52983525421125, z=1}
+time is early
+{p=116.76, ev=T, q=92212, s=13, c=[14,12,37,41], t=1692710990000, sym=DKS, x=12, i=62879133690479, z=1}
+time is early
+{p=9.72, ev=T, q=25499, s=1000, c=[12], t=1692710994000, sym=AZUL, x=12, i=62879133691749, z=1}
+StockEvent(stock=AVNW, price=28.07, time=1692711000002) dn=28.124
+AVNW=0.19200682690939588
+StockEvent(stock=ASO, price=52.27, time=1692711000002) dn=53.674
+StockEvent(stock=FLO, price=23.65, time=1692711000011) dn=23.725
+FLO=0.31612223393046507,AVNW=0.19200682690939588
+StockEvent(stock=GOGL, price=7.29, time=1692711000004) dn=7.303
+unsubcribeStockSet size: 100 1692711000528
+StockEvent(stock=HIBB, price=40.8, time=1692711000004) dn=41.735
+HIBB=2.2403258655804534,FLO=0.31612223393046507,AVNW=0.19200682690939588
+StockEvent(stock=EMBC, price=17.21, time=1692711000004) dn=17.401
+unsubcribeStockSet size: 200 1692711000570
+StockEvent(stock=CPRT, price=43.33, time=1692711000005) dn=56.771
+StockEvent(stock=PCT, price=8.6, time=1692711000002) dn=9.137
+unsubcribeStockSet size: 300 1692711000582
+StockEvent(stock=COE, price=7.06, time=1692711000046) dn=7.124
+HIBB=2.2403258655804534,COE=0.8983717012914101,FLO=0.31612223393046507,AVNW=0.19200682690939588
+unsubcribeStockSet size: 400 1692711000597
+StockEvent(stock=COST, price=541.58, time=1692711000026) dn=542.343
+StockEvent(stock=NDSN, price=226.87, time=1692711000028) dn=228.251
+HIBB=2.2403258655804534,COE=0.8983717012914101,NDSN=0.6050356844000684,FLO=0.31612223393046507,AVNW=0.19200682690939588
+StockEvent(stock=GO, price=32.35, time=1692711000059) dn=32.422
+unsubcribeStockSet size: 500 1692711000613
+StockEvent(stock=AVO, price=10.0, time=1692711000057) dn=10.061
+unsubcribeStockSet size: 600 1692711000627
+StockEvent(stock=CTKB, price=8.09, time=1692711000064) dn=8.128
+unsubcribeStockSet size: 700 1692711000639
+StockEvent(stock=UBSI, price=29.86, time=1692711000102) dn=29.971
+HIBB=2.2403258655804534,COE=0.8983717012914101,NDSN=0.6050356844000684,UBSI=0.37035801274565633,FLO=0.31612223393046507,AVNW=0.19200682690939588
+unsubcribeStockSet size: 800 1692711000650
+StockEvent(stock=UAA, price=7.26, time=1692711000133) dn=7.424
+unsubcribeStockSet size: 900 1692711000664
+StockEvent(stock=IBTX, price=41.09, time=1692711000133) dn=41.388
+HIBB=2.2403258655804534,COE=0.8983717012914101,IBTX=0.7200154634193359,NDSN=0.6050356844000684,UBSI=0.37035801274565633,FLO=0.31612223393046507,AVNW=0.19200682690939588
+StockEvent(stock=UA, price=6.66, time=1692711000177) dn=6.779
+HIBB=2.2403258655804534,UA=1.755421153562469,COE=0.8983717012914101,IBTX=0.7200154634193359,NDSN=0.6050356844000684,UBSI=0.37035801274565633,FLO=0.31612223393046507,AVNW=0.19200682690939588
+StockEvent(stock=TLIS, price=6.26, time=1692711000191) dn=6.304
+HIBB=2.2403258655804534,UA=1.755421153562469,COE=0.8983717012914101,IBTX=0.7200154634193359,TLIS=0.6979695431472157,NDSN=0.6050356844000684,UBSI=0.37035801274565633,FLO=0.31612223393046507,AVNW=0.19200682690939588
+StockEvent(stock=WSM, price=128.41, time=1692711000207) dn=128.476
+StockEvent(stock=NKE, price=100.99, time=1692711000222) dn=102.698
+HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,COE=0.8983717012914101,IBTX=0.7200154634193359,TLIS=0.6979695431472157,NDSN=0.6050356844000684,UBSI=0.37035801274565633,FLO=0.31612223393046507,AVNW=0.19200682690939588
+unsubcribeStockSet size: 1000 1692711000690
+StockEvent(stock=M, price=13.59, time=1692711000256) dn=14.285
+M=4.86524326216311,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,COE=0.8983717012914101,IBTX=0.7200154634193359,TLIS=0.6979695431472157,NDSN=0.6050356844000684,UBSI=0.37035801274565633,FLO=0.31612223393046507
+StockEvent(stock=PHM, price=77.96, time=1692711000262) dn=78.027
+unsubcribeStockSet size: 1100 1692711000803
+StockEvent(stock=GES, price=18.885, time=1692711000327) dn=19.13
+M=4.86524326216311,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,GES=1.2807109252482878,COE=0.8983717012914101,IBTX=0.7200154634193359,TLIS=0.6979695431472157,NDSN=0.6050356844000684,UBSI=0.37035801274565633
+StockEvent(stock=MSGS, price=175.4, time=1692711000384) dn=175.497
+StockEvent(stock=BORR, price=7.315, time=1692711000411) dn=7.317
+unsubcribeStockSet size: 1200 1692711000819
+StockEvent(stock=KEYS, price=129.625, time=1692711000403) dn=131.721
+M=4.86524326216311,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,GES=1.2807109252482878,COE=0.8983717012914101,IBTX=0.7200154634193359,TLIS=0.6979695431472157,NDSN=0.6050356844000684
+StockEvent(stock=PBFS, price=9.07, time=1692711000407) dn=9.133
+M=4.86524326216311,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,GES=1.2807109252482878,COE=0.8983717012914101,IBTX=0.7200154634193359,TLIS=0.6979695431472157,PBFS=0.6898061973064583
+StockEvent(stock=NGMS, price=26.76, time=1692711000409) dn=26.781
+StockEvent(stock=SSBK, price=22.94, time=1692711000483) dn=22.95
+StockEvent(stock=LTRPB, price=31.94, time=1692711000462) dn=32.397
+unsubcribeStockSet size: 1300 1692711000833
+StockEvent(stock=FDX, price=259.425, time=1692711000527) dn=260.009
+unsubcribeStockSet size: 1400 1692711000844
+StockEvent(stock=JWN, price=18.04, time=1692711000678) dn=18.072
+StockEvent(stock=CODI, price=20.59, time=1692711000686) dn=20.646
+StockEvent(stock=EVR, price=129.84, time=1692711000692) dn=130.387
+unsubcribeStockSet size: 1500 1692711000856
+StockEvent(stock=NSSC, price=21.485, time=1692711000705) dn=25.888
+NSSC=17.007880098887522,M=4.86524326216311,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,GES=1.2807109252482878,COE=0.8983717012914101,IBTX=0.7200154634193359,TLIS=0.6979695431472157
+StockEvent(stock=FL, price=23.68, time=1692711000696) dn=24.227
+NSSC=17.007880098887522,M=4.86524326216311,FL=2.2578115325876116,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,GES=1.2807109252482878,COE=0.8983717012914101,IBTX=0.7200154634193359
+unsubcribeStockSet size: 1600 1692711000874
+StockEvent(stock=COTY, price=10.87, time=1692711000705) dn=10.925
+unsubcribeStockSet size: 1700 1692711000930
+StockEvent(stock=BRX, price=21.17, time=1692711000723) dn=21.193
+StockEvent(stock=NMM, price=22.58, time=1692711000728) dn=22.622
+unsubcribeStockSet size: 1800 1692711000951
+StockEvent(stock=MOV, price=26.87, time=1692711000700) dn=26.895
+StockEvent(stock=SRE, price=71.065, time=1692711000744) dn=92.683
+StockEvent(stock=BBU, price=15.4, time=1692711000756) dn=15.553
+NSSC=17.007880098887522,M=4.86524326216311,FL=2.2578115325876116,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,GES=1.2807109252482878,BBU=0.9837330418568794,COE=0.8983717012914101
+StockEvent(stock=A, price=117.85, time=1692711000743) dn=117.891
+unsubcribeStockSet size: 1900 1692711001009
+StockEvent(stock=DKS, price=116.895, time=1692711000706) dn=127.111
+NSSC=17.007880098887522,DKS=8.03706996247375,M=4.86524326216311,FL=2.2578115325876116,HIBB=2.2403258655804534,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,GES=1.2807109252482878,BBU=0.9837330418568794
+StockEvent(stock=TGNA, price=16.26, time=1692711000764) dn=16.333
+unsubcribeStockSet size: 2000 1692711001034
+unsubcribeStockSet size: 2100 1692711001070
+StockEvent(stock=FNWD, price=21.6, time=1692711000829) dn=21.649
+StockEvent(stock=AAP, price=67.01, time=1692711000766) dn=67.453
+StockEvent(stock=FAF, price=59.1, time=1692711000780) dn=59.221
+unsubcribeStockSet size: 2200 1692711001103
+StockEvent(stock=DOLE, price=12.18, time=1692711000855) dn=12.401
+NSSC=17.007880098887522,DKS=8.03706996247375,M=4.86524326216311,FL=2.2578115325876116,HIBB=2.2403258655804534,DOLE=1.7821143456172897,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,GES=1.2807109252482878
+StockEvent(stock=OOMA, price=13.9, time=1692711000786) dn=13.969
+StockEvent(stock=GIL, price=29.27, time=1692711000792) dn=29.401
+unsubcribeStockSet size: 2300 1692711001116
+StockEvent(stock=GOCO, price=17.11, time=1692711000868) dn=17.232
+StockEvent(stock=BBUC, price=18.45, time=1692711000881) dn=18.533
+StockEvent(stock=DE, price=392.74, time=1692711000846) dn=396.892
+unsubcribeStockSet size: 2400 1692711001162
+unsubcribeStockSet size: 2500 1692711001188
+StockEvent(stock=RLI, price=128.86, time=1692711000927) dn=129.36
+StockEvent(stock=OMI, price=15.8, time=1692711000911) dn=16.031
+StockEvent(stock=SIG, price=71.31, time=1692711000953) dn=72.198
+unsubcribeStockSet size: 2600 1692711001259
+StockEvent(stock=EL, price=149.89, time=1692711000918) dn=151.259
+StockEvent(stock=HRL, price=38.78, time=1692711000932) dn=38.911
+StockEvent(stock=RGA, price=136.19, time=1692711000991) dn=136.388
+StockEvent(stock=PBT, price=21.93, time=1692711000954) dn=22.257
+NSSC=17.007880098887522,DKS=8.03706996247375,M=4.86524326216311,FL=2.2578115325876116,HIBB=2.2403258655804534,DOLE=1.7821143456172897,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,PBT=1.4692007009030945
+unsubcribeStockSet size: 2700 1692711001407
+StockEvent(stock=BBCP, price=7.64, time=1692711001005) dn=7.698
+StockEvent(stock=EGAN, price=6.4, time=1692711000962) dn=6.406
+StockEvent(stock=FHTX, price=7.54, time=1692711001103) dn=7.577
+unsubcribeStockSet size: 2800 1692711001577
+StockEvent(stock=CTBI, price=36.03, time=1692711001201) dn=36.059
+StockEvent(stock=FCAP, price=33.94, time=1692711001297) dn=34.061
+StockEvent(stock=AWI, price=73.41, time=1692711001816) dn=73.522
+unsubcribeStockSet size: 2900 1692711008717
+HFBL time is 1692711031720, price is 16.47.listen end!
+unsubcribeStockSet size: 3000 1692711031834
+unsubcribeStockSet size: 3100 1692711031835
+=========== finish unsubscribe ===========
+NSSC=17.007880098887522,DKS=8.03706996247375,M=4.86524326216311,FL=2.2578115325876116,HIBB=2.2403258655804534,DOLE=1.7821143456172897,UA=1.755421153562469,NKE=1.663128785370697,KEYS=1.5912420950342039,PBT=1.4692007009030945
+remain cash: 7288.270000000019
+buy stock. stock=NSSC, count=336, price=21.485, orderPrice=21.69, orderId: 5492185539749481516
+NSSC order is successfully executed. orderId: 5492185539749481516
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5492185539749481516, code=NSSC, name=Napco Security Technologies, count=336.0, price=21.69, avgPrice=21.67, createTime=2023-08-22 09:30:31, updateTimestamp=1.692711035E9, status=0)
+there is no cash to trade. trade finish
+trade end
+being listen stop loss: {NSSC=StopLoss(stock=NSSC, canSellQty=336.0, lossPrice=19.503)}
+{p=23.41, ev=T, q=3486670, s=5, c=[14,37,41], t=1692724169000, sym=NSSC, x=11, i=3215, z=3}
+{p=23.58, ev=T, q=3623727, s=102, t=1692725011000, sym=NSSC, trfi=202, x=4, i=6943, z=3, trft=1692725011000}
+{p=23.435, ev=T, q=3671030, s=100, t=1692725338000, sym=NSSC, trfi=202, x=4, i=7022, z=3, trft=1692725338000}
+{p=23.61, ev=T, q=4223102, s=5, c=[37], t=1692728745000, sym=NSSC, x=12, i=9163, z=3}
+{p=23.249, ev=T, q=5164921, s=400, t=1692733199000, sym=NSSC, trfi=202, x=4, i=9090, z=3, trft=1692733199000}
+{p=23.22, ev=T, q=5343984, s=40, c=[37], t=1692733714000, sym=NSSC, x=8, i=3448, z=3}
+{p=23.215, ev=T, q=5396115, s=100, t=1692733834000, sym=NSSC, trfi=202, x=4, i=9460, z=3, trft=1692733834000}
+{p=23.24, ev=T, q=5553311, s=109, c=[14,41], t=1692734106000, sym=NSSC, x=12, i=11808, z=3}
+{p=23.24, ev=T, q=5553312, s=84, c=[37], t=1692734106000, sym=NSSC, x=15, i=1429, z=3}
+ready to sell before close market. position={NSSC=StockPosition(stock=NSSC, canSellQty=336.0, costPrice=21.67, currPrice=23.403)}, time=2023-08-23T03:59:00.300
+before close sell stock. stock=NSSC, count=336.0, currentPrice=23.403, orderPrice=23.16
+before close sell stock. stock=NSSC, orderId：5492623836868662957
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5492623836868662957, code=NSSC, name=Napco Security Technologies, count=336.0, price=23.16, avgPrice=23.22, createTime=2023-08-22 15:59:00, updateTimestamp=1.692734343E9, status=0)
+{p=23.225, ev=T, q=5764418, s=5, c=[37], t=1692734356000, sym=NSSC, trfi=202, x=4, i=10133, z=3, trft=1692734356000}
+all stock has stop loss
+trade exit

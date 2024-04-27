@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.StockDataMapper">
+
+    <sql id="queryColumn">
+        `id` as id,
+        `code` as code,
+        `date` as date,
+        `open` as open,
+        `close` as close,
+        `high` as high,
+        `low` as low,
+        `volume` as volume,
+        `open_trade` as openTrade,
+        `open_trade_time` as openTradeTime,
+        `f1min_avg_price` as f1minAvgPrice,
+        `f1min_volume` as f1minVolume,
+        `md` as md,
+        `mb` as mb,
+        `up` as up,
+        `dn` as dn,
+        `open_md` as openMd,
+        `open_mb` as openMb,
+        `open_up` as openUp,
+        `open_dn` as openDn,
+        `ma5` as ma5,
+        `ma10` as ma10,
+        `ma20` as ma20,
+        `ma30` as ma30,
+        `ma60` as ma60
+    </sql>
+
+    <select id="showTables">
+        show tables like '${dbYear}'
+    </select>
+
+    <insert id="createTable">
+        CREATE TABLE `${dbYear}` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '股票代码',
+        `date` varchar(10) NOT NULL DEFAULT '' COMMENT '交易日',
+        `open` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '开盘',
+        `close` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '收盘',
+        `high` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '最高',
+        `low` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '最低',
+        `volume` bigint NOT NULL DEFAULT '0' COMMENT '成交量',
+        `open_trade` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '真实开盘成交价',
+        `open_trade_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '真实开盘成交时间',
+        `f1min_avg_price` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '第一分钟成交均价',
+        `f1min_volume` bigint NOT NULL DEFAULT '0' COMMENT '第一分钟成交量',
+        `md` decimal(25,16) NOT NULL DEFAULT '0.0000000000' COMMENT '布林线20日标准差',
+        `mb` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '布林线中轨',
+        `up` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '布林线上轨',
+        `dn` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '布林线下轨',
+        `open_md` decimal(25,16) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `open_mb` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `open_up` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `open_dn` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '开盘布林线下轨',
+        `ma5` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '5日均线',
+        `ma10` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '10日均线',
+        `ma20` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '20日均线',
+        `ma30` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '30日均线',
+        `ma60` decimal(20,5) NOT NULL DEFAULT '0.000' COMMENT '60日均线',
+        `create_time` datetime NOT NULL COMMENT '创建时间',
+        `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uk_code_date` (`code`, `date`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    </insert>
+
+    <insert id="initStock">
+        insert into `${dbYear}` (code, create_time, update_time) value (#{code}, now(), now())
+    </insert>
+
+    <select id="queryStockExistCount" resultType="java.lang.Integer">
+        select count(*) from `${dbYear}` where code = #{code} and date=#{date}
+    </select>
+
+    <insert id="batchInsertFileData">
+        insert into `${dbYear}` (
+        `code`,
+        `date`,
+        `open`,
+        `close`,
+        `high`,
+        `low`,
+        `volume`,
+        `open_trade`,
+        `open_trade_time`,
+        `f1min_avg_price`,
+        `f1min_volume`,
+        `md`,
+        `mb`,
+        `up`,
+        `dn`,
+        `open_md`,
+        `open_mb`,
+        `open_up`,
+        `open_dn`,
+        `ma5`,
+        `ma10`,
+        `ma20`,
+        `ma30`,
+        `ma60`,
+        `create_time`,
+        `update_time`)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.code},
+            #{item.date},
+            #{item.open},
+            #{item.close},
+            #{item.high},
+            #{item.low},
+            #{item.volume},
+            #{item.openTrade},
+            #{item.openTradeTime},
+            #{item.f1minAvgPrice},
+            #{item.f1minVolume},
+            #{item.md},
+            #{item.mb},
+            #{item.up},
+            #{item.dn},
+            #{item.openMd},
+            #{item.openMb},
+            #{item.openUp},
+            #{item.openDn},
+            #{item.ma5},
+            #{item.ma10},
+            #{item.ma20},
+            #{item.ma30},
+            #{item.ma60},
+            now(),
+            now())
+        </foreach>
+        on duplicate key update
+        `open`=values(open),
+        `close`=values(close),
+        `high`=values(high),
+        `low`=values(low),
+        `volume`=values(volume),
+        `open_trade`=values(open_trade),
+        `open_trade_time`=values(open_trade_time),
+        `f1min_avg_price`=values(f1min_avg_price),
+        `f1min_volume`=values(f1min_volume),
+        `md`=values(md),
+        `mb`=values(mb),
+        `up`=values(up),
+        `dn`=values(dn),
+        `open_md`=values(open_md),
+        `open_mb`=values(open_mb),
+        `open_up`=values(open_up),
+        `open_dn`=values(open_dn),
+        `ma5`=values(ma5),
+        `ma10`=values(ma10),
+        `ma20`=values(ma20),
+        `ma30`=values(ma30),
+        `ma60`=values(ma60)
+    </insert>
+
+    <select id="queryForAllYear" resultType="Total">
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}` where id > #{page.id}
+        order by id
+        limit #{page.limit}
+    </select>
+
+    <select id="queryByCode" resultType="Total">
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}`
+        where code = #{code}
+        order by date ${dateOrderType}
+    </select>
+
+    <select id="queryStockList" resultType="java.lang.String">
+        select code from `${dbYear}`
+        where date = #{date}
+    </select>
+
+    <select id="queryStockDataList" resultType="Total">
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}`
+        where date = #{date}
+    </select>
+
+    <select id="selectByCodeDate" resultType="Total">
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}`
+        where code=#{code} and date=#{date}
+    </select>
+
+    <update id="updateStockKLine" parameterType="bean.StockKLine">
+        update `${dbYear}` set
+        open=#{open},
+        close=#{close},
+        high=#{high},
+        low=#{low},
+        volume=#{volume}
+        where code=#{code} and date=#{date}
+    </update>
+
+    <update id="updateMA" parameterType="bean.MA">
+        update `${dbYear}` set
+        ma5=#{ma5},
+        ma10=#{ma10},
+        ma20=#{ma20},
+        ma30=#{ma30},
+        ma60=#{ma60}
+        where code=#{code} and date=#{date}
+    </update>
+
+    <update id="updateBOLL">
+        update `${dbYear}` set
+        md=#{md},
+        mb=#{mb},
+        up=#{up},
+        dn=#{dn}
+        where code=#{code} and date=#{date}
+    </update>
+
+    <update id="updateOpenBOLL">
+        update `${dbYear}` set
+        open_md=#{md},
+        open_mb=#{mb},
+        open_up=#{up},
+        open_dn=#{dn}
+        where code=#{code} and date=#{date}
+    </update>
+
+    <update id="updateF1minTrade">
+        update `${dbYear}` set
+        f1min_avg_price=#{avgPrice},
+        f1min_volume=#{volume}
+        where code=#{code}
+    </update>
+
+    <update id="updateOpenTrade">
+        update `${dbYear}` set
+        open_trade=#{tradePrice},
+        open_trade_time=#{tradeTime}
+        where code=#{code} and date=#{date}
+    </update>
+</mapper>

@@ -1,0 +1,183 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7146142908750206490
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1703773680000, openTime=1703773800000, closeCheckTime=Fri Dec 29 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1193
+stock overbolling hit great 0.500000 size: 1024
+filter merge stock, the stock set size is 1024
+filter split stock, the stock set size is 1024
+filter front reinstatement less 0.98 stock, the stock set size is 959
+filter earning and lastEarning stock, the stock set size is 959
+after filte: [FRSH, SCS, CMRE, HNI, TWST, LEGN, LVS, DAWN, FNKO, YPF, SNDR, ATEC, FLGT, COUR, WLK, HRMY, SLAB, HALO, UHS, BHLB, GMED, WLY, AL, KLXE, AN, AEHR, AR, SEE, SNCY, SEM, WMS, HPE, BA, ACDC, BDC, BC, TBLD, ROKU, FYBR, HPK, D, BG, G, H, FLO, HPQ, CENTA, BL, FLS, M, FLR, BP, AEIS, SLCA, DHT, NTAP, LGND, BYND, S, BV, LYB, V, W, LRCX, WRBY, SFM, WNS, NVDA, CI, DIN, BEP, DIS, WTFC, SGH, FNA, IMAX, ARCT, FAST, FND, AMZN, ACHC, DH, APAM, BFH, POST, SCSC, ZNTL, DK, HRT, LITE, DQ, DT, CCAP, NTCT, DY, EVBG, MDGL, SHO, EA, EB, EH, AVNS, WIRE, HCSG, LTHM, BGS, DLB, QRVO, HTH, BHE, ONTO, BHF, SIX, ATKR, ROOT, DLO, CCCS, HTZ, NTES, HARP, FLNC, HUN, GH, GOOG, HUM, GM, WSC, AVPT, TMDX, GT, GOOS, WSO, LCII, JAKK, WST, AXTA, PEAK, HD, ARGX, SKT, STVN, SRRK, SKY, FRO, PECO, AGTI, SLB, HP, CEIX, HLIT, SLP, UPS, SHAK, SPOT, FSS, BKR, FSV, DOV, GGAL, IT, DOX, OEC, ACLX, JAMF, POWI, ACLS, BLD, UNFI, ZYME, HXL, MAS, CADE, MAT, CELC, IONS, IONQ, PINC, URI, OFG, BMA, ACMR, SNV, SAVE, SNX, EZPW, SAVA, KN, WWD, NXPI, KR, ARLO, SOI, KW, AVTR, BMY, SON, WWW, DRI, DRH, ODFL, MCW, BNL, MODG, ANET, SPB, PTEN, SPH, UTI, NXST, BOC, CTKB, SHEL, MDU, ROVR, NTLA, GIII, MP, SNOW, MU, BOX, PEGA, MX, MEG, MEI, SPTN, CENX, DTE, NE, SNPS, OIS, RGEN, YELP, ATRC, KAR, SWAV, FFIN, SRE, EXPD, EXPE, NX, LEVI, VSTO, EXPO, NRIX, ATSG, UHAL, LPLA, OI, DUK, ON, QDEL, DSGX, AAON, SSB, OR, AAOI, CVRX, MGA, NEOG, DVA, BRC, PD, HAYW, PI, WTRG, PK, SLNO, DVN, MGY, BRP, FLWS, STC, PX, BRX, ANIP, BWXT, OLK, OLN, NGVT, STX, ALEC, VBTX, DOCU, ZBH, QS, CCOI, ARRY, PGNY, SUM, OMI, IAC, DXC, SPXC, HUBG, WTTR, RF, PACB, RH, EPAM, BMEA, CERT, HUBS, KEX, BTU, ONB, FLYW, ALGT, DDOG, CRMT, VICR, ALGM, PENN, QLYS, SD, EXTR, SG, GRBK, IBP, APOG, KFY, SR, SU, NVTS, JNPR, CLBT, SWK, IIIV, APPN, SWX, CALX, TK, GTES, TEAM, APPF, CRNC, CTRA, PRIM, EVRG, CROX, IDA, UPWK, TILE, MLI, UA, BWA, CTSH, CAMT, PTLO, SYM, CLDT, CCSI, VC, ERII, KIM, MMS, FULT, SHLS, BXP, SYNA, EVTC, IMVT, ZGN, ORC, FBIN, FDMT, OSPN, ALKT, ARWR, SHOO, WK, SBCF, GRFS, SDGR, WU, WY, OMCL, OSK, FWRG, RVLV, SWKS, APTV, NEWT, OSW, MOV, RACE, CLFD, VAC, CARS, ZIP, GTLB, SDHY, BIDU, IHG, PRMW, ETRN, ENFN, CRSR, CRSP, YY, GEF, ZD, RXRX, ZI, GEO, GEN, FSLR, KMT, ZM, ELAN, ECPG, CRTO, LYFT, PLAB, MIDD, FSLY, RRGB, FBMS, MRO, FUSN, NYCB, OVV, IRDM, CRUS, BORR, ANSS, KNX, GFS, CYBR, GAIN, PANW, CNOB, CRWD, IGMS, MSM, PNFP, SFNC, VECO, ITGR, ETSY, ALPN, MTB, PLCE, CNNE, TAL, GOOGL, NAVI, VET, MTN, VEEV, MTW, OXY, MTZ, VFC, PTVE, TBI, CPSI, UWMC, OSUR, VOYA, MUR, GIL, BEAM, FUTU, ADBE, TREE, KRC, CWAN, TRGP, KRG, ASAN, TENB, EFC, SUPN, PRTA, GAMB, TDC, MMSI, RLAY, CBU, BKNG, DXCM, TDS, TDW, CCJ, EGO, GRMN, WDAY, IOT, BECN, KTB, ECVT, VIR, TER, MEDP, PATH, EHC, RNGR, CWEN, TRIP, ICLR, GLDD, LSCC, SHYF, FITBI, JBGS, TEX, CNTA, GRPN, WYNN, PHAT, HBNC, RBC, CDW, KCGI, BILI, PYCR, EIG, EHAB, TFX, SBLK, AAL, AAN, TGH, BEEM, XOM, TTMI, VCEL, CFB, GNE, LSEA, ENPH, CDAY, ABG, INDI, ABM, THC, MKSI, MTDR, SBOW, ZTO, RAPT, XPO, VLO, THO, UDMY, RDN, VLY, WDFC, BIPC, SMCI, HFWA, FIBK, ACN, ITOS, UFPI, VRDN, ENOV, VMI, REG, PAG, ALXO, VIST, PAR, WSFS, CHH, INFA, GPK, PLMR, REZI, CNXC, EWCZ, GPS, ADP, ELV, TNET, CHX, CHY, CHKP, PBF, PBH, TRNO, XRAY, EME, PAYC, MMYT, VTLE, TVTX, TJX, PBT, TNDM, AEL, LFMD, ZWS, TKR, RGP, TRMK, TROX, MGNX, GPRK, IVT, ENS, FIGS, PDD, FORM, AGL, IRON, TME, MGNI, HOLX, PAYX, LQDT, CLB, PEN, EPC, UMBF, ENTG, DGII, HOMB, GPRE, ASIX, MRCY, AHH, AFRI, FOUR, VRE, CLS, ICUI, CLX, TNK, TNL, SBUX, TNP, CMC, CMG, CMI, NBR, DINO, CMP, VSH, AIR, AIT, AUPH, CFLT, PUBM, ASLE, VERA, CNA, MGPI, ADNT, ERF, CNC, MCHP, DIOD, ERJ, AMAT, CSGS, CNP, CNQ, CHRD, CNX, TPH, KRNT, RLI, KRNY, FOXA, LSXMA, PLTK, FOXF, TPR, FTAI, LSXMK, ESI, SSYS, TPX, INMD, PLTR, KLAC, ZION, COP, LBTYA, BEPC, WFRD, OKTA, CPB, ETD, CPA, CHRW, AMBA, ASND, ALB, IART, CPE, NEO, CPG, NET, LBTYK, CPK, GLNG, TTWO, LDOS, GXO, XPEV, LAW, RNA, CSIQ, ALT, ABNB, NBHC, TRN, TRS, NSIT, VVV, AME, RNW, AMG, AMH, AMN, ADSK, BRKR, ORCL, VRNT, AMX, BRKL, TSM, ROP, OCFC, EBAY, ANF, MGTX, CRI, CRK, TRUP, TTC, ADTN, COCO, AKAM, CWST, XNCR, PLL, MNDY, BERY, RPT, PDFS, CSX, LEA, MERC, LEG, EXC, APA, AFYA, NIO, CDNS, APH, FTDR, RRC, PNM, JBI, BALY, PNT, ORIC, KLIC, MTSI, RRX, LBRT, YMAB, JBT, DENN, OPCH, NKE, EDIT, JKHY, JCI, CVE, SOVO, PLYM, VRSN, CVX, ARW, CDRE, RTO, PUMP, ASB, ASC, ASH, BANR, SIMO, CWT, TYL, COHU, LSTR, STAA, COHR, FCFS, HAE, MANH, MLCO, SMTC, HAL, SEDG, HTBK, ATI, EHTH, WOLF, HAS, ATO, ATR, AZEK, DCOM, CXW, PRG, PRO, AMKR, FENC, IDCC, FIVN, LOPE, VCYT, NOG, DCPH, AVA, AVD, BPOP, INVA, PSX, NDSN, DAKT, CZR, AVO, VNOM, AVT, WAL, VYGR, RXO, GSHD, MASI, MRTX, KNSA, AWI, LMND, SGML, AWR, PFSI, WBS, HEI, AORT, ZETA, NSSC, COLM, AXL, CSTL, COLB, LNC, GWRE, NBTB, AGCO, BCYC, LNW, HELE, WDC, OLED, EBON, AYX, MRUS, FCF, SRCL, FVRR, MATW, FTNT, AZN, MATV, AMPL, HGV, AMPH, NTB, PXD, MRVL, UAL, WEN, PBPB, FDP, WFC, QCOM, SKYT, HAFC, FDX, RDNT, NUE, SITE, BRZE, MLKN, DAL, DAN, DAR, LXFR, WGO, FROG, HCKT, DBD, LRN, NVT, URBN, QTRX, PSTG, AVDX, MNSO, DBX, THRY, NWE, NWL, NWN, DNLI, HTLF, MAXN, KYMR, MYGN, MLNK, MNRO, SGRY, ESTC, STLD, SAIA, LTH, FHB, VSCO, RUSHA, OPRX, AVGO, FHI, TFPM, SNBR, FHN, UTHR, DNOW, AGIO, DWAC, HLX, ONON, RMBL, DRVN, HMN, CVBF, DEI, BAH, RMBS, COTY, FIS, GOGO, FIX, MNTK, STNG, JACK, SCL]
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:03
+finish subcribe real time!
+time is early. {p=91.4, ev=T, q=268751, s=76, c=[12,37], t=1703773782000, sym=MCHP, x=12, i=37, z=3}
+{p=91.4, ev=T, q=268751, s=76, c=[12,37], t=1703773782000, sym=MCHP, x=12, i=37, z=3}
+unsubscribeStockSet size: 100 1703773800190
+StockEvent(stock=CROX, price=94.35, time=1703773800001) dn=95.052 current=1703773800207
+CROX=0.7385431132432904
+unsubscribeStockSet size: 200 1703773800316
+StockEvent(stock=AFRI, price=10.39, time=1703773800166) dn=10.482 current=1703773800331
+AFRI=0.8776950963556454,CROX=0.7385431132432904
+StockEvent(stock=DIS, price=90.09, time=1703773800244) dn=89.843 current=1703773800338
+unsubscribeStockSet size: 300 1703773800519
+unsubscribeStockSet size: 400 1703773800680
+StockEvent(stock=OLK, price=25.22, time=1703773800608) dn=25.186 current=1703773800775
+unsubscribeStockSet size: 500 1703773800798
+unsubscribeStockSet size: 600 1703773800930
+unsubscribeStockSet size: 700 1703773801001
+StockEvent(stock=JBT, price=99.75, time=1703773800740) dn=99.523 current=1703773801046
+StockEvent(stock=AIR, price=63.13, time=1703773800859) dn=63.203 current=1703773801067
+unsubscribeStockSet size: 800 1703773801097
+unsubscribeStockSet size: 900 1703773801204
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [AFRI, CROX]
+quote price(time=1703773821138): {AFRI=10.39, CROX=94.35}
+quote price(time=1703773821139): {AFRI=10.39, CROX=94.35}
+quote price(time=1703773821139): {AFRI=10.39, CROX=94.35}
+quote price(time=1703773821154): {AFRI=10.39, CROX=94.35}
+quote price(time=1703773821154): {AFRI=10.39, CROX=94.35}
+AFRI=0.8776950963556454,CROX=0.7385431132432904
+onReply_GetFunds: 1285.95
+remain cash: 1285.95
+first trade. orderPrice=10.42, multiple=1
+onReply_GetMaxTrdQtys: 122
+quote price(time=1703773822201): {AFRI=10.39, CROX=94.4}
+quote price(time=1703773822202): {AFRI=10.39, CROX=94.4}
+quote price(time=1703773822202): {AFRI=10.39, CROX=94.41}
+buy stock. stock=AFRI, count=122, price=10.39, orderPrice=10.42, orderId: 7141197017505267988 1703773822243
+quote price(time=1703773822772): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773822813): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773823314): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773823314): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773825202): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773825203): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773825795): {AFRI=11.2, CROX=94.41}
+modify order price. orderPrice=10.45, multiple=2
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.45, modifyOrderId=7141197017505267988
+quote price(time=1703773827328): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773827999): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773827999): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773827999): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773827999): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773828504): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773828973): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773828973): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773828973): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773829658): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773829658): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773829658): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773829658): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773829658): {AFRI=11.2, CROX=94.41}
+modify order price. orderPrice=10.48, multiple=3
+TrdModifyOrder failed: 购买力不足，您可以尝试以下方式提升：
+1. 进行货币兑换
+2. 存入更多资金
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.48, modifyOrderId=-500
+minus count=121
+quote price(time=1703773830662): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773830662): {AFRI=11.2, CROX=94.41}
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.48, modifyOrderId=7141197017505267988
+quote price(time=1703773830869): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773831183): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773833201): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773834740): {AFRI=11.2, CROX=94.4}
+quote price(time=1703773834741): {AFRI=11.2, CROX=94.41}
+modify order price. orderPrice=10.51, multiple=4
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.51, modifyOrderId=7141197017505267988
+quote price(time=1703773835723): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773835759): {AFRI=11.2, CROX=94.41}
+quote price(time=1703773835759): {AFRI=11.2, CROX=94.46}
+quote price(time=1703773835759): {AFRI=11.2, CROX=94.5}
+quote price(time=1703773835759): {AFRI=11.2, CROX=94.5}
+quote price(time=1703773835759): {AFRI=11.2, CROX=94.55}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.6}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.62}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.67}
+quote price(time=1703773835760): {AFRI=11.2, CROX=94.8}
+quote price(time=1703773836247): {AFRI=11.2, CROX=94.8}
+quote price(time=1703773836748): {AFRI=11.2, CROX=94.8}
+quote price(time=1703773836749): {AFRI=11.2, CROX=94.8}
+modify order price. orderPrice=10.54, multiple=5
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.54, modifyOrderId=7141197017505267988
+quote price(time=1703773839310): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773839310): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773839310): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773839310): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773839687): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773839815): {AFRI=11.2, CROX=94.81}
+quote price(time=1703773839816): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773839816): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773839816): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773841322): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773841322): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773842328): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773842328): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773842328): {AFRI=11.2, CROX=94.82}
+modify order price. orderPrice=10.57, multiple=6
+TrdModifyOrder failed: 购买力不足，您可以尝试以下方式提升：
+1. 进行货币兑换
+2. 存入更多资金
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.57, modifyOrderId=-500
+minus count=120
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.57, modifyOrderId=7141197017505267988
+quote price(time=1703773843773): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773843840): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773843841): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773843841): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773847320): {AFRI=11.2, CROX=94.82}
+modify order price. orderPrice=10.6, multiple=7
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.6, modifyOrderId=7141197017505267988
+quote price(time=1703773849246): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773849747): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773850761): {AFRI=11.2, CROX=94.82}
+modify order price. orderPrice=10.63, multiple=8
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.63, modifyOrderId=7141197017505267988
+quote price(time=1703773852124): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773852125): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773854560): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773854560): {AFRI=11.2, CROX=94.82}
+quote price(time=1703773855568): {AFRI=11.2, CROX=94.82}
+modify order price. orderPrice=10.67, multiple=9
+AFRI order has been modify. orderId=7141197017505267988, ordePrice=10.67, modifyOrderId=7141197017505267988
+AFRI order is successfully executed. orderId=7141197017505267988
+update order: OrderFill(tradeSide=1, fillID=0, orderID=7141197017505267988, code=AFRI, name=Forafric Global, count=120.0, price=10.67, avgPrice=10.61725, createTime=2023-12-28 09:30:22.166, updateTimestamp=1.70377385627647E9, status=0)
+AFRI placeStopLoss market order. qty=120.0, auxPrice=9.874, orderId：625471078604159672
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+closing websocket. reason=CloseReason[1000]
+manual close websocket
+trade finish
+sell stock before close market
+ready to sell before close market. position={AFRI=StockPosition(stock=AFRI, canSellQty=120.0, costPrice=10.617, currPrice=10.5)}, time=2023-12-29T04:58:59.260
+before close sell stock for market price. stock=AFRI, count=120.0
+unlock success
+sell stock orderId=7829584510582640600
+update order: OrderFill(tradeSide=2, fillID=0, orderID=7829584510582640600, code=AFRI, name=Forafric Global, count=120.0, price=0.0, avgPrice=10.45, createTime=2023-12-28 15:58:59.402, updateTimestamp=1.703797139879317E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=7829584510582640600, code=AFRI, name=Forafric Global, count=120.0, price=0.0, avgPrice=10.45, createTime=2023-12-28 15:58:59.402, updateTimestamp=1.703797139879317E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=7829584510582640600, code=AFRI, name=Forafric Global, count=120.0, price=0.0, avgPrice=10.45, createTime=2023-12-28 15:58:59.402, updateTimestamp=1.703797139879317E9, status=0)
+sell stock success. stock=AFRI, orderId=7829584510582640600
+tradeExecutor_db sell

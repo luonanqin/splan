@@ -1,0 +1,84 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7133095597768711391
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1700663280000, openTime=1700663400000, closeCheckTime=Thu Nov 23 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1466
+stock overbolling hit great 0.500000 size: 1243
+filter merge stock, the stock set size is 1243
+filter split stock, the stock set size is 1240
+filter front reinstatement less 0.98 stock, the stock set size is 1169
+filter earning and lastEarning stock, the stock set size is 1155
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:04
+finish subcribe real time!
+time is early. {p=36.64, ev=T, q=24145, s=54, c=[14,12,37,41], t=1700663302000, sym=WRK, x=11, i=52983525364558, z=1}
+{p=36.64, ev=T, q=24145, s=54, c=[14,12,37,41], t=1700663302000, sym=WRK, x=11, i=52983525364558, z=1}
+time is early. {p=36.64, ev=T, q=24146, s=46, c=[14,12,37,41], t=1700663302000, sym=WRK, x=11, i=52983525364559, z=1}
+{p=36.64, ev=T, q=24146, s=46, c=[14,12,37,41], t=1700663302000, sym=WRK, x=11, i=52983525364559, z=1}
+time is early. {p=497.3, ev=T, q=157456, s=1, c=[12,37], t=1700663346000, sym=NVDA, x=11, i=27460, z=3}
+{p=497.3, ev=T, q=157456, s=1, c=[12,37], t=1700663346000, sym=NVDA, x=11, i=27460, z=3}
+time is early. {p=20.23, ev=T, q=45016, s=349, c=[12], t=1700663390000, sym=PLTR, x=12, i=62879133615210, z=1}
+{p=20.23, ev=T, q=45016, s=349, c=[12], t=1700663390000, sym=PLTR, x=12, i=62879133615210, z=1}
+unsubscribeStockSet size: 100 1700663400047
+StockEvent(stock=CENTA, price=36.15, time=1700663400006) dn=36.804 current=1700663400081
+unsubscribeStockSet size: 200 1700663400084
+StockEvent(stock=CTRA, price=26.04, time=1700663400100) dn=26.079 current=1700663400088
+CTRA=0.14954561141148617
+unsubscribeStockSet size: 300 1700663400470
+StockEvent(stock=LEGN, price=59.0, time=1700663400183) dn=59.313 current=1700663400539
+unsubscribeStockSet size: 400 1700663400539
+LEGN=0.5277089339605185,CTRA=0.14954561141148617
+unsubscribeStockSet size: 500 1700663400660
+StockEvent(stock=SPB, price=65.91, time=1700663400675) dn=66.166 current=1700663400712
+LEGN=0.5277089339605185,SPB=0.38690566151800054,CTRA=0.14954561141148617
+unsubscribeStockSet size: 600 1700663400774
+StockEvent(stock=CF, price=75.27, time=1700663400762) dn=76.186 current=1700663400803
+unsubscribeStockSet size: 700 1700663401020
+unsubscribeStockSet size: 800 1700663401081
+StockEvent(stock=MCS, price=14.66, time=1700663400786) dn=14.688 current=1700663401139
+unsubscribeStockSet size: 900 1700663401147
+StockEvent(stock=PDS, price=56.11, time=1700663400840) dn=56.418 current=1700663401153
+PDS=0.5459250593782123,LEGN=0.5277089339605185,SPB=0.38690566151800054,CTRA=0.14954561141148617
+unsubscribeStockSet size: 1000 1700663401153
+unsubscribeStockSet size: 1100 1700663402487
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [LEGN, SPB, PDS, CTRA]
+PDS=0.5459250593782123,LEGN=0.5277089339605185,SPB=0.38690566151800054,CTRA=0.14954561141148617
+remain cash: 7343.75
+buy stock. stock=PDS, count=129, price=56.11, orderPrice=56.67, orderId: 5217776072914017625 1700663424586
+PDS order is successfully executed. orderId: 5217776072914017625
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5217776072914017625, code=PDS, name=Precision Drilling, count=129.0, price=56.67, avgPrice=56.14, createTime=2023-11-22 09:30:24, updateTimestamp=1.700663426E9, status=0)
+buy stock. stock=LEGN, count=123, price=59.0, orderPrice=59.59, orderId: 5217776077208984920 1700663426755
+update order: OrderFill(tradeSide=1, fillID=0, orderID=5217776077208984920, code=LEGN, name=传奇生物, count=123.0, price=59.59, avgPrice=59.13, createTime=2023-11-22 09:30:26, updateTimestamp=1.700663431E9, status=0)
+LEGN order is successfully executed. orderId: 5217776077208984920
+there is no cash to trade. trade finish
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {LEGN=StopLoss(stock=LEGN, canSellQty=123.0, lossPrice=54.99), PDS=StopLoss(stock=PDS, canSellQty=129.0, lossPrice=52.21)}
+{p=55.205, ev=T, q=754407, s=100, t=1700668215000, sym=PDS, x=15, i=54113205703532, z=1}
+{p=55.56, ev=T, q=1229001, s=100, t=1700673243000, sym=PDS, x=12, i=62879502584379, z=1}
+{p=55.6, ev=T, q=1428948, s=25, c=[37], t=1700675655000, sym=PDS, trfi=202, x=4, i=71688241955905, z=1, trft=1700675655000}
+{p=60.08, ev=T, q=2508751, s=15, c=[14,37,41], t=1700676026000, sym=LEGN, x=12, i=2680, z=3}
+{p=60.12, ev=T, q=2508752, s=185, c=[14,41], t=1700676026000, sym=LEGN, x=9, i=30, z=3}
+{p=56.12, ev=T, q=1908485, s=7, c=[37], t=1700681689000, sym=PDS, x=10, i=52983542403121, z=1}
+{p=59.99, ev=T, q=3505107, s=4, c=[37], t=1700682478000, sym=LEGN, trfi=202, x=4, i=2580, z=3, trft=1700682478000}
+{p=60.02, ev=T, q=4081106, s=100, t=1700685381000, sym=LEGN, trfi=202, x=4, i=3000, z=3, trft=1700685381000}
+ready to sell before close market. position={LEGN=StockPosition(stock=LEGN, canSellQty=123.0, costPrice=59.13, currPrice=60.17), PDS=StockPosition(stock=PDS, canSellQty=129.0, costPrice=56.14, currPrice=56.2)}, time=2023-11-23T04:59:00.041
+before close sell stock. stock=PDS, count=129.0, currentPrice=56.2, orderPrice=55.63
+before close sell stock. stock=PDS, orderId：5227062994768101580
+before close sell stock. stock=LEGN, count=123.0, currentPrice=60.17, orderPrice=59.56
+before close sell stock. stock=LEGN, orderId：5227062999063068877
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5227062994768101580, code=PDS, name=Precision Drilling, count=129.0, price=55.63, avgPrice=56.25, createTime=2023-11-22 15:59:00, updateTimestamp=1.70068674E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5227062999063068877, code=LEGN, name=传奇生物, count=123.0, price=59.56, avgPrice=60.08, createTime=2023-11-22 15:59:00, updateTimestamp=1.700686741E9, status=0)
+all stock has stop loss
+trade exit

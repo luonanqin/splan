@@ -1,0 +1,58 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7130195950987773090
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1699972080000, openTime=1699972200000, closeCheckTime=Wed Nov 15 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 946
+stock overbolling hit great 0.500000 size: 787
+filter merge stock, the stock set size is 787
+filter split stock, the stock set size is 785
+filter front reinstatement less 0.98 stock, the stock set size is 746
+filter earning and lastEarning stock, the stock set size is 727
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:00
+finish subcribe real time!
+there is no msg. continue
+there is no msg. continue
+time is early. {p=187.76, ev=T, q=324122, s=1, c=[12,37], t=1699972093000, sym=AAPL, trfi=202, x=4, i=3419, z=3, trft=1699972093000}
+{p=187.76, ev=T, q=324122, s=1, c=[12,37], t=1699972093000, sym=AAPL, trfi=202, x=4, i=3419, z=3, trft=1699972093000}
+time is early. {p=18.12, ev=T, q=52730, s=14, c=[14,12,37,41], t=1699972098000, sym=CSIQ, x=12, i=1883, z=3}
+{p=18.12, ev=T, q=52730, s=14, c=[14,12,37,41], t=1699972098000, sym=CSIQ, x=12, i=1883, z=3}
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+there is no msg. continue
+time is early. {p=11.09, ev=T, q=87828, s=100, c=[12], t=1699972156000, sym=M, x=8, i=52983525032782, z=1}
+{p=11.09, ev=T, q=87828, s=100, c=[12], t=1699972156000, sym=M, x=8, i=52983525032782, z=1}
+there is no msg. continue
+there is no msg. continue
+time is early. {p=9.37, ev=T, q=131458, s=15, c=[14,12,37,41], t=1699972170000, sym=MARA, x=11, i=989, z=3}
+{p=9.37, ev=T, q=131458, s=15, c=[14,12,37,41], t=1699972170000, sym=MARA, x=11, i=989, z=3}
+time over. listen end!
+unsubscribeStockSet size: 100 1699972230457
+unsubscribeStockSet size: 200 1699972230457
+unsubscribeStockSet size: 300 1699972230458
+unsubscribeStockSet size: 400 1699972230458
+unsubscribeStockSet size: 500 1699972230458
+unsubscribeStockSet size: 600 1699972230458
+unsubscribeStockSet size: 700 1699972230458
+=========== finish unsubscribe ===========
+get real-time quote: []
+
+remain cash: 7009.689999999944
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+there is no position that need to be listened

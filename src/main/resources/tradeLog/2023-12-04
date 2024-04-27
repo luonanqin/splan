@@ -1,0 +1,98 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7137444468278455380
+trade api initialize finish start!
+finish initialize many time. preTradeTime=1701700080000, openTime=1701700200000, closeCheckTime=Tue Dec 05 04:59:00 CST 2023
+unlock success
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 197
+stock overbolling hit great 0.500000 size: 174
+filter merge stock, the stock set size is 174
+filter split stock, the stock set size is 174
+filter front reinstatement less 0.98 stock, the stock set size is 160
+filter earning and lastEarning stock, the stock set size is 156
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:00
+finish subcribe real time!
+StockEvent(stock=OXY, price=58.41, time=1701700200001) dn=58.669 current=1701700200144
+OXY=0.4414597146704399
+StockEvent(stock=YY, price=37.02, time=1701700200026) dn=37.329 current=1701700200148
+StockEvent(stock=PSTG, price=33.0, time=1701700200001) dn=33.057 current=1701700200148
+StockEvent(stock=CHI, price=9.95, time=1701700200268) dn=9.96 current=1701700200581
+StockEvent(stock=NTES, price=106.7, time=1701700200287) dn=108.465 current=1701700200592
+NTES=1.6272530309316375,OXY=0.4414597146704399
+StockEvent(stock=LI, price=35.81, time=1701700200447) dn=35.828 current=1701700200795
+unsubscribeStockSet size: 100 1701700201188
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+=========== finish unsubscribe ===========
+get real-time quote: [NTES, OXY]
+NTES=1.6272530309316375,OXY=0.4414597146704399
+onReply_GetFunds: 1424.06
+remain cash: 1424.06
+buy stock. stock=NTES, count=13, price=106.7, orderPrice=107.23, orderId: 7801160423148684148 1701700221762
+NTES order is successfully executed. orderId: 7801160423148684148
+update order: OrderFill(tradeSide=1, fillID=0, orderID=7801160423148684148, code=NTES, name=网易, count=13.0, price=107.23, avgPrice=106.1935, createTime=2023-12-04 09:30:21.690, updateTimestamp=1.701700222194513E9, status=0)
+placeStopLossOrder faild! NTES position is not exist!
+onReply_GetFunds: 1424.06
+buy stock. stock=OXY, count=24, price=58.41, orderPrice=58.7, orderId: 2908067455387944818 1701700222429
+OXY order is successfully executed. orderId: 2908067455387944818
+update order: OrderFill(tradeSide=1, fillID=0, orderID=2908067455387944818, code=OXY, name=西方石油, count=24.0, price=58.7, avgPrice=58.1779, createTime=2023-12-04 09:30:22.363, updateTimestamp=1.701700222795943E9, status=0)
+placeStopLossOrder faild! OXY position is not exist!
+trade end
+stop get real-time quote
+onReply_GetFunds: 43.54
+begin close check timer listen!
+unsubscribe real-time quote
+begin listen stop loss: {NTES=StopLoss(stock=NTES, canSellQty=13.0, lossPrice=98.76), OXY=StopLoss(stock=OXY, canSellQty=24.0, lossPrice=54.105)}
+{p=57.9951, ev=T, q=86393, s=1, c=[37], t=1701700290000, sym=OXY, trfi=202, x=4, i=71675308298066, z=1, trft=1701700290000}
+{p=57.99, ev=T, q=87383, s=175, t=1701700294000, sym=OXY, x=10, i=52983525093960, z=1}
+{p=57.99, ev=T, q=87384, s=125, t=1701700294000, sym=OXY, x=8, i=52983525096275, z=1}
+{p=57.99, ev=T, q=90037, s=300, t=1701700305000, sym=OXY, trfi=202, x=4, i=71675308825142, z=1, trft=1701700304999}
+{p=105.47, ev=T, q=338887, s=15, c=[14,37,41], t=1701700326000, sym=NTES, x=12, i=337, z=3}
+{p=105.47, ev=T, q=338888, s=100, c=[14,41], t=1701700326000, sym=NTES, x=12, i=338, z=3}
+{p=105.47, ev=T, q=338889, s=85, c=[14,37,41], t=1701700326000, sym=NTES, x=12, i=339, z=3}
+{p=105.47, ev=T, q=338890, s=75, c=[14,37,41], t=1701700326000, sym=NTES, x=12, i=340, z=3}
+{p=105.474, ev=T, q=338891, s=22, c=[10,37,41], t=1701700326000, sym=NTES, trfi=202, x=4, i=277, z=3, trft=1701700326000}
+{p=58.465, ev=T, q=288506, s=1, c=[37], t=1701701178000, sym=OXY, x=12, i=62879250988868, z=1}
+{p=58.555, ev=T, q=313122, s=1700, t=1701701282000, sym=OXY, trfi=202, x=4, i=71675711205702, z=1, trft=1701701282000}
+{p=105.9972, ev=T, q=820259, s=22, c=[10,37,41], t=1701701326000, sym=NTES, trfi=202, x=4, i=1045, z=3, trft=1701701326000}
+{p=58.4662, ev=T, q=363719, s=10, c=[37], t=1701701478000, sym=OXY, trfi=201, x=4, i=79371856852821, z=1, trft=1701701478000}
+{p=105.82, ev=T, q=1040684, s=1, c=[37], t=1701701818000, sym=NTES, x=7, i=61, z=3}
+{p=57.99, ev=T, q=569224, s=800, t=1701702444000, sym=OXY, x=10, i=52983526278194, z=1}
+{p=57.99, ev=T, q=569225, s=100, t=1701702444000, sym=OXY, x=11, i=52983526736694, z=1}
+{p=57.99, ev=T, q=569226, s=68, c=[37], t=1701702444000, sym=OXY, x=11, i=52983526736695, z=1}
+{p=57.99, ev=T, q=569227, s=5, c=[37], t=1701702444000, sym=OXY, x=19, i=52983525243481, z=1}
+{p=57.99, ev=T, q=569228, s=100, t=1701702444000, sym=OXY, x=19, i=52983525243482, z=1}
+{p=58.2347, ev=T, q=697999, s=110, t=1701703166000, sym=OXY, trfi=202, x=4, i=71679955064117, z=1, trft=1701703165999}
+{p=58.39, ev=T, q=739196, s=100, t=1701703388000, sym=OXY, trfi=202, x=4, i=71680004801358, z=1, trft=1701703388000}
+{p=104.2, ev=T, q=1854774, s=94, c=[37], t=1701704006000, sym=NTES, x=11, i=1520, z=3}
+{p=58.59, ev=T, q=894396, s=1, c=[37], t=1701704213000, sym=OXY, trfi=202, x=4, i=71680190789451, z=1, trft=1701704212999}
+{p=58.57, ev=T, q=966025, s=100, t=1701704651000, sym=OXY, x=8, i=52983525364038, z=1}
+{p=104.46, ev=T, q=2485091, s=54, c=[37], t=1701705964000, sym=NTES, x=12, i=4135, z=3}
+{p=104.46, ev=T, q=2485092, s=51, c=[37], t=1701705964000, sym=NTES, x=12, i=4136, z=3}
+{p=58.29, ev=T, q=1248683, s=2, c=[14,37,41], t=1701706484000, sym=OXY, x=7, i=52983525167444, z=1}
+{p=58.29, ev=T, q=1248684, s=79, c=[37], t=1701706484000, sym=OXY, x=18, i=52983525039449, z=1}
+{p=58.2488, ev=T, q=1269251, s=1, c=[37], t=1701706617000, sym=OXY, trfi=202, x=4, i=71684367536717, z=1, trft=1701706617000}
+{p=104.54, ev=T, q=2710186, s=25, c=[37], t=1701706900000, sym=NTES, x=12, i=4489, z=3}
+{p=104.54, ev=T, q=2710187, s=70, c=[37], t=1701706900000, sym=NTES, x=12, i=4490, z=3}
+{p=104.54, ev=T, q=2710188, s=22, c=[37], t=1701706900000, sym=NTES, x=7, i=302, z=3}
+{p=104.54, ev=T, q=2710189, s=40, c=[14,37,41], t=1701706900000, sym=NTES, x=12, i=4491, z=3}
+ready to sell before close market. position={NTES=StockPosition(stock=NTES, canSellQty=13.0, costPrice=106.194, currPrice=104.42), OXY=StockPosition(stock=OXY, canSellQty=24.0, costPrice=58.178, currPrice=57.9)}, time=2023-12-05T04:59:00.065
+before close sell stock. stock=NTES, count=13.0, currentPrice=104.42, orderPrice=103.89
+before close sell stock. stock=NTES, orderId：5858264201377008197
+before close sell stock. stock=OXY, count=24.0, currentPrice=57.9, orderPrice=57.61
+before close sell stock. stock=OXY, orderId：5262753775341120662
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5858264201377008197, code=NTES, name=网易, count=13.0, price=103.89, avgPrice=104.1818, createTime=2023-12-04 15:59:00.142, updateTimestamp=1.701723540548252E9, status=0)
+update order: OrderFill(tradeSide=2, fillID=0, orderID=5262753775341120662, code=OXY, name=西方石油, count=24.0, price=57.61, avgPrice=57.915, createTime=2023-12-04 15:59:00.328, updateTimestamp=1.701723540734297E9, status=0)

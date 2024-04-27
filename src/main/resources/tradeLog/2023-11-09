@@ -1,0 +1,190 @@
+trade api initialize staring...
+TradeApi onInitConnect: ret=true desc= connID=7128384676250699666
+trade api initialize finish start!
+unlock success
+finish initialize many time. preTradeTime=1699540080000, openTime=1699540200000, closeCheckTime=Fri Nov 10 04:59:00 CST 2023
+opening websocket
+connected
+auth_success
+finish init trade
+stock latest close great 7 size: 1634
+stock overbolling hit great 0.500000 size: 1375
+filter merge stock, the stock set size is 1375
+filter split stock, the stock set size is 1371
+filter front reinstatement less 0.98 stock, the stock set size is 1299
+filter earning and lastEarning stock, the stock set size is 1113
+finish load last DN for BOLL
+finish load lastest 19-days close data
+finish init historical data
+begin subcribe stock at 22:28:01
+finish subcribe real time!
+StockEvent(stock=SWAV, price=171.25, time=1699540200050) dn=175.177 current=1699540200385
+SWAV=2.2417326475507586
+unsubscribeStockSet size: 100 1699540200461
+StockEvent(stock=COGT, price=7.45, time=1699540200050) dn=7.478 current=1699540200464
+unsubscribeStockSet size: 200 1699540200464
+StockEvent(stock=ATSG, price=14.42, time=1699540200006) dn=15.238 current=1699540200465
+StockEvent(stock=VET, price=12.93, time=1699540200175) dn=12.954 current=1699540200465
+StockEvent(stock=ZNTL, price=10.15, time=1699540200159) dn=10.285 current=1699540200654
+unsubscribeStockSet size: 300 1699540200658
+StockEvent(stock=ERF, price=16.06, time=1699540200376) dn=16.081 current=1699540200661
+StockEvent(stock=CPE, price=32.85, time=1699540200455) dn=33.066 current=1699540200662
+unsubscribeStockSet size: 400 1699540200662
+StockEvent(stock=NEM, price=34.68, time=1699540200616) dn=35.06 current=1699540200768
+unsubscribeStockSet size: 500 1699540200805
+StockEvent(stock=AMN, price=60.99, time=1699540200647) dn=61.605 current=1699540200828
+unsubscribeStockSet size: 600 1699540201150
+StockEvent(stock=KW, price=11.14, time=1699540200673) dn=11.359 current=1699540201150
+StockEvent(stock=PUMP, price=9.2, time=1699540200662) dn=9.24 current=1699540201152
+StockEvent(stock=CPRI, price=48.5, time=1699540200691) dn=48.763 current=1699540201190
+unsubscribeStockSet size: 700 1699540201202
+StockEvent(stock=DAC, price=63.11, time=1699540200719) dn=63.751 current=1699540201206
+StockEvent(stock=RMAX, price=9.75, time=1699540200756) dn=9.804 current=1699540201206
+unsubscribeStockSet size: 800 1699540201206
+StockEvent(stock=MRO, price=25.035, time=1699540200745) dn=25.161 current=1699540201226
+StockEvent(stock=SD, price=14.25, time=1699540200731) dn=14.464 current=1699540201226
+unsubscribeStockSet size: 900 1699540201226
+StockEvent(stock=SM, price=36.72, time=1699540200896) dn=36.769 current=1699540201226
+StockEvent(stock=ARRY, price=15.15, time=1699540200958) dn=15.52 current=1699540201227
+StockEvent(stock=EVCM, price=7.81, time=1699540200790) dn=8.161 current=1699540201227
+unsubscribeStockSet size: 1000 1699540201228
+StockEvent(stock=PBT, price=17.0, time=1699540200986) dn=17.13 current=1699540201484
+StockEvent(stock=GOLD, price=15.245, time=1699540201265) dn=15.282 current=1699540201515
+StockEvent(stock=STR, price=22.785, time=1699540201680) dn=23.359 current=1699540202113
+STR=2.457296973329344,SWAV=2.2417326475507586
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. keep listening
+many stock has received data. listen end!
+unsubscribeStockSet size: 1100 1699540221211
+=========== finish unsubscribe ===========
+get real-time quote: [STR, SWAV]
+quote price(time=1699540221474): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221475): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221476): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221477): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221478): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221479): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221480): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221482): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221483): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221484): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221541): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221543): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221544): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221544): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221544): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.25}
+quote price(time=1699540221611): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.65}
+STR=2.457296973329344,SWAV=2.2417326475507586
+remain cash: 7661.969999999972
+buy stock. stock=STR, count=332, price=22.785, orderPrice=23.01, orderId: 3904118595134726027 1699540222371
+quote price(time=1699540225648): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.65}
+quote price(time=1699540225649): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.65}
+quote price(time=1699540226151): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.64}
+quote price(time=1699540226153): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.63}
+quote price(time=1699540226654): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.65}
+quote price(time=1699540226654): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.65}
+quote price(time=1699540230680): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.65}
+quote price(time=1699540231644): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.64}
+quote price(time=1699540231644): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.64}
+quote price(time=1699540231644): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.64}
+quote price(time=1699540232572): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.64}
+quote price(time=1699540233076): {AMN=60.99, PBT=17.0, VET=12.93, COGT=7.45, ZNTL=10.15, DAC=63.11, KW=11.14, PUMP=9.2, STR=22.785, SD=14.25, RMAX=9.75, NEM=34.68, ERF=16.06, SWAV=171.64}
+STR order has been canceled. orderId: 3904118595134726027, cancel res code: 0
+buy stock. stock=SWAV, count=44, price=171.64, orderPrice=173.35, orderId: 3904119119120736003 1699540237572
+SWAV order is successfully executed. orderId: 3904119119120736003
+update order: OrderFill(tradeSide=1, fillID=0, orderID=3904119119120736003, code=SWAV, name=ShockWave Medical, count=44.0, price=173.35, avgPrice=171.64, createTime=2023-11-09 09:30:37, updateTimestamp=1.699540239E9, status=0)
+trade end
+stop get real-time quote
+unsubscribe real-time quote
+begin listen stop loss: {SWAV=StopLoss(stock=SWAV, canSellQty=44.0, lossPrice=159.625)}
+{p=168.02, ev=T, q=599498, s=3, c=[37], t=1699541109000, sym=SWAV, trfi=202, x=4, i=584, z=3, trft=1699541109000}
+{p=165.63, ev=T, q=1008837, s=2, c=[37], t=1699542015000, sym=SWAV, trfi=202, x=4, i=1250, z=3, trft=1699542014999}
+{p=164.37, ev=T, q=1070842, s=7, c=[37], t=1699542135000, sym=SWAV, trfi=202, x=4, i=1435, z=3, trft=1699542135000}
+{p=160.7707, ev=T, q=1873243, s=1, c=[37], t=1699544155000, sym=SWAV, trfi=202, x=4, i=2697, z=3, trft=1699544155000}
+{p=161.375, ev=T, q=1954438, s=100, t=1699544417000, sym=SWAV, trfi=202, x=4, i=2814, z=3, trft=1699544417000}
+{p=160.91, ev=T, q=2064472, s=5, c=[37], t=1699544803000, sym=SWAV, x=12, i=2896, z=3}
+{p=160.9, ev=T, q=2064473, s=42, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2897, z=3}
+{p=160.89, ev=T, q=2064474, s=100, c=[14,41], t=1699544803000, sym=SWAV, x=12, i=2898, z=3}
+{p=160.89, ev=T, q=2064475, s=19, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2899, z=3}
+{p=160.89, ev=T, q=2064476, s=100, c=[14,41], t=1699544803000, sym=SWAV, x=12, i=2900, z=3}
+{p=160.85, ev=T, q=2064477, s=100, c=[14,41], t=1699544803000, sym=SWAV, x=17, i=68, z=3}
+{p=160.85, ev=T, q=2064478, s=1, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2901, z=3}
+{p=160.85, ev=T, q=2064479, s=1, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2902, z=3}
+{p=160.84, ev=T, q=2064480, s=10, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2903, z=3}
+{p=160.83, ev=T, q=2064481, s=10, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2904, z=3}
+{p=160.83, ev=T, q=2064482, s=12, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2905, z=3}
+{p=160.83, ev=T, q=2064483, s=12, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2906, z=3}
+{p=160.83, ev=T, q=2064484, s=1, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2907, z=3}
+{p=160.83, ev=T, q=2064485, s=53, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2908, z=3}
+{p=160.83, ev=T, q=2064486, s=37, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2909, z=3}
+{p=160.84, ev=T, q=2064487, s=17, c=[37], t=1699544803000, sym=SWAV, x=12, i=2910, z=3}
+{p=160.89, ev=T, q=2064488, s=83, c=[37], t=1699544803000, sym=SWAV, x=12, i=2911, z=3}
+{p=160.86, ev=T, q=2064489, s=17, c=[37], t=1699544803000, sym=SWAV, x=12, i=2912, z=3}
+{p=160.89, ev=T, q=2064490, s=17, c=[37], t=1699544803000, sym=SWAV, x=12, i=2913, z=3}
+{p=160.89, ev=T, q=2064491, s=66, c=[37], t=1699544803000, sym=SWAV, x=12, i=2914, z=3}
+{p=160.81, ev=T, q=2064492, s=1, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2915, z=3}
+{p=160.79, ev=T, q=2064493, s=1, c=[14,37,41], t=1699544803000, sym=SWAV, x=12, i=2916, z=3}
+{p=160.84, ev=T, q=2064494, s=1, c=[37], t=1699544803000, sym=SWAV, x=17, i=69, z=3}
+{p=160.89, ev=T, q=2064495, s=10, c=[14,37,41], t=1699544803000, sym=SWAV, x=19, i=573, z=3}
+{p=160.89, ev=T, q=2064496, s=1, c=[37], t=1699544803000, sym=SWAV, x=12, i=2917, z=3}
+{p=160.86, ev=T, q=2064497, s=100, t=1699544803000, sym=SWAV, x=8, i=448, z=3}
+{p=160.95, ev=T, q=2064498, s=7, c=[37], t=1699544803000, sym=SWAV, x=12, i=2918, z=3}
+{p=160.89, ev=T, q=2064499, s=100, t=1699544803000, sym=SWAV, x=12, i=2919, z=3}
+{p=160.83, ev=T, q=2064500, s=4, c=[14,37,41], t=1699544803000, sym=SWAV, x=20, i=42, z=3}
+{p=160.89, ev=T, q=2064501, s=3, c=[37], t=1699544803000, sym=SWAV, x=12, i=2920, z=3}
+{p=160.89, ev=T, q=2064502, s=97, c=[37], t=1699544803000, sym=SWAV, x=12, i=2921, z=3}
+{p=160.86, ev=T, q=2064503, s=38, c=[14,37,41], t=1699544803000, sym=SWAV, x=8, i=449, z=3}
+{p=160.89, ev=T, q=2064504, s=2, c=[37], t=1699544803000, sym=SWAV, trfi=202, x=4, i=2995, z=3, trft=1699544803000}
+{p=160.81, ev=T, q=2064505, s=28, c=[14,37,41], t=1699544803000, sym=SWAV, x=11, i=916, z=3}
+{p=160.8, ev=T, q=2064506, s=40, c=[14,37,41], t=1699544803000, sym=SWAV, x=11, i=917, z=3}
+{p=160.86, ev=T, q=2064507, s=38, c=[14,37,41], t=1699544803000, sym=SWAV, x=8, i=450, z=3}
+{p=164.095, ev=T, q=2540136, s=200, t=1699546593000, sym=SWAV, trfi=202, x=4, i=3719, z=3, trft=1699546593000}
+{p=164.28, ev=T, q=3267178, s=14, c=[37], t=1699549275000, sym=SWAV, trfi=202, x=4, i=4521, z=3, trft=1699549275000}
+{p=165.715, ev=T, q=3985985, s=2, c=[14,37,41], t=1699552258000, sym=SWAV, x=12, i=5712, z=3}
+{p=163.45, ev=T, q=6793570, s=1, c=[37], t=1699562172000, sym=SWAV, x=12, i=8840, z=3}
+ready to sell before close market. position={SWAV=StockPosition(stock=SWAV, canSellQty=44.0, costPrice=171.64, currPrice=163.8)}, time=2023-11-10T04:59:00.016
+before close sell stock. stock=SWAV, count=44.0, currentPrice=163.8, orderPrice=162.16
+before close sell stock. stock=SWAV, orderId：3904558575881070728
+update order: OrderFill(tradeSide=2, fillID=0, orderID=3904558575881070728, code=SWAV, name=ShockWave Medical, count=44.0, price=162.16, avgPrice=162.89, createTime=2023-11-09 15:59:00, updateTimestamp=1.699563542E9, status=0)
+all stock has stop loss
+trade exit
+closing websocket. reason=CloseReason[1000]
+manual close websocket
