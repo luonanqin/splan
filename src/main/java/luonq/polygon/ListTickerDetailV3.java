@@ -8,6 +8,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
+import util.Constants;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -33,7 +34,7 @@ public class ListTickerDetailV3 {
         String fileName = String.format("%s.txt", market);
         try {
             fw = new FileWriter(fileName);
-            br = new BufferedReader(new FileReader("src/main/resources/historicalData/open/" + fileName));
+            br = new BufferedReader(new FileReader(Constants.HIS_BASE_PATH + "open/" + fileName));
 
             List<String> hasDownload = Lists.newArrayList();
             String download;

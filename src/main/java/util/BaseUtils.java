@@ -125,7 +125,7 @@ public class BaseUtils {
 
     public static Map<String, String> getOpenData(String market) throws IOException {
         Map<String, String> openDate = Maps.newHashMap();
-        BufferedReader openBr = new BufferedReader(new FileReader("src/main/resources/historicalData/open/" + market + ".txt"));
+        BufferedReader openBr = new BufferedReader(new FileReader(HIS_BASE_PATH + "open/" + market + ".txt"));
         String open;
         while (StringUtils.isNotBlank(open = openBr.readLine())) {
             String[] split = open.split("\t");

@@ -52,7 +52,7 @@ public class DownloadStockHistory {
     }
 
     private static void downloadHistoricalStock(ChromeDriver driver, List<String> stockList, String frequency, int count) throws Exception {
-        String hasDownloadPath = "src/main/resources/historicalData/" + frequency;
+        String hasDownloadPath = Constants.HIS_BASE_PATH + frequency;
         File hasDownloadFile = new File(hasDownloadPath);
         if (!hasDownloadFile.exists()) {
             System.out.println("please check the download path");

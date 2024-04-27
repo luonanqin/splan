@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import util.BaseUtils;
+import util.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.Set;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-        List<String> lineList = BaseUtils.readFile("src/main/resources/testData/test");
+        List<String> lineList = BaseUtils.readFile(Constants.TEST_PATH + "test");
         Map<String, Set<String>> grabYearMap = Maps.newHashMap();
         for (String line : lineList) {
             String[] split = line.split(" ");

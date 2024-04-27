@@ -16,6 +16,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import util.BaseUtils;
+import util.Constants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -138,7 +139,7 @@ public class FixGrabStockDateHistory {
     }
 
     public static Map<String, String> waitFixGrab() throws Exception {
-        String filePath = "src/main/resources/testData/waitFixGrab";
+        String filePath = Constants.TEST_PATH + "waitFixGrab";
         List<String> lineList = BaseUtils.readFile(filePath);
         Map<String, String> map = Maps.newHashMap();
         for (String line : lineList) {

@@ -3,6 +3,7 @@ package luonq.test;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import util.Constants;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -50,7 +51,7 @@ public class StockDailyTest {
         List<StockKLine> dailyList = Lists.newArrayList();
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader("src/main/resources/testData/" + code));
+            br = new BufferedReader(new FileReader(Constants.TEST_PATH + code));
             String str;
             br.readLine();
             while (StringUtils.isNotBlank(str = br.readLine())) {

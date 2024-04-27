@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import luonq.stock.MergeKline;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
+import util.Constants;
 
 import java.util.List;
 
@@ -22,9 +23,9 @@ public class TestJob {
         testData.add("testjob2");
         testData.add("testjob3");
         testData.add("testjob4");
-        BaseUtils.writeFile("/Users/Luonanqin/study/intellij_idea_workspaces/splan/src/main/resources/historicalData/testjob", testData);
+        BaseUtils.writeFile(Constants.HIS_BASE_PATH + "testjob", testData);
 
-//        GetHistoricalDaily.getData();
+        //        GetHistoricalDaily.getData();
         MergeKline.merge();
     }
 }
