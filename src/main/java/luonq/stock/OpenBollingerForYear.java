@@ -60,7 +60,7 @@ public class OpenBollingerForYear {
 
         for (String stock : stockToKLineMap.keySet()) {
             if (!stock.equals("AAPL")) {
-                continue;
+//                continue;
             }
 
             List<StockKLine> lastKLines = BaseUtils.loadDataToKline(lastKLinePath + stock, lastYear);

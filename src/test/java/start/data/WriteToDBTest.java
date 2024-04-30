@@ -30,7 +30,7 @@ public class WriteToDBTest extends BaseTest {
 
     @Test
     public void additionToDB() throws Exception {
-        writeToDB.additionToDB(Lists.newArrayList(), Lists.newArrayList("2024-01-19", "2024-01-22"));
+        writeToDB.additionToDB(Lists.newArrayList(), Lists.newArrayList("2024-04-26"));
     }
 
     @Test
