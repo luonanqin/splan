@@ -1,4 +1,14 @@
-2024-04-30 09:33:25.076 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
-2024-04-30 09:42:22.848 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
-2024-04-30 09:43:08.564 [main] INFO  luonq.data.WriteToDB - sync count: 4550
-2024-04-30 14:06:26.592 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-05-01 03:58:56.066 [xxl-job, JobThread-8-1714507136052] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-01 03:58:56.099 [xxl-job, JobThread-8-1714507136052] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-01 03:58:56.113 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7191164138979642829
+2024-05-01 03:58:56.117 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7191164138977248997
+2024-05-01 03:58:59.109 [xxl-job, JobThread-8-1714507136052] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-01 03:58:59.115 [xxl-job, JobThread-8-1714507136052] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-01 03:58:59.151 [xxl-job, JobThread-8-1714507136052] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={KNSL=StockPosition(stock=KNSL, canSellQty=6.0, costPrice=359.79, currPrice=365.1)}, time=2024-05-01T03:58:59.150
+2024-05-01 03:58:59.151 [xxl-job, JobThread-8-1714507136052] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=KNSL, count=6.0
+2024-05-01 03:58:59.215 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-01 03:58:59.294 [xxl-job, JobThread-8-1714507136052] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=5033413171171100234
+2024-05-01 03:58:59.865 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5033413171171100234, code=KNSL, name=Kinsale Capital, count=6.0, price=0.0, avgPrice=365.28, createTime=2024-04-30 15:58:59.261, updateTimestamp=1.714507139893373E9, status=0)
+2024-05-01 03:58:59.866 [xxl-job, JobThread-8-1714507136052] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=KNSL, orderId=5033413171171100234
+2024-05-01 03:58:59.866 [xxl-job, JobThread-8-1714507136052] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-05-01 03:58:59.866 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5033413171171100234, code=KNSL, name=Kinsale Capital, count=6.0, price=0.0, avgPrice=365.28, createTime=2024-04-30 15:58:59.261, updateTimestamp=1.714507139893373E9, status=0)

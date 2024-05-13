@@ -594,7 +594,6 @@ public class RealTimeDataWS_DB {
                     }
                     Double price = MapUtils.getDouble(map, "p");
                     Long time = MapUtils.getLong(map, "t");
-                    //                    log.info(map);
                     if (time < openTime) {
                         if (time % 1000 == 0) {
                             log.info("time is early. " + map);
@@ -612,6 +611,7 @@ public class RealTimeDataWS_DB {
                         continue;
                     }
 
+                    log.info("receive data: {}", msg);
                     stockToEvent.put(stock, new StockEvent(stock, price, time));
                 }
 
@@ -672,8 +672,17 @@ public class RealTimeDataWS_DB {
                             continue;
                         }
 
-                        Double price = MapUtils.getDouble(map, "ap");
-                        realtimeQuoteMap.put(stock, price);
+                        Double askPrice = MapUtils.getDouble(map, "ap");
+                        Double bidPrice = MapUtils.getDouble(map, "bp");
+                        Double tradePrice;
+                        if (bidPrice == null) {
+                            tradePrice = askPrice;
+                        } else {
+                            tradePrice = (askPrice + bidPrice) / 2;
+                        }
+                        if (tradePrice != null) {
+                            realtimeQuoteMap.put(stock, tradePrice);
+                        }
                     }
                     log.info("quote price(time=" + System.currentTimeMillis() + "): " + realtimeQuoteMap);
                 }

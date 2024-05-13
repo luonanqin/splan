@@ -77,6 +77,7 @@ public class TradeExecutor_DB {
                 }
 
                 double upRatio = 0.003;
+                double minusCountRatio = 0.995;
                 int multiple = 0;
                 double orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
                 remainCash = tradeApi.getFunds();
@@ -135,6 +136,7 @@ public class TradeExecutor_DB {
                             /** 5.如果没有成交完成，则修改价格，并继续 */
                             orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
                             log.info("modify order price. orderPrice=" + orderPrice + ", multiple=" + multiple);
+                            count = (int) (count * minusCountRatio);
 
                             for (int j = 0; j <= 10; j++) {
                                 long modifyOrderId = tradeApi.upOrderPrice(orderId, count, orderPrice);

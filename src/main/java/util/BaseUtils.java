@@ -473,7 +473,7 @@ public class BaseUtils {
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-//            log.info("can not find file: " + file.getPath());
+            //            log.info("can not find file: " + file.getPath());
             return Lists.newArrayList();
         }
 
@@ -657,7 +657,7 @@ public class BaseUtils {
             FrontReinstatement fr = map.get(stock);
             double factor = fr.getFactor();
             if (factor > 0.98) {
-//            if (factor > 0.98 && factor < 2) {
+                //            if (factor > 0.98 && factor < 2) {
                 continue;
             }
 
@@ -828,7 +828,7 @@ public class BaseUtils {
             mimeMessage.setSubject(subject);
             mimeMessage.setText(message);
 
-//            Transport.send(mimeMessage);
+            //            Transport.send(mimeMessage);
         } catch (Exception e) {
             log.error("sendEmail error. subject={}, message={}", subject, message, e);
         }
@@ -837,7 +837,7 @@ public class BaseUtils {
     /**
      * MM/dd/yyyy -> yyyy-MM-dd
      */
-    public static String formatDate(String date){
+    public static String formatDate(String date) {
         LocalDate oDate = LocalDate.parse(date, Constants.FORMATTER);
         return oDate.format(Constants.DB_DATE_FORMATTER);
     }
@@ -845,7 +845,7 @@ public class BaseUtils {
     /**
      * yyyy-MM-dd -> MM/dd/yyyy
      */
-    public static String unformatDate(String date){
+    public static String unformatDate(String date) {
         LocalDate oDate = LocalDate.parse(date, Constants.DB_DATE_FORMATTER);
         return oDate.format(Constants.FORMATTER);
     }
@@ -857,6 +857,29 @@ public class BaseUtils {
         }
 
         dir.mkdirs();
+    }
+
+    public static Map<String, Boolean> getMarginInfoMap() {
+        BufferedReader br = null;
+        Map<String, Boolean> map = Maps.newHashMap();
+        try {
+            br = new BufferedReader(new FileReader(Constants.USER_PATH + "marginData/marginInfo"));
+            String line;
+            while (StringUtils.isNotBlank(line = br.readLine())) {
+                String[] split = line.split("\t");
+                map.put(split[0], Boolean.valueOf(split[1]));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return map;
     }
 
     public static void main(String[] args) throws Exception {

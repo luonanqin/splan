@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
+import util.Constants;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,13 +27,13 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 public class BollingerForWeek {
 
     public static void calculate() throws Exception {
-        Map<String, String> stockToKLineMap = BaseUtils.getFileMap("/Users/Luonanqin/study/intellij_idea_workspaces/temp/week/");
-        String bollPath = "/Users/Luonanqin/study/intellij_idea_workspaces/temp/weekboll/";
+        Map<String, String> stockToKLineMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "week/");
+        String bollPath = Constants.HIS_BASE_PATH + "weekboll/";
         Map<String, String> stockToBollMap = BaseUtils.getFileMap(bollPath);
 
         for (String stock : stockToKLineMap.keySet()) {
             if (!stock.equals("AAPL")) {
-//                continue;
+                //                continue;
             }
 
             List<StockKLine> kLines = Lists.newArrayList();

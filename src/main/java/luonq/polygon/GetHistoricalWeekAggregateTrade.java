@@ -44,7 +44,7 @@ public class GetHistoricalWeekAggregateTrade {
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     public static String api = "https://api.polygon.io/v2/aggs/ticker/";
     public static String BEGIN_DATE = "2000-01-01";
-    public static String minAggregatePath = "/Users/Luonanqin/study/intellij_idea_workspaces/temp/week/";
+    public static String minAggregatePath = Constants.HIS_BASE_PATH + "week/";
 
     public static void init() {
         int threadCount = 100;
