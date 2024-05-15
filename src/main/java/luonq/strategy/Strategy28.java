@@ -67,7 +67,7 @@ public class Strategy28 {
           + "underlying_ticker=%s&expired=true&order=desc&limit=10&sort=expiration_date&expiration_date.lte=%s&expiration_date.gt=%s&strike_price.lte=%d&stike_price.gte=%d"
           + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", code, upDate, date, upPrice, downPrice);
 
-//        System.out.println(url);
+        //        System.out.println(url);
 
         HttpGet get = new HttpGet(url);
         try {
@@ -82,7 +82,7 @@ public class Strategy28 {
 
             List<OptionContracts> results = resp.getResults();
             List<String> tickerList = results.stream().map(OptionContracts::getTicker).collect(Collectors.toList());
-//            System.out.println(tickerList);
+            //            System.out.println(tickerList);
 
             return tickerList;
         } finally {
@@ -168,7 +168,7 @@ public class Strategy28 {
         }
         cdl.await();
 
-        List<OptionQuoteData> dataList = optionCodeList.stream().map(c -> dataMap.get(c)).collect(Collectors.toList());
+        List<OptionQuoteData> dataList = optionCodeList.stream().filter(c -> dataMap.containsKey(c)).map(c -> dataMap.get(c)).collect(Collectors.toList());
         for (OptionQuoteData optionQuoteData : dataList) {
             System.out.println(optionQuoteData);
         }
