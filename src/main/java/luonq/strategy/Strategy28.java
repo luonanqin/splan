@@ -200,7 +200,13 @@ public class Strategy28 {
         codeList.add("O:DADA240119P00001000");
         codeList.add("O:DADA240119P00000500");
 
-        getOptionQuote(codeList, "2024-01-08");
+        String code = "O:DADA240119C00001000";
+        int c_index = code.lastIndexOf("C");
+        StringBuffer sb = new StringBuffer(code);
+        sb = sb.replace(c_index, c_index + 1, "P");
+        System.out.println(sb);
+
+//        getOptionQuote(codeList, "2024-01-08");
         cachedThread.shutdown();
     }
 }
