@@ -40,7 +40,7 @@ public class Strategy28 {
     public static ThreadPoolExecutor cachedThread;
 
     public static void init() {
-        int threadCount = 15;
+        int threadCount = 100;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
@@ -62,9 +62,9 @@ public class Strategy28 {
         int downPrice = (decade == 0 ? 1 : decade) * 10;
 
         LocalDate day = LocalDate.parse(date, Constants.DB_DATE_FORMATTER);
-        String upDate = day.plusMonths(1).withDayOfMonth(1).format(Constants.DB_DATE_FORMATTER);
+        String upDate = day.plusMonths(2).withDayOfMonth(1).format(Constants.DB_DATE_FORMATTER);
         String url = String.format("https://api.polygon.io/v3/reference/options/contracts?contract_type=call&"
-          + "underlying_ticker=%s&expired=true&order=desc&limit=10&sort=expiration_date&expiration_date.lte=%s&expiration_date.gt=%s&strike_price.lte=%d&stike_price.gte=%d"
+          + "underlying_ticker=%s&expired=true&order=desc&limit=100&sort=expiration_date&expiration_date.lte=%s&expiration_date.gt=%s&strike_price.lte=%d&stike_price.gte=%d"
           + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", code, upDate, date, upPrice, downPrice);
 
         //        System.out.println(url);
@@ -83,11 +83,122 @@ public class Strategy28 {
             List<OptionContracts> results = resp.getResults();
             List<String> tickerList = results.stream().map(OptionContracts::getTicker).collect(Collectors.toList());
             //            System.out.println(tickerList);
+            String latestTicker = tickerList.get(tickerList.size() - 1);
+            int i;
+            for (i = tickerList.size() - 2; i >= 0; i--) {
+                String ticker = tickerList.get(i);
+                int c_index = ticker.lastIndexOf("C");
+                if (!StringUtils.equalsIgnoreCase(latestTicker.substring(0, c_index), ticker.substring(0, c_index))) {
+                    break;
+                }
+            }
+            tickerList = tickerList.subList(i + 1, tickerList.size());
 
             return tickerList;
         } finally {
             get.releaseConnection();
         }
+    }
+
+    /*
+     * 根据开盘价，计算该价格前后对应的行权价及期权代码，获取这些期权的开盘报价及收盘报价
+     * 1.开盘报价列表选开盘后的前十个
+     * 2.收盘报价列表选收盘前一分钟之后的前十个，超过十个选十个，不满十个按实际情况选择
+     */
+    public static void getOptionQuote(List<String> optionCodeList, String date, double price) throws Exception {
+        int decade = (int) price;
+        int count = String.valueOf(decade).length();
+
+        int standardCount = count + 3;
+        String priceStr = String.valueOf(price).replace(".", "");
+        int lastCount = standardCount - priceStr.length();
+        int digitalPrice = Integer.valueOf(priceStr) * (int) Math.pow(10, lastCount);
+
+        String upOptionCode = null, downOptionCode = null, equalOptionCode = null;
+        for (String code : optionCodeList) {
+            int c_index = code.lastIndexOf("C");
+            String temp = code.substring(c_index + 1);
+            int i;
+            for (i = 0; i < temp.length(); i++) {
+                if (temp.charAt(i) != '0') {
+                    break;
+                }
+            }
+            int strikePrice = Integer.parseInt(temp.substring(i));
+            if (strikePrice > digitalPrice) {
+                upOptionCode = code;
+            } else if (strikePrice == digitalPrice) {
+                equalOptionCode = code;
+            } else if (strikePrice < digitalPrice) {
+                downOptionCode = code;
+                break;
+            }
+        }
+
+        List<String> actualOptionCodeList = Lists.newArrayList(upOptionCode, downOptionCode, equalOptionCode)
+          .stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+
+        int year = Integer.valueOf(date.substring(0, 4));
+        LocalDateTime summerTime = BaseUtils.getSummerTime(year);
+        LocalDateTime winterTime = BaseUtils.getWinterTime(year);
+
+        LocalDateTime day = LocalDate.parse(date, Constants.DB_DATE_FORMATTER).atTime(0, 0);
+        int openHour, closeHour;
+        if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
+            openHour = 21;
+            closeHour = 4;
+        } else {
+            openHour = 22;
+            closeHour = 5;
+        }
+
+        LocalDateTime open = day.withHour(openHour).withMinute(30).withSecond(0);
+        LocalDateTime close = day.plusDays(1).withHour(closeHour - 1).withMinute(59).withSecond(0);
+        String openTS = String.valueOf(open.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        String closeTS = String.valueOf(close.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        String api = "https://api.polygon.io/v3/quotes/";
+        String openUrl = String.format("?order=asc&limit=10"
+          + "&timestamp.lt=%s000000&timestamp.gt=%s000000"
+          + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", closeTS, openTS);
+        String closeUrl = String.format("?order=desc&limit=10"
+          + "&timestamp.lt=%s000000&timestamp.gt=%s000000"
+          + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", closeTS, openTS);
+
+        List<String> urlList = Lists.newArrayList();
+        actualOptionCodeList.stream().filter(StringUtils::isNotBlank).forEach(code -> urlList.add(api + code + openUrl));
+        actualOptionCodeList.stream().filter(StringUtils::isNotBlank).forEach(code -> urlList.add(api + code + closeUrl));
+
+        CountDownLatch cdl = new CountDownLatch(urlList.size());
+        Map<String, List<OptionQuote>> dataMap = Maps.newHashMap();
+        for (String code : actualOptionCodeList) {
+            String url = api + code + openUrl;
+            cachedThread.execute(() -> {
+                HttpGet req = new HttpGet(url);
+                CloseableHttpClient httpClient = null;
+                try {
+                    httpClient = queue.take();
+                    CloseableHttpResponse openExecute = httpClient.execute(req);
+                    InputStream openContent = openExecute.getEntity().getContent();
+                    OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+                    List<OptionQuote> openResults = openResp.getResults();
+                    if (CollectionUtils.isNotEmpty(openResults)) {
+                        dataMap.put(url, openResults);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    queue.offer(httpClient);
+                    cdl.countDown();
+                    req.releaseConnection();
+                }
+            });
+        }
+        cdl.await();
+
+//        List<OptionQuoteData> dataList = optionCodeList.stream().filter(c -> dataMap.containsKey(c)).map(c -> dataMap.get(c)).collect(Collectors.toList());
+//        for (OptionQuoteData optionQuoteData : dataList) {
+//            System.out.println(optionQuoteData);
+//        }
     }
 
     public static void getOptionQuote(List<String> optionCodeList, String date) throws Exception {
@@ -291,9 +402,11 @@ public class Strategy28 {
 
         init();
 
-        //        getOptionCode("AGL", 7.75, "2024-01-05");
+        List<String> agl = getOptionCode("AGL", 7.75, "2024-01-05");
+        getOptionQuote(agl, "2024-01-05", 7.75);
         //        getOptionCode("DADA", 2.14, "2024-01-08");
-        //        List<String> codeList = Lists.newArrayList();
+        List<String> codeList = Lists.newArrayList();
+        //        codeList.add("O:DB240503P00016000");
         //        codeList.add("O:DADA240119C00010000");
         //        codeList.add("O:DADA240119C00007500");
         //        codeList.add("O:DADA240119C00005000");
@@ -311,7 +424,7 @@ public class Strategy28 {
         //        codeList.add("O:DADA240119P00001000");
         //        codeList.add("O:DADA240119P00000500");
 
-        //        getOptionQuote(codeList, "2024-01-08");
+        //        getOptionQuote(codeList, "2024-04-29");
 
         List<String> dataList = buildTestData();
         for (String data : dataList) {
@@ -323,7 +436,10 @@ public class Strategy28 {
             List<String> optionPutCode = optionCallCode.stream().map(c -> getOptionPutCode(c)).collect(Collectors.toList());
 
             getOptionQuote(optionCallCode, date);
+            System.out.println();
             getOptionQuote(optionPutCode, date);
+
+            System.out.println();
         }
 
         cachedThread.shutdown();
