@@ -17,6 +17,6 @@ public class OptionQuote {
     private long sip_timestamp; // 1704465109914787840
 
     public String toString() {
-        return code + "\t" + type + "\t" + sip_timestamp + "\t" + ask_price + "\t" + ask_size + "\t" + bid_price + "\t" + bid_size;
+        return type + "\t" + sip_timestamp + "\t" + ask_price + "\t" + ask_size + "\t" + bid_price + "\t" + bid_size;
     }
 }

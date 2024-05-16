@@ -153,25 +153,25 @@ public class Strategy28 {
         }
 
         LocalDateTime open = day.withHour(openHour).withMinute(30).withSecond(0);
-        LocalDateTime close = day.plusDays(1).withHour(closeHour - 1).withMinute(59).withSecond(0);
+        LocalDateTime beforeClose = day.plusDays(1).withHour(closeHour - 1).withMinute(59).withSecond(0);
+        LocalDateTime close = day.plusDays(1).withHour(closeHour).withMinute(0).withSecond(0);
         String openTS = String.valueOf(open.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        String beforeCloseTS = String.valueOf(beforeClose.toInstant(ZoneOffset.of("+8")).toEpochMilli());
         String closeTS = String.valueOf(close.toInstant(ZoneOffset.of("+8")).toEpochMilli());
         String api = "https://api.polygon.io/v3/quotes/";
         String openUrl = String.format("?order=asc&limit=10"
           + "&timestamp.lt=%s000000&timestamp.gt=%s000000"
           + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", closeTS, openTS);
-        String closeUrl = String.format("?order=desc&limit=10"
+        String closeUrl = String.format("?order=asc&limit=10"
           + "&timestamp.lt=%s000000&timestamp.gt=%s000000"
-          + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", closeTS, openTS);
+          + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", closeTS, beforeCloseTS);
 
-        List<String> urlList = Lists.newArrayList();
-        actualOptionCodeList.stream().filter(StringUtils::isNotBlank).forEach(code -> urlList.add(api + code + openUrl));
-        actualOptionCodeList.stream().filter(StringUtils::isNotBlank).forEach(code -> urlList.add(api + code + closeUrl));
+        List<String> openUrlList = actualOptionCodeList.stream().filter(StringUtils::isNotBlank).map(code -> api + code + openUrl).collect(Collectors.toList());
+        List<String> closeUrlList = actualOptionCodeList.stream().filter(StringUtils::isNotBlank).map(code -> api + code + closeUrl).collect(Collectors.toList());
 
-        CountDownLatch cdl = new CountDownLatch(urlList.size());
+        CountDownLatch cdl = new CountDownLatch(actualOptionCodeList.size() * 2);
         Map<String, List<OptionQuote>> dataMap = Maps.newHashMap();
-        for (String code : actualOptionCodeList) {
-            String url = api + code + openUrl;
+        for (String url : openUrlList) {
             cachedThread.execute(() -> {
                 HttpGet req = new HttpGet(url);
                 CloseableHttpClient httpClient = null;
@@ -182,6 +182,35 @@ public class Strategy28 {
                     OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
                     List<OptionQuote> openResults = openResp.getResults();
                     if (CollectionUtils.isNotEmpty(openResults)) {
+                        openResults.stream().forEach(o -> {
+                            o.setType("open");
+                        });
+                        dataMap.put(url, openResults);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    queue.offer(httpClient);
+                    cdl.countDown();
+                    req.releaseConnection();
+                }
+            });
+        }
+        for (String url : closeUrlList) {
+            System.out.println(url);
+            cachedThread.execute(() -> {
+                HttpGet req = new HttpGet(url);
+                CloseableHttpClient httpClient = null;
+                try {
+                    httpClient = queue.take();
+                    CloseableHttpResponse openExecute = httpClient.execute(req);
+                    InputStream openContent = openExecute.getEntity().getContent();
+                    OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+                    List<OptionQuote> openResults = openResp.getResults();
+                    if (CollectionUtils.isNotEmpty(openResults)) {
+                        openResults.stream().forEach(o -> {
+                            o.setType("close");
+                        });
                         dataMap.put(url, openResults);
                     }
                 } catch (Exception e) {
@@ -195,10 +224,36 @@ public class Strategy28 {
         }
         cdl.await();
 
-//        List<OptionQuoteData> dataList = optionCodeList.stream().filter(c -> dataMap.containsKey(c)).map(c -> dataMap.get(c)).collect(Collectors.toList());
-//        for (OptionQuoteData optionQuoteData : dataList) {
-//            System.out.println(optionQuoteData);
-//        }
+        for (String openurl : openUrlList) {
+            int start = openurl.indexOf(api) + api.length();
+            int end = openurl.indexOf("?");
+            String code = openurl.substring(start, end);
+
+            List<OptionQuote> optionQuotes = dataMap.get(openurl);
+            if (CollectionUtils.isNotEmpty(optionQuotes)) {
+                System.out.println(code);
+                for (OptionQuote optionQuote : optionQuotes) {
+                    System.out.println(optionQuote);
+                }
+            }
+        }
+        for (String closeurl : closeUrlList) {
+            int start = closeurl.indexOf(api) + api.length();
+            int end = closeurl.indexOf("?");
+            String code = closeurl.substring(start, end);
+
+            List<OptionQuote> optionQuotes = dataMap.get(closeurl);
+            if (CollectionUtils.isNotEmpty(optionQuotes)) {
+                System.out.println(code);
+                for (OptionQuote optionQuote : optionQuotes) {
+                    System.out.println(optionQuote);
+                }
+            }
+        }
+        //        List<OptionQuoteData> dataList = optionCodeList.stream().filter(c -> dataMap.containsKey(c)).map(c -> dataMap.get(c)).collect(Collectors.toList());
+        //        for (OptionQuoteData optionQuoteData : dataList) {
+        //            System.out.println(optionQuoteData);
+        //        }
     }
 
     public static void getOptionQuote(List<String> optionCodeList, String date) throws Exception {
