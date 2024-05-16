@@ -162,9 +162,9 @@ public class Strategy28 {
         String openUrl = String.format("?order=asc&limit=10"
           + "&timestamp.lt=%s000000&timestamp.gt=%s000000"
           + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", closeTS, openTS);
-        String closeUrl = String.format("?order=asc&limit=10"
+        String closeUrl = String.format("?order=asc&limit=1"
           + "&timestamp.lt=%s000000&timestamp.gt=%s000000"
-          + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", closeTS, beforeCloseTS);
+          + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", beforeCloseTS, openTS);
 
         List<String> openUrlList = actualOptionCodeList.stream().filter(StringUtils::isNotBlank).map(code -> api + code + openUrl).collect(Collectors.toList());
         List<String> closeUrlList = actualOptionCodeList.stream().filter(StringUtils::isNotBlank).map(code -> api + code + closeUrl).collect(Collectors.toList());
@@ -197,7 +197,6 @@ public class Strategy28 {
             });
         }
         for (String url : closeUrlList) {
-            System.out.println(url);
             cachedThread.execute(() -> {
                 HttpGet req = new HttpGet(url);
                 CloseableHttpClient httpClient = null;
@@ -250,10 +249,6 @@ public class Strategy28 {
                 }
             }
         }
-        //        List<OptionQuoteData> dataList = optionCodeList.stream().filter(c -> dataMap.containsKey(c)).map(c -> dataMap.get(c)).collect(Collectors.toList());
-        //        for (OptionQuoteData optionQuoteData : dataList) {
-        //            System.out.println(optionQuoteData);
-        //        }
     }
 
     public static void getOptionQuote(List<String> optionCodeList, String date) throws Exception {
