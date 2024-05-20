@@ -7,14 +7,17 @@ import com.futu.openapi.FTSPI_Conn;
 import com.futu.openapi.FTSPI_Qot;
 import com.futu.openapi.pb.QotCommon;
 import com.futu.openapi.pb.QotGetBasicQot;
+import com.futu.openapi.pb.QotGetSecuritySnapshot;
 import com.futu.openapi.pb.QotGetSubInfo;
 import com.futu.openapi.pb.QotRequestRehab;
 import com.futu.openapi.pb.QotSub;
 import com.futu.openapi.pb.QotUpdateBasicQot;
+import com.futu.openapi.pb.QotUpdateOrderBook;
 import com.google.common.collect.Maps;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 import util.Constants;
 
@@ -56,7 +59,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
-    public void end(){
+    public void end() {
         qot.close();
     }
 
@@ -100,6 +103,34 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
                 long id = Thread.currentThread().getId();
                 System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
             }
+        }
+    }
+
+    @Override
+    public void onPush_UpdateOrderBook(FTAPI_Conn client, QotUpdateOrderBook.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("QotUpdateOrderBook failed: %s\n", rsp.getRetMsg());
+        } else {
+            QotUpdateOrderBook.S2C s2C = rsp.getS2C();
+            String code = s2C.getSecurity().getCode();
+            List<QotCommon.OrderBook> orderBookAskListList = s2C.getOrderBookAskListList();
+            List<QotCommon.OrderBook> orderBookBidListList = s2C.getOrderBookBidListList();
+            System.out.print(code + "\t");
+            if (CollectionUtils.isNotEmpty(orderBookBidListList)) {
+                QotCommon.OrderBook orderBook = orderBookBidListList.get(0);
+                double price = orderBook.getPrice();
+                long volume = orderBook.getVolume();
+                int orderCount = orderBook.getOrederCount();
+                System.out.print("bid price=" + price + "\tvolume=" + volume + "\tcount=" + orderCount);
+            }
+            if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
+                QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
+                double price = orderBook.getPrice();
+                long volume = orderBook.getVolume();
+                int orderCount = orderBook.getOrederCount();
+                System.out.print("bid price=" + price + "\tvolume=" + volume + "\tcount=" + orderCount);
+            }
+            System.out.println();
         }
     }
 
@@ -159,7 +190,26 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
           .addSecurityList(sec)
           .addAllSubTypeList(subTypeList)
           .setIsSubOrUnSub(true)
-          //          .setIsRegOrUnRegPush(true)
+          .setIsRegOrUnRegPush(true)
+          .build();
+        QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.sub(req);
+        System.out.printf("Send QotSub: %d\n", seqNo);
+    }
+
+    public void subOrderBook(String stock) {
+        List<Integer> subTypeList = new ArrayList<>();
+        subTypeList.add(QotCommon.SubType.SubType_OrderBook_VALUE);
+
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_HK_Security_VALUE)
+          .setCode(stock)
+          .build();
+        QotSub.C2S c2s = QotSub.C2S.newBuilder()
+          .addSecurityList(sec)
+          .addAllSubTypeList(subTypeList)
+          .setIsSubOrUnSub(true)
+          .setIsRegOrUnRegPush(true)
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
@@ -194,7 +244,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
     }
 
 
-    public void getRehab(String code){
+    public void getRehab(String code) {
         QotCommon.Security sec = QotCommon.Security.newBuilder()
           .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
           .setCode(code)
@@ -221,15 +271,53 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
+    public void getSecuritySnapshot(String stock) {
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_HK_Security_VALUE)
+          .setCode(stock)
+          .build();
+        QotGetSecuritySnapshot.C2S c2s = QotGetSecuritySnapshot.C2S.newBuilder()
+          .addSecurityList(sec)
+          .build();
+        QotGetSecuritySnapshot.Request req = QotGetSecuritySnapshot.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.getSecuritySnapshot(req);
+    }
+
+    @Override
+    public void onReply_GetSecuritySnapshot(FTAPI_Conn client, int nSerialNo, QotGetSecuritySnapshot.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("QotGetSecuritySnapshot failed: %s\n", rsp.getRetMsg());
+        } else {
+            try {
+                String json = JsonFormat.printer().print(rsp);
+                QotGetSecuritySnapshot.Snapshot snapshot = rsp.getS2COrBuilder().getSnapshotList(0);
+                String code = snapshot.getBasic().getSecurity().getCode();
+                QotGetSecuritySnapshot.OptionSnapshotExData optionExData = snapshot.getOptionExData();
+
+                System.out.println(code + "\t" + optionExData.getImpliedVolatility());
+                //                System.out.printf("Receive QotGetSecuritySnapshot: %s\n", json);
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         FTAPI.init();
         BasicQuoteDemo quote = new BasicQuoteDemo();
         quote.start();
-//        quote.getRehab("DPST");
-        quote.subBasicQuote("TCH240530C390000");
-        quote.getSubInfo();
-        quote.end();
 
+        quote.subOrderBook("TCH240530C390000");
+        quote.subBasicQuote("TCH240530C390000");
+        for (int i = 0; i < 100; i++) {
+            quote.getSecuritySnapshot("TCH240530C390000");
+            Thread.sleep(1000);
+        }
+        quote.getRehab("DPST");
+        quote.subBasicQuote("FUTU");
+        quote.getSubInfo();
+
+        quote.end();
         quote.start();
         quote.unSubBasicQuote("FUTU");
         quote.getSubInfo();
@@ -240,7 +328,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         for (String stock : stockSet) {
             quote.subBasicQuote("FUTU");
             quote.getBasicQot("FUTU");
-            if (queue.size()>100) {
+            if (queue.size() > 100) {
                 StockQuote remove = queue.remove();
 
             }
