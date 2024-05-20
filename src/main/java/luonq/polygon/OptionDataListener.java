@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class OptionDataListener {
 
-    private NodeList nodeList = new NodeList(10);
+    private NodeList nodeList;
     private List<StockOptionEvent> list = Lists.newLinkedList();
 
     @Subscribe

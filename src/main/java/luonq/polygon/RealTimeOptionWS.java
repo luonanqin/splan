@@ -1,5 +1,6 @@
 package luonq.polygon;
 
+import bean.NodeList;
 import bean.StockEvent;
 import bean.StockOptionEvent;
 import com.alibaba.fastjson.JSON;
@@ -62,10 +63,12 @@ public class RealTimeOptionWS {
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> realtimeQuoteBQ = new LinkedBlockingQueue<>(1000);
     private AtomicBoolean hasAuth = new AtomicBoolean(false);
+    private NodeList list = new NodeList(10);
 
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private ThreadPoolExecutor executor;
+    private OptionQuoteExecutor optionQuoteExecutor;
 
     public void initVariable() {
         stockSet = BaseUtils.getOptionStock();
@@ -82,6 +85,7 @@ public class RealTimeOptionWS {
         listenEnd = false;
         hasAuth = new AtomicBoolean(false);
         unsubcribeStockSet = Sets.newHashSet();
+        optionQuoteExecutor = new OptionQuoteExecutor();
         tradeEventBus = asyncEventBus();
     }
 
@@ -154,6 +158,7 @@ public class RealTimeOptionWS {
     public void initEventListener() {
         try {
             OptionDataListener tradeDataListener = new OptionDataListener();
+            tradeDataListener.setNodeList(list);
             tradeEventBus.register(tradeDataListener);
             log.info("finish init data listener");
         } catch (Exception e) {
@@ -346,6 +351,7 @@ public class RealTimeOptionWS {
         log.info(msg);
         unsubscribeAll();
         listenEnd = true;
+        optionQuoteExecutor.begin(list);
     }
 
     public void unsubscribeAll() {

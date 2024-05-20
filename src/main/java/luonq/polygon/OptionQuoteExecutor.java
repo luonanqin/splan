@@ -32,7 +32,7 @@ import static util.Constants.TRADE_ERROR_CODE;
 @Slf4j
 public class OptionQuoteExecutor {
 
-    private NodeList list;
+//    private NodeList list;
     private BasicQuoteDemo quote;
     private int cut = 990000;
     private List<String> tradeStock = Lists.newArrayList();
@@ -49,6 +49,16 @@ public class OptionQuoteExecutor {
         //        tradeApi.start();
         //        tradeApi.unlock();
         //        tradeApi.clearStopLossStockSet();
+    }
+
+    public void begin(NodeList list){
+        List<Node> nodes = list.getNodes();
+        if (CollectionUtils.isNotEmpty(nodes)) {
+            for (Node node : nodes) {
+                String name = node.getName();
+
+            }
+        }
     }
 
     public void subQuote(String optionStock) {
