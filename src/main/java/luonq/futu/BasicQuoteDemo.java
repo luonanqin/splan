@@ -152,7 +152,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         subTypeList.add(QotCommon.SubType.SubType_Basic_VALUE);
 
         QotCommon.Security sec = QotCommon.Security.newBuilder()
-          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setMarket(QotCommon.QotMarket.QotMarket_HK_Security_VALUE)
           .setCode(stock)
           .build();
         QotSub.C2S c2s = QotSub.C2S.newBuilder()
@@ -225,12 +225,11 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         FTAPI.init();
         BasicQuoteDemo quote = new BasicQuoteDemo();
         quote.start();
-
-        quote.getRehab("DPST");
-        quote.subBasicQuote("FUTU");
+//        quote.getRehab("DPST");
+        quote.subBasicQuote("TCH240530C390000");
         quote.getSubInfo();
-
         quote.end();
+
         quote.start();
         quote.unSubBasicQuote("FUTU");
         quote.getSubInfo();

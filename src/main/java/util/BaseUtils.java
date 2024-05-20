@@ -882,6 +882,28 @@ public class BaseUtils {
         return map;
     }
 
+    public static Set<String> getOptionStock() {
+        BufferedReader br = null;
+        Set<String> result = Sets.newHashSet();
+        try {
+            br = new BufferedReader(new FileReader(Constants.USER_PATH + "optionData/option"));
+            String line;
+            while (StringUtils.isNotBlank(line = br.readLine())) {
+                result.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
     public static void main(String[] args) throws Exception {
         Map<String, List<EarningDate>> map = getEarningDate("2023-11-16");
         System.out.println(map);
