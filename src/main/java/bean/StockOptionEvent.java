@@ -15,6 +15,12 @@ public class StockOptionEvent {
     private Double price;
     private long time;
 
+    public StockOptionEvent(String stock, Double price, long time) {
+        this.stock = stock;
+        this.price = price;
+        this.time = time;
+    }
+
     public Double getRatio() {
         return (lastClose - price) / lastClose;
     }

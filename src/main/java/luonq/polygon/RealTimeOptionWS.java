@@ -1,6 +1,7 @@
 package luonq.polygon;
 
 import bean.StockEvent;
+import bean.StockOptionEvent;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -65,7 +66,6 @@ public class RealTimeOptionWS {
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private ThreadPoolExecutor executor;
-
 
     public void initVariable() {
         stockSet = BaseUtils.getOptionStock();
@@ -149,6 +149,16 @@ public class RealTimeOptionWS {
         }
         listenEndTime = openTime + LISTENING_TIME;
         log.info("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
+    }
+
+    public void initEventListener() {
+        try {
+            OptionDataListener tradeDataListener = new OptionDataListener();
+            tradeEventBus.register(tradeDataListener);
+            log.info("finish init data listener");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @OnOpen
@@ -278,7 +288,7 @@ public class RealTimeOptionWS {
 
                 //                log.info(msg);
                 List<Map> maps = JSON.parseArray(msg, Map.class);
-                Map<String, StockEvent> stockToEvent = Maps.newHashMap();
+                Map<String, StockOptionEvent> stockToEvent = Maps.newHashMap();
                 for (Map map : maps) {
                     String stock = MapUtils.getString(map, "sym", "");
 
@@ -304,7 +314,7 @@ public class RealTimeOptionWS {
                     }
 
                     log.info("receive data: {}", msg);
-                    stockToEvent.put(stock, new StockEvent(stock, price, time));
+                    stockToEvent.put(stock, new StockOptionEvent(stock, price, time));
                 }
 
                 // 用当前时间判断是否超过监听时间，避免不活跃股票 或 接口延迟 导致监听超时，影响及时下单
