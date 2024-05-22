@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -876,11 +877,12 @@ public class Strategy27 {
         Map<String/* date */, Map<String/* stock */, Double/* ratio */>> dateToStockRatioMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::dateToInt));
         Map<String/* date */, Map<String/* stock */, StockKLine>> dateToStockMap = Maps.newHashMap();
 
-//        Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/dailyKLine");
-                Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
+        Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/dailyKLine");
+        //        Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
         Map<String, Boolean> marginInfoMap = BaseUtils.getMarginInfoMap();
-        int year = 2023;
-        for (String stock : klineFileMap.keySet()) {
+        int year = 2024;
+        Set<String> optionStock = BaseUtils.getOptionStock();
+        for (String stock : optionStock) {
             if (!marginInfoMap.containsKey(stock)) {
                 continue;
             }
@@ -924,13 +926,14 @@ public class Strategy27 {
         double sum = init;
         double v = 0.07;
         double gainCount = 0, lossCount = 0;
+        boolean show = false;
         for (String date : dateToStockRatioMap.keySet()) {
             List<String> stockList = dateToStockListMap.get(date);
 
             for (String stock : stockList) {
                 Boolean canShortSell = MapUtils.getBoolean(marginInfoMap, stock, false);
                 if (!canShortSell) {
-                    continue;
+//                    continue;
                 }
 
                 StockKLine kLine = dateToStockMap.get(date).get(stock);
@@ -939,6 +942,9 @@ public class Strategy27 {
                 BigDecimal volume = kLine.getVolume();
                 double high = kLine.getHigh();
                 double low = kLine.getLow();
+                if (open < 7) {
+                                        continue;
+                }
 
                 int count = (int) (sum / open);
                 double income = 0;
@@ -947,13 +953,17 @@ public class Strategy27 {
                 if (lossRatio > v) {
                     double loss = -count * open * v;
                     income = loss;
-                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
+                    if (show) {
+                        System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", loss = " + (int) loss);
+                    }
                     lossCount++;
                 } else {
                     //                    double gain = count * (open - close);
                     double gain = count * (close - open);
                     income = gain;
-                    System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
+                    if (show) {
+                        System.out.println("date=" + date + ", stock=" + stock + ", open=" + open + ", close=" + close + ", volumn=" + volume + ", count=" + count + ", gain = " + (int) gain);
+                    }
 
                     if (gain >= 0) {
                         gainCount++;
@@ -963,7 +973,13 @@ public class Strategy27 {
                 }
                 sum += income;
                 Double ratio = dateToStockRatioMap.get(date).get(stock);
-                System.out.println("date=" + date + ", income=" + income + ", sum=" + sum + ", ratio=" + ratio);
+                if (show) {
+                    System.out.println("date=" + date + ", income=" + income + ", sum=" + sum + ", ratio=" + ratio);
+                }
+
+                double highOpenDiffRatio = (high - open) / open * 100;
+                double lowOpenDiffRatio = (open - low) / open * 100;
+                System.out.println("date=" + date + ", code=" + stock + ", open=" + open + ", ratio=" + ratio + ", highOpenDiffRatio=" + highOpenDiffRatio + ", lowOpenDiffRatio=" + lowOpenDiffRatio);
 
                 break;
             }
