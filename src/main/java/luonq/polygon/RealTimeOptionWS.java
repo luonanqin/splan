@@ -1,17 +1,15 @@
 package luonq.polygon;
 
-import bean.StockKLine;
+import bean.StockEvent;
 import bean.StockOptionEvent;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
-import util.Constants;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
@@ -68,28 +66,6 @@ public class RealTimeOptionWS {
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private ThreadPoolExecutor executor;
-
-    public void init() {
-        try {
-            initThreadExecutor();
-            initVariable();
-            initManyTime();
-            connect();
-            boolean authSuccess = waitAuth();
-            if (!authSuccess) {
-                return;
-            }
-
-            initEventListener();
-
-            subcribeStock();
-            sendToTradeDataListener();
-            close();
-            log.info("option finish");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public void initVariable() {
         stockSet = BaseUtils.getOptionStock();
@@ -178,7 +154,6 @@ public class RealTimeOptionWS {
     public void initEventListener() {
         try {
             OptionDataListener tradeDataListener = new OptionDataListener();
-            tradeDataListener.setStockToKLineMap(buildLastStockKLine());
             tradeEventBus.register(tradeDataListener);
             log.info("finish init data listener");
         } catch (Exception e) {
@@ -205,14 +180,6 @@ public class RealTimeOptionWS {
         }
         reconnect();
         this.userSession = userSession;
-    }
-
-    public void close() throws Exception {
-        if (userSession != null) {
-            manualClose = true;
-            userSession.close();
-            executor.shutdown();
-        }
     }
 
     public void reconnect() {
@@ -400,30 +367,7 @@ public class RealTimeOptionWS {
         return true;
     }
 
-    public Map<String/* stock */, StockKLine> buildLastStockKLine() throws Exception {
-        Map<String/* stock */, StockKLine> stockToKLineMap = Maps.newHashMap();
-
-        Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/dailyKLine");
-        Set<String> optionStock = BaseUtils.getOptionStock();
-        int year = 2024;
-        for (String stock : optionStock) {
-            String filePath = klineFileMap.get(stock);
-            if (StringUtils.isBlank(filePath)) {
-                continue;
-            }
-
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(filePath, year, year - 1);
-            if (CollectionUtils.isNotEmpty(stockKLines)) {
-                StockKLine stockKLine = stockKLines.get(0);
-                stockToKLineMap.put(stock, stockKLine);
-            }
-        }
-
-        return stockToKLineMap;
-    }
-
     public static void main(String[] args) {
-        RealTimeOptionWS realTimeOptionWS = new RealTimeOptionWS();
-        realTimeOptionWS.init();
+
     }
 }

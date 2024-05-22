@@ -24,9 +24,12 @@ import util.Constants;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -41,6 +44,7 @@ public class Strategy28 {
     public static CloseableHttpClient httpClient = HttpClients.createDefault();
     public static BlockingQueue<CloseableHttpClient> queue;
     public static ThreadPoolExecutor cachedThread;
+    public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
     public static void init() {
         int threadCount = 100;
@@ -334,6 +338,64 @@ public class Strategy28 {
         return optionTrade;
     }
 
+    public static void getOptionQuoteList(String optionCode, String date) throws Exception {
+        List<String> dayAllSeconds = getDayAllSeconds(date);
+        int year = Integer.valueOf(date.substring(0, 4));
+        LocalDateTime summerTime = BaseUtils.getSummerTime(year);
+        LocalDateTime winterTime = BaseUtils.getWinterTime(year);
+
+        LocalDateTime day = LocalDate.parse(date, Constants.DB_DATE_FORMATTER).atTime(0, 0);
+        int openHour, closeHour;
+        if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
+            openHour = 21;
+            closeHour = 4;
+        } else {
+            openHour = 22;
+            closeHour = 5;
+        }
+
+        LocalDateTime open = day.withHour(openHour).withMinute(30).withSecond(5);
+        LocalDateTime close = day.plusDays(1).withHour(closeHour - 1).withMinute(59).withSecond(59);
+        String openTS = String.valueOf(open.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        String closeTS = String.valueOf(close.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+
+        CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
+        Map<String/* seconds */, String/* data */> dataMap = Maps.newTreeMap(Comparator.comparing(Long::valueOf));
+        for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
+            String begin = dayAllSeconds.get(i);
+            String end = dayAllSeconds.get(i + 1);
+            cachedThread.execute(() -> {
+                String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=1"
+                  + "&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
+                HttpGet openRequest = new HttpGet(url);
+                CloseableHttpClient httpClient = null;
+                try {
+                    httpClient = queue.take();
+
+                    CloseableHttpResponse openExecute = httpClient.execute(openRequest);
+                    InputStream openContent = openExecute.getEntity().getContent();
+                    OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+                    List<OptionQuote> openResults = openResp.getResults();
+                    if (CollectionUtils.isNotEmpty(openResults)) {
+                        dataMap.put(begin, openResults.get(0).print());
+                    }
+
+                    //                    dataMap.put(code, optionQuoteData);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    queue.offer(httpClient);
+                    cdl.countDown();
+                    openRequest.releaseConnection();
+                }
+            });
+        }
+        cdl.await();
+
+        System.out.println(dataMap);
+    }
+
+
     public static void getOptionQuote(List<String> optionCodeList, String date) throws Exception {
         int year = Integer.valueOf(date.substring(0, 4));
         LocalDateTime summerTime = BaseUtils.getSummerTime(year);
@@ -559,13 +621,44 @@ public class Strategy28 {
         System.out.println(call + "\t" + callBuy + "\t" + callSell + "\t" + callStrikeDiffRatio + "\t" + put + "\t" + putBuy + "\t" + putSell + "\t" + putStrikeDiffRatio);
     }
 
+    /**
+     * 获取每天的开盘到收盘的每一秒，day=2024-01-02
+     */
+    public static List<String> getDayAllSeconds(String date) {
+        int year = Integer.valueOf(date.substring(0, 4));
+        LocalDateTime summerTime = BaseUtils.getSummerTime(year);
+        LocalDateTime winterTime = BaseUtils.getWinterTime(year);
+
+        LocalDateTime day = LocalDate.parse(date, Constants.DB_DATE_FORMATTER).atTime(0, 0);
+        int openHour;
+        if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
+            openHour = 21;
+        } else {
+            openHour = 22;
+        }
+
+        int secondsCount = 6 * 3600 + 1800;
+        LocalDateTime open = day.withHour(openHour).withMinute(0).withSecond(0);
+        long openMilli = open.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        List<String> result = Lists.newLinkedList();
+        for (int i = 0; i < secondsCount; i++) {
+            result.add(String.valueOf(openMilli * 1000000));
+            openMilli += 1000;
+
+        }
+
+        return result;
+    }
+
     public static void main(String[] args) throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
 
         init();
 
-        calOptionQuote("AGL", 7.75, "2024-01-05");
+        List<String> dayAllSeconds = getDayAllSeconds("2024-01-05");
+        //        calOptionQuote("AGL", 7.75, "2024-01-05");
+        getOptionQuoteList("O:AGL240119C00007500", "2024-01-05");
         //        calOptionQuote("DADA", 2.14, "2024-01-08");
         //        calOptionQuote("GRFS", 7.42, "2024-01-09");
         //        calOptionQuote("LW", 88.53, "2024-04-04");
