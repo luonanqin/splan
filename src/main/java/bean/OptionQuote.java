@@ -19,4 +19,8 @@ public class OptionQuote {
     public String toString() {
         return type + "\t" + sip_timestamp + "\t" + ask_price + "\t" + ask_size + "\t" + bid_price + "\t" + bid_size;
     }
+
+    public String print() {
+        return sip_timestamp + "\t" + ask_price + "\t" + ask_size + "\t" + bid_price + "\t" + bid_size;
+    }
 }
