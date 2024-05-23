@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
+import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -352,7 +353,8 @@ public class Strategy28 {
         return optionCodeBean;
     }
 
-    public static void getOptionQuoteList(String optionCode, String date) throws Exception {
+    public static void getOptionQuoteList(OptionCode optionCodeBean, String date) throws Exception {
+        String optionCode = optionCodeBean.getCode();
         List<String> dayAllSeconds = getDayAllSeconds(date);
         int year = Integer.valueOf(date.substring(0, 4));
         LocalDateTime summerTime = BaseUtils.getSummerTime(year);
@@ -415,8 +417,13 @@ public class Strategy28 {
         List<String> result = Lists.newArrayList(dataMap.values());
 
         String fileName = optionCode.substring(2);
-        BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionQuote/" + fileName, result);
-        System.out.println(dataMap);
+        String filePath = Constants.USER_PATH + "optionData/optionQuote/" + fileName;
+        File file = new File(filePath);
+        if (file.exists()) {
+            return;
+        }
+        BaseUtils.writeFile(filePath, result);
+//        System.out.println(dataMap);
     }
 
 
@@ -725,12 +732,12 @@ public class Strategy28 {
 //            calOptionQuote(code, price, date);
             List<String> optionCode = getOptionCode(code, price, date);
             if (CollectionUtils.isNotEmpty(optionCode)) {
-                String callOption = optionCode.get(0);
-                getOptionQuoteList(callOption, date);
+                OptionCode callOptionCodeBean = getOptionCodeBean(optionCode, price, 1);
+                getOptionQuoteList(callOptionCodeBean, date);
 
-                List<String> putOptionCode = optionCode.stream().map(Strategy28::getOptionPutCode).collect(Collectors.toList());
-                getOptionQuoteList(putOptionCode.get(0), date);
-                System.out.println(callOption);
+                OptionCode putOptionCodeBean = getOptionCodeBean(optionCode, price, 0);
+                getOptionQuoteList(putOptionCodeBean, date);
+                System.out.println(callOptionCodeBean.getCode());
             }
             //            System.out.println();
         }
