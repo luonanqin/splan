@@ -83,7 +83,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         } else {
             try {
                 String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive QotSub: %s\n", json);
+//                System.out.printf("Receive QotSub: %s\n", json);
             } catch (InvalidProtocolBufferException e) {
                 e.printStackTrace();
             }
@@ -101,7 +101,8 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
                 String stock = basicQot.getSecurity().getCode();
                 double curPrice = basicQot.getCurPrice();
                 long id = Thread.currentThread().getId();
-                System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
+//                System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
+                System.out.println(" stock=" + stock + " price=" + curPrice);
             }
         }
     }
@@ -121,14 +122,14 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
                 double price = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 int orderCount = orderBook.getOrederCount();
-                System.out.print("bid price=" + price + "\tvolume=" + volume + "\tcount=" + orderCount);
+                System.out.print("bid price=" + price + "\tvolume=" + volume);
             }
             if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
                 QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
                 double price = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 int orderCount = orderBook.getOrederCount();
-                System.out.print("bid price=" + price + "\tvolume=" + volume + "\tcount=" + orderCount);
+                System.out.print(" ask price=" + price + "\tvolume=" + volume);
             }
             System.out.println();
         }
@@ -194,7 +195,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
-        System.out.printf("Send QotSub: %d\n", seqNo);
+//        System.out.printf("Send QotSub: %d\n", seqNo);
     }
 
     public void subOrderBook(String stock) {
@@ -213,7 +214,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
-        System.out.printf("Send QotSub: %d\n", seqNo);
+//        System.out.printf("Send QotSub: %d\n", seqNo);
     }
 
     public void unSubBasicQuote(String stock) {
