@@ -355,6 +355,13 @@ public class Strategy28 {
 
     public static void getOptionQuoteList(OptionCode optionCodeBean, String date) throws Exception {
         String optionCode = optionCodeBean.getCode();
+        String fileName = optionCode.substring(2);
+        String filePath = Constants.USER_PATH + "optionData/optionQuote/" + fileName;
+        File file = new File(filePath);
+        if (file.exists()) {
+            return;
+        }
+        
         List<String> dayAllSeconds = getDayAllSeconds(date);
         int year = Integer.valueOf(date.substring(0, 4));
         LocalDateTime summerTime = BaseUtils.getSummerTime(year);
@@ -416,12 +423,7 @@ public class Strategy28 {
 //        }).map(kv -> kv.getValue()).collect(Collectors.toList());
         List<String> result = Lists.newArrayList(dataMap.values());
 
-        String fileName = optionCode.substring(2);
-        String filePath = Constants.USER_PATH + "optionData/optionQuote/" + fileName;
-        File file = new File(filePath);
-        if (file.exists()) {
-            return;
-        }
+
         BaseUtils.writeFile(filePath, result);
 //        System.out.println(dataMap);
     }
