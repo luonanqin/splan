@@ -1,5 +1,6 @@
 package luonq.strategy;
 
+import bean.OptionCode;
 import bean.OptionContracts;
 import bean.OptionContractsResp;
 import bean.OptionQuote;
@@ -124,85 +125,14 @@ public class Strategy28 {
      * callOrPut = 1 is call, = 0 is put
      */
     public static OptionTrade getOptionQuote(List<String> optionCodeList, String date, double price, int callOrPut) throws Exception {
-        // 找出当前价前后的行权价及等于当前价的行权价
-        int decade = (int) price;
-        int count = String.valueOf(decade).length();
-
-        int standardCount = count + 3;
-        String priceStr = String.valueOf(price).replace(".", "");
-        int lastCount = standardCount - priceStr.length();
-        int digitalPrice = Integer.valueOf(priceStr) * (int) Math.pow(10, lastCount);
-
-        String upOptionCode = null, downOptionCode = null, equalOptionCode = null;
-        int priceDiff = Integer.MAX_VALUE;
-        String optionCode = null;
-        int nextStrikePrice = 0, actualStrikePrice = 0;
-        for (int j = 0; j < optionCodeList.size(); j++) {
-            String code = optionCodeList.get(j);
-            int index = code.length() - 8;
-            String temp = code.substring(index);
-            int i;
-            for (i = 0; i < temp.length(); i++) {
-                if (temp.charAt(i) != '0') {
-                    break;
-                }
-            }
-            int strikePrice = Integer.parseInt(temp.substring(i));
-            //            if (strikePrice > digitalPrice) {
-            //                if (priceDiff > strikePrice - digitalPrice) {
-            //                    priceDiff = strikePrice - digitalPrice;
-            //                    upOptionCode = code;
-            //                    optionCode = code;
-            //                }
-            //            } else if (strikePrice == digitalPrice) {
-            //                equalOptionCode = code;
-            //                optionCode = code;
-            //                break;
-            //            } else if (strikePrice < digitalPrice) {
-            //                if (priceDiff > digitalPrice - strikePrice) {
-            //                    priceDiff = digitalPrice - strikePrice;
-            //                    optionCode = code;
-            //                    downOptionCode = code;
-            //                }
-            //                break;
-            //            }
-
-            // call
-            if (callOrPut == 1) {
-                if (strikePrice > digitalPrice) {
-                    actualStrikePrice = strikePrice;
-                    if (j + 1 == optionCodeList.size()) {
-                        return null;
-                    }
-                    nextStrikePrice = Integer.parseInt(optionCodeList.get(j + 1).substring(index).substring(i));
-                    optionCode = code;
-                } else {
-                    break;
-                }
-            }
-            // put
-            if (callOrPut == 0) {
-                if (strikePrice < digitalPrice) {
-                    actualStrikePrice = strikePrice;
-                    if (j - 1 < 0) {
-                        return null;
-                    }
-                    nextStrikePrice = Integer.parseInt(optionCodeList.get(j - 1).substring(index).substring(i));
-                    optionCode = code;
-                    break;
-                }
-            }
-        }
-
-        if (StringUtils.isEmpty(optionCode)) {
+        OptionCode optionCodeBean = getOptionCodeBean(optionCodeList, price, callOrPut);
+        if (optionCodeBean == null) {
             return null;
         }
-        int strikePriceDiff = Math.abs(nextStrikePrice - actualStrikePrice);
-        int strikeDigitalPriceDiff = Math.abs(digitalPrice - actualStrikePrice);
 
         //        List<String> actualOptionCodeList = Lists.newArrayList(upOptionCode, downOptionCode, equalOptionCode)
         //          .stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
-        List<String> actualOptionCodeList = Lists.newArrayList(optionCode);
+        List<String> actualOptionCodeList = Lists.newArrayList(optionCodeBean.getCode());
 
         int year = Integer.valueOf(date.substring(0, 4));
         LocalDateTime summerTime = BaseUtils.getSummerTime(year);
@@ -292,8 +222,10 @@ public class Strategy28 {
         cdl.await();
 
         OptionTrade optionTrade = new OptionTrade();
+        int strikePriceDiff = Math.abs(optionCodeBean.getNextDigitalStrikePrice() - optionCodeBean.getActualDigitalStrikePrice());
+        int strikeDigitalPriceDiff = Math.abs(optionCodeBean.getDigitalStrikePrice() - optionCodeBean.getActualDigitalStrikePrice());
         optionTrade.setStrikePriceDiffRatio((double) strikeDigitalPriceDiff / (double) strikePriceDiff);
-        optionTrade.setCode(optionCode);
+        optionTrade.setCode(optionCodeBean.getCode());
         for (String openurl : openUrlList) {
             int start = openurl.indexOf(api) + api.length();
             int end = openurl.indexOf("?");
@@ -336,6 +268,91 @@ public class Strategy28 {
         }
 
         return optionTrade;
+    }
+
+    private static OptionCode getOptionCodeBean(List<String> optionCodeList, double price, int callOrPut) {
+        // 找出当前价前后的行权价及等于当前价的行权价
+        int decade = (int) price;
+        int count = String.valueOf(decade).length();
+
+        int standardCount = count + 3;
+        String priceStr = String.valueOf(price).replace(".", "");
+        int lastCount = standardCount - priceStr.length();
+        int digitalPrice = Integer.valueOf(priceStr) * (int) Math.pow(10, lastCount);
+
+        String upOptionCode = null, downOptionCode = null, equalOptionCode = null;
+        int priceDiff = Integer.MAX_VALUE;
+        String optionCode = null;
+        int nextStrikePrice = 0, actualStrikePrice = 0;
+        for (int j = 0; j < optionCodeList.size(); j++) {
+            String code = optionCodeList.get(j);
+            int index = code.length() - 8;
+            String temp = code.substring(index);
+            int i;
+            for (i = 0; i < temp.length(); i++) {
+                if (temp.charAt(i) != '0') {
+                    break;
+                }
+            }
+            int strikePrice = Integer.parseInt(temp.substring(i));
+            //            if (strikePrice > digitalPrice) {
+            //                if (priceDiff > strikePrice - digitalPrice) {
+            //                    priceDiff = strikePrice - digitalPrice;
+            //                    upOptionCode = code;
+            //                    optionCode = code;
+            //                }
+            //            } else if (strikePrice == digitalPrice) {
+            //                equalOptionCode = code;
+            //                optionCode = code;
+            //                break;
+            //            } else if (strikePrice < digitalPrice) {
+            //                if (priceDiff > digitalPrice - strikePrice) {
+            //                    priceDiff = digitalPrice - strikePrice;
+            //                    optionCode = code;
+            //                    downOptionCode = code;
+            //                }
+            //                break;
+            //            }
+
+            // call
+            if (callOrPut == 1) {
+                if (strikePrice > digitalPrice) {
+                    actualStrikePrice = strikePrice;
+                    if (j + 1 == optionCodeList.size()) {
+                        return null;
+                    }
+                    nextStrikePrice = Integer.parseInt(optionCodeList.get(j + 1).substring(index).substring(i));
+                    optionCode = code;
+                } else {
+                    break;
+                }
+            }
+            // put
+            if (callOrPut == 0) {
+                if (strikePrice < digitalPrice) {
+                    actualStrikePrice = strikePrice;
+                    if (j - 1 < 0) {
+                        return null;
+                    }
+                    nextStrikePrice = Integer.parseInt(optionCodeList.get(j - 1).substring(index).substring(i));
+                    optionCode = code;
+                    break;
+                }
+            }
+        }
+
+        if (StringUtils.isEmpty(optionCode)) {
+            return null;
+        }
+
+        OptionCode optionCodeBean = new OptionCode();
+        optionCodeBean.setCode(optionCode);
+        optionCodeBean.setContractType(callOrPut == 1 ? "call" : "put");
+        optionCodeBean.setStrikePrice(price);
+        optionCodeBean.setActualDigitalStrikePrice(actualStrikePrice);
+        optionCodeBean.setNextDigitalStrikePrice(nextStrikePrice);
+        optionCodeBean.setDigitalStrikePrice(digitalPrice);
+        return optionCodeBean;
     }
 
     public static void getOptionQuoteList(String optionCode, String date) throws Exception {
