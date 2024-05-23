@@ -343,6 +343,9 @@ public class Strategy28 {
             return null;
         }
 
+        if (callOrPut == 0) {
+            optionCode = getOptionPutCode(optionCode);
+        }
         OptionCode optionCodeBean = new OptionCode();
         optionCodeBean.setCode(optionCode);
         optionCodeBean.setContractType(callOrPut == 1 ? "call" : "put");
@@ -361,7 +364,7 @@ public class Strategy28 {
         if (file.exists()) {
             return;
         }
-        
+
         List<String> dayAllSeconds = getDayAllSeconds(date);
         int year = Integer.valueOf(date.substring(0, 4));
         LocalDateTime summerTime = BaseUtils.getSummerTime(year);
@@ -416,16 +419,15 @@ public class Strategy28 {
         }
         cdl.await();
 
-//        List<String> result = dataMap.entrySet().stream().sorted((o1, o2) -> {
-//            String key1 = o1.getKey();
-//            String key2 = o2.getKey();
-//            return Long.valueOf(key1).compareTo(Long.valueOf(key2));
-//        }).map(kv -> kv.getValue()).collect(Collectors.toList());
+        //        List<String> result = dataMap.entrySet().stream().sorted((o1, o2) -> {
+        //            String key1 = o1.getKey();
+        //            String key2 = o2.getKey();
+        //            return Long.valueOf(key1).compareTo(Long.valueOf(key2));
+        //        }).map(kv -> kv.getValue()).collect(Collectors.toList());
         List<String> result = Lists.newArrayList(dataMap.values());
 
-
         BaseUtils.writeFile(filePath, result);
-//        System.out.println(dataMap);
+        //        System.out.println(dataMap);
     }
 
 
@@ -691,7 +693,7 @@ public class Strategy28 {
 
         List<String> dayAllSeconds = getDayAllSeconds("2024-01-05");
         //        calOptionQuote("AGL", 7.75, "2024-01-05");
-//        getOptionQuoteList("O:AGL240119C00007500", "2024-01-05");
+        //        getOptionQuoteList("O:AGL240119C00007500", "2024-01-05");
         //        calOptionQuote("DADA", 2.14, "2024-01-08");
         //        calOptionQuote("GRFS", 7.42, "2024-01-09");
         //        calOptionQuote("LW", 88.53, "2024-04-04");
@@ -731,7 +733,7 @@ public class Strategy28 {
             //            getOptionQuote(optionPutCode, date);
 
             //            System.out.println(code);
-//            calOptionQuote(code, price, date);
+            //            calOptionQuote(code, price, date);
             List<String> optionCode = getOptionCode(code, price, date);
             if (CollectionUtils.isNotEmpty(optionCode)) {
                 OptionCode callOptionCodeBean = getOptionCodeBean(optionCode, price, 1);
