@@ -25,12 +25,9 @@ import util.Constants;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -377,7 +374,7 @@ public class Strategy28 {
         String closeTS = String.valueOf(close.toInstant(ZoneOffset.of("+8")).toEpochMilli());
 
         CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
-        Map<String/* seconds */, String/* data */> dataMap = Maps.newTreeMap(Comparator.comparing(Long::valueOf));
+        Map<String/* seconds */, String/* data */> dataMap = Maps.newHashMap();
         for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
             String begin = dayAllSeconds.get(i);
             String end = dayAllSeconds.get(i + 1);
@@ -399,6 +396,7 @@ public class Strategy28 {
 
                     //                    dataMap.put(code, optionQuoteData);
                 } catch (Exception e) {
+                    System.out.println(begin + " " + url);
                     e.printStackTrace();
                 } finally {
                     queue.offer(httpClient);
@@ -409,6 +407,15 @@ public class Strategy28 {
         }
         cdl.await();
 
+//        List<String> result = dataMap.entrySet().stream().sorted((o1, o2) -> {
+//            String key1 = o1.getKey();
+//            String key2 = o2.getKey();
+//            return Long.valueOf(key1).compareTo(Long.valueOf(key2));
+//        }).map(kv -> kv.getValue()).collect(Collectors.toList());
+        List<String> result = Lists.newArrayList(dataMap.values());
+
+        String fileName = optionCode.substring(2);
+        BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionQuote/" + fileName, result);
         System.out.println(dataMap);
     }
 
@@ -675,7 +682,7 @@ public class Strategy28 {
 
         List<String> dayAllSeconds = getDayAllSeconds("2024-01-05");
         //        calOptionQuote("AGL", 7.75, "2024-01-05");
-        getOptionQuoteList("O:AGL240119C00007500", "2024-01-05");
+//        getOptionQuoteList("O:AGL240119C00007500", "2024-01-05");
         //        calOptionQuote("DADA", 2.14, "2024-01-08");
         //        calOptionQuote("GRFS", 7.42, "2024-01-09");
         //        calOptionQuote("LW", 88.53, "2024-04-04");
@@ -715,7 +722,16 @@ public class Strategy28 {
             //            getOptionQuote(optionPutCode, date);
 
             //            System.out.println(code);
-            calOptionQuote(code, price, date);
+//            calOptionQuote(code, price, date);
+            List<String> optionCode = getOptionCode(code, price, date);
+            if (CollectionUtils.isNotEmpty(optionCode)) {
+                String callOption = optionCode.get(0);
+                getOptionQuoteList(callOption, date);
+
+                List<String> putOptionCode = optionCode.stream().map(Strategy28::getOptionPutCode).collect(Collectors.toList());
+                getOptionQuoteList(putOptionCode.get(0), date);
+                System.out.println(callOption);
+            }
             //            System.out.println();
         }
 
