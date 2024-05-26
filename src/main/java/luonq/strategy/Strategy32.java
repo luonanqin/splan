@@ -50,7 +50,7 @@ public class Strategy32 {
         }
     }
 
-    public static List<String> getOptionCode(String code, double price, String date) throws Exception {
+    public static List<String> getOptionCode(CloseableHttpClient httpClient, String code, double price, String date) throws Exception {
         int decade = (int) price / 10;
         int upPrice = (decade + 1) * 10;
         int downPrice = (decade == 0 ? 1 : decade) * 10;
@@ -71,7 +71,6 @@ public class Strategy32 {
         //        System.out.println(url);
 
         HttpGet get = new HttpGet(url);
-        CloseableHttpClient httpClient = queue.take();
         try {
             CloseableHttpResponse execute = httpClient.execute(get);
             InputStream stream = execute.getEntity().getContent();
@@ -117,7 +116,7 @@ public class Strategy32 {
         Set<String> optionStock = BaseUtils.getOptionStock();
         for (String stock : optionStock) {
             if (!stock.equals("AAPL")) {
-                continue;
+//                continue;
             }
             String filePath = klineFileMap.get(stock);
 
@@ -132,7 +131,8 @@ public class Strategy32 {
             }
 
             double close = stockKLine.getClose();
-            List<String> optionCodeList = getOptionCode(stock, close, date);
+            CloseableHttpClient httpClient = queue.take();
+            List<String> optionCodeList = getOptionCode(httpClient, stock, close, date);
             for (String optionCode : optionCodeList) {
                 if (optionCode.contains("240524")) {
                     System.out.println(stock + "\t" + optionCode);
