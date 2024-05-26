@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 public class Strategy28 {
 
+    public static final String QUOTE_DIR = "optionData/optionQuote2023/";
     public static CloseableHttpClient httpClient = HttpClients.createDefault();
     public static BlockingQueue<CloseableHttpClient> queue;
     public static ThreadPoolExecutor cachedThread;
@@ -268,7 +269,7 @@ public class Strategy28 {
         return optionTrade;
     }
 
-    private static OptionCode getOptionCodeBean(List<String> optionCodeList, double price, int callOrPut) {
+    public static OptionCode getOptionCodeBean(List<String> optionCodeList, double price, int callOrPut) {
         // 找出当前价前后的行权价及等于当前价的行权价
         int decade = (int) price;
         int count = String.valueOf(decade).length();
@@ -357,33 +358,41 @@ public class Strategy28 {
     }
 
     public static void getOptionQuoteList(OptionCode optionCodeBean, String date) throws Exception {
-        String optionCode = optionCodeBean.getCode();
-        String fileName = optionCode.substring(2);
-        String filePath = Constants.USER_PATH + "optionData/optionQuote/" + fileName;
-        File file = new File(filePath);
-        if (file.exists()) {
+        if (optionCodeBean == null) {
             return;
         }
-
+        String optionCode = optionCodeBean.getCode();
+        String fileName = optionCode.substring(2);
+        String filePath = Constants.USER_PATH + QUOTE_DIR + fileName;
         List<String> dayAllSeconds = getDayAllSeconds(date);
-        int year = Integer.valueOf(date.substring(0, 4));
-        LocalDateTime summerTime = BaseUtils.getSummerTime(year);
-        LocalDateTime winterTime = BaseUtils.getWinterTime(year);
+        List<String> result = Lists.newArrayList();
+        File file = new File(filePath);
+        if (file.exists()) {
+            //            return;
+            //        }
 
-        LocalDateTime day = LocalDate.parse(date, Constants.DB_DATE_FORMATTER).atTime(0, 0);
-        int openHour, closeHour;
-        if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
-            openHour = 21;
-            closeHour = 4;
-        } else {
-            openHour = 22;
-            closeHour = 5;
+            List<String> lines = BaseUtils.readFile(file);
+            if (CollectionUtils.isEmpty(lines)) {
+                return;
+            }
+
+            // 获取最后一秒，用来补抓不完整的数据
+            String lastLine = lines.get(lines.size() - 1);
+            long lastSeconds = Long.parseLong(lastLine.split("\t")[0]);
+
+            String lastSecondsStr = lastSeconds / 1000000000 + "000000000";
+            int index = 0;
+            for (; index < dayAllSeconds.size(); index++) {
+                if (dayAllSeconds.get(index).equals(lastSecondsStr)) {
+                    break;
+                }
+            }
+            dayAllSeconds = dayAllSeconds.subList(index, dayAllSeconds.size());
+            result.addAll(lines);
         }
-
-        LocalDateTime open = day.withHour(openHour).withMinute(30).withSecond(5);
-        LocalDateTime close = day.plusDays(1).withHour(closeHour - 1).withMinute(59).withSecond(59);
-        String openTS = String.valueOf(open.toInstant(ZoneOffset.of("+8")).toEpochMilli());
-        String closeTS = String.valueOf(close.toInstant(ZoneOffset.of("+8")).toEpochMilli());
+        if (CollectionUtils.isEmpty(dayAllSeconds)) {
+            return;
+        }
 
         CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
         Map<String/* seconds */, String/* data */> dataMap = Maps.newHashMap();
@@ -424,7 +433,7 @@ public class Strategy28 {
         //            String key2 = o2.getKey();
         //            return Long.valueOf(key1).compareTo(Long.valueOf(key2));
         //        }).map(kv -> kv.getValue()).collect(Collectors.toList());
-        List<String> result = Lists.newArrayList(dataMap.values());
+        result.addAll(dataMap.values());
 
         BaseUtils.writeFile(filePath, result);
         //        System.out.println(dataMap);
@@ -517,101 +526,254 @@ public class Strategy28 {
 
     public static List<String> buildTestData() {
         List<String> dataList = Lists.newArrayList();
-        dataList.add("01/04/2024	MBLY	28.33");
-        dataList.add("01/05/2024	AGL	7.75");
-        dataList.add("01/08/2024	PRTA	31.54");
-        dataList.add("01/09/2024	GRFS	7.42");
-        dataList.add("01/10/2024	AEHR	18.77");
-        dataList.add("01/11/2024	RELL	10.95");
-        dataList.add("01/12/2024	GRFS	7.28");
-        dataList.add("01/16/2024	XPEV	10.99");
-        dataList.add("01/17/2024	DH	7.76");
-        dataList.add("01/18/2024	HUM	392.44");
-        dataList.add("01/19/2024	IRBT	16.91");
-        dataList.add("01/22/2024	ADM	56.88");
-        dataList.add("01/23/2024	LOGI	84.67");
-        dataList.add("01/24/2024	DD	64.45");
-        dataList.add("01/25/2024	COLB	20.69");
-        dataList.add("01/26/2024	HUBG	46.8");
-        dataList.add("01/29/2024	IRBT	14.07");
-        dataList.add("01/30/2024	CALX	33.49");
-        dataList.add("01/31/2024	EXTR	13.51");
-        dataList.add("02/01/2024	HWKN	56.84");
-        dataList.add("02/02/2024	EXPO	72.26");
-        dataList.add("02/05/2024	APD	227.0");
-        dataList.add("02/06/2024	SCSC	31.01");
-        dataList.add("02/07/2024	SNAP	12.03");
-        dataList.add("02/08/2024	CENTA	33.28");
-        dataList.add("02/09/2024	PLCE	8.5");
-        dataList.add("02/12/2024	MNDY	199.0");
-        dataList.add("02/13/2024	WCC	152.0");
-        dataList.add("02/14/2024	QDEL	46.27");
-        dataList.add("02/15/2024	NUS	13.37");
-        dataList.add("02/16/2024	COO	93.24");
-        dataList.add("02/20/2024	RAPT	8.46");
-        dataList.add("02/21/2024	AMPL	9.22");
-        dataList.add("02/22/2024	GSHD	60.57");
-        dataList.add("02/23/2024	WMT	58.6967");
-        dataList.add("02/26/2024	EPIX	7.22");
-        dataList.add("02/27/2024	AAN	8.84");
-        dataList.add("02/28/2024	IAS	11.35");
-        dataList.add("02/29/2024	CC	18.0");
-        dataList.add("03/01/2024	JAKK	27.0");
-        dataList.add("03/04/2024	GIII	30.96");
-        dataList.add("03/05/2024	GTLB	60.0");
-        dataList.add("03/06/2024	BMEA	14.59");
-        dataList.add("03/07/2024	VSCO	18.69");
-        dataList.add("03/08/2024	ASLE	7.3");
-        dataList.add("03/11/2024	NECB	14.41");
-        dataList.add("03/12/2024	ACAD	19.49");
-        dataList.add("03/13/2024	DLTR	129.15");
-        dataList.add("03/14/2024	PGY	13.1");
-        dataList.add("03/15/2024	JBL	128.73");
-        dataList.add("03/18/2024	SAIC	118.54");
-        dataList.add("03/19/2024	DLO	15.61");
-        dataList.add("03/20/2024	SIG	90.0");
-        dataList.add("03/21/2024	DBI	8.3");
-        dataList.add("03/22/2024	NKTX	10.0");
-        dataList.add("03/25/2024	AEHR	11.67");
-        dataList.add("03/26/2024	CDLX	15.74");
-        dataList.add("03/27/2024	ODFL	219.135");
-        dataList.add("03/28/2024	MLKN	23.9");
-        dataList.add("04/01/2024	IRON	26.5");
-        dataList.add("04/02/2024	VERV	8.67");
-        dataList.add("04/03/2024	ULTA	469.57");
-        dataList.add("04/04/2024	LW	88.53");
-        dataList.add("04/05/2024	KEN	23.12");
-        dataList.add("04/08/2024	PERI	13.09");
-        dataList.add("04/09/2024	NEOG	12.76");
-        dataList.add("04/10/2024	SGH	22.88");
-        dataList.add("04/11/2024	LOVE	19.24");
-        dataList.add("04/12/2024	CALT	19.24");
-        dataList.add("04/15/2024	TRMD	33.08");
-        dataList.add("04/16/2024	INO	8.39");
-        dataList.add("04/17/2024	SAGE	12.96");
-        dataList.add("04/18/2024	EFX	215.63");
-        dataList.add("04/19/2024	NFLX	567.88");
-        dataList.add("04/22/2024	CNHI	11.3");
-        dataList.add("04/23/2024	XRX	14.6");
-        dataList.add("04/24/2024	EVR	176.4");
-        dataList.add("04/25/2024	JAKK	19.15");
-        dataList.add("04/26/2024	SAIA	452.09");
-        dataList.add("04/29/2024	DB	16.14");
-        dataList.add("04/30/2024	MED	26.6");
-        dataList.add("05/01/2024	CVRX	9.51");
-        dataList.add("05/02/2024	FSLY	8.15");
-        dataList.add("05/03/2024	SPT	33.99");
-        dataList.add("05/06/2024	EYPT	13.89");
-        dataList.add("05/07/2024	ENTA	11.6");
-        dataList.add("05/08/2024	DV	18.67");
-        dataList.add("05/09/2024	FWRD	12.87");
-        dataList.add("05/10/2024	PGNY	23.9");
-        dataList.add("05/13/2024	URGN	10.9");
-        dataList.add("05/14/2024	MNSO	22.72");
-        dataList.add("05/15/2024	DLO	9.39");
-        dataList.add("05/16/2024	SPIR	8.5");
-        dataList.add("05/17/2024	GME	21.86");
-        dataList.add("05/20/2024	LI	22.72");
+        dataList.add("01/05/2023	APP	9.71");
+        dataList.add("01/06/2023	GBX	30.13");
+        dataList.add("01/09/2023	ARWR	30.05");
+        dataList.add("01/10/2023	EURN	13.13");
+        dataList.add("01/11/2023	ICHR	25.47");
+        dataList.add("01/12/2023	LOGI	56.44");
+        dataList.add("01/13/2023	DFH	9.5");
+        dataList.add("01/17/2023	EDU	39.04");
+        dataList.add("01/18/2023	CHGG	21.98");
+        dataList.add("01/19/2023	SRDX	27.03");
+        dataList.add("01/20/2023	FARO	27.16");
+        dataList.add("01/23/2023	CPRX	18.32");
+        dataList.add("01/24/2023	PBR	9.63");
+        dataList.add("01/25/2023	EXTR	17.44");
+        dataList.add("01/26/2023	CVLG	31.77");
+        dataList.add("01/27/2023	SNBR	28.05");
+        dataList.add("01/30/2023	VERA	7.42");
+        dataList.add("01/31/2023	NAMS	13.45");
+        dataList.add("02/01/2023	WRK	33.29");
+        dataList.add("02/02/2023	VERA	7.13");
+        dataList.add("02/03/2023	BILL	97.74");
+        dataList.add("02/06/2023	PLCE	40.78");
+        dataList.add("02/07/2023	CHGG	16.47");
+        dataList.add("02/08/2023	CPRI	52.87");
+        dataList.add("02/09/2023	TTGT	39.0");
+        dataList.add("02/10/2023	LYFT	11.15");
+        dataList.add("02/13/2023	FIS	65.4");
+        dataList.add("02/14/2023	OM	23.35");
+        dataList.add("02/15/2023	CRDO	10.67");
+        dataList.add("02/16/2023	TOST	21.04");
+        dataList.add("02/17/2023	UEIC	20.0");
+        dataList.add("02/21/2023	CVRX	12.0");
+        dataList.add("02/22/2023	ZIP	19.16");
+        dataList.add("02/23/2023	BAND	19.89");
+        dataList.add("02/24/2023	VICR	43.15");
+        dataList.add("02/27/2023	TGNA	16.77");
+        dataList.add("02/28/2023	AHCO	17.5");
+        dataList.add("03/01/2023	XMTR	22.85");
+        dataList.add("03/02/2023	FNKO	7.53");
+        dataList.add("03/03/2023	CDNA	9.31");
+        dataList.add("03/06/2023	ACRS	7.6");
+        dataList.add("03/07/2023	CARA	7.29");
+        dataList.add("03/08/2023	UNFI	26.61");
+        dataList.add("03/09/2023	ARHS	11.21");
+        dataList.add("03/10/2023	DOCU	53.71");
+        dataList.add("03/13/2023	WAL	12.89");
+        dataList.add("03/14/2023	GTLB	30.98");
+        dataList.add("03/15/2023	APEI	7.05");
+        dataList.add("03/16/2023	TITN	31.01");
+        dataList.add("03/17/2023	MNTK	7.52");
+        dataList.add("03/20/2023	PDD	79.93");
+        dataList.add("03/21/2023	CTRN	20.39");
+        dataList.add("03/22/2023	LAZR	7.18");
+        dataList.add("03/23/2023	COIN	61.85");
+        dataList.add("03/24/2023	OUST	8.3");
+        dataList.add("03/27/2023	FYBR	22.45");
+        dataList.add("03/28/2023	HRMY	34.0");
+        dataList.add("03/29/2023	LOCO	9.15");
+        dataList.add("03/30/2023	RNA	14.84");
+        dataList.add("03/31/2023	AEHR	33.27");
+        dataList.add("04/03/2023	ASND	67.12");
+        dataList.add("04/04/2023	ZIM	18.15");
+        dataList.add("04/05/2023	DLO	14.67");
+        dataList.add("04/06/2023	LITE	45.92");
+        dataList.add("04/10/2023	AUDC	12.9");
+        dataList.add("04/11/2023	ADTN	11.28");
+        dataList.add("04/12/2023	CUTR	23.29");
+        dataList.add("04/13/2023	SRPT	121.88");
+        dataList.add("04/14/2023	CTLT	46.77");
+        dataList.add("04/17/2023	STT	67.0");
+        dataList.add("04/18/2023	CLB	20.83");
+        dataList.add("04/19/2023	CDW	163.69");
+        dataList.add("04/20/2023	GFF	26.85");
+        dataList.add("04/21/2023	MSGE	32.9");
+        dataList.add("04/24/2023	AVTE	17.67");
+        dataList.add("04/25/2023	TENB	35.152");
+        dataList.add("04/26/2023	ENPH	178.63");
+        dataList.add("04/27/2023	PI	90.21");
+        dataList.add("04/28/2023	NET	44.41");
+        dataList.add("05/01/2023	PLRX	24.0");
+        dataList.add("05/02/2023	CHGG	9.25");
+        dataList.add("05/03/2023	SPT	37.0");
+        dataList.add("05/04/2023	EVA	8.7");
+        dataList.add("05/05/2023	TRUP	24.0");
+        dataList.add("05/08/2023	CTLT	35.6");
+        dataList.add("05/09/2023	ENTA	24.0");
+        dataList.add("05/10/2023	AMPL	9.31");
+        dataList.add("05/11/2023	SONO	17.0");
+        dataList.add("05/12/2023	SPNT	8.55");
+        dataList.add("05/15/2023	BLBD	24.29");
+        dataList.add("05/16/2023	VOXX	9.89");
+        dataList.add("05/17/2023	SEAT	8.46");
+        dataList.add("05/18/2023	BOOT	65.32");
+        dataList.add("05/19/2023	FL	30.65");
+        dataList.add("05/22/2023	CHDN	143.52");
+        dataList.add("05/23/2023	IART	44.8");
+        dataList.add("05/24/2023	NVTS	7.35");
+        dataList.add("05/25/2023	APPS	9.14");
+        dataList.add("05/26/2023	DLO	11.409");
+        dataList.add("05/30/2023	SKY	58.61");
+        dataList.add("05/31/2023	AAP	79.23");
+        dataList.add("06/01/2023	MDU	20.46");
+        dataList.add("06/02/2023	S	13.2");
+        dataList.add("06/05/2023	CSTL	17.7");
+        dataList.add("06/06/2023	COIN	47.1");
+        dataList.add("06/07/2023	UNFI	19.98");
+        dataList.add("06/08/2023	HCP	26.21");
+        dataList.add("06/09/2023	CMTL	9.81");
+        dataList.add("06/12/2023	NDAQ	52.1");
+        dataList.add("06/13/2023	MEI	38.68");
+        dataList.add("06/14/2023	AGL	18.6");
+        dataList.add("06/15/2023	GAMB	9.53");
+        dataList.add("06/16/2023	VSTM	9.91");
+        dataList.add("06/20/2023	BBU	18.63");
+        dataList.add("06/21/2023	QURE	13.18");
+        dataList.add("06/22/2023	METC	7.76");
+        dataList.add("06/23/2023	SOFI	7.91");
+        dataList.add("06/26/2023	MRCY	29.0");
+        dataList.add("06/27/2023	XPOF	19.7");
+        dataList.add("06/28/2023	AXSM	75.0");
+        dataList.add("06/29/2023	BTAI	8.64");
+        dataList.add("06/30/2023	ROOT	8.5");
+        dataList.add("07/03/2023	LH	206.15");
+        dataList.add("07/05/2023	BWA	44.37");
+        dataList.add("07/06/2023	CALT	15.84");
+        dataList.add("07/07/2023	LEVI	13.0");
+        dataList.add("07/10/2023	EXLS	29.894");
+        dataList.add("07/11/2023	VRDN	19.7");
+        dataList.add("07/12/2023	SILK	25.77");
+        dataList.add("07/13/2023	VSAT	30.63");
+        dataList.add("07/14/2023	TIXT	11.0");
+        dataList.add("07/17/2023	APLS	64.75");
+        dataList.add("07/18/2023	MASI	107.0");
+        dataList.add("07/19/2023	TOST	24.0");
+        dataList.add("07/20/2023	VIR	13.7");
+        dataList.add("07/21/2023	IPG	34.78");
+        dataList.add("07/24/2023	SAIA	383.39");
+        dataList.add("07/25/2023	TBI	14.64");
+        dataList.add("07/26/2023	MXL	24.33");
+        dataList.add("07/27/2023	SHYF	16.13");
+        dataList.add("07/28/2023	SNBR	28.46");
+        dataList.add("07/31/2023	XPEV	20.65");
+        dataList.add("08/01/2023	TGTX	11.88");
+        dataList.add("08/02/2023	CMBM	10.58");
+        dataList.add("08/03/2023	ONEW	27.0");
+        dataList.add("08/04/2023	IEP	21.5");
+        dataList.add("08/07/2023	SAGE	18.8");
+        dataList.add("08/08/2023	MRC	8.56");
+        dataList.add("08/09/2023	PUBM	14.48");
+        dataList.add("08/10/2023	TASK	8.8");
+        dataList.add("08/11/2023	JYNT	10.0");
+        dataList.add("08/14/2023	HE	20.0");
+        dataList.add("08/15/2023	SE	45.095");
+        dataList.add("08/16/2023	AAON	63.0333");
+        dataList.add("08/17/2023	HE	10.36");
+        dataList.add("08/18/2023	KEYS	128.5");
+        dataList.add("08/21/2023	CPRT	43.345");
+        dataList.add("08/22/2023	DKS	116.75");
+        dataList.add("08/23/2023	FL	15.9");
+        dataList.add("08/24/2023	AMC	16.31");
+        dataList.add("08/25/2023	DOMO	10.4");
+        dataList.add("08/28/2023	NVCR	19.74");
+        dataList.add("08/29/2023	SCVL	20.0");
+        dataList.add("08/30/2023	MCFT	19.25");
+        dataList.add("08/31/2023	LE	7.96");
+        dataList.add("09/01/2023	PD	22.72");
+        dataList.add("09/05/2023	MANU	20.9");
+        dataList.add("09/06/2023	AMC	11.7");
+        dataList.add("09/07/2023	YEXT	7.05");
+        dataList.add("09/08/2023	HOFT	18.0");
+        dataList.add("09/11/2023	SJM	131.18");
+        dataList.add("09/12/2023	LAW	7.01");
+        dataList.add("09/13/2023	AAOI	9.75");
+        dataList.add("09/14/2023	IBEX	13.03");
+        dataList.add("09/15/2023	PTCT	25.49");
+        dataList.add("09/18/2023	MSGE	30.16");
+        dataList.add("09/19/2023	RVNC	12.49");
+        dataList.add("09/20/2023	EBC	12.21");
+        dataList.add("09/21/2023	TVTX	7.55");
+        dataList.add("09/22/2023	TVTX	7.38");
+        dataList.add("09/25/2023	MORF	33.37");
+        dataList.add("09/26/2023	UNFI	15.09");
+        dataList.add("09/27/2023	SLNO	23.43");
+        dataList.add("09/28/2023	WDAY	202.99");
+        dataList.add("09/29/2023	AVD	10.25");
+        dataList.add("10/02/2023	ARMK	25.38");
+        dataList.add("10/03/2023	ENVX	10.09");
+        dataList.add("10/04/2023	LAC	10.5");
+        dataList.add("10/05/2023	OMAB	78.75");
+        dataList.add("10/06/2023	AEHR	38.7501");
+        dataList.add("10/09/2023	ALXO	7.69");
+        dataList.add("10/10/2023	AKRO	19.87");
+        dataList.add("10/11/2023	SILK	7.0");
+        dataList.add("10/12/2023	INMD	24.14");
+        dataList.add("10/13/2023	SGH	16.91");
+        dataList.add("10/16/2023	VSTO	26.22");
+        dataList.add("10/17/2023	NTCT	21.15");
+        dataList.add("10/18/2023	TEX	49.66");
+        dataList.add("10/19/2023	RTO	28.66");
+        dataList.add("10/20/2023	SEDG	75.57");
+        dataList.add("10/23/2023	MLI	35.3");
+        dataList.add("10/24/2023	TBI	11.11");
+        dataList.add("10/25/2023	VICR	39.01");
+        dataList.add("10/26/2023	MXL	14.1");
+        dataList.add("10/27/2023	PTCT	19.36");
+        dataList.add("10/30/2023	ON	73.29");
+        dataList.add("10/31/2023	SRPT	57.63");
+        dataList.add("11/01/2023	PAYC	152.55");
+        dataList.add("11/02/2023	CFLT	15.95");
+        dataList.add("11/03/2023	FOXF	58.5");
+        dataList.add("11/06/2023	MLTX	36.55");
+        dataList.add("11/07/2023	AURA	8.05");
+        dataList.add("11/08/2023	SNBR	10.82");
+        dataList.add("11/09/2023	CDLX	8.52");
+        dataList.add("11/10/2023	GRPN	9.84");
+        dataList.add("11/13/2023	VERV	9.5");
+        dataList.add("11/14/2023	HROW	9.7");
+        dataList.add("11/15/2023	CELH	52.86");
+        dataList.add("11/16/2023	PLCE	23.2");
+        dataList.add("11/17/2023	AMSWA	9.55");
+        dataList.add("11/20/2023	CHGG	9.555");
+        dataList.add("11/21/2023	AEO	16.25");
+        dataList.add("11/22/2023	GES	20.97");
+        dataList.add("11/24/2023	SNEX	59.6333");
+        dataList.add("11/27/2023	RDVT	19.59");
+        dataList.add("11/28/2023	CTRN	21.57");
+        dataList.add("11/29/2023	EGRX	7.02");
+        dataList.add("11/30/2023	MOV	25.685");
+        dataList.add("12/01/2023	WOR	47.11");
+        dataList.add("12/04/2023	ALK	33.67");
+        dataList.add("12/05/2023	DBI	8.66");
+        dataList.add("12/06/2023	ASAN	19.25");
+        dataList.add("12/07/2023	CXM	11.99");
+        dataList.add("12/08/2023	HCP	19.8");
+        dataList.add("12/11/2023	BMEA	12.75");
+        dataList.add("12/12/2023	ORCL	102.7");
+        dataList.add("12/13/2023	TH	9.75");
+        dataList.add("12/14/2023	APLS	53.27");
+        dataList.add("12/15/2023	NYMT	8.885");
+        dataList.add("12/18/2023	MIRM	27.37");
+        dataList.add("12/19/2023	INMB	9.3");
+        dataList.add("12/20/2023	ARGX	345.61");
+        dataList.add("12/21/2023	SAVA	25.85");
+        dataList.add("12/22/2023	NTES	82.0");
+        dataList.add("12/26/2023	ZIM	10.75");
+        dataList.add("12/27/2023	IOVA	7.06");
+        dataList.add("12/28/2023	ELP	8.44");
+        dataList.add("12/29/2023	LYFT	14.9");
         List<String> result = Lists.newArrayList();
         for (String str : dataList) {
             String[] split = str.split("\t");
@@ -673,7 +835,7 @@ public class Strategy28 {
         }
 
         int secondsCount = 6 * 3600 + 1800;
-        LocalDateTime open = day.withHour(openHour).withMinute(0).withSecond(0);
+        LocalDateTime open = day.withHour(openHour).withMinute(30).withSecond(0);
         long openMilli = open.toInstant(ZoneOffset.of("+8")).toEpochMilli();
         List<String> result = Lists.newLinkedList();
         for (int i = 0; i < secondsCount; i++) {
@@ -685,13 +847,33 @@ public class Strategy28 {
         return result;
     }
 
+    public static void sortQuote(String filePath) throws Exception {
+        List<String> lines = BaseUtils.readFile(new File(filePath));
+        if (CollectionUtils.isEmpty(lines)) {
+            return;
+        }
+
+        Map<Long, String> map = Maps.newTreeMap((o1, o2) -> o1.compareTo(o2));
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String time = split[0];
+            map.put(Long.valueOf(time), line);
+        }
+
+        lines.clear();
+        for (Long time : map.keySet()) {
+            lines.add(map.get(time));
+        }
+        BaseUtils.writeFile(filePath, lines);
+    }
+
     public static void main(String[] args) throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
 
         init();
 
-        List<String> dayAllSeconds = getDayAllSeconds("2024-01-05");
+        //        List<String> dayAllSeconds = getDayAllSeconds("2024-01-05");
         //        calOptionQuote("AGL", 7.75, "2024-01-05");
         //        getOptionQuoteList("O:AGL240119C00007500", "2024-01-05");
         //        calOptionQuote("DADA", 2.14, "2024-01-08");
@@ -699,22 +881,6 @@ public class Strategy28 {
         //        calOptionQuote("LW", 88.53, "2024-04-04");
         //        calOptionQuote("LI", 22.72, "2024-05-20");
         List<String> codeList = Lists.newArrayList();
-        //        codeList.add("O:DB240503P00016000");
-        //        codeList.add("O:DADA240119C00010000");
-        //        codeList.add("O:DADA240119C00007500");
-        //        codeList.add("O:DADA240119C00005000");
-        //        codeList.add("O:DADA240119C00002500");
-        //        codeList.add("O:DADA240119C00002000");
-        //        codeList.add("O:DADA240119C00001500");
-        //        codeList.add("O:DADA240119C00001000");
-        //        codeList.add("O:DADA240119C00000500");
-        //        codeList.add("O:DADA240119P00010000");
-        //        codeList.add("O:DADA240119P00007500");
-        //        codeList.add("O:DADA240119P00005000");
-        //        codeList.add("O:DADA240119P00002500");
-        //        codeList.add("O:DADA240119P00002000");
-        //        codeList.add("O:DADA240119P00001500");
-        //        codeList.add("O:DADA240119P00001000");
         //        codeList.add("O:DADA240119P00000500");
 
         //        getOptionQuote(codeList, "2024-04-29");
@@ -734,18 +900,55 @@ public class Strategy28 {
 
             //            System.out.println(code);
             //            calOptionQuote(code, price, date);
+            if (!code.equals("AGL11111")) {
+//                continue;
+            }
+
             List<String> optionCode = getOptionCode(code, price, date);
             if (CollectionUtils.isNotEmpty(optionCode)) {
                 OptionCode callOptionCodeBean = getOptionCodeBean(optionCode, price, 1);
+                if (callOptionCodeBean == null) {
+                    continue;
+                }
+                System.out.println(data + "\t" + callOptionCodeBean.getCode());
                 getOptionQuoteList(callOptionCodeBean, date);
+                sortQuote(Constants.USER_PATH + QUOTE_DIR + callOptionCodeBean.getCode().substring(2));
 
                 OptionCode putOptionCodeBean = getOptionCodeBean(optionCode, price, 0);
+                sortQuote(Constants.USER_PATH + QUOTE_DIR + putOptionCodeBean.getCode().substring(2));
                 getOptionQuoteList(putOptionCodeBean, date);
-                System.out.println(callOptionCodeBean.getCode());
+                System.out.println(data + "\t" + putOptionCodeBean.getCode());
             }
             //            System.out.println();
         }
 
+        List<String> optionlist = Lists.newArrayList();
+
+        Map<String, String> codeToDateMap = Maps.newHashMap();
+        for (String data : dataList) {
+            String[] split = data.split("\t");
+            String date = split[0];
+            String code = split[1];
+            codeToDateMap.put(code, date);
+        }
+        for (String option : optionlist) {
+            OptionCode optionCodeBean = new OptionCode();
+            optionCodeBean.setCode(option);
+            String optionCode = option.substring(2);
+            String date = null;
+            for (String code : codeToDateMap.keySet()) {
+                if (optionCode.startsWith(code)) {
+                    date = codeToDateMap.get(code);
+                    break;
+                }
+            }
+
+            sortQuote(Constants.USER_PATH + QUOTE_DIR + optionCode);
+            getOptionQuoteList(optionCodeBean, date);
+            sortQuote(Constants.USER_PATH + QUOTE_DIR + optionCode);
+
+            System.out.println(option + " " + date);
+        }
         cachedThread.shutdown();
     }
 }
