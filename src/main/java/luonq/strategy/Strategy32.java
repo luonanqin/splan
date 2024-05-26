@@ -116,7 +116,7 @@ public class Strategy32 {
         Set<String> optionStock = BaseUtils.getOptionStock();
         for (String stock : optionStock) {
             if (!stock.equals("AAPL")) {
-//                continue;
+                //                continue;
             }
             String filePath = klineFileMap.get(stock);
 
@@ -131,14 +131,21 @@ public class Strategy32 {
             }
 
             double close = stockKLine.getClose();
+
             CloseableHttpClient httpClient = queue.take();
-            List<String> optionCodeList = getOptionCode(httpClient, stock, close, date);
-            for (String optionCode : optionCodeList) {
-                if (optionCode.contains("240524")) {
-                    System.out.println(stock + "\t" + optionCode);
-                    break;
+            cachedThread.execute(() -> {
+                try {
+                    List<String> optionCodeList = getOptionCode(httpClient, stock, close, date);
+                    for (String optionCode : optionCodeList) {
+                        if (optionCode.contains("240524")) {
+                            System.out.println(stock + "\t" + optionCode);
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
+            });
         }
     }
 }
