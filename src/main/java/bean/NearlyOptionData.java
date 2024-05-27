@@ -6,6 +6,7 @@ import lombok.Data;
 public class NearlyOptionData {
 
     private String date;
+    private String stock;
     private double openPrice;
     private String optionCode;
     private int strikePriceStep;

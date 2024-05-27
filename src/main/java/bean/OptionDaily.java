@@ -15,4 +15,16 @@ public class OptionDaily {
     private long volume; // 107789,
     private double afterHours; // 0.01,
     private double preMarket; // 0.29
+
+    public OptionDaily() {
+    }
+
+    public OptionDaily(String from, String symbol) {
+        this.from = from;
+        this.symbol = symbol;
+    }
+
+    public String toString(){
+        return from + "\t" + symbol + "\t" + open + "\t" + high + "\t" + low + "\t" + close;
+    }
 }
