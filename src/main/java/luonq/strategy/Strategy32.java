@@ -6,6 +6,7 @@ import bean.OptionContracts;
 import bean.OptionContractsResp;
 import bean.OptionDaily;
 import bean.StockKLine;
+import bean.StraddleOption;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
@@ -306,7 +307,7 @@ public class Strategy32 {
     }
 
     public static Map<String/* date */, List<NearlyOptionData>> calOpenStrikePriceRatioMap() throws Exception {
-        Map<String, List<NearlyOptionData>> dateToOpenStrikePriceRatioMap = Maps.newHashMap();
+        Map<String, List<NearlyOptionData>> dateToOpenStrikePriceRatioMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::dateToInt));
         Map<String, String> nearlyOptionFileMap = BaseUtils.getFileMap(Constants.USER_PATH + "optionData/nearlyOpenOption");
 
         for (String stock : nearlyOptionFileMap.keySet()) {
@@ -355,6 +356,7 @@ public class Strategy32 {
 
                 NearlyOptionData nearlyOptionData = new NearlyOptionData();
                 nearlyOptionData.setDate(date);
+                nearlyOptionData.setStock(stock);
                 nearlyOptionData.setOpenPrice(Double.parseDouble(openPrice));
                 nearlyOptionData.setOptionCode(optionCode);
                 nearlyOptionData.setStrikePriceStep(optionPriceStep);
@@ -396,19 +398,152 @@ public class Strategy32 {
 
             return resp;
         } finally {
-            queue.offer(httpClient);
             get.releaseConnection();
         }
+    }
+
+    public static StraddleOption getDaily(StraddleOption straddleOption) throws Exception {
+        OptionDaily call_1 = straddleOption.getCall_1();
+        OptionDaily call_2 = straddleOption.getCall_2();
+        OptionDaily put_1 = straddleOption.getPut_1();
+        OptionDaily put_2 = straddleOption.getPut_2();
+        List<OptionDaily> dailyList = Lists.newArrayList(call_1, call_2, put_1, put_2);
+
+        CountDownLatch cdl = new CountDownLatch(4);
+        for (int i = 0; i < 4; i++) {
+            OptionDaily daily = dailyList.get(i);
+            CloseableHttpClient httpClient = queue.take();
+            int index = i;
+            cachedThread.execute(() -> {
+                try {
+                    OptionDaily optionDaily = requestOptionDailyList(httpClient, daily.getFrom(), daily.getSymbol());
+                    if (index == 0) {
+                        straddleOption.setCall_1(optionDaily);
+                    } else if (index == 1) {
+                        straddleOption.setCall_2(optionDaily);
+                    } else if (index == 2) {
+                        straddleOption.setPut_1(optionDaily);
+                    } else if (index == 3) {
+                        straddleOption.setPut_2(optionDaily);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    queue.offer(httpClient);
+                    cdl.countDown();
+                }
+            });
+        }
+        cdl.await();
+
+        return straddleOption;
+    }
+
+    public OptionDaily loadDaily(String stock, String optionCode, String date) throws Exception {
+        Map<String/* date */, Map<String/* optionCode */, OptionDaily>> dateToOptionDailyMap = Maps.newHashMap();
+
+        if (!dateToOptionDailyMap.containsKey(stock)) {
+
+        }
+        return null;
     }
 
     public static void main(String[] args) throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
 
-        init();
+        //        init();
 
         //        getHasWeekOptionStock();
         //        getEqualsStrikePriceKline();
+        //                calStraddleData();
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = split[0];
+            String stock = split[1];
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, 2024, 2022);
+            double close = 0;
+            for (int i = 0; i < stockKLines.size() - 1; i++) {
+                StockKLine stockKLine = stockKLines.get(i);
+                String d = BaseUtils.formatDate(stockKLine.getDate());
+                if (d.equals(date)) {
+                    StockKLine lastKline = stockKLines.get(i + 1);
+                    close = lastKline.getClose();
+                    break;
+                }
+            }
+            System.out.println(date + "\t" + stock + "\t" + close);
+        }
+
+        //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/裸买和带保护");
+        //        Map<String, List<Double>> dateToCall = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
+        //        Map<String, List<Double>> dateToCallP = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
+        //        for (String line : lines) {
+        //            String[] split = line.split("\t");
+        //            String date = split[0];
+        //            double call = Double.parseDouble(split[1]);
+        //            double callP = Double.parseDouble(split[2]);
+        //
+        //            if (!dateToCall.containsKey(date)) {
+        //                dateToCall.put(date, Lists.newArrayList());
+        //            }
+        //            dateToCall.get(date).add(call);
+        //
+        //            if (!dateToCallP.containsKey(date)) {
+        //                dateToCallP.put(date, Lists.newArrayList());
+        //            }
+        //            dateToCallP.get(date).add(callP);
+        //        }
+        //
+        //        double init = 10000;
+        //        for (String date : dateToCall.keySet()) {
+        //            List<Double> doubles = dateToCall.get(date);
+        //            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
+        //            init = init * (1 + avgRatio / 100);
+        //            System.out.println(date + "\t" + init);
+        //        }
+        //
+        //        init = 10000;
+        //        for (String date : dateToCallP.keySet()) {
+        //            List<Double> doubles = dateToCallP.get(date);
+        //            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
+        //            init = init * (1 + avgRatio / 100);
+        //            System.out.println(date + "\t" + init);
+        //        }
+
+    }
+
+    private static void calStraddleData() throws Exception {
         Map<String, List<NearlyOptionData>> dateOpenStrikePriceRatioMap = calOpenStrikePriceRatioMap();
+        for (String date : dateOpenStrikePriceRatioMap.keySet()) {
+            List<NearlyOptionData> nearlyOptionDataList = dateOpenStrikePriceRatioMap.get(date);
+            if (CollectionUtils.isEmpty(nearlyOptionDataList)) {
+                continue;
+            }
+
+            for (NearlyOptionData nearlyOptionData : nearlyOptionDataList) {
+                if (nearlyOptionData.getOpenStrikePriceDiffRatio().compareTo(0.0) != 0) {
+                    break;
+                }
+                double openPrice = nearlyOptionData.getOpenPrice();
+                String stock = nearlyOptionData.getStock();
+
+                StraddleOption straddleOption = new StraddleOption();
+                String outPriceCallOptionCode_1 = nearlyOptionData.getOutPriceCallOptionCode_1();
+                String outPriceCallOptionCode_2 = nearlyOptionData.getOutPriceCallOptionCode_2();
+                String outPricePutOptionCode_1 = nearlyOptionData.getOutPricePutOptionCode_1();
+                String outPricePutOptionCode_2 = nearlyOptionData.getOutPricePutOptionCode_2();
+                String formatDate = BaseUtils.formatDate(date);
+                straddleOption.setCall_1(new OptionDaily(formatDate, outPriceCallOptionCode_1));
+                straddleOption.setCall_2(new OptionDaily(formatDate, outPriceCallOptionCode_2));
+                straddleOption.setPut_1(new OptionDaily(formatDate, outPricePutOptionCode_1));
+                straddleOption.setPut_2(new OptionDaily(formatDate, outPricePutOptionCode_2));
+
+                straddleOption = getDaily(straddleOption);
+
+                System.out.println(stock + "\t" + openPrice + "\t" + straddleOption);
+            }
+        }
     }
 }

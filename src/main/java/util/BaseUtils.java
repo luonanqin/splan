@@ -504,7 +504,7 @@ public class BaseUtils {
         bw.close();
     }
 
-    public static int dateToInt(String date) {
+    public static Integer dateToInt(String date) {
         String year = date.substring(6);
         String newDate = year + date.substring(0, 5);
         return Integer.parseInt(newDate.replace("/", ""));
@@ -902,6 +902,34 @@ public class BaseUtils {
         }
 
         return result;
+    }
+
+    public static Set<String> getWeekOptionStock() {
+        BufferedReader br = null;
+        Set<String> result = Sets.newHashSet();
+        try {
+            br = new BufferedReader(new FileReader(Constants.USER_PATH + "optionData/weekOption"));
+            String line;
+            while (StringUtils.isNotBlank(line = br.readLine())) {
+                result.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    public static String getOptionPutCode(String optionCallCode) {
+        int c_index = optionCallCode.lastIndexOf("C");
+        StringBuffer sb = new StringBuffer(optionCallCode);
+        return sb.replace(c_index, c_index + 1, "P").toString();
     }
 
     public static void main(String[] args) throws Exception {
