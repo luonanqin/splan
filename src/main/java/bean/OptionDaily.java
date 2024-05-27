@@ -24,7 +24,7 @@ public class OptionDaily {
         this.symbol = symbol;
     }
 
-    public String toString(){
-        return from + "\t" + symbol + "\t" + open + "\t" + high + "\t" + low + "\t" + close;
+    public String toString() {
+        return from + "\t" + symbol + "\t" + open + "\t" + high + "\t" + low + "\t" + close + "\t" + volume;
     }
 }

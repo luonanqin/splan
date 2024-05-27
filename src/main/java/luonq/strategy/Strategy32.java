@@ -452,29 +452,19 @@ public class Strategy32 {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
 
-        //        init();
+        init();
 
         //        getHasWeekOptionStock();
         //        getEqualsStrikePriceKline();
-        //                calStraddleData();
-        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");
-        for (String line : lines) {
-            String[] split = line.split("\t");
-            String date = split[0];
-            String stock = split[1];
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, 2024, 2022);
-            double close = 0;
-            for (int i = 0; i < stockKLines.size() - 1; i++) {
-                StockKLine stockKLine = stockKLines.get(i);
-                String d = BaseUtils.formatDate(stockKLine.getDate());
-                if (d.equals(date)) {
-                    StockKLine lastKline = stockKLines.get(i + 1);
-                    close = lastKline.getClose();
-                    break;
-                }
-            }
-            System.out.println(date + "\t" + stock + "\t" + close);
-        }
+        calStraddleData();
+        //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");
+        //        for (String line : lines) {
+        //            String[] split = line.split("\t");
+        //            String date = split[0];
+        //            String stock = split[1];
+        //            double close = getLastClose(date, stock);
+        //            System.out.println(date + "\t" + stock + "\t" + close);
+        //        }
 
         //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/裸买和带保护");
         //        Map<String, List<Double>> dateToCall = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
@@ -514,6 +504,21 @@ public class Strategy32 {
 
     }
 
+    private static double getLastClose(String date, String stock) throws Exception {
+        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, 2024, 2022);
+        double close = 0;
+        for (int i = 0; i < stockKLines.size() - 1; i++) {
+            StockKLine stockKLine = stockKLines.get(i);
+            String d = BaseUtils.formatDate(stockKLine.getDate());
+            if (d.equals(date)) {
+                StockKLine lastKline = stockKLines.get(i + 1);
+                close = lastKline.getClose();
+                break;
+            }
+        }
+        return close;
+    }
+
     private static void calStraddleData() throws Exception {
         Map<String, List<NearlyOptionData>> dateOpenStrikePriceRatioMap = calOpenStrikePriceRatioMap();
         for (String date : dateOpenStrikePriceRatioMap.keySet()) {
@@ -528,6 +533,7 @@ public class Strategy32 {
                 }
                 double openPrice = nearlyOptionData.getOpenPrice();
                 String stock = nearlyOptionData.getStock();
+                double close = getLastClose(date, stock);
 
                 StraddleOption straddleOption = new StraddleOption();
                 String outPriceCallOptionCode_1 = nearlyOptionData.getOutPriceCallOptionCode_1();
@@ -542,7 +548,7 @@ public class Strategy32 {
 
                 straddleOption = getDaily(straddleOption);
 
-                System.out.println(stock + "\t" + openPrice + "\t" + straddleOption);
+                System.out.println(stock + "\t" + openPrice + "\t" + close + "\t" + straddleOption);
             }
         }
     }
