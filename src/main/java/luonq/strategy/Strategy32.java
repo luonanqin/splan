@@ -533,7 +533,6 @@ public class Strategy32 {
                 }
                 double openPrice = nearlyOptionData.getOpenPrice();
                 String stock = nearlyOptionData.getStock();
-                double close = getLastClose(date, stock);
 
                 StraddleOption straddleOption = new StraddleOption();
                 String outPriceCallOptionCode_1 = nearlyOptionData.getOutPriceCallOptionCode_1();
@@ -547,6 +546,7 @@ public class Strategy32 {
                 straddleOption.setPut_2(new OptionDaily(formatDate, outPricePutOptionCode_2));
 
                 straddleOption = getDaily(straddleOption);
+                double close = getLastClose(formatDate, stock);
 
                 System.out.println(stock + "\t" + openPrice + "\t" + close + "\t" + straddleOption);
             }
