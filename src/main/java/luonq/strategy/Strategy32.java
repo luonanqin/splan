@@ -1,5 +1,6 @@
 package luonq.strategy;
 
+import bean.BOLL;
 import bean.NearlyOptionData;
 import bean.OptionCode;
 import bean.OptionContracts;
@@ -624,6 +625,50 @@ public class Strategy32 {
         }
     }
 
+    public static void calHistoricalHighVolatility() throws Exception {
+        Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
+        int year = 2023;
+        for (String stock : weekOptionStock) {
+            if (!stock.equals("COIN")) {
+                continue;
+            }
+
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "2023daily/" + stock, year, year - 1);
+            if (CollectionUtils.isEmpty(stockKLines)) {
+                continue;
+            }
+            List<BOLL> bolls = BaseUtils.readBollFile(Constants.HIS_BASE_PATH + "mergeBoll/" + stock, year, year - 1);
+            if (CollectionUtils.isEmpty(bolls)) {
+                continue;
+            }
+
+            for (int i = 0; i < stockKLines.size() - 2; i++) {
+                StockKLine stockKLine = stockKLines.get(i);
+                StockKLine lastKLine = stockKLines.get(i + 1);
+                BOLL lastBoll = bolls.get(i + 1);
+
+                String date = stockKLine.getDate();
+                double open = stockKLine.getOpen();
+                double high = stockKLine.getHigh();
+                double low = stockKLine.getLow();
+                double lastOpen = lastKLine.getOpen();
+                double lastClose = lastKLine.getClose();
+                double lastUp = lastBoll.getUp();
+                double lastDn = lastBoll.getDn();
+                boolean lastUpIn_1 = lastOpen < lastUp && lastUp < lastClose;
+                boolean lastDnIn_1 = lastOpen < lastUp && lastUp < lastClose;
+                boolean lastUpIn_2 = lastClose < lastDn && lastDn < lastOpen;
+                boolean lastDnIn_2 = lastClose < lastDn && lastDn < lastOpen;
+                if (lastUpIn_1 || lastUpIn_2 || lastDnIn_1 || lastDnIn_2) {
+                    double lastCloseOpenRatio = Math.abs((lastOpen - lastClose) / lastOpen) * 100;
+                    double amplitude = Math.abs(high - low) / lastClose * 100;
+
+                    System.out.println(date + "\topen=" + open + "\t" + lastCloseOpenRatio + "\tampltude=" + amplitude);
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
@@ -632,7 +677,8 @@ public class Strategy32 {
 
         //        getHasWeekOptionStock();
         //        getEqualsStrikePriceKline();
-        calStraddleData();
+        //        calStraddleData();
+        calHistoricalHighVolatility();
         //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");
         //        for (String line : lines) {
         //            String[] split = line.split("\t");
