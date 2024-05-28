@@ -27,4 +27,20 @@ public class OptionDaily {
     public String toString() {
         return from + "\t" + symbol + "\t" + open + "\t" + high + "\t" + low + "\t" + close + "\t" + volume;
     }
+
+    public static OptionDaily EMPTY(String from, String symbol) {
+        OptionDaily d = new OptionDaily();
+        d.setStatus("EMPTY");
+        d.setFrom(from);
+        d.setSymbol(symbol);
+        d.setOpen(0);
+        d.setClose(0);
+        d.setHigh(0);
+        d.setLow(0);
+        d.setAfterHours(0);
+        d.setPreMarket(0);
+        d.setVolume(0);
+
+        return d;
+    }
 }

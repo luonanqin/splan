@@ -12,8 +12,10 @@ import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections.list.SynchronizedList;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -50,6 +52,8 @@ public class Strategy32 {
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524 };
     public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24" };
+    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24");
+    public static Map<String/* stock */, Map<String/* date */, Map<String/* optionCode */, OptionDaily>>> stockOptionDailyMap = Maps.newHashMap();
 
     public static void init() {
         int threadCount = 100;
@@ -416,7 +420,17 @@ public class Strategy32 {
             int index = i;
             cachedThread.execute(() -> {
                 try {
-                    OptionDaily optionDaily = requestOptionDailyList(httpClient, daily.getFrom(), daily.getSymbol());
+                    String date = daily.getFrom();
+                    OptionDaily optionDaily;
+                    synchronized (stockOptionDailyMap) {
+                        optionDaily = getOptionDaily(daily.getSymbol(), date);
+                    }
+                    if (optionDaily == null) {
+                        optionDaily = requestOptionDailyList(httpClient, date, daily.getSymbol());
+                        synchronized (stockOptionDailyMap) {
+                            writeOptionDaily(optionDaily, daily.getSymbol(), date);
+                        }
+                    }
                     if (index == 0) {
                         straddleOption.setCall_1(optionDaily);
                     } else if (index == 1) {
@@ -439,69 +453,126 @@ public class Strategy32 {
         return straddleOption;
     }
 
-    public OptionDaily loadDaily(String stock, String optionCode, String date) throws Exception {
+    public static Map<String, Map<String, OptionDaily>> loadDailyMap(String stock) throws Exception {
         Map<String/* date */, Map<String/* optionCode */, OptionDaily>> dateToOptionDailyMap = Maps.newHashMap();
 
-        if (!dateToOptionDailyMap.containsKey(stock)) {
-
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionDaily/" + stock);
+        if (CollectionUtils.isEmpty(lines)) {
+            return Maps.newHashMap();
         }
-        return null;
+        // 2024-01-02	O:AR240105P00022500	0.33	0.35	0.3	0.34	135
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = split[0];
+            String code = split[1];
+            double open = Double.parseDouble(split[2]);
+            double high = Double.parseDouble(split[3]);
+            double low = Double.parseDouble(split[4]);
+            double close = Double.parseDouble(split[5]);
+            long volume = Long.parseLong(split[6]);
+            OptionDaily optionDaily = new OptionDaily();
+            optionDaily.setFrom(date);
+            optionDaily.setSymbol(code);
+            optionDaily.setOpen(open);
+            optionDaily.setClose(close);
+            optionDaily.setHigh(high);
+            optionDaily.setLow(low);
+            optionDaily.setVolume(volume);
+
+            if (!dateToOptionDailyMap.containsKey(date)) {
+                dateToOptionDailyMap.put(date, Maps.newHashMap());
+            }
+            dateToOptionDailyMap.get(date).put(code, optionDaily);
+        }
+
+        return dateToOptionDailyMap;
     }
 
-    public static void main(String[] args) throws Exception {
-        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
-        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
+    public static OptionDaily getOptionDaily(String optionCode, String date) throws Exception {
+        int _2_index = optionCode.indexOf("2");
+        String stock = optionCode.substring(2, _2_index);
+        if (!stockOptionDailyMap.containsKey(stock)) {
+            stockOptionDailyMap.put(stock, loadDailyMap(stock));
+        }
 
-        init();
+        Map<String, Map<String, OptionDaily>> dailyMap = stockOptionDailyMap.get(stock);
 
-        //        getHasWeekOptionStock();
-        //        getEqualsStrikePriceKline();
-        calStraddleData();
-        //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");
-        //        for (String line : lines) {
-        //            String[] split = line.split("\t");
-        //            String date = split[0];
-        //            String stock = split[1];
-        //            double close = getLastClose(date, stock);
-        //            System.out.println(date + "\t" + stock + "\t" + close);
-        //        }
+        if (MapUtils.isEmpty(dailyMap)) {
+            return null;
+        }
 
-        //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/裸买和带保护");
-        //        Map<String, List<Double>> dateToCall = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
-        //        Map<String, List<Double>> dateToCallP = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
-        //        for (String line : lines) {
-        //            String[] split = line.split("\t");
-        //            String date = split[0];
-        //            double call = Double.parseDouble(split[1]);
-        //            double callP = Double.parseDouble(split[2]);
-        //
-        //            if (!dateToCall.containsKey(date)) {
-        //                dateToCall.put(date, Lists.newArrayList());
-        //            }
-        //            dateToCall.get(date).add(call);
-        //
-        //            if (!dateToCallP.containsKey(date)) {
-        //                dateToCallP.put(date, Lists.newArrayList());
-        //            }
-        //            dateToCallP.get(date).add(callP);
-        //        }
-        //
-        //        double init = 10000;
-        //        for (String date : dateToCall.keySet()) {
-        //            List<Double> doubles = dateToCall.get(date);
-        //            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
-        //            init = init * (1 + avgRatio / 100);
-        //            System.out.println(date + "\t" + init);
-        //        }
-        //
-        //        init = 10000;
-        //        for (String date : dateToCallP.keySet()) {
-        //            List<Double> doubles = dateToCallP.get(date);
-        //            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
-        //            init = init * (1 + avgRatio / 100);
-        //            System.out.println(date + "\t" + init);
-        //        }
+        Map<String, OptionDaily> dateDailyMap = dailyMap.get(date);
+        if (MapUtils.isEmpty(dateDailyMap)) {
+            return null;
+        }
 
+        OptionDaily optionDaily = dateDailyMap.get(optionCode);
+        return optionDaily;
+    }
+
+    public static void writeOptionDaily(OptionDaily optionDaily, String optionCode, String date) throws Exception {
+        if (optionDaily == null) {
+            optionDaily = OptionDaily.EMPTY(date, optionCode);
+        }
+
+        int _2_index = optionCode.indexOf("2");
+        String stock = optionCode.substring(2, _2_index);
+        if (!stockOptionDailyMap.containsKey(stock)) {
+            stockOptionDailyMap.put(stock, Maps.newHashMap());
+        }
+
+        Map<String, Map<String, OptionDaily>> dailyMap = stockOptionDailyMap.get(stock);
+
+        if (!dailyMap.containsKey(date)) {
+            dailyMap.put(date, Maps.newHashMap());
+        }
+
+        Map<String, OptionDaily> dateDailyMap = dailyMap.get(date);
+        dateDailyMap.put(optionCode, optionDaily);
+
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionDaily/" + stock);
+        lines.add(optionDaily.toString());
+        BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionDaily/" + stock, lines);
+    }
+
+    private static void calCallWithProtect() throws Exception {
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/裸买和带保护");
+        Map<String, List<Double>> dateToCall = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
+        Map<String, List<Double>> dateToCallP = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = split[0];
+            double call = Double.parseDouble(split[1]);
+            double callP = Double.parseDouble(split[2]);
+
+            if (!dateToCall.containsKey(date)) {
+                dateToCall.put(date, Lists.newArrayList());
+            }
+            dateToCall.get(date).add(call);
+
+            if (!dateToCallP.containsKey(date)) {
+                dateToCallP.put(date, Lists.newArrayList());
+            }
+            dateToCallP.get(date).add(callP);
+        }
+
+        double init = 10000;
+        for (String date : dateToCall.keySet()) {
+            List<Double> doubles = dateToCall.get(date);
+            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
+            init = init * (1 + avgRatio / 100);
+            System.out.println(date + "\t" + init);
+        }
+
+        System.out.println();
+
+        init = 10000;
+        for (String date : dateToCallP.keySet()) {
+            List<Double> doubles = dateToCallP.get(date);
+            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
+            init = init * (1 + avgRatio / 100);
+            System.out.println(date + "\t" + init);
+        }
     }
 
     private static double getLastClose(String date, String stock) throws Exception {
@@ -551,5 +622,45 @@ public class Strategy32 {
                 System.out.println(stock + "\t" + openPrice + "\t" + close + "\t" + straddleOption);
             }
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
+
+        init();
+
+        //        getHasWeekOptionStock();
+        //        getEqualsStrikePriceKline();
+        calStraddleData();
+        //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");
+        //        for (String line : lines) {
+        //            String[] split = line.split("\t");
+        //            String date = split[0];
+        //            String stock = split[1];
+        //            double close = getLastClose(date, stock);
+        //            System.out.println(date + "\t" + stock + "\t" + close);
+        //        }
+        //        calCallWithProtect();
+
+        //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/dailydata");
+        //        Map<String, List<String>> linesMap = Maps.newHashMap();
+        //        for (String line : lines) {
+        //            String[] split = line.split("\t");
+        //            String optionCode = split[1];
+        //            int _2_index = optionCode.indexOf("2");
+        //            String stock = optionCode.substring(2, _2_index);
+        //
+        //            if (!linesMap.containsKey(stock)) {
+        //                linesMap.put(stock, Lists.newArrayList());
+        //            }
+        //
+        //            linesMap.get(stock).add(line);
+        //        }
+        //
+        //        for (String stock : linesMap.keySet()) {
+        //            BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionDaily/" + stock, linesMap.get(stock));
+        //        }
+
     }
 }
