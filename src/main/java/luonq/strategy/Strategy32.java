@@ -28,7 +28,12 @@ import util.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -726,6 +731,91 @@ public class Strategy32 {
         }
     }
 
+    // 根据报价数据计算双开模拟交易数据，用于测试止损和止盈点
+    public static void calStraddleSimulateTrade(OptionDaily call, OptionDaily put) throws Exception {
+        String date = call.getFrom();
+        String callCode = call.getSymbol().substring(2);
+        String putCode = put.getSymbol().substring(2);
+        double callOpen = call.getOpen();
+        double putOpen = put.getOpen();
+
+        int _2_index = callCode.indexOf("2");
+        String stock = callCode.substring(2, _2_index);
+
+        List<String> callQuoteList = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + callCode);
+        List<String> putQuoteList = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + putCode);
+
+        List<String> dayAllSeconds = Strategy28.getDayAllSeconds(date);
+        Map<Long, Double> callQuotePriceMap = calQuoteListForSeconds(callQuoteList);
+        Map<Long, Double> putQuotePriceMap = calQuoteListForSeconds(putQuoteList);
+
+        Map<Long, Double> callTradePriceMap = Maps.newHashMap();
+        Map<Long, Double> putTradePriceMap = Maps.newHashMap();
+
+        double tempCallPrice = 0, tempPutPrice = 0;
+        for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
+            Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
+            Double callPrice = callQuotePriceMap.get(seconds);
+            Double putPrice = putQuotePriceMap.get(seconds);
+            if (callPrice != null) {
+                tempCallPrice = callPrice;
+            }
+            if (putPrice != null) {
+                tempPutPrice = putPrice;
+            }
+            callTradePriceMap.put(seconds, tempCallPrice);
+            putTradePriceMap.put(seconds, tempPutPrice);
+        }
+
+        for (int i = 30; i < dayAllSeconds.size() - 60; i++) {
+            Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
+            Double callPrice = callTradePriceMap.get(seconds);
+            Double putPrice = putTradePriceMap.get(seconds);
+            double callDiff = callPrice - callOpen;
+            double putDiff = putPrice - putOpen;
+            double allDiff = callDiff + putDiff;
+            double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+            String datetime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            System.out.println(datetime + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio + "%");
+        }
+    }
+
+    private static Map<Long, Double> calQuoteListForSeconds(List<String> callQuoteList) {
+        Map<Long, Double> secondsPriceMap = Maps.newHashMap();
+        long latestTime = 0;
+        List<Double> askPriceList = Lists.newArrayList();
+        List<Double> bidPriceList = Lists.newArrayList();
+        for (String callQuote : callQuoteList) {
+            String[] split = callQuote.split("\t"); // 1706126148133253376	2.02	18	1.97	13
+            Long timestamp = Long.valueOf(split[0]) / 1000000000;
+            int askSize = Integer.parseInt(split[2]);
+            int bidSize = Integer.parseInt(split[4]);
+            double askPrice = Double.parseDouble(split[1]);
+            double bidPrice = Double.parseDouble(split[3]);
+            if (askSize < 5 && bidSize < 5) {
+                continue;
+            }
+
+            if (timestamp == latestTime) {
+                Double avgAskPrice = askPriceList.stream().collect(Collectors.averagingDouble(a -> a));
+                Double avgBidPrice = bidPriceList.stream().collect(Collectors.averagingDouble(b -> b));
+                latestTime = timestamp;
+                if (avgAskPrice == 0) {
+                    continue;
+                } else {
+                    secondsPriceMap.put(timestamp, BigDecimal.valueOf((avgAskPrice + avgBidPrice) / 2).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                    askPriceList.clear();
+                    bidPriceList.clear();
+                }
+            } else {
+                askPriceList.add(askPrice);
+                bidPriceList.add(bidPrice);
+            }
+        }
+        return secondsPriceMap;
+    }
+
     public static void getStraddleLastDaily() throws Exception {
         Map<String, List<NearlyOptionData>> dateOpenStrikePriceRatioMap = calOpenStrikePriceRatioMap();
         for (String date : dateOpenStrikePriceRatioMap.keySet()) {
@@ -883,26 +973,26 @@ public class Strategy32 {
     public static void getOptionQuoteList() throws Exception {
         Strategy28.init();
         List<String> list = Lists.newArrayList();
-//        list.add("2024-02-15	O:MARA240216C00031000");
-//        list.add("2024-02-20	O:CVNA240223C00052000");
-//        list.add("2024-02-22	O:DKNG240223C00042500");
-//        list.add("2024-03-04	O:SE240308C00057000");
-//        list.add("2024-03-06	O:AFRM240308C00037500");
-//        list.add("2024-03-06	O:MSTR240308C01150000");
-//        list.add("2024-04-25	O:AI240426C00022000");
-//        list.add("2024-04-25	O:TSM240426C00131000");
-//        list.add("2024-04-29	O:PARA240503C00013000");
-//        list.add("2024-05-16	O:JD240517C00035000");
-//        list.add("2024-01-24	O:WDC240126P00058000");
-//        list.add("2024-02-13	O:SMCI240216P00745000");
-//        list.add("2024-02-15	O:MARA240216P00029000");
-//        list.add("2024-02-20	O:CVNA240223P00050000");
-//        list.add("2024-02-22	O:DKNG240223P00041500");
-//        list.add("2024-03-04	O:SE240308P00055000");
-//        list.add("2024-03-06	O:AFRM240308P00036500");
-//        list.add("2024-03-06	O:MSTR240308P01130000");
-//        list.add("2024-04-25	O:AI240426P00021000");
-//        list.add("2024-04-25	O:TSM240426P00129000");
+        //        list.add("2024-02-15	O:MARA240216C00031000");
+        //        list.add("2024-02-20	O:CVNA240223C00052000");
+        //        list.add("2024-02-22	O:DKNG240223C00042500");
+        //        list.add("2024-03-04	O:SE240308C00057000");
+        //        list.add("2024-03-06	O:AFRM240308C00037500");
+        //        list.add("2024-03-06	O:MSTR240308C01150000");
+        //        list.add("2024-04-25	O:AI240426C00022000");
+        //        list.add("2024-04-25	O:TSM240426C00131000");
+        //        list.add("2024-04-29	O:PARA240503C00013000");
+        //        list.add("2024-05-16	O:JD240517C00035000");
+        //        list.add("2024-01-24	O:WDC240126P00058000");
+        //        list.add("2024-02-13	O:SMCI240216P00745000");
+        //        list.add("2024-02-15	O:MARA240216P00029000");
+        //        list.add("2024-02-20	O:CVNA240223P00050000");
+        //        list.add("2024-02-22	O:DKNG240223P00041500");
+        //        list.add("2024-03-04	O:SE240308P00055000");
+        //        list.add("2024-03-06	O:AFRM240308P00036500");
+        //        list.add("2024-03-06	O:MSTR240308P01130000");
+        //        list.add("2024-04-25	O:AI240426P00021000");
+        //        list.add("2024-04-25	O:TSM240426P00129000");
         list.add("2024-04-29	O:PARA240503P00012000");
         list.add("2024-05-16	O:JD240517P00034000");
         for (String l : list) {
