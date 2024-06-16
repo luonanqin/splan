@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +31,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by Luonanqin on 2023/5/14.
@@ -61,7 +64,7 @@ public class GetHistoricalSecAggregateTrade {
     public static void getData(String stock, String date) throws Exception {
         // 计算读取最新k线的目录及读取年份
         int curYear = Integer.valueOf(date.substring(0, 4));
-        String minAggregatePath = Constants.HIS_BASE_PATH+"secAggregate/"+stock;
+        String minAggregatePath = Constants.HIS_BASE_PATH + "secAggregate/" + stock;
         BaseUtils.createDirectory(minAggregatePath);
 
         Set<String> hasGetDate = hasGetDateMap.get(stock);
@@ -174,23 +177,17 @@ public class GetHistoricalSecAggregateTrade {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
         init();
-//        Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/dailyKLine/");
-        Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");
-        for (String stock : fileMap.keySet()) {
+        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2024, 2021);
+        List<String> dateList = stockKLines.stream().map(StockKLine::getFormatDate).collect(Collectors.toList());
+        Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
+        for (String stock : weekOptionStock) {
             long begin = System.currentTimeMillis();
             System.out.println("begin " + stock);
             if (!stock.equals("AAPL")) {
-//                                continue;
+                continue;
             }
 
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(fileMap.get(stock), 2022, 2021);
-            for (StockKLine stockKLine : stockKLines) {
-                double open = stockKLine.getOpen();
-                if (open < 6) {
-                    continue;
-                }
-
-                String date = stockKLine.getFormatDate();
+            for (String date : dateList) {
                 getData(stock, date);
             }
             long end = System.currentTimeMillis();
