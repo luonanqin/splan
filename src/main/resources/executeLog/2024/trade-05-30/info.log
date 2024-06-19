@@ -1,0 +1,65 @@
+2024-06-03 16:00:00.106 [xxl-job, JobThread-3-1717401600091] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-06-03 16:00:00.112 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-06-03 16:00:07.085 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 6s
+
+2024-06-03 16:00:07.086 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-06-03 16:00:11.776 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 4s
+
+2024-06-03 16:00:11.780 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-06-03 16:00:16.706 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 4s
+
+2024-06-03 16:00:16.706 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-06-03 16:01:03.556 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 46s
+
+2024-06-03 16:01:03.556 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-06-03 16:01:03.621 [pool-12-thread-2] INFO  luonq.polygon.GetHistoricalTrade2 - D request error
+2024-06-03 16:01:03.621 [pool-12-thread-1] INFO  luonq.polygon.GetHistoricalTrade2 - BDC request error
+2024-06-03 16:01:03.628 [pool-12-thread-3] INFO  luonq.polygon.GetHistoricalTrade2 - JZXN request error
+2024-06-03 16:01:03.629 [pool-12-thread-4] INFO  luonq.polygon.GetHistoricalTrade2 - BEN request error
+2024-06-03 16:01:03.637 [pool-12-thread-5] INFO  luonq.polygon.GetHistoricalTrade2 - STRL request error
+2024-06-03 16:01:03.638 [pool-12-thread-6] INFO  luonq.polygon.GetHistoricalTrade2 - CMTL request error
+2024-06-03 16:01:03.638 [pool-12-thread-7] INFO  luonq.polygon.GetHistoricalTrade2 - BFC request error
+2024-06-03 16:01:03.639 [pool-12-thread-8] INFO  luonq.polygon.GetHistoricalTrade2 - SGU request error
+2024-06-03 16:01:03.665 [pool-12-thread-9] INFO  luonq.polygon.GetHistoricalTrade2 - BBDO request error
+2024-06-03 16:01:03.665 [pool-12-thread-10] INFO  luonq.polygon.GetHistoricalTrade2 - SJM request error
+2024-06-03 16:01:03.668 [pool-12-thread-11] INFO  luonq.polygon.GetHistoricalTrade2 - SJW request error
+2024-06-03 16:01:03.669 [pool-12-thread-12] INFO  luonq.polygon.GetHistoricalTrade2 - MBCN request error
+2024-06-03 16:01:03.680 [pool-12-thread-13] INFO  luonq.polygon.GetHistoricalTrade2 - SKY request error
+2024-06-03 16:01:03.690 [pool-12-thread-14] INFO  luonq.polygon.GetHistoricalTrade2 - SLS request error
+2024-06-03 16:01:03.691 [pool-12-thread-15] INFO  luonq.polygon.GetHistoricalTrade2 - BKE request error
+2024-06-03 16:01:03.698 [pool-12-thread-16] INFO  luonq.polygon.GetHistoricalTrade2 - JAMF request error
+2024-06-03 16:01:03.707 [pool-12-thread-17] INFO  luonq.polygon.GetHistoricalTrade2 - SND request error
+2024-06-03 16:01:03.721 [pool-12-thread-18] INFO  luonq.polygon.GetHistoricalTrade2 - RIGL request error
+2024-06-03 16:01:03.722 [pool-12-thread-19] INFO  luonq.polygon.GetHistoricalTrade2 - KMDA request error
+2024-06-03 16:01:03.723 [pool-12-thread-20] INFO  luonq.polygon.GetHistoricalTrade2 - VMCA request error
+2024-06-03 16:01:03.725 [pool-12-thread-1] INFO  luonq.polygon.GetHistoricalTrade2 - BNS request error
+2024-06-03 16:01:03.726 [pool-12-thread-2] INFO  luonq.polygon.GetHistoricalTrade2 - BNR request error
+2024-06-03 16:01:03.728 [pool-12-thread-3] INFO  luonq.polygon.GetHistoricalTrade2 - SPG request error
+2024-06-03 16:01:03.742 [pool-12-thread-4] INFO  luonq.polygon.GetHistoricalTrade2 - SRE request error
+2024-06-03 16:01:03.744 [pool-12-thread-5] INFO  luonq.polygon.GetHistoricalTrade2 - BPT request error
+2024-06-03 16:01:04.553 [pool-12-thread-6] INFO  luonq.polygon.GetHistoricalTrade2 - NEE request error
+2024-06-03 16:01:05.166 [pool-12-thread-7] INFO  luonq.polygon.GetHistoricalTrade2 - AVDX request error
+2024-06-03 16:01:05.175 [pool-12-thread-8] INFO  luonq.polygon.GetHistoricalTrade2 - AVHI request error
+2024-06-03 16:01:05.176 [pool-12-thread-9] INFO  luonq.polygon.GetHistoricalTrade2 - GOGL request error
+2024-06-03 16:01:05.179 [pool-12-thread-10] INFO  luonq.polygon.GetHistoricalTrade2 - FLGC request error
+2024-06-03 16:01:05.185 [pool-12-thread-11] INFO  luonq.polygon.GetHistoricalTrade2 - LEGH request error
+2024-06-03 16:01:05.213 [pool-12-thread-12] INFO  luonq.polygon.GetHistoricalTrade2 - ROOT request error
+2024-06-03 16:01:05.235 [pool-12-thread-13] INFO  luonq.polygon.GetHistoricalTrade2 - IDYA request error
+2024-06-03 16:01:05.236 [pool-12-thread-14] INFO  luonq.polygon.GetHistoricalTrade2 - MHUA request error
+2024-06-03 16:01:05.245 [pool-12-thread-15] INFO  luonq.polygon.GetHistoricalTrade2 - ANDE request error
+2024-06-03 16:01:05.246 [pool-12-thread-16] INFO  luonq.polygon.GetHistoricalTrade2 - UPLD request error
+2024-06-03 16:01:05.257 [pool-12-thread-17] INFO  luonq.polygon.GetHistoricalTrade2 - RGEN request error
+2024-06-03 16:01:05.258 [pool-12-thread-18] INFO  luonq.polygon.GetHistoricalTrade2 - ERAS request error
+2024-06-03 16:01:05.585 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 2s
+
+2024-06-03 16:01:05.585 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-06-03 16:01:08.615 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 3s
+
+2024-06-03 16:01:08.653 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-06-03 16:01:13.700 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 5s
+
+2024-06-03 16:01:13.700 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-06-03 16:02:00.579 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 46s
+
+2024-06-03 16:02:00.579 [xxl-job, JobThread-3-1717401600091] INFO  luonq.stock.Processor - get data finish
+2024-06-03 16:02:00.589 [xxl-job, JobThread-3-1717401600091] INFO  luonq.job.GetDataJob - getTradeDataJobAndComputeIndicator.job end

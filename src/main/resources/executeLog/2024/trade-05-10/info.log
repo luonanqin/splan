@@ -1,0 +1,18 @@
+2024-05-11 03:58:56.101 [xxl-job, JobThread-8-1715371136084] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-11 03:58:56.128 [xxl-job, JobThread-8-1715371136084] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-11 03:58:56.141 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7194788017757421710
+2024-05-11 03:58:56.150 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7194788017761011182
+2024-05-11 03:58:59.134 [xxl-job, JobThread-8-1715371136084] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-11 03:58:59.137 [xxl-job, JobThread-8-1715371136084] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-11 03:58:59.184 [xxl-job, JobThread-8-1715371136084] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={RPD=StockPosition(stock=RPD, canSellQty=86.0, costPrice=38.034, currPrice=37.895)}, time=2024-05-11T03:58:59.183
+2024-05-11 03:58:59.186 [xxl-job, JobThread-8-1715371136084] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=RPD, count=86.0
+2024-05-11 03:58:59.237 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-11 03:58:59.338 [xxl-job, JobThread-8-1715371136084] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=7860314757409886894
+2024-05-11 03:58:59.814 [xxl-job, JobThread-8-1715371136084] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=RPD, orderId=7860314757409886894
+2024-05-11 03:58:59.815 [xxl-job, JobThread-8-1715371136084] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-05-11 03:58:59.815 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7860314757409886894, code=RPD, name=Rapid7, count=86.0, price=0.0, avgPrice=37.8409, createTime=2024-05-10 15:58:59.245, updateTimestamp=1.715371139785597E9, status=0)
+2024-05-11 03:58:59.818 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7860314757409886894, code=RPD, name=Rapid7, count=86.0, price=0.0, avgPrice=37.8409, createTime=2024-05-10 15:58:59.245, updateTimestamp=1.715371139785597E9, status=0)
+2024-05-11 19:44:36.427 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-05-11 19:44:36.438 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-05-11 19:44:36.438 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-05-11 19:44:36.438 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296

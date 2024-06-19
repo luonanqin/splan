@@ -1,0 +1,18 @@
+2024-06-19 03:58:56.094 [xxl-job, JobThread-8-1718740736076] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-06-19 03:58:56.145 [xxl-job, JobThread-8-1718740736076] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-19 03:58:56.155 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7208921144585044305
+2024-06-19 03:58:56.164 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7208921144591247289
+2024-06-19 03:58:59.156 [xxl-job, JobThread-8-1718740736076] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-19 03:58:59.157 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-06-19 03:58:59.169 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={FVRR=StockPosition(stock=FVRR, canSellQty=134.0, costPrice=22.21, currPrice=22.055)}, time=2024-06-19T03:58:59.167
+2024-06-19 03:58:59.169 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=FVRR, count=134.0
+2024-06-19 03:58:59.253 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-06-19 03:58:59.334 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=7228180270852190469
+2024-06-19 03:58:59.876 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
+2024-06-19 03:58:59.877 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
+2024-06-19 03:58:59.878 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
+2024-06-19 03:58:59.878 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
+2024-06-19 03:58:59.879 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
+2024-06-19 03:58:59.879 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
+2024-06-19 03:58:59.879 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=FVRR, orderId=7228180270852190469
+2024-06-19 03:58:59.879 [xxl-job, JobThread-8-1718740736076] INFO  luonq.job.TradeJob - tradeExecutor_db sell

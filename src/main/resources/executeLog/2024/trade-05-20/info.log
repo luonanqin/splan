@@ -1,0 +1,14 @@
+2024-05-21 03:58:56.086 [xxl-job, JobThread-8-1716235136070] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-21 03:58:56.113 [xxl-job, JobThread-8-1716235136070] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-21 03:58:56.124 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7198411896350295842
+2024-05-21 03:58:56.127 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7198411896355211010
+2024-05-21 03:58:59.121 [xxl-job, JobThread-8-1716235136070] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-21 03:58:59.128 [xxl-job, JobThread-8-1716235136070] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-21 03:58:59.165 [xxl-job, JobThread-8-1716235136070] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={SRRK=StockPosition(stock=SRRK, canSellQty=252.0, costPrice=12.75, currPrice=12.505)}, time=2024-05-21T03:58:59.164
+2024-05-21 03:58:59.165 [xxl-job, JobThread-8-1716235136070] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=SRRK, count=252.0
+2024-05-21 03:58:59.219 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-21 03:58:59.304 [xxl-job, JobThread-8-1716235136070] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=1439582683275326736
+2024-05-21 03:59:00.020 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1439582683275326736, code=SRRK, name=Scholar Rock, count=252.0, price=0.0, avgPrice=12.5002, createTime=2024-05-20 15:58:59.302, updateTimestamp=1.71623514003314E9, status=0)
+2024-05-21 03:59:00.023 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1439582683275326736, code=SRRK, name=Scholar Rock, count=252.0, price=0.0, avgPrice=12.5002, createTime=2024-05-20 15:58:59.302, updateTimestamp=1.71623514003314E9, status=0)
+2024-05-21 03:59:00.023 [xxl-job, JobThread-8-1716235136070] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=SRRK, orderId=1439582683275326736
+2024-05-21 03:59:00.024 [xxl-job, JobThread-8-1716235136070] INFO  luonq.job.TradeJob - tradeExecutor_db sell

@@ -1,0 +1,20 @@
+2024-06-14 03:58:56.100 [xxl-job, JobThread-8-1718308736081] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-06-14 03:58:56.134 [xxl-job, JobThread-8-1718308736081] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-14 03:58:56.145 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7207109205214142415
+2024-06-14 03:58:56.149 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7207109205213128095
+2024-06-14 03:58:59.145 [xxl-job, JobThread-8-1718308736081] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-14 03:58:59.151 [xxl-job, JobThread-8-1718308736081] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-06-14 03:58:59.165 [xxl-job, JobThread-8-1718308736081] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={OXM=StockPosition(stock=OXM, canSellQty=31.0, costPrice=98.5, currPrice=102.24)}, time=2024-06-14T03:58:59.163
+2024-06-14 03:58:59.165 [xxl-job, JobThread-8-1718308736081] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=OXM, count=31.0
+2024-06-14 03:58:59.244 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-06-14 03:58:59.330 [xxl-job, JobThread-8-1718308736081] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=876033664523782418
+2024-06-14 03:58:59.753 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.756 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.756 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.757 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.757 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.757 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.757 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.757 [xxl-job, JobThread-8-1718308736081] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=OXM, orderId=876033664523782418
+2024-06-14 03:58:59.757 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=876033664523782418, code=OXM, name=牛津工业, count=31.0, price=0.0, avgPrice=102.0934, createTime=2024-06-13 15:58:59.316, updateTimestamp=1.718308739804072E9, status=0)
+2024-06-14 03:58:59.757 [xxl-job, JobThread-8-1718308736081] INFO  luonq.job.TradeJob - tradeExecutor_db sell

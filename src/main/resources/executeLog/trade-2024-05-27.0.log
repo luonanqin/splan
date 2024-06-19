@@ -1,0 +1,42 @@
+2024-05-27 16:00:00.094 [xxl-job, JobThread-3-1716796800078] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-05-27 16:00:00.101 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-05-27 16:01:47.659 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 107s
+
+2024-05-27 16:01:47.663 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-05-27 16:02:31.303 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 43s
+
+2024-05-27 16:02:31.305 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-05-27 16:02:38.001 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 6s
+
+2024-05-27 16:02:38.002 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-05-27 16:03:24.352 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 46s
+
+2024-05-27 16:03:24.353 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-05-27 16:04:35.583 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 71s
+
+2024-05-27 16:04:35.609 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-05-27 16:04:58.562 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 22s
+
+2024-05-27 16:04:58.566 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-05-27 16:05:05.591 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 7s
+
+2024-05-27 16:05:05.591 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-05-27 16:05:53.993 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 48s
+
+2024-05-27 16:05:53.993 [xxl-job, JobThread-3-1716796800078] INFO  luonq.stock.Processor - get data finish
+2024-05-27 16:05:54.001 [xxl-job, JobThread-3-1716796800078] INFO  luonq.job.GetDataJob - getTradeDataJobAndComputeIndicator.job end
+2024-05-27 16:30:00.079 [xxl-job, JobThread-6-1716798600070] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job start
+2024-05-27 16:30:00.080 [xxl-job, JobThread-6-1716798600070] INFO  luonq.data.WriteToDB - additionToDB begin
+2024-05-27 16:30:39.153 [xxl-job, JobThread-6-1716798600070] INFO  luonq.data.WriteToDB - sync count: 4532
+2024-05-27 16:30:39.829 [xxl-job, JobThread-6-1716798600070] INFO  luonq.data.WriteToDB - additionToDB end
+2024-05-27 16:30:39.854 [xxl-job, JobThread-6-1716798600070] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job end
+2024-05-27 17:00:00.074 [xxl-job, JobThread-4-1716800400067] INFO  luonq.job.GetDataJob - getRehab.job start
+2024-05-27 17:00:00.098 [xxl-job, JobThread-4-1716800400067] INFO  luonq.job.BaseJob - no trading today!
+2024-05-27 19:00:00.097 [xxl-job, JobThread-5-1716807600090] INFO  luonq.job.GetDataJob - getEarning.job start
+2024-05-27 19:00:00.120 [xxl-job, JobThread-5-1716807600090] INFO  luonq.job.BaseJob - no trading today!
+2024-05-27 19:10:00.061 [xxl-job, JobThread-9-1716808200055] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job start
+2024-05-27 19:10:00.068 [xxl-job, JobThread-9-1716808200055] INFO  luonq.job.BaseJob - no trading today!
+2024-05-27 19:30:00.043 [xxl-job, JobThread-10-1716809400036] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job start
+2024-05-27 19:30:00.052 [xxl-job, JobThread-10-1716809400036] INFO  luonq.job.BaseJob - no trading today!
+2024-05-27 21:22:00.075 [xxl-job, JobThread-7-1716816120061] INFO  luonq.job.TradeJob - trade_DB.job start
+2024-05-27 21:22:00.097 [xxl-job, JobThread-7-1716816120061] INFO  luonq.job.BaseJob - no trading today!

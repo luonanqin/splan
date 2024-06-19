@@ -1,0 +1,20 @@
+2024-06-15 02:02:01.145 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-06-15 02:02:01.211 [FTAPI4JNet] INFO  luonq.futu.TradeApi - Qot onDisConnect: -4294967296
+2024-06-15 03:58:56.109 [xxl-job, JobThread-8-1718395136088] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-06-15 03:58:56.121 [xxl-job, JobThread-8-1718395136088] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-15 03:58:56.134 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7207471593023626874
+2024-06-15 03:58:56.142 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7207471593027643593
+2024-06-15 03:58:59.131 [xxl-job, JobThread-8-1718395136088] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-15 03:58:59.139 [xxl-job, JobThread-8-1718395136088] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-06-15 03:58:59.208 [xxl-job, JobThread-8-1718395136088] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={PARA=StockPosition(stock=PARA, canSellQty=302.0, costPrice=10.41, currPrice=10.269)}, time=2024-06-15T03:58:59.207
+2024-06-15 03:58:59.208 [xxl-job, JobThread-8-1718395136088] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=PARA, count=302.0
+2024-06-15 03:58:59.217 [xxl-job, JobThread-8-1718395136088] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=-500
+2024-06-15 03:58:59.240 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-06-15 03:58:59.243 [xxl-job, JobThread-8-1718395136088] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-15 03:58:59.259 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7207471606116431428
+2024-06-15 03:58:59.261 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7207471606118635543
+2024-06-15 03:59:02.259 [xxl-job, JobThread-8-1718395136088] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-15 03:59:02.374 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-06-15 03:59:02.908 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1760223034229267614, code=PARA, name=派拉蒙环球-B, count=302.0, price=0.0, avgPrice=10.1903, createTime=2024-06-14 15:59:02.453, updateTimestamp=1.718395142965024E9, status=0)
+2024-06-15 03:59:02.910 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=1760223034229267614, code=PARA, name=派拉蒙环球-B, count=302.0, price=0.0, avgPrice=10.1903, createTime=2024-06-14 15:59:02.453, updateTimestamp=1.718395142965024E9, status=0)
+2024-06-15 03:59:02.910 [xxl-job, JobThread-8-1718395136088] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job end

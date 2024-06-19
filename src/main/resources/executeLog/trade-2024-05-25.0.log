@@ -1,0 +1,14 @@
+2024-05-25 03:58:56.093 [xxl-job, JobThread-8-1716580736078] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-25 03:58:56.118 [xxl-job, JobThread-8-1716580736078] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-25 03:58:56.130 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7199861447833671079
+2024-05-25 03:58:56.134 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7199861447834847712
+2024-05-25 03:58:59.124 [xxl-job, JobThread-8-1716580736078] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-25 03:58:59.134 [xxl-job, JobThread-8-1716580736078] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-25 03:58:59.178 [xxl-job, JobThread-8-1716580736078] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={CZR=StockPosition(stock=CZR, canSellQty=94.0, costPrice=32.79, currPrice=33.425)}, time=2024-05-25T03:58:59.178
+2024-05-25 03:58:59.179 [xxl-job, JobThread-8-1716580736078] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=CZR, count=94.0
+2024-05-25 03:58:59.233 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-25 03:58:59.342 [xxl-job, JobThread-8-1716580736078] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=2314824184604036702
+2024-05-25 03:58:59.766 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=2314824184604036702, code=CZR, name=凯撒娱乐, count=94.0, price=0.0, avgPrice=33.6223, createTime=2024-05-24 15:58:59.269, updateTimestamp=1.71658073973643E9, status=0)
+2024-05-25 03:58:59.767 [xxl-job, JobThread-8-1716580736078] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=CZR, orderId=2314824184604036702
+2024-05-25 03:58:59.767 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=2314824184604036702, code=CZR, name=凯撒娱乐, count=94.0, price=0.0, avgPrice=33.6223, createTime=2024-05-24 15:58:59.269, updateTimestamp=1.71658073973643E9, status=0)
+2024-05-25 03:58:59.768 [xxl-job, JobThread-8-1716580736078] INFO  luonq.job.TradeJob - tradeExecutor_db sell

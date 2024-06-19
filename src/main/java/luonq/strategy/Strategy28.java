@@ -13,6 +13,8 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -40,9 +42,9 @@ import java.util.stream.Collectors;
 
 public class Strategy28 {
 
-    public static final String QUOTE_DIR = "optionData/optionQuote2023/";
+    public static final String QUOTE_DIR = "optionData/optionQuote/";
     public static CloseableHttpClient httpClient = HttpClients.createDefault();
-    public static BlockingQueue<CloseableHttpClient> queue;
+    public static BlockingQueue<HttpClient> queue;
     public static ThreadPoolExecutor cachedThread;
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
@@ -55,7 +57,12 @@ public class Strategy28 {
         cachedThread = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
         queue = new LinkedBlockingQueue<>(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            queue.offer(HttpClients.createDefault());
+            HttpClient e = new HttpClient();
+            //            HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
+            //            httpConnectionManagerParams.setConnectionTimeout(10000);
+            //            httpConnectionManagerParams.setSoTimeout(10000);
+            //            e.getHttpConnectionManager().setParams(httpConnectionManagerParams);
+            queue.offer(e);
         }
     }
 
@@ -170,12 +177,12 @@ public class Strategy28 {
         Map<String, List<OptionQuote>> dataMap = Maps.newHashMap();
         for (String url : openUrlList) {
             cachedThread.execute(() -> {
-                HttpGet req = new HttpGet(url);
-                CloseableHttpClient httpClient = null;
+                GetMethod req = new GetMethod(url);
+                HttpClient httpClient = null;
                 try {
                     httpClient = queue.take();
-                    CloseableHttpResponse openExecute = httpClient.execute(req);
-                    InputStream openContent = openExecute.getEntity().getContent();
+                    httpClient.executeMethod(req);
+                    InputStream openContent = req.getResponseBodyAsStream();
                     OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
                     List<OptionQuote> openResults = openResp.getResults();
                     if (CollectionUtils.isNotEmpty(openResults)) {
@@ -195,12 +202,12 @@ public class Strategy28 {
         }
         for (String url : closeUrlList) {
             cachedThread.execute(() -> {
-                HttpGet req = new HttpGet(url);
-                CloseableHttpClient httpClient = null;
+                GetMethod req = new GetMethod(url);
+                HttpClient httpClient = null;
                 try {
                     httpClient = queue.take();
-                    CloseableHttpResponse openExecute = httpClient.execute(req);
-                    InputStream openContent = openExecute.getEntity().getContent();
+                    httpClient.executeMethod(req);
+                    InputStream openContent = req.getResponseBodyAsStream();
                     OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
                     List<OptionQuote> openResults = openResp.getResults();
                     if (CollectionUtils.isNotEmpty(openResults)) {
@@ -345,7 +352,7 @@ public class Strategy28 {
         }
 
         if (callOrPut == 0) {
-            optionCode = getOptionPutCode(optionCode);
+            optionCode = BaseUtils.getOptionPutCode(optionCode);
         }
         OptionCode optionCodeBean = new OptionCode();
         optionCodeBean.setCode(optionCode);
@@ -363,82 +370,92 @@ public class Strategy28 {
         }
         String optionCode = optionCodeBean.getCode();
         String fileName = optionCode.substring(2);
-        String filePath = Constants.USER_PATH + QUOTE_DIR + fileName;
-        List<String> dayAllSeconds = getDayAllSeconds(date);
-        List<String> result = Lists.newArrayList();
+        int _2_index = optionCode.indexOf("2");
+        String stock = optionCode.substring(2, _2_index);
+        String fileDirPath = Constants.USER_PATH + QUOTE_DIR + stock + "/" + date + "/";
+        File fileDir = new File(fileDirPath);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        String filePath = fileDirPath + fileName;
         File file = new File(filePath);
         if (file.exists()) {
-            //            return;
-            //        }
-
-            List<String> lines = BaseUtils.readFile(file);
-            if (CollectionUtils.isEmpty(lines)) {
-                return;
-            }
-
-            // 获取最后一秒，用来补抓不完整的数据
-            String lastLine = lines.get(lines.size() - 1);
-            long lastSeconds = Long.parseLong(lastLine.split("\t")[0]);
-
-            String lastSecondsStr = lastSeconds / 1000000000 + "000000000";
-            int index = 0;
-            for (; index < dayAllSeconds.size(); index++) {
-                if (dayAllSeconds.get(index).equals(lastSecondsStr)) {
-                    break;
-                }
-            }
-            dayAllSeconds = dayAllSeconds.subList(index, dayAllSeconds.size());
-            result.addAll(lines);
-        }
-        if (CollectionUtils.isEmpty(dayAllSeconds)) {
+            System.out.println(fileName + " has get quote");
             return;
         }
 
-        CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
-        Map<String/* seconds */, String/* data */> dataMap = Maps.newHashMap();
-        for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
-            String begin = dayAllSeconds.get(i);
-            String end = dayAllSeconds.get(i + 1);
-            cachedThread.execute(() -> {
-                String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=1"
-                  + "&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
-                HttpGet openRequest = new HttpGet(url);
-                CloseableHttpClient httpClient = null;
-                try {
-                    httpClient = queue.take();
+        List<String> dayAllSeconds = getDayAllSeconds(date);
+        List<String> result = Lists.newArrayList();
+        if (testIfExistQuote(dayAllSeconds, optionCode)) {
+            CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
+            Map<String/* seconds */, String/* data */> dataMap = Maps.newHashMap();
+            for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
+                String begin = dayAllSeconds.get(i);
+                String end = dayAllSeconds.get(i + 1);
+                cachedThread.execute(() -> {
+                    String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=1"
+                      + "&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
+                    GetMethod openRequest = new GetMethod(url);
+                    HttpClient httpClient = null;
+                    try {
+                        httpClient = queue.take();
 
-                    CloseableHttpResponse openExecute = httpClient.execute(openRequest);
-                    InputStream openContent = openExecute.getEntity().getContent();
-                    OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
-                    List<OptionQuote> openResults = openResp.getResults();
-                    if (CollectionUtils.isNotEmpty(openResults)) {
-                        dataMap.put(begin, openResults.get(0).print());
+                        httpClient.executeMethod(openRequest);
+                        InputStream openContent = openRequest.getResponseBodyAsStream();
+                        OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+                        if (openResp == null) {
+                            System.out.println(url + " is null");
+                        } else {
+                            List<OptionQuote> openResults = openResp.getResults();
+                            if (CollectionUtils.isNotEmpty(openResults)) {
+                                dataMap.put(begin, openResults.get(0).print());
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println(begin + " " + url);
+                        e.printStackTrace();
+                    } finally {
+                        queue.offer(httpClient);
+                        cdl.countDown();
+                        openRequest.releaseConnection();
                     }
+                });
+            }
+            cdl.await();
 
-                    //                    dataMap.put(code, optionQuoteData);
-                } catch (Exception e) {
-                    System.out.println(begin + " " + url);
-                    e.printStackTrace();
-                } finally {
-                    queue.offer(httpClient);
-                    cdl.countDown();
-                    openRequest.releaseConnection();
-                }
-            });
+            result.addAll(dataMap.values());
         }
-        cdl.await();
-
-        //        List<String> result = dataMap.entrySet().stream().sorted((o1, o2) -> {
-        //            String key1 = o1.getKey();
-        //            String key2 = o2.getKey();
-        //            return Long.valueOf(key1).compareTo(Long.valueOf(key2));
-        //        }).map(kv -> kv.getValue()).collect(Collectors.toList());
-        result.addAll(dataMap.values());
 
         BaseUtils.writeFile(filePath, result);
         //        System.out.println(dataMap);
+        sortQuote(filePath);
     }
 
+    public static boolean testIfExistQuote(List<String> dayAllSeconds, String optionCode) throws Exception {
+        String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=1"
+          + "&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, dayAllSeconds.get(dayAllSeconds.size() - 1), dayAllSeconds.get(0), apiKey);
+        GetMethod get = new GetMethod(url);
+        HttpClient httpClient = queue.take();
+        try {
+            httpClient = queue.take();
+
+            httpClient.executeMethod(get);
+            InputStream openContent = get.getResponseBodyAsStream();
+            OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+            if (openResp == null) {
+                return false;
+            } else {
+                List<OptionQuote> openResults = openResp.getResults();
+                return CollectionUtils.isNotEmpty(openResults);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            queue.offer(httpClient);
+            get.releaseConnection();
+        }
+        return true;
+    }
 
     public static void getOptionQuote(List<String> optionCodeList, String date) throws Exception {
         int year = Integer.valueOf(date.substring(0, 4));
@@ -471,15 +488,15 @@ public class Strategy28 {
         Map<String, OptionQuoteData> dataMap = Maps.newHashMap();
         for (String code : optionCodeList) {
             cachedThread.execute(() -> {
-                HttpGet openRequest = new HttpGet(api + code + openUrl);
-                HttpGet closeRequest = new HttpGet(api + code + closeUrl);
-                CloseableHttpClient httpClient = null;
+                GetMethod openRequest = new GetMethod(api + code + openUrl);
+                GetMethod closeRequest = new GetMethod(api + code + closeUrl);
+                HttpClient httpClient = null;
                 try {
                     httpClient = queue.take();
                     double openBuy = 0, openSell = 0, closeBuy = 0, closeSell = 0;
 
-                    CloseableHttpResponse openExecute = httpClient.execute(openRequest);
-                    InputStream openContent = openExecute.getEntity().getContent();
+                    httpClient.executeMethod(openRequest);
+                    InputStream openContent = openRequest.getResponseBodyAsStream();
                     OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
                     List<OptionQuote> openResults = openResp.getResults();
                     if (CollectionUtils.isNotEmpty(openResults)) {
@@ -488,8 +505,8 @@ public class Strategy28 {
                         openSell = optionQuote.getAsk_price();
                     }
 
-                    CloseableHttpResponse closeExecute = httpClient.execute(closeRequest);
-                    InputStream closeContent = closeExecute.getEntity().getContent();
+                    httpClient.executeMethod(closeRequest);
+                    InputStream closeContent = closeRequest.getResponseBodyAsStream();
                     OptionQuoteResp closeResp = JSON.parseObject(closeContent, OptionQuoteResp.class);
                     List<OptionQuote> closeResults = closeResp.getResults();
                     if (CollectionUtils.isNotEmpty(closeResults)) {
@@ -786,17 +803,11 @@ public class Strategy28 {
         return result;
     }
 
-    public static String getOptionPutCode(String optionCallCode) {
-        int c_index = optionCallCode.lastIndexOf("C");
-        StringBuffer sb = new StringBuffer(optionCallCode);
-        return sb.replace(c_index, c_index + 1, "P").toString();
-    }
-
     public static void calOptionQuote(String code, Double price, String date) throws Exception {
         List<String> optionCode = getOptionCode(code, price, date);
         OptionTrade callTrade = getOptionQuote(optionCode, date, price, 1);
 
-        List<String> putOptionCode = optionCode.stream().map(Strategy28::getOptionPutCode).collect(Collectors.toList());
+        List<String> putOptionCode = optionCode.stream().map(BaseUtils::getOptionPutCode).collect(Collectors.toList());
         OptionTrade putTrade = getOptionQuote(putOptionCode, date, price, 0);
 
         if (callTrade == null || putTrade == null) {
@@ -901,7 +912,7 @@ public class Strategy28 {
             //            System.out.println(code);
             //            calOptionQuote(code, price, date);
             if (!code.equals("AGL11111")) {
-//                continue;
+                //                continue;
             }
 
             List<String> optionCode = getOptionCode(code, price, date);

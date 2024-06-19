@@ -1,0 +1,16 @@
+2024-06-01 03:58:56.111 [xxl-job, JobThread-8-1717185536094] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-06-01 03:58:56.128 [xxl-job, JobThread-8-1717185536094] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-01 03:58:56.146 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7202398162934290935
+2024-06-01 03:58:56.487 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7202398162932357728
+2024-06-01 03:58:59.130 [xxl-job, JobThread-8-1717185536094] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-01 03:58:59.133 [xxl-job, JobThread-8-1717185536094] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-06-01 03:58:59.143 [xxl-job, JobThread-8-1717185536094] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={MDB=StockPosition(stock=MDB, canSellQty=12.0, costPrice=236.945, currPrice=233.025)}, time=2024-06-01T03:58:59.142
+2024-06-01 03:58:59.144 [xxl-job, JobThread-8-1717185536094] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=MDB, count=12.0
+2024-06-01 03:58:59.221 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-06-01 03:58:59.312 [xxl-job, JobThread-8-1717185536094] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=5111547761262732100
+2024-06-01 03:58:59.826 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5111547761262732100, code=MDB, name=MongoDB, count=12.0, price=0.0, avgPrice=235.63, createTime=2024-05-31 15:58:59.322, updateTimestamp=1.717185539903433E9, status=0)
+2024-06-01 03:58:59.827 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5111547761262732100, code=MDB, name=MongoDB, count=12.0, price=0.0, avgPrice=235.63, createTime=2024-05-31 15:58:59.322, updateTimestamp=1.717185539903433E9, status=0)
+2024-06-01 03:58:59.827 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5111547761262732100, code=MDB, name=MongoDB, count=12.0, price=0.0, avgPrice=235.63, createTime=2024-05-31 15:58:59.322, updateTimestamp=1.717185539903433E9, status=0)
+2024-06-01 03:58:59.829 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5111547761262732100, code=MDB, name=MongoDB, count=12.0, price=0.0, avgPrice=235.63, createTime=2024-05-31 15:58:59.322, updateTimestamp=1.717185539903433E9, status=0)
+2024-06-01 03:58:59.830 [xxl-job, JobThread-8-1717185536094] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=MDB, orderId=5111547761262732100
+2024-06-01 03:58:59.830 [xxl-job, JobThread-8-1717185536094] INFO  luonq.job.TradeJob - tradeExecutor_db sell

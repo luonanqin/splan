@@ -1,0 +1,14 @@
+2024-05-03 03:58:56.102 [xxl-job, JobThread-8-1714679936086] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-03 03:58:56.125 [xxl-job, JobThread-8-1714679936086] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-03 03:58:56.145 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7191888914818638848
+2024-05-03 03:58:56.152 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7191888914825526873
+2024-05-03 03:58:59.135 [xxl-job, JobThread-8-1714679936086] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-03 03:58:59.142 [xxl-job, JobThread-8-1714679936086] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-03 03:58:59.194 [xxl-job, JobThread-8-1714679936086] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={LIN=StockPosition(stock=LIN, canSellQty=8.0, costPrice=421.17, currPrice=419.165)}, time=2024-05-03T03:58:59.193
+2024-05-03 03:58:59.194 [xxl-job, JobThread-8-1714679936086] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=LIN, count=8.0
+2024-05-03 03:58:59.236 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-03 03:58:59.339 [xxl-job, JobThread-8-1714679936086] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=2940479318869203852
+2024-05-03 03:58:59.732 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=2940479318869203852, code=LIN, name=Linde, count=8.0, price=0.0, avgPrice=419.205, createTime=2024-05-02 15:58:59.329, updateTimestamp=1.714679939762945E9, status=0)
+2024-05-03 03:58:59.734 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=2940479318869203852, code=LIN, name=Linde, count=8.0, price=0.0, avgPrice=419.205, createTime=2024-05-02 15:58:59.329, updateTimestamp=1.714679939762945E9, status=0)
+2024-05-03 03:58:59.734 [xxl-job, JobThread-8-1714679936086] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=LIN, orderId=2940479318869203852
+2024-05-03 03:58:59.734 [xxl-job, JobThread-8-1714679936086] INFO  luonq.job.TradeJob - tradeExecutor_db sell

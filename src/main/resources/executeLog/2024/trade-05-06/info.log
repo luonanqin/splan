@@ -1,0 +1,68 @@
+2024-05-10 03:58:56.071 [xxl-job, JobThread-8-1715284736058] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-10 03:58:56.086 [xxl-job, JobThread-8-1715284736058] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-10 03:58:56.099 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7194425629716503958
+2024-05-10 03:58:56.101 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7194425629713264288
+2024-05-10 03:58:59.093 [xxl-job, JobThread-8-1715284736058] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-10 03:58:59.094 [xxl-job, JobThread-8-1715284736058] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-10 03:58:59.103 [xxl-job, JobThread-8-1715284736058] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={EHAB=StockPosition(stock=EHAB, canSellQty=398.0, costPrice=7.88, currPrice=8.435)}, time=2024-05-10T03:58:59.103
+2024-05-10 03:58:59.104 [xxl-job, JobThread-8-1715284736058] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=EHAB, count=398.0
+2024-05-10 03:58:59.189 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-10 03:58:59.254 [xxl-job, JobThread-8-1715284736058] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=4137108407015088331
+2024-05-10 03:58:59.662 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 03:58:59.664 [xxl-job, JobThread-8-1715284736058] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=EHAB, orderId=4137108407015088331
+2024-05-10 03:58:59.665 [xxl-job, JobThread-8-1715284736058] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-05-10 03:58:59.664 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 03:58:59.666 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 03:58:59.667 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 03:58:59.667 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 03:58:59.667 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 03:58:59.667 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 03:58:59.667 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4137108407015088331, code=EHAB, name=Enhabit, count=398.0, price=0.0, avgPrice=8.29, createTime=2024-05-09 15:58:59.172, updateTimestamp=1.715284739652762E9, status=0)
+2024-05-10 16:00:00.084 [xxl-job, JobThread-3-1715328000069] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-05-10 16:00:00.086 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-05-10 16:01:30.644 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 90s
+
+2024-05-10 16:01:30.648 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-05-10 16:02:14.928 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 44s
+
+2024-05-10 16:02:14.928 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-05-10 16:02:21.143 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 6s
+
+2024-05-10 16:02:21.143 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-05-10 16:03:12.386 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 51s
+
+2024-05-10 16:03:12.386 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-05-10 16:04:15.685 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 63s
+
+2024-05-10 16:04:15.693 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-05-10 16:04:36.065 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 20s
+
+2024-05-10 16:04:36.065 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-05-10 16:04:42.918 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 6s
+
+2024-05-10 16:04:42.918 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-05-10 16:05:34.273 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 51s
+
+2024-05-10 16:05:34.274 [xxl-job, JobThread-3-1715328000069] INFO  luonq.stock.Processor - get data finish
+2024-05-10 16:05:34.281 [xxl-job, JobThread-3-1715328000069] INFO  luonq.job.GetDataJob - getTradeDataJobAndComputeIndicator.job end
+2024-05-10 16:30:00.057 [xxl-job, JobThread-6-1715329800051] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job start
+2024-05-10 16:30:00.058 [xxl-job, JobThread-6-1715329800051] INFO  luonq.data.WriteToDB - additionToDB begin
+2024-05-10 16:30:39.239 [xxl-job, JobThread-6-1715329800051] INFO  luonq.data.WriteToDB - sync count: 4546
+2024-05-10 16:30:39.759 [xxl-job, JobThread-6-1715329800051] INFO  luonq.data.WriteToDB - additionToDB end
+2024-05-10 16:30:39.778 [xxl-job, JobThread-6-1715329800051] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job end
+2024-05-10 17:00:00.066 [xxl-job, JobThread-4-1715331600055] INFO  luonq.job.GetDataJob - getRehab.job start
+2024-05-10 17:00:00.086 [xxl-job, JobThread-4-1715331600055] INFO  luonq.stock.Processor - GetRehab.getData start
+2024-05-10 17:50:12.836 [xxl-job, JobThread-4-1715331600055] INFO  luonq.stock.Processor - GetRehab.getData end. cost: 3012s
+
+2024-05-10 17:50:12.847 [xxl-job, JobThread-4-1715331600055] INFO  luonq.job.GetDataJob - getRehab.job end
+2024-05-10 19:00:00.067 [xxl-job, JobThread-5-1715338800062] INFO  luonq.job.GetDataJob - getEarning.job start
+2024-05-10 19:00:00.082 [xxl-job, JobThread-5-1715338800062] INFO  luonq.stock.Processor - GrabEarning.getData start
+2024-05-10 19:00:22.654 [xxl-job, JobThread-5-1715338800062] INFO  luonq.stock.Processor - GrabEarning.getData end. cost: 22s
+
+2024-05-10 19:00:22.673 [xxl-job, JobThread-5-1715338800062] INFO  luonq.job.GetDataJob - getEarning.job end
+2024-05-10 19:10:00.067 [xxl-job, JobThread-9-1715339400061] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job start
+2024-05-10 19:10:00.149 [xxl-job, JobThread-9-1715339400061] INFO  luonq.data.WriteToDB - sync earning finish. dateList=[2024-05-10], earning sum=396
+2024-05-10 19:10:00.156 [xxl-job, JobThread-9-1715339400061] INFO  luonq.job.SyncDataToDBJob - syncEarningToDB.job end
+2024-05-10 19:30:00.057 [xxl-job, JobThread-10-1715340600052] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job start
+2024-05-10 19:30:00.303 [xxl-job, JobThread-10-1715340600052] INFO  luonq.data.WriteToDB - finish rehabToDB. size=3152
+2024-05-10 19:30:00.309 [xxl-job, JobThread-10-1715340600052] INFO  luonq.job.SyncDataToDBJob - syncRehabToDB.job end

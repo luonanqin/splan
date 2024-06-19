@@ -1,0 +1,11 @@
+2024-06-08 01:03:52.756 [main] INFO  luonq.job.XxlJobConfig - >>>>>>>>>>> xxl-job config init.
+2024-06-08 03:58:56.331 [xxl-job, JobThread-8-1717790336317] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-06-08 03:58:56.801 [xxl-job, JobThread-8-1717790336317] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-08 03:58:56.893 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7204934880819083823
+2024-06-08 03:58:56.910 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7204934880814583509
+2024-06-08 03:58:59.809 [xxl-job, JobThread-8-1717790336317] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-08 03:58:59.832 [xxl-job, JobThread-8-1717790336317] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-06-08 03:58:59.900 [xxl-job, JobThread-8-1717790336317] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={}, time=2024-06-08T03:58:59.900
+2024-06-08 03:58:59.914 [xxl-job, JobThread-8-1717790336317] INFO  luonq.polygon.TradeExecutor_DB - position is empty. trade is end today!!!
+2024-06-08 03:58:59.914 [xxl-job, JobThread-8-1717790336317] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-06-08 03:58:59.933 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success

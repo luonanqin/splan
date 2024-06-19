@@ -1,0 +1,16 @@
+2024-05-15 03:58:56.088 [xxl-job, JobThread-8-1715716736076] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-15 03:58:56.117 [xxl-job, JobThread-8-1715716736076] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-15 03:58:56.125 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7196237569171515013
+2024-05-15 03:58:56.136 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7196237569171427642
+2024-05-15 03:58:59.127 [xxl-job, JobThread-8-1715716736076] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-15 03:58:59.129 [xxl-job, JobThread-8-1715716736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-15 03:58:59.140 [xxl-job, JobThread-8-1715716736076] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={PGNY=StockPosition(stock=PGNY, canSellQty=120.0, costPrice=27.676, currPrice=27.51)}, time=2024-05-15T03:58:59.139
+2024-05-15 03:58:59.141 [xxl-job, JobThread-8-1715716736076] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=PGNY, count=120.0
+2024-05-15 03:58:59.222 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-15 03:58:59.296 [xxl-job, JobThread-8-1715716736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=5878476550243031260
+2024-05-15 03:58:59.728 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5878476550243031260, code=PGNY, name=Progyny, count=120.0, price=0.0, avgPrice=27.4813, createTime=2024-05-14 15:58:59.237, updateTimestamp=1.715716739753319E9, status=0)
+2024-05-15 03:58:59.729 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5878476550243031260, code=PGNY, name=Progyny, count=120.0, price=0.0, avgPrice=27.4813, createTime=2024-05-14 15:58:59.237, updateTimestamp=1.715716739753319E9, status=0)
+2024-05-15 03:58:59.729 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5878476550243031260, code=PGNY, name=Progyny, count=120.0, price=0.0, avgPrice=27.4813, createTime=2024-05-14 15:58:59.237, updateTimestamp=1.715716739753319E9, status=0)
+2024-05-15 03:58:59.730 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=5878476550243031260, code=PGNY, name=Progyny, count=120.0, price=0.0, avgPrice=27.4813, createTime=2024-05-14 15:58:59.237, updateTimestamp=1.715716739753319E9, status=0)
+2024-05-15 03:58:59.730 [xxl-job, JobThread-8-1715716736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=PGNY, orderId=5878476550243031260
+2024-05-15 03:58:59.731 [xxl-job, JobThread-8-1715716736076] INFO  luonq.job.TradeJob - tradeExecutor_db sell

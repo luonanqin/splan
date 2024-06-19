@@ -57,9 +57,9 @@ import java.util.stream.Collectors;
  * 1.双开价外一档期权（无保护），且前日交易数量大于100张
  * 2.股票当天开盘和前日收盘差值比例，即abs(open-lastClose)/lastClose要大于2，即开盘和前日收盘差距越大，波动概率越高
  * 3.双开的call和put开盘差值比例，即abs(callopen/putopen-1)要小于10，即双开期权尽量中性
- * 测试结果1：2024年1月-5月23日，交易10次，成本1w，收益约2.3w
- * 测试结果2：2023年1月-5月24日，交易17次，成本1w，收益约7.2w
- * 测试结果3：2022年1月-5月23日，交易24次，成本1w，收益约3.8k
+ * 测试结果1：2024年1月-5月23日，交易10次，成本1w，收益约2.3w，按实际报价计算并按iv规则过滤收益约2w
+ * 测试结果2：2023年1月-5月24日，交易17次，成本1w，收益约7.2w，按实际报价计算并按iv规则过滤收益约14w
+ * 测试结果3：2022年1月-5月23日，交易24次，成本1w，收益约3.8k，按实际报价计算并按iv规则过滤收益约5k
  */
 public class Strategy32 {
 
@@ -67,17 +67,20 @@ public class Strategy32 {
     public static ThreadPoolExecutor cachedThread;
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     /* 2024 */
-    //    public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524 };
-    //    public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24" };
-    //    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24");
+    public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524 };
+    public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24" };
+    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24");
+    public static int year = 2024;
     /* 2023*/
-    //    public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
-    //    public static String[] weekStrArray = new String[] { "2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29" };
-    //    public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
+    //            public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
+    //            public static String[] weekStrArray = new String[] { "2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29" };
+    //            public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
+    //            public static int year = 2023;
     /* 2022 */
-    public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
-    public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
-    public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
+    //    public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
+    //    public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
+    //    public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
+    //    public static int year = 2022;
     public static Map<String/* stock */, Map<String/* date */, Map<String/* optionCode */, OptionDaily>>> stockOptionDailyMap = Maps.newHashMap();
     public static Map<String/* stock */, Map<Integer/* 档位 */, Double/* 振幅均值 */>> stockToVolatilityMap = Maps.newHashMap();
     public static Map<String/* date */, String/* lastDate */> dateMap = Maps.newHashMap(); // 当日和前日的映射
@@ -94,7 +97,7 @@ public class Strategy32 {
             queue.offer(HttpClients.createDefault());
         }
 
-        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2023, 2021);
+        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", year, year - 2);
         List<String> dateList = stockKLines.stream().map(StockKLine::getFormatDate).collect(Collectors.toList());
         for (int i = 0; i < dateList.size() - 2; i++) {
             dateMap.put(dateList.get(i), dateList.get(i + 1));
@@ -347,9 +350,12 @@ public class Strategy32 {
 
     public static Map<String/* date */, List<NearlyOptionData>> calOpenStrikePriceRatioMap() throws Exception {
         Map<String, List<NearlyOptionData>> dateToOpenStrikePriceRatioMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::dateToInt));
-        Map<String, String> nearlyOptionFileMap = BaseUtils.getFileMap(Constants.USER_PATH + "optionData/nearlyOpenOption2022");
+        Map<String, String> nearlyOptionFileMap = BaseUtils.getFileMap(Constants.USER_PATH + "optionData/nearlyOpenOption/" + year);
 
         for (String stock : nearlyOptionFileMap.keySet()) {
+            if (!stock.equals("AI")) {
+                //                                continue;
+            }
             String filePath = nearlyOptionFileMap.get(stock);
 
             List<String> lines = BaseUtils.readFile(filePath);
@@ -363,6 +369,9 @@ public class Strategy32 {
                 String openPrice = split[1];
                 String optionCode = split[2];
                 Integer optionPriceStep = Integer.valueOf(split[3]);
+                if (!date.equals("02/17/2022")) {
+                    //                    continue;
+                }
 
                 // 计算开盘价和行权价的差值
                 int index = optionCode.length() - 8;
@@ -381,17 +390,64 @@ public class Strategy32 {
                 }
                 int openPriceDigital = Integer.valueOf(openPriceSb.toString());
                 double priceDiffRatio = Math.abs(1 - (double) openPriceDigital / (double) strikePrice);
+                String optionPrefix = optionCode.substring(0, index + i);
 
                 // 计算行权价前后各两档的虚值期权代码
-                String optionPrefix = optionCode.substring(0, index + i);
-                int call_1 = strikePrice + optionPriceStep;
-                int call_2 = strikePrice + optionPriceStep * 2;
-                int put_1 = strikePrice - optionPriceStep;
-                int put_2 = strikePrice - optionPriceStep * 2;
+                // 改进后算法
+                //                int upStrikePrice = 0;
+                //                int downStrikePrice = 0;
+                //                if (openPriceDigital != strikePrice) {
+                //                    if (openPriceDigital < strikePrice) {
+                //                        upStrikePrice = strikePrice;
+                //                        downStrikePrice = strikePrice - optionPriceStep;
+                //                    } else {
+                //                        upStrikePrice = strikePrice + optionPriceStep;
+                //                        downStrikePrice = strikePrice;
+                //                    }
+                //                    if (openPriceDigital - optionPriceStep * 0.25 < downStrikePrice) {
+                //                        downStrikePrice = downStrikePrice - optionPriceStep;
+                //                    }
+                //                    if (openPriceDigital + optionPriceStep * 0.25 > upStrikePrice) {
+                //                        upStrikePrice = upStrikePrice + optionPriceStep;
+                //                    }
+                //                } else if (openPriceDigital == strikePrice) {
+                //                    upStrikePrice = strikePrice + optionPriceStep;
+                //                    downStrikePrice = strikePrice - optionPriceStep;
+                //                }
+                //                String call_1 = String.valueOf(upStrikePrice);
+                //                String call_2 = String.valueOf(upStrikePrice + optionPriceStep);
+                //                String put_1 = String.valueOf(downStrikePrice);
+                //                String put_2 = String.valueOf(downStrikePrice - optionPriceStep);
+                // 改进前算法
+                String call_1 = String.valueOf(strikePrice + optionPriceStep);
+                String call_2 = String.valueOf(strikePrice + optionPriceStep * 2);
+                String put_1 = String.valueOf(strikePrice - optionPriceStep);
+                String put_2 = String.valueOf(strikePrice - optionPriceStep * 2);
+
                 String optionCode_call1 = optionPrefix + call_1;
                 String optionCode_call2 = optionPrefix + call_2;
                 String optionCode_put1 = BaseUtils.getOptionPutCode(optionPrefix + put_1);
                 String optionCode_put2 = BaseUtils.getOptionPutCode(optionPrefix + put_2);
+                if (call_1.length() < strikePriceLength) {
+                    optionCode_call1 = optionPrefix + "0" + call_1;
+                } else if (call_1.length() > strikePriceLength) {
+                    optionCode_call1 = optionPrefix.substring(0, optionPrefix.length() - 1) + call_1;
+                }
+                if (call_2.length() < strikePriceLength) {
+                    optionCode_call2 = optionPrefix + "0" + call_2;
+                } else if (call_2.length() > strikePriceLength) {
+                    optionCode_call2 = optionPrefix.substring(0, optionPrefix.length() - 1) + call_2;
+                }
+                if (put_1.length() < strikePriceLength) {
+                    optionCode_put1 = BaseUtils.getOptionPutCode(optionPrefix + "0" + put_1);
+                } else if (put_1.length() > strikePriceLength) {
+                    optionCode_put1 = BaseUtils.getOptionPutCode(optionPrefix.substring(0, optionPrefix.length() - 1) + put_1);
+                }
+                if (put_2.length() < strikePriceLength) {
+                    optionCode_put2 = BaseUtils.getOptionPutCode(optionPrefix + "0" + put_2);
+                } else if (put_2.length() > strikePriceLength) {
+                    optionCode_put2 = BaseUtils.getOptionPutCode(optionPrefix.substring(0, optionPrefix.length() - 1) + put_2);
+                }
 
                 NearlyOptionData nearlyOptionData = new NearlyOptionData();
                 nearlyOptionData.setDate(date);
@@ -420,7 +476,7 @@ public class Strategy32 {
         return dateToOpenStrikePriceRatioMap;
     }
 
-    private static OptionDaily requestOptionDailyList(CloseableHttpClient httpClient, String date, String code) throws IOException {
+    public static OptionDaily requestOptionDailyList(CloseableHttpClient httpClient, String date, String code) throws IOException {
         String url = String.format("https://api.polygon.io/v1/open-close/%s/%s?adjusted=true&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY",
           code, date);
 
@@ -570,45 +626,6 @@ public class Strategy32 {
         BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionDaily/" + stock, lines);
     }
 
-    private static void calCallWithProtect() throws Exception {
-        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/裸买和带保护");
-        Map<String, List<Double>> dateToCall = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
-        Map<String, List<Double>> dateToCallP = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
-        for (String line : lines) {
-            String[] split = line.split("\t");
-            String date = split[0];
-            double call = Double.parseDouble(split[1]);
-            double callP = Double.parseDouble(split[2]);
-
-            if (!dateToCall.containsKey(date)) {
-                dateToCall.put(date, Lists.newArrayList());
-            }
-            dateToCall.get(date).add(call);
-
-            if (!dateToCallP.containsKey(date)) {
-                dateToCallP.put(date, Lists.newArrayList());
-            }
-            dateToCallP.get(date).add(callP);
-        }
-
-        double init = 10000;
-        for (String date : dateToCall.keySet()) {
-            List<Double> doubles = dateToCall.get(date);
-            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
-            init = init * (1 + avgRatio / 100);
-            System.out.println(date + "\t" + init);
-        }
-
-        System.out.println();
-
-        init = 10000;
-        for (String date : dateToCallP.keySet()) {
-            List<Double> doubles = dateToCallP.get(date);
-            Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
-            init = init * (1 + avgRatio / 100);
-            System.out.println(date + "\t" + init);
-        }
-    }
 
     private static StockKLine getLastKLine(String date, String stock) throws Exception {
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, 2024, 2021);
@@ -637,6 +654,7 @@ public class Strategy32 {
     }
 
     private static void calStraddleData() throws Exception {
+        Map<String, List<Double>> ivMap = loadIvMap();
         Map<String, List<NearlyOptionData>> dateOpenStrikePriceRatioMap = calOpenStrikePriceRatioMap();
         for (String date : dateOpenStrikePriceRatioMap.keySet()) {
             String formatDate = BaseUtils.formatDate(date);
@@ -726,33 +744,50 @@ public class Strategy32 {
                     continue;
                 }
 
-                System.out.println(stock + "\t" + openPrice + "\t" + lastClose + "\t" + bollCrossOpenClose + "\t" + avgAmplitude + "\t" + straddleOption);
+                List<Double> call_1_IvList = ivMap.get(outPriceCallOptionCode_1);
+                List<Double> put_1_IvList = ivMap.get(outPricePutOptionCode_1);
+                boolean call_1_canTrade = canTradeForIv(call_1_IvList);
+                boolean put_1_canTrade = canTradeForIv(put_1_IvList);
+                boolean canTradeForIv = call_1_canTrade && put_1_canTrade;
+
+                //                calStraddleSimulateTrade(call_1, put_1);
+                System.out.println(stock + "\t" + openPrice + "\t" + lastClose + "\t" + canTradeForIv + "\t" + straddleOption);
             }
         }
     }
 
     // 根据报价数据计算双开模拟交易数据，用于测试止损和止盈点
-    public static void calStraddleSimulateTrade(OptionDaily call, OptionDaily put) throws Exception {
+    public static String calStraddleSimulateTrade(OptionDaily call, OptionDaily put, Double calCallOpen, Double calPutOpen) throws Exception {
         String date = call.getFrom();
         String callCode = call.getSymbol().substring(2);
         String putCode = put.getSymbol().substring(2);
-        double callOpen = call.getOpen();
-        double putOpen = put.getOpen();
 
         int _2_index = callCode.indexOf("2");
-        String stock = callCode.substring(2, _2_index);
+        String stock = callCode.substring(0, _2_index);
 
-        List<String> callQuoteList = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + callCode);
-        List<String> putQuoteList = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + putCode);
+        String callFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + callCode;
+        //        Strategy28.sortQuote(callFilePath);
+        List<String> callQuoteList = BaseUtils.readFile(callFilePath);
+        String putFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + putCode;
+        //        Strategy28.sortQuote(putFilePath);
+        List<String> putQuoteList = BaseUtils.readFile(putFilePath);
+        if (CollectionUtils.isEmpty(callQuoteList) || CollectionUtils.isEmpty(putQuoteList)) {
+            return "noData";
+        }
 
         List<String> dayAllSeconds = Strategy28.getDayAllSeconds(date);
         Map<Long, Double> callQuotePriceMap = calQuoteListForSeconds(callQuoteList);
         Map<Long, Double> putQuotePriceMap = calQuoteListForSeconds(putQuoteList);
+        Map<Long, Double> callBidPriceMap = calQuoteBidForSeconds(callQuoteList);
+        Map<Long, Double> putBidPriceMap = calQuoteBidForSeconds(putQuoteList);
 
         Map<Long, Double> callTradePriceMap = Maps.newHashMap();
         Map<Long, Double> putTradePriceMap = Maps.newHashMap();
+        Map<Long, Double> callBidTradePriceMap = Maps.newHashMap();
+        Map<Long, Double> putBidTradePriceMap = Maps.newHashMap();
 
         double tempCallPrice = 0, tempPutPrice = 0;
+        double tempCallBidPrice = 0, tempPutBidPrice = 0;
         for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
             Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
             Double callPrice = callQuotePriceMap.get(seconds);
@@ -765,28 +800,119 @@ public class Strategy32 {
             }
             callTradePriceMap.put(seconds, tempCallPrice);
             putTradePriceMap.put(seconds, tempPutPrice);
+
+            Double callBidPrice = callBidPriceMap.get(seconds);
+            Double putBidPrice = putBidPriceMap.get(seconds);
+            if (callBidPrice != null) {
+                tempCallBidPrice = callBidPrice;
+            }
+            if (putBidPrice != null) {
+                tempPutBidPrice = putBidPrice;
+            }
+            callBidTradePriceMap.put(seconds, tempCallBidPrice);
+            putBidTradePriceMap.put(seconds, tempPutBidPrice);
         }
 
-        for (int i = 30; i < dayAllSeconds.size() - 60; i++) {
-            Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
-            Double callPrice = callTradePriceMap.get(seconds);
-            Double putPrice = putTradePriceMap.get(seconds);
-            double callDiff = callPrice - callOpen;
-            double putDiff = putPrice - putOpen;
-            double allDiff = callDiff + putDiff;
-            double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        Double callOpen = 0d;
+        Double putOpen = 0d;
+        Double callBid = 0d;
+        Double putBid = 0d;
+        Long buySeconds = 0l;
+        for (int i = 9; i < 10; i++) {
+            Long openSeconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
+            if (callTradePriceMap.get(openSeconds) != 0) {
+                callOpen = callTradePriceMap.get(openSeconds);
+            }
+            if (putTradePriceMap.get(openSeconds) != 0) {
+                putOpen = putTradePriceMap.get(openSeconds);
+            }
 
-            String datetime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            System.out.println(datetime + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio + "%");
+            callBid = MapUtils.getDouble(callBidTradePriceMap, openSeconds, 0d);
+            putBid = MapUtils.getDouble(putBidTradePriceMap, openSeconds, 0d);
+
+            if (callOpen != 0 && putOpen != 0) {
+                buySeconds = openSeconds;
+                break;
+            }
         }
+        if (callOpen != 0) {
+            if (calCallOpen != 0 && calCallOpen < callOpen && calCallOpen >= callBid) {
+                callOpen = calCallOpen;
+            }
+        } else {
+            callOpen = calCallOpen;
+        }
+
+        if (putOpen != 0) {
+            if (calPutOpen != 0 && calPutOpen < putOpen && calPutOpen >= putBid) {
+                putOpen = calPutOpen;
+            }
+        } else {
+            putOpen = calPutOpen;
+        }
+        if (callOpen == 0 || putOpen == 0) {
+            return "empty";
+        }
+        List<String> list = Lists.newArrayList();
+        String result = "";
+        //        for (int i = 60; i < dayAllSeconds.size() - 60; i++) {
+        //            Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
+        //            Double callClose = callTradePriceMap.get(seconds);
+        //            Double putClose = putTradePriceMap.get(seconds);
+        //            if (callClose == 0 || putClose == 0) {
+        //                continue;
+        //            }
+        //            double callDiff = BigDecimal.valueOf(callClose - callOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        //            double putDiff = BigDecimal.valueOf(putClose - putOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        //            double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        //            double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        //
+        //            String sellTime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        //            String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        //            //            list.add(result);
+        //            //            System.out.println(result);
+        //            if (diffRatio < -40) {
+        //                result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+        //                return result;
+        //            }
+        //            if (i <= 10800 && i >= 120) {
+        //                if (diffRatio > 20) {
+        //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+        //                    return result;
+        //                } else
+        //                    if (diffRatio < -30) {
+        //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+        //                    return result;
+        //                }
+        //            } else if (i > 10800) {
+        //                if (diffRatio < -10 || diffRatio > 10) {
+        //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+        //                    return result;
+        //                }
+        //            }
+        //        }
+        //                System.out.println(result);
+        //        BaseUtils.writeFile(Constants.USER_PATH + "optionData/trade/" + year + "/" + date + "_" + stock, list);
+        Long sellSeconds = Long.valueOf(dayAllSeconds.get(dayAllSeconds.size() - 60)) / 1000000000;
+        Double callClose = callTradePriceMap.get(sellSeconds);
+        Double putClose = putTradePriceMap.get(sellSeconds);
+        double callDiff = BigDecimal.valueOf(callClose - callOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        double putDiff = BigDecimal.valueOf(putClose - putOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String sellTime = LocalDateTime.ofEpochSecond(sellSeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+
+        return result;
     }
 
-    private static Map<Long, Double> calQuoteListForSeconds(List<String> callQuoteList) {
+    private static Map<Long, Double> calQuoteListForSeconds(List<String> quoteList) {
         Map<Long, Double> secondsPriceMap = Maps.newHashMap();
         long latestTime = 0;
         List<Double> askPriceList = Lists.newArrayList();
         List<Double> bidPriceList = Lists.newArrayList();
-        for (String callQuote : callQuoteList) {
+        for (String callQuote : quoteList) {
             String[] split = callQuote.split("\t"); // 1706126148133253376	2.02	18	1.97	13
             Long timestamp = Long.valueOf(split[0]) / 1000000000;
             int askSize = Integer.parseInt(split[2]);
@@ -797,20 +923,49 @@ public class Strategy32 {
                 continue;
             }
 
-            if (timestamp == latestTime) {
+            if (timestamp != latestTime) {
                 Double avgAskPrice = askPriceList.stream().collect(Collectors.averagingDouble(a -> a));
                 Double avgBidPrice = bidPriceList.stream().collect(Collectors.averagingDouble(b -> b));
-                latestTime = timestamp;
-                if (avgAskPrice == 0) {
-                    continue;
-                } else {
-                    secondsPriceMap.put(timestamp, BigDecimal.valueOf((avgAskPrice + avgBidPrice) / 2).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                if (avgAskPrice != 0) {
+                    secondsPriceMap.put(latestTime, BigDecimal.valueOf((avgAskPrice + avgBidPrice) / 2).setScale(2, RoundingMode.HALF_UP).doubleValue());
                     askPriceList.clear();
                     bidPriceList.clear();
                 }
+                latestTime = timestamp;
+                askPriceList.add(askPrice);
+                bidPriceList.add(bidPrice);
             } else {
                 askPriceList.add(askPrice);
                 bidPriceList.add(bidPrice);
+            }
+        }
+        return secondsPriceMap;
+    }
+
+    private static Map<Long, Double> calQuoteBidForSeconds(List<String> quoteList) {
+        Map<Long, Double> secondsPriceMap = Maps.newHashMap();
+        long latestTime = 0;
+        List<Double> priceList = Lists.newArrayList();
+        for (String callQuote : quoteList) {
+            String[] split = callQuote.split("\t"); // 1706126148133253376	2.02	18	1.97	13
+            Long timestamp = Long.valueOf(split[0]) / 1000000000;
+            int askSize = Integer.parseInt(split[2]);
+            int bidSize = Integer.parseInt(split[4]);
+            double askPrice = Double.parseDouble(split[1]);
+            double bidPrice = Double.parseDouble(split[3]);
+            double price = askPrice > bidPrice ? bidPrice : askPrice;
+            if (askSize < 5 && bidSize < 5 && price > 0) {
+                continue;
+            }
+
+            if (timestamp != latestTime) {
+                Double avgPrice = priceList.stream().collect(Collectors.averagingDouble(a -> a));
+                secondsPriceMap.put(latestTime, avgPrice);
+                latestTime = timestamp;
+                priceList.clear();
+                priceList.add(price);
+            } else {
+                priceList.add(price);
             }
         }
         return secondsPriceMap;
@@ -837,7 +992,7 @@ public class Strategy32 {
             List<String> optionCodeList = Lists.newArrayList();
             for (NearlyOptionData nearlyOptionData : nearlyOptionDataList) {
                 if (nearlyOptionData.getOpenStrikePriceDiffRatio().compareTo(0.0) != 0) {
-                    break;
+                    //                    break;
                 }
                 String callOptionCode = nearlyOptionData.getOutPriceCallOptionCode_1();
                 String putOptionCode = nearlyOptionData.getOutPricePutOptionCode_1();
@@ -973,92 +1128,247 @@ public class Strategy32 {
     public static void getOptionQuoteList() throws Exception {
         Strategy28.init();
         List<String> list = Lists.newArrayList();
-        list.add("2023-07-06	O:AI230707C00039500");
-        list.add("2023-03-20	O:JD230324C00038500");
-        list.add("2023-07-26	O:SOUN230728C00003000");
-        list.add("2023-09-25	O:AI230929C00024500");
-        list.add("2023-01-26	O:SPCE230127C00006000");
-        list.add("2023-08-07	O:IEP230811C00024500");
-        list.add("2023-12-28	O:BIDU231229C00118000");
-        list.add("2023-10-17	O:NVDA231020C00442500");
-        list.add("2023-01-10	O:LI230113C00023000");
-        list.add("2023-09-13	O:AAL230915C00014000");
-        list.add("2023-04-26	O:TWLO230428C00055000");
-        list.add("2023-01-24	O:ENPH230127C00225000");
-        list.add("2023-07-25	O:CLF230728C00017500");
-        list.add("2023-05-01	O:UBER230505C00032500");
-        list.add("2023-02-21	O:DKNG230224C00020500");
-        list.add("2023-11-06	O:AMC231110C00011500");
-        list.add("2023-07-24	O:SHOP230728C00068000");
-        list.add("2023-05-24	O:MRVL230526C00046000");
-        list.add("2023-07-18	O:BAC230721C00030500");
-        list.add("2023-10-04	O:NKLA231006C00002000");
-        list.add("2023-12-13	O:MRNA231215C00077000");
-        list.add("2023-11-21	O:URBN231124C00037000");
-        list.add("2023-04-26	O:META230428C00215000");
-        list.add("2023-01-31	O:TSM230203C00092000");
-        list.add("2023-01-03	O:NCLH230106C00013000");
-        list.add("2023-07-27	O:AMZN230728C00132000");
-        list.add("2023-08-02	O:ENPH230804C00146000");
-        list.add("2023-11-06	O:UPST231110C00031500");
-        list.add("2023-04-17	O:SCHW230421C00050000");
-        list.add("2023-02-07	O:GME230210C00023500");
-        list.add("2023-01-25	O:SQ230127C00078000");
-        list.add("2023-04-26	O:QS230428C00008000");
-        list.add("2023-11-21	O:BBY231124C00066000");
-        list.add("2023-02-02	O:UPST230203C00022000");
-        list.add("2023-11-07	O:UBER231110C00047500");
-        list.add("2023-05-22	O:PLUG230526C00008500");
-        list.add("2023-11-14	O:BAC231117C00029000");
-        list.add("2023-02-15	O:RIVN230217C00019500");
-        list.add("2023-07-06	O:AI230707P00038500");
-        list.add("2023-03-20	O:JD230324P00037500");
-        list.add("2023-07-26	O:SOUN230728P00002000");
-        list.add("2023-09-25	O:AI230929P00023500");
-        list.add("2023-01-26	O:SPCE230127P00005000");
-        list.add("2023-08-07	O:IEP230811P00023500");
-        list.add("2023-12-28	O:BIDU231229P00116000");
-        list.add("2023-10-17	O:NVDA231020P00437500");
-        list.add("2023-01-10	O:LI230113P00022000");
-        list.add("2023-09-13	O:AAL230915P00013000");
-        list.add("2023-04-26	O:TWLO230428P00053000");
-        list.add("2023-01-24	O:ENPH230127P00220000");
-        list.add("2023-07-25	O:CLF230728P00016500");
-        list.add("2023-05-01	O:UBER230505P00031500");
-        list.add("2023-02-21	O:DKNG230224P00019500");
-        list.add("2023-11-06	O:AMC231110P00010500");
-        list.add("2023-07-24	O:SHOP230728P00066000");
-        list.add("2023-05-24	O:MRVL230526P00045000");
-        list.add("2023-07-18	O:BAC230721P00029500");
-        list.add("2023-10-04	O:NKLA231006P00001000");
-        list.add("2023-12-13	O:MRNA231215P00075000");
-        list.add("2023-11-21	O:URBN231124P00035000");
-        list.add("2023-04-26	O:META230428P00210000");
-        list.add("2023-01-31	O:TSM230203P00090000");
-        list.add("2023-01-03	O:NCLH230106P00012000");
-        list.add("2023-07-27	O:AMZN230728P00130000");
-        list.add("2023-08-02	O:ENPH230804P00144000");
-        list.add("2023-11-06	O:UPST231110P00030500");
-        list.add("2023-04-17	O:SCHW230421P00049000");
-        list.add("2023-02-07	O:GME230210P00022500");
-        list.add("2023-01-25	O:SQ230127P00076000");
-        list.add("2023-04-26	O:QS230428P00007000");
-        list.add("2023-11-21	O:BBY231124P00064000");
-        list.add("2023-02-02	O:UPST230203P00021000");
-        list.add("2023-11-07	O:UBER231110P00046500");
-        list.add("2023-05-22	O:PLUG230526P00007500");
-        list.add("2023-11-14	O:BAC231117P00028000");
-        list.add("2023-02-15	O:RIVN230217P00018500");
+        list.add("2022-02-01	O:SNAP220204C00035000");
+        list.add("2022-02-10	O:UPST220211C00109000");
+        list.add("2022-02-14	O:RBLX220218C00069000");
+        list.add("2022-02-15	O:CROX220218C00105000");
+        list.add("2022-02-15	O:ROKU220218C00165000");
+        list.add("2022-02-15	O:TTD220218C00080000");
+        list.add("2022-02-15	O:SPWR220218C00017000");
+        list.add("2022-02-15	O:NVDA220218C00252500");
+        list.add("2022-02-15	O:DVN220218C00052000");
+        list.add("2022-02-16	O:DKNG220218C00023500");
+        list.add("2022-02-17	O:FUBO220218C00011000");
+        list.add("2022-02-22	O:BABA220225C00115000");
+        list.add("2022-02-22	O:RKT220225C00012500");
+        list.add("2022-02-23	O:COIN220225C00182500");
+        list.add("2022-02-23	O:LAZR220225C00015000");
+        list.add("2022-02-24	O:AMC220225C00015500");
+        list.add("2022-02-24	O:MARA220225C00020000");
+        list.add("2022-03-01	O:SOFI220304C00012500");
+        list.add("2022-03-07	O:FCEL220311C00006000");
+        list.add("2022-03-09	O:BLNK220311C00025500");
+        list.add("2022-03-15	O:S220318C00035000");
+        list.add("2022-03-29	O:MU220401C00083000");
+        list.add("2022-05-05	O:COIN220506C00126000");
+        list.add("2022-05-05	O:LAZR220506C00012500");
+        list.add("2022-05-09	O:UPST220513C00082000");
+        list.add("2022-05-09	O:NCLH220513C00018500");
+        list.add("2022-05-09	O:CPNG220513C00012000");
+        list.add("2022-05-10	O:COIN220513C00088000");
+        list.add("2022-05-10	O:CPNG220513C00010500");
+        list.add("2022-05-10	O:RIOT220513C00009000");
+        list.add("2022-05-10	O:AFRM220513C00020000");
+        list.add("2022-05-19	O:XPEV220520C00024000");
+        list.add("2022-05-23	O:NVDA220527C00165000");
+        list.add("2022-05-24	O:CGC220527C00005500");
+        list.add("2022-05-24	O:NVDA220527C00167500");
+        list.add("2022-05-26	O:COST220527C00455000");
+        list.add("2022-05-26	O:AEO220527C00014500");
+        list.add("2022-06-06	O:NIO220610C00019500");
+        list.add("2022-06-21	O:BB220624C00006000");
+        list.add("2022-07-14	O:C220715C00045000");
+        list.add("2022-07-19	O:UAL220722C00040500");
+        list.add("2022-07-19	O:AAL220722C00015500");
+        list.add("2022-07-26	O:AMZN220729C00117000");
+        list.add("2022-07-27	O:META220729C00165000");
+        list.add("2022-08-02	O:NKLA220805C00007000");
+        list.add("2022-08-03	O:LUMN220805C00011500");
+        list.add("2022-08-03	O:NKLA220805C00007500");
+        list.add("2022-08-04	O:AMC220805C00019500");
+        list.add("2022-08-04	O:OPEN220805C00005500");
+        list.add("2022-08-08	O:RIVN220812C00037000");
+        list.add("2022-08-08	O:PLUG220812C00027000");
+        list.add("2022-08-08	O:NCLH220812C00014000");
+        list.add("2022-08-09	O:COIN220812C00095000");
+        list.add("2022-08-16	O:TGT220819C00180000");
+        list.add("2022-08-17	O:KSS220819C00034500");
+        list.add("2022-08-22	O:PTON220826C00012000");
+        list.add("2022-08-22	O:AFRM220826C00030000");
+        list.add("2022-08-24	O:PDD220826C00049500");
+        list.add("2022-08-24	O:AFRM220826C00030500");
+        list.add("2022-08-25	O:CHPT220826C00016000");
+        list.add("2022-08-29	O:CHPT220902C00015500");
+        list.add("2022-08-30	O:CHPT220902C00016000");
+        list.add("2022-09-01	O:GME220902C00028500");
+        list.add("2022-10-13	O:NFLX221014C00215000");
+        list.add("2022-10-17	O:TSLA221021C00212500");
+        list.add("2022-10-18	O:TSLA221021C00232500");
+        list.add("2022-10-26	O:AMZN221028C00117000");
+        list.add("2022-10-31	O:SOFI221104C00006000");
+        list.add("2022-10-31	O:ROKU221104C00057000");
+        list.add("2022-10-31	O:PARA221104C00019000");
+        list.add("2022-11-01	O:RKT221104C00007500");
+        list.add("2022-11-01	O:MRNA221104C00157500");
+        list.add("2022-11-01	O:HOOD221104C00012500");
+        list.add("2022-11-01	O:BTU221104C00025000");
+        list.add("2022-11-01	O:LAZR221104C00009000");
+        list.add("2022-11-01	O:ABNB221104C00112000");
+        list.add("2022-11-01	O:COIN221104C00070000");
+        list.add("2022-11-01	O:AMD221104C00062000");
+        list.add("2022-11-01	O:PARA221104C00019000");
+        list.add("2022-11-01	O:GOOS221104C00018000");
+        list.add("2022-11-02	O:WBD221104C00013500");
+        list.add("2022-11-07	O:PLUG221111C00015500");
+        list.add("2022-11-07	O:LYFT221111C00014500");
+        list.add("2022-11-09	O:RIVN221111C00031500");
+        list.add("2022-11-10	O:RUM221111C00013000");
+        list.add("2022-11-15	O:NVDA221118C00170000");
+        list.add("2022-11-17	O:JD221118C00053000");
+        list.add("2022-11-17	O:STNE221118C00010500");
+        list.add("2022-12-06	O:LI221209C00023000");
+        list.add("2022-12-07	O:LI221209C00022500");
+        list.add("2022-02-01	O:SNAP220204P00033000");
+        list.add("2022-02-10	O:UPST220211P00107000");
+        list.add("2022-02-14	O:RBLX220218P00067000");
+        list.add("2022-02-15	O:CROX220218P00095000");
+        list.add("2022-02-15	O:ROKU220218P00160000");
+        list.add("2022-02-15	O:TTD220218P00078000");
+        list.add("2022-02-15	O:SPWR220218P00016000");
+        list.add("2022-02-15	O:NVDA220218P00247500");
+        list.add("2022-02-15	O:DVN220218P00050000");
+        list.add("2022-02-16	O:DKNG220218P00022500");
+        list.add("2022-02-17	O:FUBO220218P00010000");
+        list.add("2022-02-22	O:BABA220225P00113000");
+        list.add("2022-02-22	O:RKT220225P00011500");
+        list.add("2022-02-23	O:COIN220225P00177500");
+        list.add("2022-02-23	O:LAZR220225P00014000");
+        list.add("2022-02-24	O:AMC220225P00014500");
+        list.add("2022-02-24	O:MARA220225P00019000");
+        list.add("2022-03-01	O:SOFI220304P00011500");
+        list.add("2022-03-07	O:FCEL220311P00005000");
+        list.add("2022-03-09	O:BLNK220311P00024500");
+        list.add("2022-03-15	O:S220318P00025000");
+        list.add("2022-03-29	O:MU220401P00081000");
+        list.add("2022-05-05	O:COIN220506P00124000");
+        list.add("2022-05-05	O:LAZR220506P00011500");
+        list.add("2022-05-09	O:UPST220513P00080000");
+        list.add("2022-05-09	O:NCLH220513P00017500");
+        list.add("2022-05-09	O:CPNG220513P00011000");
+        list.add("2022-05-10	O:COIN220513P00086000");
+        list.add("2022-05-10	O:CPNG220513P00009500");
+        list.add("2022-05-10	O:RIOT220513P00008000");
+        list.add("2022-05-10	O:AFRM220513P00018000");
+        list.add("2022-05-19	O:XPEV220520P00023000");
+        list.add("2022-05-23	O:NVDA220527P00160000");
+        list.add("2022-05-24	O:CGC220527P00004500");
+        list.add("2022-05-24	O:NVDA220527P00162500");
+        list.add("2022-05-26	O:COST220527P00445000");
+        list.add("2022-05-26	O:AEO220527P00013500");
+        list.add("2022-06-06	O:NIO220610P00018500");
+        list.add("2022-06-21	O:BB220624P00005000");
+        list.add("2022-07-14	O:C220715P00044000");
+        list.add("2022-07-19	O:UAL220722P00039500");
+        list.add("2022-07-19	O:AAL220722P00014500");
+        list.add("2022-07-26	O:AMZN220729P00115000");
+        list.add("2022-07-27	O:META220729P00160000");
+        list.add("2022-08-02	O:NKLA220805P00006000");
+        list.add("2022-08-03	O:LUMN220805P00010500");
+        list.add("2022-08-03	O:NKLA220805P00006500");
+        list.add("2022-08-04	O:AMC220805P00018500");
+        list.add("2022-08-04	O:OPEN220805P00004500");
+        list.add("2022-08-08	O:RIVN220812P00036000");
+        list.add("2022-08-08	O:PLUG220812P00026000");
+        list.add("2022-08-08	O:NCLH220812P00013000");
+        list.add("2022-08-09	O:COIN220812P00093000");
+        list.add("2022-08-16	O:TGT220819P00175000");
+        list.add("2022-08-17	O:KSS220819P00033500");
+        list.add("2022-08-22	O:PTON220826P00011000");
+        list.add("2022-08-22	O:AFRM220826P00029000");
+        list.add("2022-08-24	O:PDD220826P00048500");
+        list.add("2022-08-24	O:AFRM220826P00029500");
+        list.add("2022-08-25	O:CHPT220826P00015000");
+        list.add("2022-08-29	O:CHPT220902P00014500");
+        list.add("2022-08-30	O:CHPT220902P00015000");
+        list.add("2022-09-01	O:GME220902P00027500");
+        list.add("2022-10-13	O:NFLX221014P00210000");
+        list.add("2022-10-17	O:TSLA221021P00207500");
+        list.add("2022-10-18	O:TSLA221021P00227500");
+        list.add("2022-10-26	O:AMZN221028P00115000");
+        list.add("2022-10-31	O:SOFI221104P00005000");
+        list.add("2022-10-31	O:ROKU221104P00055000");
+        list.add("2022-10-31	O:PARA221104P00018000");
+        list.add("2022-11-01	O:RKT221104P00006500");
+        list.add("2022-11-01	O:MRNA221104P00152500");
+        list.add("2022-11-01	O:HOOD221104P00011500");
+        list.add("2022-11-01	O:BTU221104P00024000");
+        list.add("2022-11-01	O:LAZR221104P00008000");
+        list.add("2022-11-01	O:ABNB221104P00110000");
+        list.add("2022-11-01	O:COIN221104P00068000");
+        list.add("2022-11-01	O:AMD221104P00060000");
+        list.add("2022-11-01	O:PARA221104P00018000");
+        list.add("2022-11-01	O:GOOS221104P00016000");
+        list.add("2022-11-02	O:WBD221104P00012500");
+        list.add("2022-11-07	O:PLUG221111P00014500");
+        list.add("2022-11-07	O:LYFT221111P00013500");
+        list.add("2022-11-09	O:RIVN221111P00030500");
+        list.add("2022-11-10	O:RUM221111P00012000");
+        list.add("2022-11-15	O:NVDA221118P00165000");
+        list.add("2022-11-17	O:JD221118P00051000");
+        list.add("2022-11-17	O:STNE221118P00009500");
+        list.add("2022-12-06	O:LI221209P00022000");
+        list.add("2022-12-07	O:LI221209P00021500");
         for (String l : list) {
             String[] split = l.split("\t");
             String date = split[0];
             String code = split[1];
             OptionCode optionCode = new OptionCode();
             optionCode.setCode(code);
+            long begin = System.currentTimeMillis();
             Strategy28.getOptionQuoteList(optionCode, date);
-            System.out.println("finish " + l);
+            long end = System.currentTimeMillis();
+            System.out.println("finish " + l + ", cost: " + (end - begin) + "ms");
         }
     }
+
+    public static Map<String/* optionCode */, List<Double>/* iv list */> loadIvMap() throws Exception {
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/IV/" + year + "/IV");
+        Map<String, List<Double>> ivMap = Maps.newHashMap();
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String optionCode = split[0];
+            List<Double> ivList = Lists.newArrayList();
+            for (int i = 1; i < split.length; i++) {
+                ivList.add(Double.valueOf(split[i]));
+            }
+            ivMap.put(optionCode, ivList);
+        }
+
+        return ivMap;
+    }
+
+    public static boolean canTradeForIv(List<Double> ivList) {
+        if (CollectionUtils.isEmpty(ivList) || ivList.size() < 3) {
+            return false;
+        }
+
+        boolean result = true;
+        // 如果iv连续两天下跌则不交易
+        int times1 = 2;
+        List<Double> temp1 = ivList;
+        for (int i = 0; i < temp1.size() - 1 && times1 > 0; i++, times1--) {
+            if (temp1.get(i) > temp1.get(i + 1)) {
+                break;
+            }
+        }
+        if (times1 == 0) {
+            return false;
+        }
+
+        // 如果近三天的iv都小于0.5则不交易
+        int times2 = 3;
+        for (int i = 0; i < ivList.size() && times2 > 0; i++, times2--) {
+            if (ivList.get(i) > 0.5) {
+                break;
+            }
+        }
+        if (times2 == 0) {
+            return false;
+        }
+
+        return result;
+    }
+
 
     public static void main(String[] args) throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
@@ -1069,11 +1379,11 @@ public class Strategy32 {
 
         //        getHasWeekOptionStock(); // 获取有周期权的股票
         //        getEqualsStrikePriceKline(); // 获取某个时间范围内，股票开盘价对应的最近行权价代码
-        //        calStraddleData(); // 获取双开期权的optionDaily数据
+        //                calStraddleData(); // 获取双开期权的optionDaily数据
         //        getStraddleLastDaily(); // 获取双开期权当天前一日的optionDaily数据
         //        loadHistoricalHighVolatility();
         //        calHistoricalHighVolatility();
-        //        calCallWithProtect(); // 计算裸买和带保护的收益
+        //                calCallWithProtect(); // 计算裸买和带保护的收益
         getOptionQuoteList(); // 获取已过滤出的代码的报价，用于计算止损
 
         //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");

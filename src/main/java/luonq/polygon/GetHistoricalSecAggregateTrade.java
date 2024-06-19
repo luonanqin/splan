@@ -22,8 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -184,7 +182,7 @@ public class GetHistoricalSecAggregateTrade {
             long begin = System.currentTimeMillis();
             System.out.println("begin " + stock);
             if (!stock.equals("AAPL")) {
-                continue;
+//                continue;
             }
 
             for (String date : dateList) {

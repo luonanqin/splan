@@ -1,0 +1,19 @@
+2024-05-30 03:58:56.088 [xxl-job, JobThread-8-1717012736075] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-05-30 03:58:56.115 [xxl-job, JobThread-8-1717012736075] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-05-30 03:58:56.124 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7201673387146530663
+2024-05-30 03:58:56.127 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7201673387146653800
+2024-05-30 03:58:59.125 [xxl-job, JobThread-8-1717012736075] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-05-30 03:58:59.128 [xxl-job, JobThread-8-1717012736075] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-05-30 03:58:59.142 [xxl-job, JobThread-8-1717012736075] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={OZK=StockPosition(stock=OZK, canSellQty=77.0, costPrice=41.005, currPrice=39.44)}, time=2024-05-30T03:58:59.141
+2024-05-30 03:58:59.142 [xxl-job, JobThread-8-1717012736075] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=OZK, count=77.0
+2024-05-30 03:58:59.226 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-05-30 03:58:59.306 [xxl-job, JobThread-8-1717012736075] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=4590922106061230136
+2024-05-30 03:58:59.787 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4590922106061230136, code=OZK, name=欧扎克银行, count=77.0, price=0.0, avgPrice=39.5809, createTime=2024-05-29 15:58:59.286, updateTimestamp=1.717012739833755E9, status=0)
+2024-05-30 03:58:59.789 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4590922106061230136, code=OZK, name=欧扎克银行, count=77.0, price=0.0, avgPrice=39.5809, createTime=2024-05-29 15:58:59.286, updateTimestamp=1.717012739833755E9, status=0)
+2024-05-30 03:58:59.790 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4590922106061230136, code=OZK, name=欧扎克银行, count=77.0, price=0.0, avgPrice=39.5809, createTime=2024-05-29 15:58:59.286, updateTimestamp=1.717012739833755E9, status=0)
+2024-05-30 03:58:59.790 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4590922106061230136, code=OZK, name=欧扎克银行, count=77.0, price=0.0, avgPrice=39.5809, createTime=2024-05-29 15:58:59.286, updateTimestamp=1.717012739833755E9, status=0)
+2024-05-30 03:58:59.790 [xxl-job, JobThread-8-1717012736075] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=OZK, orderId=4590922106061230136
+2024-05-30 03:58:59.790 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4590922106061230136, code=OZK, name=欧扎克银行, count=77.0, price=0.0, avgPrice=39.5809, createTime=2024-05-29 15:58:59.286, updateTimestamp=1.717012739833755E9, status=0)
+2024-05-30 03:58:59.790 [xxl-job, JobThread-8-1717012736075] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-05-30 03:58:59.790 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4590922106061230136, code=OZK, name=欧扎克银行, count=77.0, price=0.0, avgPrice=39.5809, createTime=2024-05-29 15:58:59.286, updateTimestamp=1.717012739833755E9, status=0)
+2024-05-30 03:58:59.791 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=4590922106061230136, code=OZK, name=欧扎克银行, count=77.0, price=0.0, avgPrice=39.5809, createTime=2024-05-29 15:58:59.286, updateTimestamp=1.717012739833755E9, status=0)

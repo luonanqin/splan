@@ -9,9 +9,14 @@ import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.tigerbrokers.stock.openapi.client.struct.OptionFundamentals;
+import com.tigerbrokers.stock.openapi.client.struct.enums.Right;
+import com.tigerbrokers.stock.openapi.client.util.OptionCalcUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jquantlib.Settings;
+import org.jquantlib.time.Date;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -31,6 +36,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -244,6 +250,10 @@ public class BaseUtils {
     public static Map<String, String> getFileMap(String dirPath) throws Exception {
         Map<String, String> fileMap = Maps.newHashMap();
         File dir = new File(dirPath);
+        if (!dir.exists()) {
+            return Maps.newHashMap();
+        }
+
         for (File file : dir.listFiles()) {
             String fileName = file.getName();
             if (fileName.endsWith(".DS_Store")) {
@@ -671,6 +681,14 @@ public class BaseUtils {
     }
 
     public static Map<String, List<EarningDate>> getEarningDate(String date) throws Exception {
+        return getAllEarningDate(date, false);
+    }
+
+    public static Map<String, List<EarningDate>> getAllEarningDate(String date) throws Exception {
+        return getAllEarningDate(date, true);
+    }
+
+    private static Map<String, List<EarningDate>> getAllEarningDate(String date, boolean all) throws Exception {
         Map<String, List<EarningDate>> map = Maps.newHashMap();
         if (StringUtils.isNotBlank(date)) {
             String filePath = Constants.HIS_BASE_PATH + "earning/" + date;
@@ -681,7 +699,7 @@ public class BaseUtils {
                 nextLocalDate = nextLocalDate.plusDays(2);
             }
             String nextDate = nextLocalDate.format(Constants.FORMATTER);
-            List<EarningDate> list = getEarningDateData(date, nextDate, filePath);
+            List<EarningDate> list = getEarningDateData(date, nextDate, filePath, all);
 
             for (EarningDate earningDate : list) {
                 String actualDate = earningDate.getActualDate();
@@ -702,7 +720,7 @@ public class BaseUtils {
                 }
                 String nextDate = nextLocalDate.format(Constants.FORMATTER);
 
-                List<EarningDate> list = getEarningDateData(date, nextDate, filePath);
+                List<EarningDate> list = getEarningDateData(date, nextDate, filePath, all);
                 for (EarningDate earningDate : list) {
                     String actualDate = earningDate.getActualDate();
                     if (!map.containsKey(actualDate)) {
@@ -716,10 +734,36 @@ public class BaseUtils {
         return map;
     }
 
-    private static List<EarningDate> getEarningDateData(String date, String nextDate, String filePath) throws Exception {
+    public static Map<String, List<EarningDate>> getAllEarningDate2(String date) throws Exception {
+        Map<String, List<EarningDate>> map = Maps.newHashMap();
+        if (StringUtils.isNotBlank(date)) {
+            String filePath = Constants.HIS_BASE_PATH + "earning_finnhub/" + date;
+            LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            date = dateParse.format(Constants.FORMATTER);
+            LocalDate nextLocalDate = dateParse.plusDays(1);
+            if (nextLocalDate.getDayOfWeek().getValue() > 5) {
+                nextLocalDate = nextLocalDate.plusDays(2);
+            }
+            String nextDate = nextLocalDate.format(Constants.FORMATTER);
+            List<EarningDate> list = getEarningDateData(date, nextDate, filePath, false);
+
+            for (EarningDate earningDate : list) {
+                String actualDate = earningDate.getActualDate();
+                if (!map.containsKey(actualDate)) {
+                    map.put(actualDate, Lists.newArrayList());
+                }
+                map.get(actualDate).add(earningDate);
+            }
+        }
+
+        return map;
+    }
+
+    private static List<EarningDate> getEarningDateData(String date, String nextDate, String filePath, boolean all) throws Exception {
         List<String> lines = readFile(filePath);
         List<EarningDate> list = Lists.newArrayList();
         Map<String, EarningDate> stockEarningMap = Maps.newHashMap();
+        //        Map<String, > stockEarningMap = Maps.newHashMap();
         for (String line : lines) {
             int index = line.indexOf(" ");
             String stock = line.substring(0, index);
@@ -730,12 +774,25 @@ public class BaseUtils {
             } else if (StringUtils.equals(EarningDate.BEFORE_MARKET_OPEN, earningType)) {
                 //            } else {
                 actualDate = date;
+            } else if (StringUtils.equals(EarningDate.DURING_MARKET_HOUR, earningType)) {
+                actualDate = date;
             } else {
-                continue;
+                if (all) {
+                    actualDate = date;
+                } else {
+                    continue;
+                }
             }
 
             EarningDate earning = new EarningDate(stock, date, earningType, actualDate);
-            list.add(earning);
+            //            list.add(earning);
+            if (!stockEarningMap.containsKey(stock)) {
+                stockEarningMap.put(stock, earning);
+            } else {
+                if (actualDate.equals(date)) {
+                    stockEarningMap.put(stock, earning);
+                }
+            }
             //            // 如果之前不存在则直接put，如果之前存在且是TAS则直接put，否则跳过
             //            EarningDate existEarningDate = stockEarningMap.get(stock);
             //            if (existEarningDate == null) {
@@ -749,6 +806,7 @@ public class BaseUtils {
         }
 
         //        list.addAll(stockEarningMap.values());
+        list = stockEarningMap.values().stream().collect(Collectors.toList());
         return list;
     }
 
@@ -932,8 +990,47 @@ public class BaseUtils {
         return sb.replace(c_index, c_index + 1, "P").toString();
     }
 
+    /**
+     * 可用于期权希腊值计算、期权预测价格、隐含波动率计算。 相关算法基于 jquantlib 库
+     * 不支持末日期权的价格预测
+     * 参考：https://quant.itigerup.com/openapi/zh/csharp/quickStart/other.html#%E6%9C%9F%E6%9D%83%E8%AE%A1%E7%AE%97%E5%B7%A5%E5%85%B7
+     *
+     * @param type              call or put
+     * @param underlying        对应标的资产的价格，例如：101.22
+     * @param strike            期权行权价格，例如：100
+     * @param riskFreeRate      无风险利率，这里是取的美国国债利率，例如2024年6月12号的国库券利率0.0526，参考https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_bill_rates&field_tdr_date_value=2024
+     * @param impliedVolatility 隐含波动率，例如：0.277186
+     * @param curDate           对应预测价格的日期，要小于期权到期日，例如：2024-06-13
+     * @param expirationDate    期权到期日，例如：2024-06-14
+     */
+    public static double getOptionPredictedValue(Right type, double underlying, double strike, double riskFreeRate, double impliedVolatility, String curDate, String expirationDate) {
+        Settings settings = new Settings();
+        settings.setEvaluationDate(new Date(1, 1, 2022));
+        OptionFundamentals optionIndex = OptionCalcUtils.calcOptionIndex(
+          type,
+          underlying,
+          strike,
+          riskFreeRate,
+          0,  //股息率，大部分标的为0
+          impliedVolatility,
+          LocalDate.parse(curDate, Constants.DB_DATE_FORMATTER),
+          LocalDate.parse(expirationDate, Constants.DB_DATE_FORMATTER));
+        double predictedValue = optionIndex.getPredictedValue();
+        predictedValue = BigDecimal.valueOf(predictedValue).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        return predictedValue;
+    }
+
+
+    public static double getCallPredictedValue(double underlying, double strike, double riskFreeRate, double impliedVolatility, String curDate, String expirationDate) {
+        return getOptionPredictedValue(Right.CALL, underlying, strike, riskFreeRate, impliedVolatility, curDate, expirationDate);
+    }
+
+    public static double getPutPredictedValue(double underlying, double strike, double riskFreeRate, double impliedVolatility, String curDate, String expirationDate) {
+        return getOptionPredictedValue(Right.PUT, underlying, strike, riskFreeRate, impliedVolatility, curDate, expirationDate);
+    }
+
     public static void main(String[] args) throws Exception {
-        Map<String, List<EarningDate>> map = getEarningDate("2023-11-16");
-        System.out.println(map);
+        double callPredictedValue = getCallPredictedValue(7.8452, 8.5, 0.0527, 1.6317, "2024-02-20", "2024-02-23");
+        System.out.println(callPredictedValue);
     }
 }

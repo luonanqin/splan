@@ -1,0 +1,16 @@
+2024-06-05 03:58:56.088 [xxl-job, JobThread-8-1717531136074] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-06-05 03:58:56.114 [xxl-job, JobThread-8-1717531136074] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-05 03:58:56.123 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7203847714339316559
+2024-06-05 03:58:56.136 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7203847714344206753
+2024-06-05 03:58:59.124 [xxl-job, JobThread-8-1717531136074] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-05 03:58:59.125 [xxl-job, JobThread-8-1717531136074] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-06-05 03:58:59.137 [xxl-job, JobThread-8-1717531136074] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={BOOM=StockPosition(stock=BOOM, canSellQty=246.0, costPrice=11.737, currPrice=11.43)}, time=2024-06-05T03:58:59.136
+2024-06-05 03:58:59.138 [xxl-job, JobThread-8-1717531136074] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=BOOM, count=246.0
+2024-06-05 03:58:59.222 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-06-05 03:58:59.288 [xxl-job, JobThread-8-1717531136074] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=3364715075172416807
+2024-06-05 03:58:59.695 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3364715075172416807, code=BOOM, name=DMC Global, count=246.0, price=0.0, avgPrice=11.4309, createTime=2024-06-04 15:58:59.307, updateTimestamp=1.717531139761582E9, status=0)
+2024-06-05 03:58:59.696 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3364715075172416807, code=BOOM, name=DMC Global, count=246.0, price=0.0, avgPrice=11.4309, createTime=2024-06-04 15:58:59.307, updateTimestamp=1.717531139761582E9, status=0)
+2024-06-05 03:58:59.697 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3364715075172416807, code=BOOM, name=DMC Global, count=246.0, price=0.0, avgPrice=11.4309, createTime=2024-06-04 15:58:59.307, updateTimestamp=1.717531139761582E9, status=0)
+2024-06-05 03:58:59.697 [xxl-job, JobThread-8-1717531136074] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=BOOM, orderId=3364715075172416807
+2024-06-05 03:58:59.697 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=3364715075172416807, code=BOOM, name=DMC Global, count=246.0, price=0.0, avgPrice=11.4309, createTime=2024-06-04 15:58:59.307, updateTimestamp=1.717531139761582E9, status=0)
+2024-06-05 03:58:59.698 [xxl-job, JobThread-8-1717531136074] INFO  luonq.job.TradeJob - tradeExecutor_db sell
