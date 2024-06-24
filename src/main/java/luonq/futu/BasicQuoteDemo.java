@@ -83,7 +83,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         } else {
             try {
                 String json = JsonFormat.printer().print(rsp);
-//                System.out.printf("Receive QotSub: %s\n", json);
+                //                System.out.printf("Receive QotSub: %s\n", json);
             } catch (InvalidProtocolBufferException e) {
                 e.printStackTrace();
             }
@@ -101,7 +101,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
                 String stock = basicQot.getSecurity().getCode();
                 double curPrice = basicQot.getCurPrice();
                 long id = Thread.currentThread().getId();
-//                System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
+                //                System.out.println("threadId=" + id + " stock=" + stock + " price=" + curPrice);
                 System.out.println(" stock=" + stock + " price=" + curPrice);
             }
         }
@@ -195,7 +195,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
-//        System.out.printf("Send QotSub: %d\n", seqNo);
+        //        System.out.printf("Send QotSub: %d\n", seqNo);
     }
 
     public void subOrderBook(String stock) {
@@ -214,7 +214,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
-//        System.out.printf("Send QotSub: %d\n", seqNo);
+        //        System.out.printf("Send QotSub: %d\n", seqNo);
     }
 
     public void unSubBasicQuote(String stock) {
@@ -274,7 +274,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
 
     public void getSecuritySnapshot(String stock) {
         QotCommon.Security sec = QotCommon.Security.newBuilder()
-          .setMarket(QotCommon.QotMarket.QotMarket_HK_Security_VALUE)
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
           .setCode(stock)
           .build();
         QotGetSecuritySnapshot.C2S c2s = QotGetSecuritySnapshot.C2S.newBuilder()
@@ -293,9 +293,22 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
                 String json = JsonFormat.printer().print(rsp);
                 QotGetSecuritySnapshot.Snapshot snapshot = rsp.getS2COrBuilder().getSnapshotList(0);
                 String code = snapshot.getBasic().getSecurity().getCode();
+                double price = snapshot.getBasic().getCurPrice();
+//                if (!code.contains("24")) {
+//                    stockToCurrPriceMap.put(code, price);
+//                    return;
+//                }
+//                String stock = code.substring(0, code.indexOf("24"));
+//                if (!stockToCurrPriceMap.containsKey(stock)) {
+//                    return;
+//                }
                 QotGetSecuritySnapshot.OptionSnapshotExData optionExData = snapshot.getOptionExData();
+                double impliedVolatility = optionExData.getImpliedVolatility();
+                double putPredictedValue = 0;
+//                double putPredictedValue = BaseUtils.getPutPredictedValue(stockToCurrPriceMap.get(stock), 126, 0.0526, impliedVolatility, "2024-06-17", "2024-06-21");
 
-                System.out.println(code + "\t" + optionExData.getImpliedVolatility());
+                System.out.println(code + "\t" + price + "\t" + putPredictedValue + "\t" + impliedVolatility + "\t" + optionExData.getPremium());
+
                 //                System.out.printf("Receive QotGetSecuritySnapshot: %s\n", json);
             } catch (InvalidProtocolBufferException e) {
                 e.printStackTrace();
@@ -308,10 +321,13 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
         BasicQuoteDemo quote = new BasicQuoteDemo();
         quote.start();
 
-        quote.subOrderBook("TCH240530C390000");
-        quote.subBasicQuote("TCH240530C390000");
-        for (int i = 0; i < 100; i++) {
-            quote.getSecuritySnapshot("TCH240530C390000");
+        //        quote.subOrderBook("NVDA240621P126000");
+        //        quote.subBasicQuote("NVDA240621P126000");
+        for (int i = 0; i < 20000; i++) {
+//            quote.getSecuritySnapshot("NVDA");
+            quote.getSecuritySnapshot("NVDA240621P126000");
+//            quote.getSecuritySnapshot("OXY240621C59000");
+//            quote.getSecuritySnapshot("AAPL240621C215000");
             Thread.sleep(1000);
         }
         quote.getRehab("DPST");

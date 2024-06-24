@@ -877,8 +877,8 @@ public class Strategy27 {
         Map<String/* date */, Map<String/* stock */, Double/* ratio */>> dateToStockRatioMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::dateToInt));
         Map<String/* date */, Map<String/* stock */, StockKLine>> dateToStockMap = Maps.newHashMap();
 
-        Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/dailyKLine");
-        //        Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
+                Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/dailyKLine");
+//        Map<String, String> klineFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2023daily");
         Map<String, Boolean> marginInfoMap = BaseUtils.getMarginInfoMap();
         int year = 2024;
         Set<String> optionStock = BaseUtils.getOptionStock();
@@ -933,7 +933,7 @@ public class Strategy27 {
             for (String stock : stockList) {
                 Boolean canShortSell = MapUtils.getBoolean(marginInfoMap, stock, false);
                 if (!canShortSell) {
-//                    continue;
+                    //                    continue;
                 }
 
                 StockKLine kLine = dateToStockMap.get(date).get(stock);
@@ -943,7 +943,7 @@ public class Strategy27 {
                 double high = kLine.getHigh();
                 double low = kLine.getLow();
                 if (open < 7) {
-                                        continue;
+                    continue;
                 }
 
                 int count = (int) (sum / open);

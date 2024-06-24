@@ -143,6 +143,8 @@ public class GetDailyImpliedVolatility {
                 if (StringUtils.isBlank(optionId) || StringUtils.equalsAny(optionId, "0")) {
                     continue;
                 }
+            } else if (StringUtils.equalsAny(optionId, "0")) {
+                continue;
             }
 
             // 加载已抓数据，如果没有就新建

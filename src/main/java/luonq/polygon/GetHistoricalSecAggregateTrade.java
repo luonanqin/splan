@@ -62,7 +62,7 @@ public class GetHistoricalSecAggregateTrade {
     public static void getData(String stock, String date) throws Exception {
         // 计算读取最新k线的目录及读取年份
         int curYear = Integer.valueOf(date.substring(0, 4));
-        String minAggregatePath = Constants.HIS_BASE_PATH + "secAggregate/" + stock;
+        String minAggregatePath = Constants.HIS_BASE_PATH + "sec120Aggregate/" + stock;
         BaseUtils.createDirectory(minAggregatePath);
 
         Set<String> hasGetDate = hasGetDateMap.get(stock);
@@ -95,7 +95,7 @@ public class GetHistoricalSecAggregateTrade {
                         hour = 22;
                     }
                     LocalDateTime open = day.withHour(hour).withMinute(minute).withSecond(seconds);
-                    LocalDateTime close = open.plusSeconds(10);
+                    LocalDateTime close = open.plusSeconds(120);
 
                     long openTS = open.toInstant(ZoneOffset.of("+8")).toEpochMilli();
                     long closeTS = close.toInstant(ZoneOffset.of("+8")).toEpochMilli();

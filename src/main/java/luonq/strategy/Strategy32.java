@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import luonq.ivolatility.GetAggregateImpliedVolatility;
 import org.apache.commons.collections.list.SynchronizedList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -34,6 +35,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -67,20 +69,20 @@ public class Strategy32 {
     public static ThreadPoolExecutor cachedThread;
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     /* 2024 */
-    public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524 };
-    public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24" };
-    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24");
-    public static int year = 2024;
+//        public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524 };
+//        public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24" };
+//        public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24");
+//        public static int year = 2024;
     /* 2023*/
-    //            public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
-    //            public static String[] weekStrArray = new String[] { "2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29" };
-    //            public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
-    //            public static int year = 2023;
+//        public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
+//        public static String[] weekStrArray = new String[] { "2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29" };
+//        public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
+//        public static int year = 2023;
     /* 2022 */
-    //    public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
-    //    public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
-    //    public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
-    //    public static int year = 2022;
+    public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
+    public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
+    public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
+    public static int year = 2022;
     public static Map<String/* stock */, Map<String/* date */, Map<String/* optionCode */, OptionDaily>>> stockOptionDailyMap = Maps.newHashMap();
     public static Map<String/* stock */, Map<Integer/* 档位 */, Double/* 振幅均值 */>> stockToVolatilityMap = Maps.newHashMap();
     public static Map<String/* date */, String/* lastDate */> dateMap = Maps.newHashMap(); // 当日和前日的映射
@@ -394,35 +396,35 @@ public class Strategy32 {
 
                 // 计算行权价前后各两档的虚值期权代码
                 // 改进后算法
-                //                int upStrikePrice = 0;
-                //                int downStrikePrice = 0;
-                //                if (openPriceDigital != strikePrice) {
-                //                    if (openPriceDigital < strikePrice) {
-                //                        upStrikePrice = strikePrice;
-                //                        downStrikePrice = strikePrice - optionPriceStep;
-                //                    } else {
-                //                        upStrikePrice = strikePrice + optionPriceStep;
-                //                        downStrikePrice = strikePrice;
-                //                    }
-                //                    if (openPriceDigital - optionPriceStep * 0.25 < downStrikePrice) {
-                //                        downStrikePrice = downStrikePrice - optionPriceStep;
-                //                    }
-                //                    if (openPriceDigital + optionPriceStep * 0.25 > upStrikePrice) {
-                //                        upStrikePrice = upStrikePrice + optionPriceStep;
-                //                    }
-                //                } else if (openPriceDigital == strikePrice) {
-                //                    upStrikePrice = strikePrice + optionPriceStep;
-                //                    downStrikePrice = strikePrice - optionPriceStep;
-                //                }
-                //                String call_1 = String.valueOf(upStrikePrice);
-                //                String call_2 = String.valueOf(upStrikePrice + optionPriceStep);
-                //                String put_1 = String.valueOf(downStrikePrice);
-                //                String put_2 = String.valueOf(downStrikePrice - optionPriceStep);
+                                int upStrikePrice = 0;
+                                int downStrikePrice = 0;
+                                if (openPriceDigital != strikePrice) {
+                                    if (openPriceDigital < strikePrice) {
+                                        upStrikePrice = strikePrice;
+                                        downStrikePrice = strikePrice - optionPriceStep;
+                                    } else {
+                                        upStrikePrice = strikePrice + optionPriceStep;
+                                        downStrikePrice = strikePrice;
+                                    }
+                                    if (openPriceDigital - optionPriceStep * 0.25 < downStrikePrice) {
+                                        downStrikePrice = downStrikePrice - optionPriceStep;
+                                    }
+                                    if (openPriceDigital + optionPriceStep * 0.25 > upStrikePrice) {
+                                        upStrikePrice = upStrikePrice + optionPriceStep;
+                                    }
+                                } else if (openPriceDigital == strikePrice) {
+                                    upStrikePrice = strikePrice + optionPriceStep;
+                                    downStrikePrice = strikePrice - optionPriceStep;
+                                }
+                                String call_1 = String.valueOf(upStrikePrice);
+                                String call_2 = String.valueOf(upStrikePrice + optionPriceStep);
+                                String put_1 = String.valueOf(downStrikePrice);
+                                String put_2 = String.valueOf(downStrikePrice - optionPriceStep);
                 // 改进前算法
-                String call_1 = String.valueOf(strikePrice + optionPriceStep);
-                String call_2 = String.valueOf(strikePrice + optionPriceStep * 2);
-                String put_1 = String.valueOf(strikePrice - optionPriceStep);
-                String put_2 = String.valueOf(strikePrice - optionPriceStep * 2);
+//                String call_1 = String.valueOf(strikePrice + optionPriceStep);
+//                String call_2 = String.valueOf(strikePrice + optionPriceStep * 2);
+//                String put_1 = String.valueOf(strikePrice - optionPriceStep);
+//                String put_2 = String.valueOf(strikePrice - optionPriceStep * 2);
 
                 String optionCode_call1 = optionPrefix + call_1;
                 String optionCode_call2 = optionPrefix + call_2;
@@ -818,7 +820,15 @@ public class Strategy32 {
         Double callBid = 0d;
         Double putBid = 0d;
         Long buySeconds = 0l;
-        for (int i = 9; i < 10; i++) {
+        int sec = 60;
+        Map<String, String> optionToFirstMap = GetAggregateImpliedVolatility.dateToFirstIvTimeMap.get(date);
+        if (MapUtils.isNotEmpty(optionToFirstMap)) {
+            String firstDatetime = optionToFirstMap.get(callCode);
+            LocalDateTime firstTime = LocalDateTime.parse(firstDatetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            LocalDateTime openTime = firstTime.withMinute(30).withSecond(0);
+            sec = (int) ChronoUnit.SECONDS.between(openTime, firstTime);
+        }
+        for (int i = sec; i < sec + 1; i++) {
             Long openSeconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
             if (callTradePriceMap.get(openSeconds) != 0) {
                 callOpen = callTradePriceMap.get(openSeconds);
@@ -835,23 +845,17 @@ public class Strategy32 {
                 break;
             }
         }
-        if (callOpen != 0) {
-            if (calCallOpen != 0 && calCallOpen < callOpen && calCallOpen >= callBid) {
-                callOpen = calCallOpen;
-            }
-        } else {
-            callOpen = calCallOpen;
-        }
-
-        if (putOpen != 0) {
-            if (calPutOpen != 0 && calPutOpen < putOpen && calPutOpen >= putBid) {
-                putOpen = calPutOpen;
-            }
-        } else {
-            putOpen = calPutOpen;
-        }
         if (callOpen == 0 || putOpen == 0) {
             return "empty";
+        }
+        if (calCallOpen != 0 && calCallOpen < callOpen && calCallOpen >= callBid) {
+            callOpen = calCallOpen;
+        }
+        if (calPutOpen != 0 && calPutOpen < putOpen && calPutOpen >= putBid) {
+            putOpen = calPutOpen;
+        }
+        if (callOpen < 0.1 || putOpen < 0.1) {
+            //            return "empty";
         }
         List<String> list = Lists.newArrayList();
         String result = "";
@@ -919,7 +923,7 @@ public class Strategy32 {
             int bidSize = Integer.parseInt(split[4]);
             double askPrice = Double.parseDouble(split[1]);
             double bidPrice = Double.parseDouble(split[3]);
-            if (askSize < 5 && bidSize < 5) {
+            if ((askSize < 5 && bidSize < 5) || askPrice == 0 || bidPrice == 0) {
                 continue;
             }
 
@@ -954,7 +958,7 @@ public class Strategy32 {
             double askPrice = Double.parseDouble(split[1]);
             double bidPrice = Double.parseDouble(split[3]);
             double price = askPrice > bidPrice ? bidPrice : askPrice;
-            if (askSize < 5 && bidSize < 5 && price > 0) {
+            if ((askSize < 5 && bidSize < 5) || price == 0) {
                 continue;
             }
 
@@ -1364,6 +1368,17 @@ public class Strategy32 {
         }
         if (times2 == 0) {
             return false;
+        }
+
+        // 如果近一天iv小于0.8则不交易
+        Double ivValue = ivList.get(0);
+        if (ivValue < 0.8) {
+            return false;
+        }
+
+        // 如果近二天比近三天小则不交易
+        if (ivList.get(1) < ivList.get(2)) {
+//            return false;
         }
 
         return result;

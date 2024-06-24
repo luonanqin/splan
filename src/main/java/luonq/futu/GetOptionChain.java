@@ -93,7 +93,7 @@ public class GetOptionChain implements FTSPI_Qot, FTSPI_Conn {
         } else {
             try {
                 int optionChainCount = rsp.getS2C().getOptionChainCount();
-                if (optionChainCount > 0) {
+                if (optionChainCount > 1) {
                     QotCommon.OptionStaticExData optionExData = rsp.getS2C().getOptionChainOrBuilder(0).getOptionOrBuilder(0).getCall().getOptionExData();
                     String code = optionExData.getOwner().getCode();
                     List<QotGetOptionChain.OptionItem> optionList = rsp.getS2C().getOptionChainOrBuilder(0).getOptionList();

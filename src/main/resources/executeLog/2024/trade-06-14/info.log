@@ -1,18 +1,42 @@
-2024-06-19 03:58:56.094 [xxl-job, JobThread-8-1718740736076] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
-2024-06-19 03:58:56.145 [xxl-job, JobThread-8-1718740736076] INFO  luonq.futu.TradeApi - trade api initialize staring...
-2024-06-19 03:58:56.155 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7208921144585044305
-2024-06-19 03:58:56.164 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7208921144591247289
-2024-06-19 03:58:59.156 [xxl-job, JobThread-8-1718740736076] INFO  luonq.futu.TradeApi - trade api initialize finish start!
-2024-06-19 03:58:59.157 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
-2024-06-19 03:58:59.169 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={FVRR=StockPosition(stock=FVRR, canSellQty=134.0, costPrice=22.21, currPrice=22.055)}, time=2024-06-19T03:58:59.167
-2024-06-19 03:58:59.169 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - before close sell stock for market price. stock=FVRR, count=134.0
-2024-06-19 03:58:59.253 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
-2024-06-19 03:58:59.334 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock orderId=7228180270852190469
-2024-06-19 03:58:59.876 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
-2024-06-19 03:58:59.877 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
-2024-06-19 03:58:59.878 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
-2024-06-19 03:58:59.878 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
-2024-06-19 03:58:59.879 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
-2024-06-19 03:58:59.879 [FTAPI4JNet] INFO  luonq.futu.TradeApi - update order: OrderFill(tradeSide=2, fillID=0, orderID=7228180270852190469, code=FVRR, name=Fiverr International, count=134.0, price=0.0, avgPrice=21.875, createTime=2024-06-18 15:58:59.259, updateTimestamp=1.718740739871261E9, status=0)
-2024-06-19 03:58:59.879 [xxl-job, JobThread-8-1718740736076] INFO  luonq.polygon.TradeExecutor_DB - sell stock success. stock=FVRR, orderId=7228180270852190469
-2024-06-19 03:58:59.879 [xxl-job, JobThread-8-1718740736076] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-06-20 03:58:56.099 [xxl-job, JobThread-8-1718827136067] INFO  luonq.job.TradeJob - sellBeforeCloseMarket.job start
+2024-06-20 03:58:56.130 [xxl-job, JobThread-8-1718827136067] INFO  luonq.futu.TradeApi - trade api initialize staring...
+2024-06-20 03:58:56.143 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7209283532391449452
+2024-06-20 03:58:56.147 [FTAPI4JNet] INFO  luonq.futu.TradeApi - TradeApi onInitConnect: ret=0 desc= connID=7209283532398907163
+2024-06-20 03:58:59.136 [xxl-job, JobThread-8-1718827136067] INFO  luonq.futu.TradeApi - trade api initialize finish start!
+2024-06-20 03:58:59.141 [xxl-job, JobThread-8-1718827136067] INFO  luonq.polygon.TradeExecutor_DB - sell stock before close market
+2024-06-20 03:58:59.151 [xxl-job, JobThread-8-1718827136067] INFO  luonq.polygon.TradeExecutor_DB - ready to sell before close market. position={}, time=2024-06-20T03:58:59.150
+2024-06-20 03:58:59.152 [xxl-job, JobThread-8-1718827136067] INFO  luonq.polygon.TradeExecutor_DB - position is empty. trade is end today!!!
+2024-06-20 03:58:59.152 [xxl-job, JobThread-8-1718827136067] INFO  luonq.job.TradeJob - tradeExecutor_db sell
+2024-06-20 03:58:59.232 [FTAPI4JNet] INFO  luonq.futu.TradeApi - unlock success
+2024-06-20 16:00:00.078 [xxl-job, JobThread-3-1718870400066] INFO  luonq.job.GetDataJob - getTradeDataAndComputeIndicator.job start
+2024-06-20 16:00:00.079 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - GetHistoricalDaily.getData start
+2024-06-20 16:02:53.834 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - GetHistoricalDaily.getData end. cost: 173s
+
+2024-06-20 16:02:53.839 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - MergeKline.merge start
+2024-06-20 16:02:56.349 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - MergeKline.merge end. cost: 2s
+
+2024-06-20 16:02:56.349 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - BollingerForYear.calculate start
+2024-06-20 16:03:01.610 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - BollingerForYear.calculate end. cost: 5s
+
+2024-06-20 16:03:01.610 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate start
+2024-06-20 16:04:02.990 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - MergeBollingerForYear.calculate end. cost: 61s
+
+2024-06-20 16:04:02.991 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - GetHistoricalTrade.getData start
+2024-06-20 16:04:05.195 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - GetHistoricalTrade.getData end. cost: 2s
+
+2024-06-20 16:04:05.195 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData start
+2024-06-20 16:04:07.226 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - GetHistoricalOpenFirstTrade.getData end. cost: 2s
+
+2024-06-20 16:04:07.235 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - BollingerWithOpen.calculate start
+2024-06-20 16:04:12.495 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - BollingerWithOpen.calculate end. cost: 5s
+
+2024-06-20 16:04:12.495 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate start
+2024-06-20 16:05:09.966 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - MergeOpenBollingerForYear.calculate end. cost: 57s
+
+2024-06-20 16:05:09.967 [xxl-job, JobThread-3-1718870400066] INFO  luonq.stock.Processor - get data finish
+2024-06-20 16:05:09.976 [xxl-job, JobThread-3-1718870400066] INFO  luonq.job.GetDataJob - getTradeDataJobAndComputeIndicator.job end
+2024-06-20 16:30:00.063 [xxl-job, JobThread-6-1718872200055] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job start
+2024-06-20 16:30:00.063 [xxl-job, JobThread-6-1718872200055] INFO  luonq.data.WriteToDB - additionToDB begin
+2024-06-20 16:30:42.426 [xxl-job, JobThread-6-1718872200055] INFO  luonq.data.WriteToDB - there is no date at [2024-06-19]
+2024-06-20 16:30:42.428 [xxl-job, JobThread-6-1718872200055] INFO  luonq.data.WriteToDB - additionToDB end
+2024-06-20 16:30:42.433 [xxl-job, JobThread-6-1718872200055] INFO  luonq.job.SyncDataToDBJob - syncDataToDB.job end
