@@ -66,6 +66,10 @@ public class ReadFromDB {
         return stockDataMapper.queryStockDataList(String.valueOf(year), date);
     }
 
+    public List<Total> batchGetStockData(int year, String date, List<String> stocks) {
+        return stockDataMapper.batchQueryStockData(String.valueOf(year), date, stocks);
+    }
+
     public StockRehab getLatestRehab(String code) {
         return rehabDataMapper.queryLatestRehab(code);
     }

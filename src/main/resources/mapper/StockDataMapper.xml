@@ -195,6 +195,17 @@
         where code=#{code} and date=#{date}
     </select>
 
+    <select id="batchQueryStockData" resultType="Total">
+        select
+        <include refid="queryColumn"/>
+        from `${dbYear}`
+        where date = #{date}
+        and code in
+        <foreach collection="stocks" item="s" separator="," open="(" close=")">
+            #{s}
+        </foreach>
+    </select>
+
     <update id="updateStockKLine" parameterType="bean.StockKLine">
         update `${dbYear}` set
         open=#{open},

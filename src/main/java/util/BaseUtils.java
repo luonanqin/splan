@@ -985,9 +985,8 @@ public class BaseUtils {
     }
 
     public static String getOptionPutCode(String optionCallCode) {
-        int c_index = optionCallCode.lastIndexOf("C");
         StringBuffer sb = new StringBuffer(optionCallCode);
-        return sb.replace(c_index, c_index + 1, "P").toString();
+        return sb.replace(optionCallCode.length() - 9, optionCallCode.length() - 8, "P").toString();
     }
 
     /**
@@ -1027,6 +1026,20 @@ public class BaseUtils {
 
     public static double getPutPredictedValue(double underlying, double strike, double riskFreeRate, double impliedVolatility, String curDate, String expirationDate) {
         return getOptionPredictedValue(Right.PUT, underlying, strike, riskFreeRate, impliedVolatility, curDate, expirationDate);
+    }
+
+    // 无风险利率
+    public static Map<String/* date */, Double/* rate */> loadRiskFreeRate() throws Exception {
+        Map<String, Double> riskFreeRateMap = Maps.newHashMap();
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/riskFreeRate");
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = BaseUtils.formatDate(split[0]);
+            double rate = Double.parseDouble(split[1]) / 100;
+            riskFreeRateMap.put(date, rate);
+        }
+
+        return riskFreeRateMap;
     }
 
     public static void main(String[] args) throws Exception {

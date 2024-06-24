@@ -87,7 +87,7 @@ public class Strategy33 {
         }
 
         loadIv();
-        loadRiskFreeRate();
+        riskFreeRateMap = BaseUtils.loadRiskFreeRate();
     }
 
     private static void loadIv() throws Exception {
@@ -108,16 +108,6 @@ public class Strategy33 {
                     ivMap.get(optionCode).put(split[0], Double.valueOf(split[1]));
                 }
             }
-        }
-    }
-
-    public static void loadRiskFreeRate() throws Exception {
-        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/riskFreeRate");
-        for (String line : lines) {
-            String[] split = line.split("\t");
-            String date = BaseUtils.formatDate(split[0]);
-            double rate = Double.parseDouble(split[1]) / 100;
-            riskFreeRateMap.put(date, rate);
         }
     }
 

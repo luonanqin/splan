@@ -55,6 +55,11 @@ public interface StockDataMapper {
     List<Total> queryStockDataList(@Param("dbYear") String dbYear, @Param("date") String date);
 
     /**
+     * 批量返回指定日期指定股票的数据
+     */
+    List<Total> batchQueryStockData(@Param("dbYear") String dbYear, @Param("date") String date, @Param("stocks") List<String> stocks);
+
+    /**
      * 返回某只股票某天的数据
      */
     Total selectByCodeDate(@Param("dbYear") String dbYear, @Param("code") String code, @Param("date") String date);
