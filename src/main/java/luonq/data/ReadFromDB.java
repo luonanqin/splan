@@ -77,4 +77,12 @@ public class ReadFromDB {
     public TradeCalendar getTradeCalendar(String tradeDay) {
         return tradeCalendarMapper.queryTradeCalendar(tradeDay);
     }
+
+    public TradeCalendar getLastTradeCalendar(String tradeDay) {
+        return tradeCalendarMapper.queryLastTradeCalendar(tradeDay);
+    }
+
+    public List<TradeCalendar> getLastNTradeCalendar(String tradeDay, int N) {
+        return tradeCalendarMapper.queryLastNTradeCalendar(tradeDay, N);
+    }
 }

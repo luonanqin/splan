@@ -1,6 +1,7 @@
 package luonq.mapper;
 
 import bean.TradeCalendar;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,4 +16,14 @@ public interface TradeCalendarMapper {
      * 查询某天的交易日历信息
      */
     TradeCalendar queryTradeCalendar(String tradeDate);
+
+    /**
+     * 查询上一交易日历信息
+     */
+    TradeCalendar queryLastTradeCalendar(String tradeDate);
+
+    /**
+     * 查询前面N天的交易日历信息
+     */
+    List<TradeCalendar> queryLastNTradeCalendar(@Param("tradeDate") String tradeDate, @Param("N") int N);
 }

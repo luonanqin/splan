@@ -35,7 +35,7 @@ import static util.Constants.SPLIT_PATH;
 public class WriteToDB {
 
     @Autowired
-    private StockDataMapper     stockDataMapper;
+    private StockDataMapper stockDataMapper;
 
     @Autowired
     private EarningDataMapper earningDataMapper;

@@ -494,9 +494,13 @@ public class Strategy32 {
             }
 
             return resp;
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             get.releaseConnection();
         }
+
+        return null;
     }
 
     public static StraddleOption getDaily(StraddleOption straddleOption) throws Exception {
@@ -546,46 +550,11 @@ public class Strategy32 {
         return straddleOption;
     }
 
-    public static Map<String, Map<String, OptionDaily>> loadDailyMap(String stock) throws Exception {
-        Map<String/* date */, Map<String/* optionCode */, OptionDaily>> dateToOptionDailyMap = Maps.newHashMap();
-
-        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionDaily/" + stock);
-        if (CollectionUtils.isEmpty(lines)) {
-            return Maps.newHashMap();
-        }
-        // 2024-01-02	O:AR240105P00022500	0.33	0.35	0.3	0.34	135
-        for (String line : lines) {
-            String[] split = line.split("\t");
-            String date = split[0];
-            String code = split[1];
-            double open = Double.parseDouble(split[2]);
-            double high = Double.parseDouble(split[3]);
-            double low = Double.parseDouble(split[4]);
-            double close = Double.parseDouble(split[5]);
-            long volume = Long.parseLong(split[6]);
-            OptionDaily optionDaily = new OptionDaily();
-            optionDaily.setFrom(date);
-            optionDaily.setSymbol(code);
-            optionDaily.setOpen(open);
-            optionDaily.setClose(close);
-            optionDaily.setHigh(high);
-            optionDaily.setLow(low);
-            optionDaily.setVolume(volume);
-
-            if (!dateToOptionDailyMap.containsKey(date)) {
-                dateToOptionDailyMap.put(date, Maps.newHashMap());
-            }
-            dateToOptionDailyMap.get(date).put(code, optionDaily);
-        }
-
-        return dateToOptionDailyMap;
-    }
-
     public static OptionDaily getOptionDaily(String optionCode, String date) throws Exception {
         int _2_index = optionCode.indexOf("2");
         String stock = optionCode.substring(2, _2_index);
         if (!stockOptionDailyMap.containsKey(stock)) {
-            stockOptionDailyMap.put(stock, loadDailyMap(stock));
+            stockOptionDailyMap.put(stock, BaseUtils.loadOptionDailyMap(stock));
         }
 
         Map<String, Map<String, OptionDaily>> dailyMap = stockOptionDailyMap.get(stock);

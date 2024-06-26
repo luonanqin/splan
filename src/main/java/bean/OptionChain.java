@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class OptionChain {
 
-    private Detail detail;
+    private Detail details;
 
     @Data
     public class Detail {

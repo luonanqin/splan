@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
@@ -31,6 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class GetDailyImpliedVolatility {
     public static BlockingQueue<HttpClient> queue;
     public static ThreadPoolExecutor cachedThread;
@@ -50,6 +52,7 @@ public class GetDailyImpliedVolatility {
 
     // https://restapi.ivolatility.com/equities/eod/option-series-on-date?apiKey=S3j7pBefWG0J0glb&symbol=BILI&expFrom=2022-05-20&expTo=2022-05-20&strikeFrom=22&strikeTo=22&date=2022-05-20
     public static Map<String/* optioncode */, String/* optionId */> getOptionId(List<String> optionCodeList) throws Exception {
+        String yesterday = LocalDate.now().minusDays(1).format(Constants.DB_DATE_FORMATTER);
         Map<String, String> optionIdMap = getOptionIdMap();
         Map<String, String> optionCodeToIdMap = Maps.newHashMap();
         List<String> result = Lists.newArrayList();
@@ -58,7 +61,7 @@ public class GetDailyImpliedVolatility {
                 continue;
             }
 
-            HttpClient httpClient = queue.take();
+            HttpClient httpClient = new HttpClient();
             int _2_index = optionCode.indexOf("2");
             String stock = optionCode.substring(2, _2_index);
 
@@ -76,7 +79,7 @@ public class GetDailyImpliedVolatility {
             //            System.out.println(formatDate);
 
             String url = String.format("https://restapi.ivolatility.com/equities/eod/option-series-on-date?apiKey=S3j7pBefWG0J0glb&symbol=%s&expFrom=%s&expTo=%s&strikeFrom=%s&strikeTo=%s&callPut=%s&date=%s",
-              stock, formatDate, formatDate, strikePrice, strikePrice, contractType, formatDate);
+              stock, formatDate, formatDate, strikePrice, strikePrice, contractType, yesterday);
             GetMethod get = new GetMethod(url);
 
             //            cachedThread.execute(() -> {
@@ -86,12 +89,14 @@ public class GetDailyImpliedVolatility {
                 //                System.out.println(status + " " + content);
                 List<Map> listMap = JSON.parseArray(content, Map.class);
                 if (CollectionUtils.isEmpty(listMap)) {
-                    System.out.println(optionCode + " is empth");
+                    System.out.println(optionCode + " is empty");
                     result.add(optionCode + "\t0");
+                    log.warn("get option id empty. {}", optionCode);
                     continue;
                 }
                 if (status == 429) {
                     System.out.println(429);
+                    log.warn("get option id 429. {}", optionCode);
                     continue;
                     //                    System.exit(0);
                 }
@@ -105,7 +110,7 @@ public class GetDailyImpliedVolatility {
                 e.printStackTrace();
             } finally {
                 get.releaseConnection();
-                queue.offer(httpClient);
+                //                queue.offer(httpClient);
             }
             Thread.sleep(1000);
             //            });
@@ -118,18 +123,26 @@ public class GetDailyImpliedVolatility {
         return optionCodeToIdMap;
     }
 
-    // https://restapi.ivolatility.com/equities/eod/single-stock-option-raw-iv?apiKey=S3j7pBefWG0J0glb&optionId=120387742&from=2022-05-16&to=2022-05-20
     public static void getHistoricalIV(Map<String/* optionCode */, String/* date */> optionCodeDateMap) throws Exception {
-        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2024, 2020);
+        LocalDate now = LocalDate.now();
+        String today = now.format(Constants.DB_DATE_FORMATTER);
+        int year = now.getYear();
+        List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", year, year - 4);
         List<String> dateList = stockKLines.stream().map(StockKLine::getFormatDate).collect(Collectors.toList());
         Map<String/* today */, String/* nextDay */> nextDayMap = Maps.newHashMap();
         Map<String/* today */, List<String>/* last5Days*/> last5DaysMap = Maps.newHashMap();
         for (int i = 0; i < dateList.size() - 5; i++) {
             last5DaysMap.put(dateList.get(i), Lists.newArrayList(dateList.get(i + 1), dateList.get(i + 2), dateList.get(i + 3), dateList.get(i + 4), dateList.get(i + 5)));
         }
+        last5DaysMap.put(today, Lists.newArrayList(dateList.get(0), dateList.get(1), dateList.get(2), dateList.get(3), dateList.get(4)));
         for (int i = 0; i < dateList.size() - 1; i++) {
             nextDayMap.put(dateList.get(i + 1), dateList.get(i));
         }
+        getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap);
+    }
+
+    // https://restapi.ivolatility.com/equities/eod/single-stock-option-raw-iv?apiKey=S3j7pBefWG0J0glb&optionId=120387742&from=2022-05-16&to=2022-05-20
+    public static void getHistoricalIV(Map<String/* optionCode */, String/* date */> optionCodeDateMap, Map<String/* today */, List<String>/* last5Days*/> last5DaysMap, Map<String/* today */, String/* nextDay */> nextDayMap) throws Exception {
         Map<String, String> optionIdMap = getOptionIdMap();
 
         HttpClient httpClient = new HttpClient();
@@ -150,8 +163,7 @@ public class GetDailyImpliedVolatility {
             // 加载已抓数据，如果没有就新建
             String code = optionCode.substring(2);
             Map<String, Double> ivMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
-            int _2_index = code.indexOf("2");
-            String stock = code.substring(0, _2_index);
+            String stock = code.substring(0, code.length() - 15);
             File ivDir = new File(Constants.USER_PATH + "optionData/IV/" + stock);
             if (!ivDir.exists()) {
                 ivDir.mkdirs();
@@ -189,6 +201,9 @@ public class GetDailyImpliedVolatility {
                 }
 
                 while (true) {
+                    if (StringUtils.isBlank(last5Day)) {
+                        break;
+                    }
                     if (ivmap.containsKey(last5Day)) {
                         ivMap.put(last5Day, ivmap.get(last5Day));
                     } else {

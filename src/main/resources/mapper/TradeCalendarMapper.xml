@@ -21,7 +21,24 @@
     </insert>
 
     <select id="queryTradeCalendar">
-        select <include refid="queryColumn"/> from `trade_calendar`
+        select
+        <include refid="queryColumn"/>
+        from `trade_calendar`
         where date = #{tradeDate}
     </select>
+
+    <select id="queryLastTradeCalendar">
+        select
+        <include refid="queryColumn"/>
+        from `trade_calendar`
+        where date &lt; #{tradeDate} order by `date` desc limit 1
+    </select>
+
+    <select id="queryLastNTradeCalendar">
+        select
+        <include refid="queryColumn"/>
+        from `trade_calendar`
+        where date &lt; #{tradeDate} order by `date` desc limit #{N}
+    </select>
+
 </mapper>

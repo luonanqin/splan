@@ -4,6 +4,7 @@ import barchart.DownloadStockHistory;
 import bean.BOLL;
 import bean.EarningDate;
 import bean.FrontReinstatement;
+import bean.OptionDaily;
 import bean.SplitStockInfo;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
@@ -1045,5 +1046,40 @@ public class BaseUtils {
     public static void main(String[] args) throws Exception {
         double callPredictedValue = getCallPredictedValue(7.8452, 8.5, 0.0527, 1.6317, "2024-02-20", "2024-02-23");
         System.out.println(callPredictedValue);
+    }
+
+    public static Map<String, Map<String, OptionDaily>> loadOptionDailyMap(String stock) throws Exception {
+        Map<String/* date */, Map<String/* optionCode */, OptionDaily>> dateToOptionDailyMap = Maps.newHashMap();
+
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionDaily/" + stock);
+        if (CollectionUtils.isEmpty(lines)) {
+            return Maps.newHashMap();
+        }
+        // 2024-01-02	O:AR240105P00022500	0.33	0.35	0.3	0.34	135
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = split[0];
+            String code = split[1];
+            double open = Double.parseDouble(split[2]);
+            double high = Double.parseDouble(split[3]);
+            double low = Double.parseDouble(split[4]);
+            double close = Double.parseDouble(split[5]);
+            long volume = Long.parseLong(split[6]);
+            OptionDaily optionDaily = new OptionDaily();
+            optionDaily.setFrom(date);
+            optionDaily.setSymbol(code);
+            optionDaily.setOpen(open);
+            optionDaily.setClose(close);
+            optionDaily.setHigh(high);
+            optionDaily.setLow(low);
+            optionDaily.setVolume(volume);
+
+            if (!dateToOptionDailyMap.containsKey(date)) {
+                dateToOptionDailyMap.put(date, Maps.newHashMap());
+            }
+            dateToOptionDailyMap.get(date).put(code, optionDaily);
+        }
+
+        return dateToOptionDailyMap;
     }
 }

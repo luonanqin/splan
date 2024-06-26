@@ -109,15 +109,15 @@ public class ReadFromDBTest extends BaseTest {
     public void checkEarningData() {
         List<EarningDate> earningDatas = earningDataMapper.queryEarningByDate("2024-02-28");
         GetMethod get = new GetMethod("https://api.nasdaq.com/api/calendar/earnings?date=2024-02-28");
-        get.addRequestHeader("authority","api.nasdaq.com");
-        get.addRequestHeader("accept","application/json, text/plain, */*");
-        get.addRequestHeader("user-agent","Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36");
-        get.addRequestHeader("origin","https://www.nasdaq.com");
-        get.addRequestHeader("sec-fetch-site","same-site");
-        get.addRequestHeader("sec-fetch-mode","cors");
-        get.addRequestHeader("sec-fetch-dest","empty");
-        get.addRequestHeader("referer","https://www.nasdaq.com/");
-        get.addRequestHeader("accept-language","en-US,en;q=0.9");
+        get.addRequestHeader("authority", "api.nasdaq.com");
+        get.addRequestHeader("accept", "application/json, text/plain, */*");
+        get.addRequestHeader("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36");
+        get.addRequestHeader("origin", "https://www.nasdaq.com");
+        get.addRequestHeader("sec-fetch-site", "same-site");
+        get.addRequestHeader("sec-fetch-mode", "cors");
+        get.addRequestHeader("sec-fetch-dest", "empty");
+        get.addRequestHeader("referer", "https://www.nasdaq.com/");
+        get.addRequestHeader("accept-language", "en-US,en;q=0.9");
         try {
             HttpClient httpClient = new HttpClient();
             httpClient.executeMethod(get);
