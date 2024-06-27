@@ -33,4 +33,12 @@
         select <include refid="queryColumn"/> from `earning_calendar`
         where date = #{day}
     </select>
+
+    <delete id="deleteEarning">
+        delete from `earning_calendar`
+        where date in
+        <foreach collection="dateList" item="date" separator="," open="(" close=")">
+            #{date}
+        </foreach>
+    </delete>
 </mapper>

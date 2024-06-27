@@ -146,7 +146,7 @@ public class WriteToDB {
 
         List<EarningDate> earningDateList = dateList.stream().map(date -> {
             try {
-                return BaseUtils.getEarningDate(date);
+                return BaseUtils.getAllEarningDate2(date);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -158,6 +158,7 @@ public class WriteToDB {
             return;
         }
 
+        earningDataMapper.deleteEarning(dateList);
         earningDataMapper.batchInsertEarning(earningDateList);
         log.info("sync earning finish. dateList=" + dateList + ", earning sum=" + earningDateList.size());
     }

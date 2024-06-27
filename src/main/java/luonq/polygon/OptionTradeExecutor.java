@@ -2,27 +2,40 @@ package luonq.polygon;
 
 import bean.Node;
 import bean.NodeList;
-import bean.OrderFill;
-import bean.StockPosition;
-import bean.StopLoss;
+import bean.OptionRT;
+import bean.OptionRTResp;
+import com.alibaba.fastjson.JSON;
 import com.futu.openapi.FTAPI;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import luonq.execute.LoadOptionTradeData;
+import luonq.futu.BasicQuote;
+import luonq.futu.GetOptionChain;
 import luonq.futu.TradeApi;
+import luonq.listener.OptionStockListener;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.springframework.stereotype.Component;
+import util.BaseUtils;
+import util.Constants;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static util.Constants.TRADE_ERROR_CODE;
+import java.util.stream.Collectors;
 
 /**
  * Created by Luonanqin on 2023/5/9.
@@ -33,357 +46,280 @@ import static util.Constants.TRADE_ERROR_CODE;
 public class OptionTradeExecutor {
 
     private NodeList list;
-    private TradeApi tradeApi;
+    private BasicQuote futuQuote;
+    private GetOptionChain getOptionChain;
     private int cut = 990000;
     private List<String> tradeStock = Lists.newArrayList();
     private RealTimeDataWS_DB client;
     private boolean realTrade = true;
+    private OptionStockListener optionStockListener;
+    private Set<String> hasOrdered = Sets.newHashSet();
+    private Set<String> hasTraded = Sets.newHashSet();
+    private TradeApi tradeApi;
+    // code的实时iv
+    private Map<String, Double> optionRtIvMap = Maps.newHashMap();
 
     public void init() {
         FTAPI.init();
+        futuQuote = new BasicQuote();
+        futuQuote.start();
         tradeApi = new TradeApi();
         //        tradeApi.useSimulateEnv();
         //        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
         tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.unlock();
-        tradeApi.clearStopLossStockSet();
+        //        tradeApi.clearStopLossStockSet();
+    }
+
+    public void beginTrade() throws InterruptedException {
+        // todo 测试用------------
+//        optionStockListener = new OptionStockListener();
+//        try {
+//            optionStockListener.cal("AAPL", 219.07);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        // todo 测试用------------
+        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
+        // 能交易的股票
+        Set<String> canTradeStocks = optionStockListener.getCanTradeStocks();
+        if (CollectionUtils.isEmpty(canTradeStocks)) {
+            return;
+        }
+        double riskFreeRate = LoadOptionTradeData.riskFreeRate;
+        // 给富途用来监听报价和交易用的code
+        Map<String, String> canTradeOptionForFutuMap = optionStockListener.getCanTradeOptionForFutuMap();
+        // 股票对应实时iv code
+        Map<String, String> canTradeOptionForRtIVMap = optionStockListener.getCanTradeOptionForRtIVMap();
+        // 股票的实时报价
+        Map<String, Double> realtimeQuoteForOptionMap = RealTimeDataWS_DB.realtimeQuoteForOptionMap;
+//        realtimeQuoteForOptionMap.put("AAPL", 219.07); // todo 测试用要删
+        // 期权对应行权价
+        Map<String, Double> optionStrikePriceMap = optionStockListener.getOptionStrikePriceMap();
+        // 期权对应行到期日
+        Map<String, String> optionExpireDateMap = optionStockListener.getOptionExpireDateMap();
+        // 实时iv code对应富途code
+        Map<String, String> optionCodeMap = optionStockListener.getOptionCodeMap();
+
+        // 监听实时iv
+//        getRealTimeIV(canTradeOptionForRtIVMap);
+        optionRtIvMap.put("AAPL++240628C00222500", 0.328);
+        optionRtIvMap.put("AAPL++240628P00217500", 0.241047);
+
+        // 均分账户资金
+        //        double funds = tradeApi.getFunds();
+        double funds = 10000d / 7.3d; // todo 测试用要删
+        double avgFund = (int) funds / canTradeStocks.size();
+
+        // 监听富途报价
+        List<String> futuOptionList = canTradeOptionForFutuMap.values().stream().flatMap(o -> Arrays.stream(o.split("\\|"))).collect(Collectors.toList());
+        for (String optionCode : futuOptionList) {
+            futuQuote.subOrderBook(optionCode);
+        }
+
+        while (true) {
+            for (String stock : canTradeStocks) {
+                if (hasOrdered.contains(stock)) {
+                    continue;
+                }
+
+                String callAndPut = canTradeOptionForRtIVMap.get(stock);
+                String[] split = callAndPut.split("\\|");
+                String callRt = split[0];
+                String putRt = split[1];
+                Double callIv = optionRtIvMap.get(callRt);
+                Double putIv = optionRtIvMap.get(putRt);
+                if (callIv == null || putIv == null) {
+                    continue;
+                }
+
+                String call = callRt.replaceAll("\\+", "");
+                String put = putRt.replaceAll("\\+", "");
+                Double callStrikePrice = optionStrikePriceMap.get(call);
+                Double putStrikePrice = optionStrikePriceMap.get(put);
+                String callExpireDate = optionExpireDateMap.get(call);
+                String putExpireDate = optionExpireDateMap.get(put);
+                Double stockPrice = realtimeQuoteForOptionMap.get(stock);
+                if (stockPrice == null) {
+                    log.warn("wait {} quote", stock);
+                    continue;
+                }
+                double callPredPrice = BaseUtils.getCallPredictedValue(stockPrice, callStrikePrice, riskFreeRate, callIv, today, callExpireDate);
+                double putPredPrice = BaseUtils.getPutPredictedValue(stockPrice, putStrikePrice, riskFreeRate, putIv, today, putExpireDate);
+
+                String callFutu = optionCodeMap.get(callRt);
+                String putFutu = optionCodeMap.get(putRt);
+
+                Map<String, String> codeToQuoteMap = futuQuote.getCodeToQuoteMap();
+                String callQuote = codeToQuoteMap.get(callFutu);
+                String putQuote = codeToQuoteMap.get(putFutu);
+                String[] callQuoteSplit = callQuote.split("\\|");
+                String[] putQuoteSplit = putQuote.split("\\|");
+                double callBidPrice = Double.parseDouble(callQuoteSplit[0]);
+                double callAskPrice = Double.parseDouble(callQuoteSplit[1]);
+                double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double putBidPrice = Double.parseDouble(putQuoteSplit[0]);
+                double putAskPrice = Double.parseDouble(putQuoteSplit[1]);
+                double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+                double callTradePrice = 0d, putTradePrice = 0d; // todo 重点测试各种价格
+                if (callPredPrice < callBidPrice || callPredPrice > callMidPrice) {
+                    callTradePrice = callMidPrice;
+                } else {
+                    callTradePrice = callPredPrice;
+                }
+                if (putPredPrice < putBidPrice || putPredPrice > putMidPrice) {
+                    putTradePrice = putMidPrice;
+                } else {
+                    putTradePrice = putPredPrice;
+                }
+                double count = (int) (avgFund / (callTradePrice + putTradePrice) / 100);
+
+//                tradeApi.placeNormalBuyOrder(callFutu, count, callTradePrice);
+//                tradeApi.placeNormalBuyOrder(putFutu, count, putTradePrice);
+                log.info("simulate trade: {} {}, {} {}. {}", call, callTradePrice, put, putTradePrice, count);
+
+                hasOrdered.add(stock);
+            }
+            if (canTradeStocks.size() == hasOrdered.size()) {
+                RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
+                break;
+            }
+        }
+
+        Thread.sleep(5000);
+    }
+
+    public void getRealTimeIV(Map<String, String> canTradeOptionForRtIVMap) {
+        if (MapUtils.isEmpty(canTradeOptionForRtIVMap)) {
+            // todo
+            return;
+        }
+
+        HttpClient httpClient = new HttpClient();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                String options = canTradeOptionForRtIVMap.values().stream().flatMap(o -> Arrays.stream(o.split("\\|"))).collect(Collectors.joining(","));
+                String url = "https://restapi.ivolatility.com/equities/rt/options-rawiv?apiKey=5uO8Wid7AY945OJ2&symbols=" + options;
+
+                GetMethod get = new GetMethod(url);
+                try {
+                    long curent = System.currentTimeMillis();
+                    httpClient.executeMethod(get);
+                    InputStream content = get.getResponseBodyAsStream();
+                    OptionRTResp resp = JSON.parseObject(content, OptionRTResp.class);
+                    List<OptionRT> data = resp.getData();
+                    if (CollectionUtils.isNotEmpty(data)) {
+                        for (OptionRT rt : data) {
+                            String symbol = rt.getSymbol();
+                            String timestamp = rt.getTimestamp();
+                            double iv = rt.getIv();
+                            String line = symbol + "\t" + timestamp + "\t" + iv + "\t" + curent;
+                            log.info("rt iv: {}", line);
+                            if (timestamp.contains("T09:2")) {
+                                continue;
+                            }
+                            optionRtIvMap.put(symbol.replaceAll(" ", "+"), iv);
+                        }
+                        log.info("rt iv Map: {}", optionRtIvMap);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 2000);
+    }
+
+
+    public void backup() {
+        List<Node> nodes = list.getNodes();
+        if (CollectionUtils.isEmpty(nodes)) {
+            log.info("option stock is empty");
+            return;
+        }
+
+        String show = list.show();
+        System.out.println("option stock: " + show);
+        for (Node node : nodes) {
+            String code = node.getName();
+            double price = node.getPrice();
+            List<String> chainList = getOptionChain.getChainList(code);
+            if (CollectionUtils.isEmpty(chainList)) {
+                System.out.println(code + " has no option chain");
+                continue;
+            }
+
+            String optionCode = getOptionCode(chainList, price);
+            int c_index = optionCode.lastIndexOf("C");
+            StringBuffer sb = new StringBuffer(optionCode);
+            String putOptionCode = sb.replace(c_index, c_index + 1, "P").toString();
+
+            subQuote(optionCode);
+            subOrder(optionCode);
+
+            subQuote(putOptionCode);
+            subOrder(putOptionCode);
+        }
+        System.out.println("finish option subcribe");
+    }
+
+    public void subQuote(String optionStock) {
+        futuQuote.subBasicQuote(optionStock);
+    }
+
+    public void subOrder(String optionStock) {
+        futuQuote.subOrderBook(optionStock);
     }
 
     public void setTradeStock(List<String> stocks) {
         tradeStock = stocks;
     }
 
-    public void beginTrade() throws InterruptedException {
-        log.info("begin trade: {}", list.show());
-        List<Node> nodes = list.getNodes();
-        /** 1.获取剩余可用现金 */
-        double remainCash = tradeApi.getFunds();
-        if (!realTrade) {
-            remainCash -= cut;
-        }
-        log.info("remain cash: " + remainCash);
-        if (CollectionUtils.isNotEmpty(nodes)) {
-            boolean tradeSuccess = true;
-            for (int i = 0; i < 3; i++) {
-                Node node = nodes.get(0);
-                String code = node.getName();
-                double price;
-                if (!RealTimeDataWS_DB.realtimeQuoteMap.containsKey(code)) {
-                    log.info("can't find real-time quote: " + code);
-                    price = node.getPrice();
-                } else {
-                    price = RealTimeDataWS_DB.realtimeQuoteMap.get(code);
+    public String getOptionCode(List<String> chainList, double price) {
+        // 找出当前价前后的行权价及等于当前价的行权价
+        double priceDiff = Double.MAX_VALUE;
+        String optionCode = null;
+        for (String chain : chainList) {
+            String[] split = chain.split("\t");
+            String code = split[0];
+            Double strikePrice = Double.valueOf(split[2]);
+            if (strikePrice < price) {
+                if (priceDiff > price - strikePrice) {
+                    priceDiff = price - strikePrice;
+                    optionCode = code;
                 }
-
-                double upRatio = 0.003;
-                double minusCountRatio = 0.995;
-                int multiple = 0;
-                double orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
-                remainCash = tradeApi.getFunds();
-                log.info("first trade. orderPrice=" + orderPrice + ", multiple=" + multiple + " cash=" + remainCash);
-                if (remainCash == 0 && i > 0) {
-                    Map<String, Long> orderList = tradeApi.getOrderList();
-                    if (MapUtils.isEmpty(orderList)) {
-                        log.info("there is no order now!");
-                        break;
-                    }
-
-                    Long orderId = orderList.get(code);
-                    if (orderId == null) {
-                        log.info("there is no order for " + code);
-                        break;
-                    }
-
-                    long cancelRes = tradeApi.cancelOrder(orderId);
-                    log.info("cancel result: {}", cancelRes);
+            } else if (strikePrice == price) {
+                optionCode = code;
+                break;
+            } else if (strikePrice > price) {
+                if (priceDiff > strikePrice - price) {
+                    optionCode = code;
                 }
-                int count = tradeApi.getMaxCashBuy(code, orderPrice);
-
-                while (true) {
-                    //            /** 2.用剩余可用现金计算可买数量 */
-                    //            int count = (int) (remainCash / orderPrice);
-                    /** 2.调用接口获取最大可买数量 */
-                    if (count == TRADE_ERROR_CODE) {
-                        log.info("get max cash buy error. code=" + code + ", orderPrice=" + orderPrice);
-                        break;
-                    }
-                    /** 如果可买数量为0，则执行56 */
-                    if (count <= 0) {
-                        log.info("there is no cash to trade. trade finish. count=" + count);
-                        break;
-                    }
-
-                    /** 3.用可买数量下限价单 */
-                    long orderId;
-                    if (realTrade) {
-                        //                orderId = tradeApi.placeMarketBuyOrder(code, count);
-                        orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
-                    } else {
-                        orderId = tradeApi.placeNormalBuyOrder(code, count, orderPrice);
-                    }
-                    if (orderId == TRADE_ERROR_CODE) {
-                        log.info("place order failed. code=" + code + ", count=" + count + ", orderPrice=" + orderPrice);
-                        count--;
-                        continue;
-                    }
-                    log.info("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId + " " + System.currentTimeMillis());
-
-                    while (true) {
-                        /** 4.下单完成后，4秒后获取成交状态 */
-                        OrderFill orderFill = tradeApi.getOrderFill(orderId, 4);
-                        if (orderFill == null) {
-                            /** 5.如果没有成交完成，则修改价格，并继续 */
-                            orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
-                            log.info("modify order price. orderPrice=" + orderPrice + ", multiple=" + multiple);
-                            count = (int) (count * minusCountRatio);
-
-                            for (int j = 0; j <= 10; j++) {
-                                long modifyOrderId = tradeApi.upOrderPrice(orderId, count, orderPrice);
-                                log.info(code + " order has been modify. orderId=" + orderId + ", ordePrice=" + orderPrice + ", modifyOrderId=" + modifyOrderId);
-                                if (modifyOrderId == TRADE_ERROR_CODE) {
-                                    count--;
-                                    log.info("minus count={}", count);
-                                } else {
-                                    break;
-                                }
-                            }
-                        } else {
-                            /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
-                            log.info(code + " order is successfully executed. orderId=" + orderId);
-                            if (realTrade) {
-                                try {
-                                    placeStopLossOrder(orderFill);
-                                } catch (Exception e) {
-                                    log.info("real placeStopLossOrder failed");
-                                }
-                            }
-                            tradeStock.add(code);
-                            break;
-                        }
-                        if (multiple == 5) {
-                            long cancelRes = tradeApi.cancelOrder(orderId);
-                            log.info("mulitiple stop. cancel result: {}", cancelRes);
-                            tradeSuccess = false;
-                            break;
-                        }
-                    }
-
-                    if (!realTrade) {
-                        /** 模拟盘重新获取剩余可用现金 */
-                        remainCash = tradeApi.getFunds();
-                        remainCash -= cut;
-                        //            } else if (orderFill != null) {
-                        //                /** 实盘获取的剩余现金实时性不高，所以用前值减去已成交订单金额得到最新现金 */
-                        //                remainCash = remainCash - orderFill.getAvgPrice() * orderFill.getCount();
-                    }
-                    break;
-                }
-                if (tradeSuccess) {
-                    log.info("trade success");
-                    break;
-                } else {
-                    log.info("retry trade. {} times", i + 1);
-                }
+                break;
             }
         }
-        log.info("trade end");
 
-        // 停止监听实时报价
-        RealTimeDataWS_DB.getRealtimeQuote = false;
-        log.info("stop get real-time quote");
-
-        /** 6.建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */
-        //        closeCheckPosition();
-
-        Thread.sleep(10000);
-        /** 7.计算之前已成交的止损价格，并设置止损市价单（模拟盘不支持） */
-        /** 7*.（只用于模拟盘，实盘需注释掉）计算止损价格临时存储，然后让主进程监听这些股票，发现低于止损价则触发止损限价单 */
-        if (!realTrade) {
-            beginListenStopLoss();
-        }
+        return optionCode;
     }
 
-    public void closeCheckPosition() {
-        Timer closeCheckTimer = new Timer();
-        closeCheckTimer.schedule(new TimerTask() {
-                                     @Override
-                                     public void run() {
-                                         String[] tradeStockArr = tradeStock.toArray(new String[tradeStock.size()]);
-                                         Map<String, StockPosition> positionMap = tradeApi.getPositionMap(tradeStockArr);
-                                         log.info("ready to sell before close market. position=" + positionMap + ", time=" + LocalDateTime.now());
-                                         if (MapUtils.isEmpty(positionMap)) {
-                                             log.info("position is empty. trade is end today!!!");
-                                         } else {
-                                             for (String stock : tradeStock) {
-                                                 StockPosition stockPosition = positionMap.get(stock);
-                                                 if (stockPosition == null) {
-                                                     log.info("closeCheckPosition failed! " + stock + " position is not exist!");
-                                                     continue;
-                                                 }
-
-                                                 double canSellQty = stockPosition.getCanSellQty();
-                                                 double currPrice = stockPosition.getCurrPrice();
-                                                 double orderPrice = BigDecimal.valueOf(currPrice * 0.995).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
-                                                 log.info("before close sell stock. stock=" + stock + ", count=" + canSellQty + ", currentPrice=" + currPrice + ", orderPrice=" + orderPrice);
-                                                 long orderId = tradeApi.placeNormalSellOrder(stock, canSellQty, orderPrice);
-                                                 log.info("before close sell stock. stock=" + stock + ", orderId：" + orderId);
-                                             }
-                                         }
-                                     }
-                                 }
-          , client.getCloseCheckTime());
-        log.info("begin close check timer listen!");
-    }
-
-    public void closeSell() {
-        log.info("sell stock before close market");
-        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(null);
-        log.info("ready to sell before close market. position=" + positionMap + ", time=" + LocalDateTime.now());
-        if (MapUtils.isEmpty(positionMap)) {
-            log.info("position is empty. trade is end today!!!");
-        } else {
-            for (String stock : positionMap.keySet()) {
-                StockPosition stockPosition = positionMap.get(stock);
-                if (stockPosition == null) {
-                    log.info("closeCheckPosition failed! " + stock + " position is not exist!");
-                    continue;
-                }
-
-                /** 收盘前卖出尝试3次 */
-                for (int i = 0; i < 3; i++) {
-                    double canSellQty = stockPosition.getCanSellQty();
-
-                    log.info("before close sell stock for market price. stock=" + stock + ", count=" + canSellQty);
-                    long orderId = tradeApi.placeMarketSellOrder(stock, canSellQty);
-                    log.info("sell stock orderId=" + orderId);
-                    if (orderId == -1) {
-                        log.info("retry sell stock=" + stock);
-                        continue;
-                    }
-                    OrderFill orderFill = tradeApi.getOrderFill(orderId, 8);
-                    if (orderFill == null) {
-                        long cancelResCode = tradeApi.cancelOrder(orderId);
-                        log.info("sell stock cancel. retry stock=" + stock + ", orderId=" + orderId + ", cancelResCode=" + cancelResCode);
-                        continue;
-                    }
-                    log.info("sell stock success. stock=" + stock + ", orderId=" + orderId);
-                    break;
-                }
-            }
-        }
-    }
-
-    public void beginListenStopLoss() {
-        Map<String, StopLoss> stockToStopLoss = Maps.newHashMap();
-        String[] tradeStockArr = tradeStock.toArray(new String[tradeStock.size()]);
-        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(tradeStockArr);
-        for (String stock : tradeStock) {
-            StockPosition stockPosition = positionMap.get(stock);
-            if (stockPosition == null) {
-                log.info("beginListenStopLoss failed! " + stock + " position is not exist!");
-                continue;
-            }
-
-            double canSellQty = stockPosition.getCanSellQty();
-            double costPrice = stockPosition.getCostPrice();
-            double lossPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS_DB.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
-            StopLoss stopLoss = new StopLoss();
-            stopLoss.setStock(stock);
-            stopLoss.setCanSellQty(canSellQty);
-            stopLoss.setLossPrice(lossPrice);
-
-            stockToStopLoss.put(stock, stopLoss);
-        }
-
-        if (MapUtils.isEmpty(stockToStopLoss)) {
-            log.info("there is no position that need to be listened");
-            //            System.exit(0);
-            return;
-        }
-        client.listenStopLoss(stockToStopLoss);
-    }
-
-    // 模拟盘不支持止损市价单
-    public void placeStopLossOrder(String code) {
-        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(code);
-        StockPosition stockPosition = positionMap.get(code);
-        if (stockPosition == null) {
-            log.info("placeStopLossOrder faild! " + code + " position is not exist!");
-            return;
-        }
-
-        double canSellQty = stockPosition.getCanSellQty();
-        double costPrice = stockPosition.getCostPrice();
-        double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS_DB.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
-
-        long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
-        log.info(code + " placeStopLoss market order. qty=" + canSellQty + ", auxPrice=" + auxPrice + ", orderId：" + orderId);
-    }
-
-    // 根据订单返回的信息设定止损单
-    public void placeStopLossOrder(OrderFill orderFill) {
-        if (orderFill == null) {
-            log.info("order fill is null");
-            return;
-        }
-
-        String code = orderFill.getCode();
-        double canSellQty = orderFill.getCount();
-        double costPrice = orderFill.getAvgPrice();
-        double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS_DB.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
-
-        long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);
-        log.info(code + " placeStopLoss market order. qty=" + canSellQty + ", auxPrice=" + auxPrice + ", orderId：" + orderId);
-    }
-
-    public void placeStopLossOrder(String code, double canSellQty, double price) {
-        long orderId = tradeApi.placeNormalSellOrder(code, canSellQty, price);
-        log.info(code + " placeStopLoss limit order. qty=" + canSellQty + ", price=" + price + ", orderId: " + orderId);
-    }
-
-    public StockPosition getPosition(String stock) {
-        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(stock);
-        if (positionMap == null) {
-            log.info("get " + stock + "position is null");
-            return null;
-        }
-        return positionMap.get(stock);
-    }
-
-    public Map<String, StockPosition> getAllPosition() {
-        return tradeApi.getPositionMap(null);
-    }
-
-    public void reListenStopLoss() {
-        Map<String, StopLoss> stockToStopLoss = Maps.newHashMap();
-        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(null);
-        for (String stock : positionMap.keySet()) {
-            StockPosition stockPosition = positionMap.get(stock);
-
-            double canSellQty = stockPosition.getCanSellQty();
-            double costPrice = stockPosition.getCostPrice();
-            double lossPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS_DB.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
-            StopLoss stopLoss = new StopLoss();
-            stopLoss.setStock(stock);
-            stopLoss.setCanSellQty(canSellQty);
-            stopLoss.setLossPrice(lossPrice);
-
-            stockToStopLoss.put(stock, stopLoss);
-        }
-
-        client.listenStopLoss(stockToStopLoss);
-    }
-
-    public static void main(String[] args) {
-        OptionTradeExecutor tradeExecutor = new OptionTradeExecutor();
-        //        NodeList nodeList = new NodeList(10);
-        //        Node node = new Node("RNAZ", 1);
-        //        node.setPrice(5.71d);
-        //        nodeList.add(node);
-        //        tradeExecutor.setList(nodeList);
+    public static void main(String[] args) throws InterruptedException {
+        OptionTradeExecutor executor = new OptionTradeExecutor();
+        executor.init();
+        //        executor.subOrder("");
+        NodeList nodeList = new NodeList(10);
+        Node node = new Node("RNAZ", 1);
+        node.setPrice(5.71d);
+        Node node2 = new Node("AAPL", 2);
+        node2.setPrice(191.04);
+        nodeList.add(node);
+        nodeList.add(node2);
+        executor.setList(nodeList);
+        executor.beginTrade();
 
         //        futuListener.beginTrade();
-        tradeExecutor.placeStopLossOrder("HKD");
     }
 }

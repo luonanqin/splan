@@ -746,7 +746,7 @@ public class BaseUtils {
                 nextLocalDate = nextLocalDate.plusDays(2);
             }
             String nextDate = nextLocalDate.format(Constants.FORMATTER);
-            List<EarningDate> list = getEarningDateData(date, nextDate, filePath, false);
+            List<EarningDate> list = getEarningDateData(date, nextDate, filePath, true);
 
             for (EarningDate earningDate : list) {
                 String actualDate = earningDate.getActualDate();
@@ -779,6 +779,7 @@ public class BaseUtils {
                 actualDate = date;
             } else {
                 if (all) {
+                    earningType = EarningDate.DURING_MARKET_HOUR;
                     actualDate = date;
                 } else {
                     continue;

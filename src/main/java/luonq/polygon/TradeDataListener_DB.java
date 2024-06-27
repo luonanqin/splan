@@ -14,6 +14,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.math.BigDecimal.ROUND_DOWN;
 import static java.math.BigDecimal.ROUND_HALF_UP;
@@ -28,6 +29,7 @@ public class TradeDataListener_DB {
 
     private NodeList list;
     private RealTimeDataWS_DB client;
+    private Set<String> stockSet;
 
     @Subscribe
     public void onMessageEvent(StockEvent event) {
@@ -36,8 +38,17 @@ public class TradeDataListener_DB {
 
     public void cal(StockEvent event) {
         String stock = event.getStock();
+        if (!stockSet.contains(stock)) {
+            return;
+        }
+
         Double price = event.getPrice();
         if (price < RealTimeDataWS_DB.PRICE_LIMIT) {
+            return;
+        }
+
+        Double lastDn = RealTimeDataWS_DB.stockToLastDn.get(stock);
+        if (lastDn == null || price > lastDn) {
             return;
         }
 

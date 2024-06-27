@@ -35,7 +35,7 @@ public class WriteToDBTest extends BaseTest {
 
     @Test
     public void earningToDB() {
-        writeToDB.earningToDB(null);
+        writeToDB.earningToDB(Lists.newArrayList("2024-06-27", "2024-06-28","2024-06-30", "2024-07-01", "2024-07-02"));
     }
 
     @Test

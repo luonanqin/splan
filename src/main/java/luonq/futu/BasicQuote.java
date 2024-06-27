@@ -30,12 +30,14 @@ import java.util.Set;
 /**
  * Created by Luonanqin on 2023/5/5.
  */
-public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
+@Data
+public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
 
 
     FTAPI_Conn_Qot qot = new FTAPI_Conn_Qot();
 
     private Map<String, Double> stockToCurrPriceMap = Maps.newHashMap();
+    private Map<String/* code */, String/* bid and ask price */> codeToQuoteMap = Maps.newHashMap();
 
     @Data
     public static class StockQuote {
@@ -45,7 +47,7 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
 
     private static PriorityQueue<StockQuote> queue = new PriorityQueue<>(100, (o1, o2) -> (int) (o1.getPrice() - o2.getPrice()));
 
-    public BasicQuoteDemo() {
+    public BasicQuote() {
         qot.setClientInfo("javaclient", 1);  //设置客户端信息
         qot.setConnSpi(this);  //设置连接回调
         qot.setQotSpi(this);   //设置交易回调
@@ -117,21 +119,30 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
             List<QotCommon.OrderBook> orderBookAskListList = s2C.getOrderBookAskListList();
             List<QotCommon.OrderBook> orderBookBidListList = s2C.getOrderBookBidListList();
             System.out.print(code + "\t");
+            double bidPrice = 0d, askPrice = 0d;
             if (CollectionUtils.isNotEmpty(orderBookBidListList)) {
                 QotCommon.OrderBook orderBook = orderBookBidListList.get(0);
-                double price = orderBook.getPrice();
+                bidPrice = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 int orderCount = orderBook.getOrederCount();
-                System.out.print("bid price=" + price + "\tvolume=" + volume);
+                //                System.out.print("bid price=" + bidPrice + "\tvolume=" + volume);
+                if (volume < 5 || bidPrice == 0) {
+                    return;
+                }
             }
             if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
                 QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
-                double price = orderBook.getPrice();
+                askPrice = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 int orderCount = orderBook.getOrederCount();
-                System.out.print(" ask price=" + price + "\tvolume=" + volume);
+                //                System.out.print(" ask price=" + askPrice + "\tvolume=" + volume);
+                if (volume < 5 || askPrice == 0) {
+                    return;
+                }
             }
-            System.out.println();
+            String data = String.format("%.2f|%.2f", bidPrice, askPrice);
+            codeToQuoteMap.put(code, data);
+            System.out.println(code + "\t" + data);
         }
     }
 
@@ -294,18 +305,18 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
                 QotGetSecuritySnapshot.Snapshot snapshot = rsp.getS2COrBuilder().getSnapshotList(0);
                 String code = snapshot.getBasic().getSecurity().getCode();
                 double price = snapshot.getBasic().getCurPrice();
-//                if (!code.contains("24")) {
-//                    stockToCurrPriceMap.put(code, price);
-//                    return;
-//                }
-//                String stock = code.substring(0, code.indexOf("24"));
-//                if (!stockToCurrPriceMap.containsKey(stock)) {
-//                    return;
-//                }
+                //                if (!code.contains("24")) {
+                //                    stockToCurrPriceMap.put(code, price);
+                //                    return;
+                //                }
+                //                String stock = code.substring(0, code.indexOf("24"));
+                //                if (!stockToCurrPriceMap.containsKey(stock)) {
+                //                    return;
+                //                }
                 QotGetSecuritySnapshot.OptionSnapshotExData optionExData = snapshot.getOptionExData();
                 double impliedVolatility = optionExData.getImpliedVolatility();
                 double putPredictedValue = 0;
-//                double putPredictedValue = BaseUtils.getPutPredictedValue(stockToCurrPriceMap.get(stock), 126, 0.0526, impliedVolatility, "2024-06-17", "2024-06-21");
+                //                double putPredictedValue = BaseUtils.getPutPredictedValue(stockToCurrPriceMap.get(stock), 126, 0.0526, impliedVolatility, "2024-06-17", "2024-06-21");
 
                 System.out.println(code + "\t" + price + "\t" + putPredictedValue + "\t" + impliedVolatility + "\t" + optionExData.getPremium());
 
@@ -318,16 +329,17 @@ public class BasicQuoteDemo implements FTSPI_Qot, FTSPI_Conn {
 
     public static void main(String[] args) throws Exception {
         FTAPI.init();
-        BasicQuoteDemo quote = new BasicQuoteDemo();
+        BasicQuote quote = new BasicQuote();
         quote.start();
 
-        //        quote.subOrderBook("NVDA240621P126000");
+        quote.subOrderBook("NVDA240628P127000");
+        quote.subOrderBook("NVDA240628C127000");
         //        quote.subBasicQuote("NVDA240621P126000");
         for (int i = 0; i < 20000; i++) {
-//            quote.getSecuritySnapshot("NVDA");
+            //            quote.getSecuritySnapshot("NVDA");
             quote.getSecuritySnapshot("NVDA240621P126000");
-//            quote.getSecuritySnapshot("OXY240621C59000");
-//            quote.getSecuritySnapshot("AAPL240621C215000");
+            //            quote.getSecuritySnapshot("OXY240621C59000");
+            //            quote.getSecuritySnapshot("AAPL240621C215000");
             Thread.sleep(1000);
         }
         quote.getRehab("DPST");

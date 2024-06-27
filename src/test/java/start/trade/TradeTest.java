@@ -19,17 +19,17 @@ public class TradeTest extends BaseTest {
     private GetDataJob getDataJob;
 
     @Test
-    public void test(){
+    public void test() {
         realTimeDataWS_db.init();
     }
 
     @Test
-    public void test_sellBeforeCloseMarket(){
+    public void test_sellBeforeCloseMarket() {
         tradeJob.sellBeforeCloseMarket();
     }
 
     @Test
-    public void test_getTradeDataJobAndComputeIndicator(){
+    public void test_getTradeDataJobAndComputeIndicator() {
         try {
             getDataJob.getTradeDataJobAndComputeIndicator();
         } catch (Exception e) {

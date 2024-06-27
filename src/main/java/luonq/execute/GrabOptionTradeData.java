@@ -2,7 +2,6 @@ package luonq.execute;
 
 import bean.OptionChain;
 import bean.OptionChainResp;
-import bean.Total;
 import bean.TradeCalendar;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -36,28 +35,19 @@ public class GrabOptionTradeData {
     @Autowired
     private ReadFromDB readFromDB;
 
-    public Map<String/* date */, Double/* rate */> riskFreeRateMap = Maps.newHashMap();
     public List<String> earningStocks = Lists.newArrayList();
-    public Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
     public Map<String/* stock */, List<String>/* call and put optioncode */> stockToOptionCodeMap = Maps.newHashMap();
     public Map<String/* stock */, List<String>/* call or put optioncode */> stockToSingleOptionCodeMap = Maps.newHashMap();
 
     public void grab() {
         try {
-            //            loadRiskFreeRate();
             loadWillEarningStock();
-            //            loadLastdayClose();
             grabOptionChain();
             grabHistoricalIv();
             grabLastdayOHLC();
         } catch (Exception e) {
             log.error("LoadOptionTradeData load error", e);
         }
-    }
-
-    // 加载无风险利率
-    public void loadRiskFreeRate() throws Exception {
-        riskFreeRateMap = BaseUtils.loadRiskFreeRate();
     }
 
     // 加载接下来三天内发布财报的有周期权的股票
@@ -93,31 +83,14 @@ public class GrabOptionTradeData {
         next1dayStocks.forEach(s -> nextdayStocks.add(s));
         next2dayStocks.forEach(s -> nextdayStocks.add(s));
         next3dayStocks.forEach(s -> nextdayStocks.add(s));
-        nextdayStocks.add("AAPL"); // todo 测试用，要删
+//        nextdayStocks.clear(); // todo 测试用，要删
+//        nextdayStocks.add("NVDA"); // todo 测试用，要删
 
         Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
         Collection<String> intersection = CollectionUtils.intersection(weekOptionStock, nextdayStocks);
         earningStocks = intersection.stream().collect(Collectors.toList());
 
         log.info("will earning stocks: {}", earningStocks);
-    }
-
-    // 加载前一天的收盘价
-    public void loadLastdayClose() throws Exception {
-        if (CollectionUtils.isEmpty(earningStocks)) {
-            return;
-        }
-
-        LocalDate today = LocalDate.now();
-        today = today.minusDays(1); // todo 测试用，要删
-        TradeCalendar last = readFromDB.getLastTradeCalendar(today.format(Constants.DB_DATE_FORMATTER));
-        String lastDate = last.getDate();
-        int year = Integer.parseInt(lastDate.substring(0, 4));
-        List<Total> latestData = readFromDB.batchGetStockData(year, lastDate, earningStocks);
-
-        stockToLastdayCloseMap = latestData.stream().map(d -> d.toKLine()).collect(Collectors.toMap(d -> d.getCode(), d -> d.getClose()));
-
-        log.info("load lastday close finish");
     }
 
     // 抓取股票对应的当周call和put期权链

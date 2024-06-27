@@ -17,7 +17,7 @@ public class EarningDate {
     public static final String AFTER_MARKET_CLOSE = "After Market Close";
     public static final String TIME_NOT_SUPPLIED = "Time Not Supplied";
     public static final String BEFORE_MARKET_OPEN = "Before Market Open";
-    public static final String DURING_MARKET_HOUR = "dmh";
+    public static final String DURING_MARKET_HOUR = "During Market Hour";
 
 
     private String stock;

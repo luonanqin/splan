@@ -20,6 +20,8 @@ import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
+import luonq.execute.LoadOptionTradeData;
+import luonq.listener.OptionStockListener;
 import luonq.strategy.backup.Strategy_DB;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -47,6 +49,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -62,13 +65,13 @@ import java.util.stream.Collectors;
 public class RealTimeDataWS_DB {
 
     public static final String TEST_STOCK = "";
-    public static final Set<String> invalidStockSet = Sets.newHashSet("FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "EAR", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SIEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "FRLN", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "RETO", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "LGMK", "HLBZ", "LPCN", "BBIG", "XBIO", "JATT", "TGAA", "GRAY", "GREE", "SDIG", "SMFL", "SMFG", "VERO", "LCI", "TYDE", "DRMA", "BLIN", "HEPA", "SESN", "CR", "LITM", "SNGX", "GE", "MULN", "CGNX", "ML", "MDRR", "PR", "VAL", "EBF", "MTP", "CYCN", "XELA", "ENVX", "EQT", "GLMD", "DCFC", "POAI", "BNOX", "FRLN", "CINC", "NISN", "REFR", "CAPR", "SYRS", "ALPP", "RETO", "VISL", "GNLN", "JXJT", "SAFE", "EZFL", "IDRA", "CRESY", "IMPP", "ZEV", "EAST", "BIOC", "IFBD", "STAR", "AWH", "TNXP", "WORX", "VLON", "PSTV", "SFT", "AGRX", "MBIO", "APRE", "GAME", "VERB", "CFRX", "BLBX", "COMS", "RKDA", "WISH", "NXTP", "TR", "ARVL", "EJH", "MEIP", "ENSC", "NYMT", "PNTM", "ASNS", "AKAN", "RDFN", "GMBL", "VYNE", "MNST", "LCAA", "FRSX", "CRBP", "ATNX", "OIG", "REED", "OUST", "ALLR", "NAOV", "KRBP", "ICMB", "XOS", "GFAI", "GNUS", "BGXX", "FTFT", "AMST", "FCUV", "VBIV", "BIIB", "MINM", "CLXT", "DGLY", "MRKR");
+    public static final Set<String> invalidStockSet = Sets.newHashSet("SLAC", "CVCY", "SFE", "STRC", "APAC", "BHG", "NVIV", "SLGC", "SCTL", "LGST", "LGVC", "JAQC", "SRC", "NEPT", "NVTA", "CNDB", "NETI", "BVH", "BKCC", "GRCL", "BYN", "APTM", "KLR", "QFTA", "PCTI", "RAIN", "TCN", "GRPH", "MCAF", "TGH", "CNXA", "CHS", "KERN", "CPE", "LCA", "DISA", "DISH", "SECO", "SEAS", "BLCM", "SVFD", "LIAN", "CYT", "KNTE", "THRX", "SNCE", "PUYI", "GBNH", "WRAC", "MDGS", "PEAK", "NGMS", "ARIZ", "JT", "LIZI", "MDC", "DSKE", "ARRW", "RCAC", "PEPL", "MDVL", "ENCP", "EAC", "ENER", "EAR", "RCII", "LAZY", "CPSI", "CHEA", "ASAP", "ASCA", "LBBB", "FICV", "TRKA", "TRMR", "SOLO", "DCFC", "NGM", "SGEN", "SOVO", "KYCH", "FIXX", "FRLN", "ATAK", "GMDA", "ACAX", "VYNT", "LCAA", "ATCX", "RMGC", "ATHX", "LTHM", "SPLK", "FAZE", "EGGF", "FSR", "FUV", "CRGE", "ACOR", "EGLE", "BODY", "EXPR", "ACRX", "HHLA", "DMAQ", "OPA", "PGTI", "VIEW", "PGSS", "OSA", "CASA", "GIA", "ALTU", "ADEX", "ADES", "JOAN", "GOL", "ALYA", "CBAY", "GTH", "BXRX", "ADOC", "AMAM", "KAMN", "SIEN", "XPDB", "ICVX", "AMEH", "VAQC", "LMDX", "KRTX", "PNT", "VJET", "RWLK", "ONCR", "NSTG", "CSTR", "JGGC", "AMNB", "PXD", "AMTI", "DWAC", "SZZL", "ONTX", "NTCO", "LEJU", "EIGR", "NCAC", "LVOX", "HARP", "FLME", "SASI", "IMGN", "ROVR", "WETG", "CCLP", "TMST", "TEDU", "WNNR", "CLIN", "RAD", "CDAY", "NUBI", "AEL", "ESAC", "PBAX", "MIXT", "RPT", "CURO", "OXUS", "STAR", "EBIX", "MRTX", "AYX", "OHAA", "TWOA", "PBTS", "IOAC", "HCMA", "DHCA", "FRC", "SIVB", "BIOR", "HALL", "OBLG", "ALBT", "IPDN", "OPGN", "TENX", "AYTU", "DAVE", "NXTP", "ATHE", "CANF", "GHSI", "EEMX", "EFAX", "HYMB", "NYC", "SPYX", "PBLA", "JEF", "ACGN", "FWBI", "IDRA", "JFU", "CNET", "APM", "JAGX", "OCSL", "OGEN", "SRKZG", "CETX", "UVIX", "EDBL", "PHIO", "SWVL", "MRKR", "REED", "WISA", "FTFT", "FVCB", "LMNL", "REVB", "DYNT", "BRSF", "LCI", "DGLY", "PCAR", "CZOO", "MIGI", "NAOV", "COMS", "GFAI", "INBS", "SNGX", "APRE", "FNGG", "GNUS", "VYNE", "CRBP", "ATNX", "CFRX", "ECOR", "NVDEF", "SHIP", "AMST", "GMBL", "RELI", "WINT", "FNRN", "MFH", "XBRAF", "RKDA", "HCDI", "IONM", "VXX", "SFT", "VEON", "AKAN", "NYMT", "ORTX", "ASLN", "KRBP", "IVOG", "IVOO", "IVOV", "VIOG", "VIOO", "VIOV", "GRAY", "MRBK", "BAOS", "GGB", "LKCO", "TESTING", "VIA", "IDAI", "PTIX", "RDHL", "CUEN", "FRGT", "GCBC", "ALLR", "CREX", "MTP", "MNST", "NOGN", "BPTS", "CETXP", "ENSC", "HLBZ", "CHNR", "BEST", "MBIO", "WTER", "AGRX", "BLBX", "VBIV", "WISH", "EJH", "ARVL", "MEIP", "MINM", "ASNS", "VERB", "BKTI", "FRSX", "OIG", "LGMK", "POAI", "SMFL", "CLXT", "JXJT", "SBET", "EZFL", "IMPP", "MEME", "PSTV", "VISL", "WEED", "MDRR", "MULN", "WGS", "GTE", "SMH", "CRESY", "BBIG", "HEPA", "AWH", "LPCN", "RETO", "VERO", "ALPP", "BNMV", "EAST", "GLMD", "IFBD", "XBIO", "XELA", "XELAP", "CYCN", "GREE", "SDIG", "BIOC", "AULT", "NISN", "CHDN", "JATT", "TGAA", "SMFG", "TYDE", "DRMA", "BLIN", "SESN", "CR", "LITM", "GE", "CGNX", "ML", "PR", "VAL", "EBF", "ENVX", "EQT", "BNOX", "CINC", "REFR", "CAPR", "SYRS", "GNLN", "SAFE", "ZEV", "TNXP", "WORX", "VLON", "GAME", "TR", "PNTM", "RDFN", "OUST", "ICMB", "XOS", "BGXX", "FCUV", "BIIB");
     public static final URI uri = URI.create("wss://socket.polygon.io/stocks");
     public static final double HIT = 0.5d; // 策略成功率
     public static final int PRICE_LIMIT = 7; // 价格限制，用于限制这个价格下的股票不参与计算
     public static final double LOSS_RATIO = 0.07d; // 止损比例
     public static final int DELAY_MINUTE = 0;
-    public static final long LISTENING_TIME = 30000L; // 监听时长，毫秒
+    public static final long LISTENING_TIME = 60000L; // 监听时长，毫秒
     private static LocalDateTime summerTime = BaseUtils.getSummerTime(null);
     private static LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
@@ -79,11 +82,13 @@ public class RealTimeDataWS_DB {
     public static Map<String, Double> stockToLastDn = Maps.newHashMap();
     public static Map<String, Double> stockToM19CloseSum = Maps.newHashMap();
     public static Map<String, List<Double>> stockToM19Close = Maps.newHashMap();
-    public static Map<String, StockRatio> originRatioMap;
+    public static Map<String, StockRatio> originRatioMap = Maps.newHashMap();
     public static Set<String> todayEarningStockSet = Sets.newHashSet();
     public static Set<String> lastEarningStockSet = Sets.newHashSet();
     public static boolean getRealtimeQuote = false;
+    public static boolean getRealtimeQuoteForOption = false;
     public static Map<String, Double> realtimeQuoteMap = Maps.newHashMap();
+    public static Map<String, Double> realtimeQuoteForOptionMap = Maps.newHashMap();
     private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> realtimeQuoteBQ = new LinkedBlockingQueue<>(1000);
@@ -94,21 +99,32 @@ public class RealTimeDataWS_DB {
     private Date closeCheckTime;
     private boolean listenEnd = false;
     private NodeList list = new NodeList(10);
+    private NodeList optionList = new NodeList(10);
     private AtomicBoolean hasAuth = new AtomicBoolean(false);
+    private OptionStockListener optionStockListener = new OptionStockListener();
 
-    public static Set<String> stockSet;
+    public static Set<String> stockSet = Sets.newHashSet();
+    public Set<String> allStockSet = Sets.newHashSet();
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
 
+    private List<String> optionStockSet;
+
     @Autowired
     private TradeExecutor_DB tradeExecutor;
+
+    @Autowired
+    private OptionTradeExecutor optionTradeExecutor;
 
     @Autowired
     private Strategy_DB strategy;
 
     @Autowired
     private ReadFromDB readFromDB;
+
+    @Autowired
+    private LoadOptionTradeData loadOptionTradeData;
 
     public void init() {
         try {
@@ -125,7 +141,9 @@ public class RealTimeDataWS_DB {
 
             if (MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
                 initHistoricalData();
+                initMessageListener();
                 subcribeStock();
+                inputTestData();
                 sendToTradeDataListener();
                 close();
                 log.info("trade finish");
@@ -159,7 +177,6 @@ public class RealTimeDataWS_DB {
         //        if (tradeExecutor == null) {
         //            tradeExecutor = new TradeExecutor_DB();
         //        }
-        tradeExecutor.init();
     }
 
     private boolean waitAuth() {
@@ -183,9 +200,17 @@ public class RealTimeDataWS_DB {
 
     public void initHistoricalData() {
         try {
+            loadOptionTradeData.load();
             computeHisOverBollingerRatio();
             loadEarningInfo();
             stockSet = buildStockSet();
+            //            stockSet.add("AAPL"); // todo 测试用需删除
+            optionStockSet = LoadOptionTradeData.earningStocks;
+            // dn策略强制删除option涉及到的股票
+            stockSet.removeAll(optionStockSet);
+
+            allStockSet.addAll(stockSet);
+            allStockSet.addAll(optionStockSet);
             //            stockSet.clear();
             //            stockSet.add("RNST");
 
@@ -200,14 +225,36 @@ public class RealTimeDataWS_DB {
 
     public void initTrade() {
         try {
+            tradeExecutor.setList(list);
+            tradeExecutor.setClient(this);
+            tradeExecutor.init();
+
+            //            optionQuoteExecutor.setList(optionQuoteExecutor.getList());
+            //            optionQuoteExecutor.setList(optionList);
+            optionTradeExecutor.init();
+            optionTradeExecutor.setOptionStockListener(optionStockListener);
+
+            log.info("finish init trade");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initMessageListener() {
+        try {
             TradeDataListener_DB tradeDataListener = new TradeDataListener_DB();
+            tradeDataListener.setStockSet(stockSet);
             tradeDataListener.setClient(this);
             tradeDataListener.setList(list);
             tradeEventBus.register(tradeDataListener);
 
-            tradeExecutor.setList(list);
-            tradeExecutor.setClient(this);
-            log.info("finish init trade");
+            //            OptionDataListener optionDataListener = new OptionDataListener();
+            //            optionDataListener.setStockToKLineMap(buildLastStockKLine());
+            //            optionDataListener.setNodeList(optionList);
+            //            tradeEventBus.register(optionDataListener);
+            tradeEventBus.register(optionStockListener);
+
+            log.info("finish init message listener");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -243,15 +290,17 @@ public class RealTimeDataWS_DB {
             preTrade = now.minusDays(1);
         }
 
+        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            preTradeTime = preTrade.withHour(21).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(21).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            closeCheckTime = Date.from(closeCheck.withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
+            openHour = 21;
+            closeHour = 3;
         } else {
-            preTradeTime = preTrade.withHour(22).withMinute(28 + DELAY_MINUTE).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            openTime = now.withHour(22).withMinute(30).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-            closeCheckTime = Date.from(closeCheck.withHour(4).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
+            openHour = 22;
+            closeHour = 4;
         }
+        preTradeTime = preTrade.withHour(openHour).withMinute(preMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        openTime = now.withHour(openHour).withMinute(openMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        closeCheckTime = Date.from(closeCheck.withHour(closeHour).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         listenEndTime = openTime + LISTENING_TIME;
         log.info("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
     }
@@ -425,20 +474,6 @@ public class RealTimeDataWS_DB {
     }
 
     public AsyncEventBus asyncEventBus() {
-        //        int corePoolSize = Runtime.getRuntime().availableProcessors();
-        //        int maxPoolSize = 100;
-        //        int keepAliveTime = 60 * 1000;
-        //
-        //        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(2000);
-        //        RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
-        //        ThreadFactory factory = new ThreadFactory() {
-        //            private final AtomicInteger integer = new AtomicInteger(1);
-        //
-        //            @Override
-        //            public Thread newThread(Runnable r) {
-        //                return new Thread(r, "TheadPool-Thread-" + integer.getAndIncrement());
-        //            }
-        //        };
         return new AsyncEventBus(executor);
     }
 
@@ -495,7 +530,7 @@ public class RealTimeDataWS_DB {
                 subscribeBQ.offer(message);
             } else if (listenStopLoss) {
                 stopLossBQ.offer(message);
-            } else if (getRealtimeQuote) {
+            } else if (getRealtimeQuote || getRealtimeQuoteForOption) {
                 realtimeQuoteBQ.offer(message);
             } else {
                 List<Map> maps = JSON.parseArray(message, Map.class);
@@ -536,7 +571,7 @@ public class RealTimeDataWS_DB {
         }
 
         executor.execute(() -> {
-            for (String stock : stockSet) {
+            for (String stock : allStockSet) {
                 sendMessage("{\"action\":\"subscribe\", \"params\":\"T." + stock + "\"}");
             }
             log.info("finish subcribe real time!");
@@ -569,7 +604,7 @@ public class RealTimeDataWS_DB {
                     if (currentTime > listenEndTime) {
                         beginTrade("time over. listen end!");
                         return;
-                    } else if (stockSet.size() - unsubcribeStockSet.size() < 100) {
+                    } else if (allStockSet.size() - unsubcribeStockSet.size() < 100) {
                         if (listenEndTime - currentTime > 10000) {
                             log.info("many stock has received data. keep listening");
                             continue;
@@ -593,6 +628,7 @@ public class RealTimeDataWS_DB {
                         continue;
                     }
                     Double price = MapUtils.getDouble(map, "p");
+//                    price = 219.07; // todo 测试用要删
                     Long time = MapUtils.getLong(map, "t");
                     if (time < openTime) {
                         if (time % 1000 == 0) {
@@ -604,12 +640,12 @@ public class RealTimeDataWS_DB {
                         beginTrade(stock + " time is " + time + ", price is " + price + ".listen end!");
                         return;
                     }
-                    // 当前价大于前一天的下轨则直接过滤
-                    Double lastDn = stockToLastDn.get(stock);
-                    if (lastDn == null || price > lastDn || price < PRICE_LIMIT) {
-                        unsubscribe(stock);
-                        continue;
-                    }
+                    //                    // 当前价大于前一天的下轨则直接过滤
+                    //                    Double lastDn = stockToLastDn.get(stock);
+                    //                    if (lastDn == null || price > lastDn || price < PRICE_LIMIT) {
+                    //                        unsubscribe(stock);
+                    //                        continue;
+                    //                    }
 
                     log.info("receive data: {}", msg);
                     stockToEvent.put(stock, new StockEvent(stock, price, time));
@@ -629,29 +665,36 @@ public class RealTimeDataWS_DB {
                 }
 
                 // 所有股票都收到了开盘价，停止监听开始交易
-                if (stockSet.size() == unsubcribeStockSet.size()) {
+                if (allStockSet.size() == unsubcribeStockSet.size()) {
                     beginTrade("receive all open price! start trade!");
                     return;
                 }
             }
         } catch (Exception e) {
-            log.info("sendToTradeDataListener error. " + e.getMessage());
+            log.info("sendToTradeDataListener error. ", e);
         }
     }
 
     public void beginTrade(String msg) throws Exception {
+        Thread.sleep(1000);
         subscribed = false;
         log.info(msg);
         unsubscribeAll();
         listenEnd = true;
         getRealtimeQuote();
+        getRealtimeQuoteForOption();
         tradeExecutor.beginTrade();
+        optionTradeExecutor.beginTrade();
     }
 
     // 成交前获取实时报价
     public void getRealtimeQuote() throws InterruptedException {
         getRealtimeQuote = true;
         Set<String> stockSet = list.getNodes().stream().map(Node::getName).collect(Collectors.toSet());
+        if (CollectionUtils.isEmpty(stockSet)) {
+            log.info("there is no stock to get real-time quote");
+            return;
+        }
         log.info("get real-time quote: " + stockSet);
         for (String stock : stockSet) {
             sendMessage("{\"action\":\"subscribe\", \"params\":\"Q." + stock + "\"}");
@@ -699,6 +742,62 @@ public class RealTimeDataWS_DB {
         Thread.sleep(1000);
     }
 
+    public void getRealtimeQuoteForOption() throws InterruptedException {
+        getRealtimeQuoteForOption = true;
+        Set<String> stockSet = optionStockListener.getCanTradeStocks();
+        if (CollectionUtils.isEmpty(stockSet)) {
+            log.info("there is no stock to get real-time quote for option");
+            return;
+        }
+        log.info("get real-time quote for option: {}", stockSet);
+        for (String stock : stockSet) {
+            sendMessage("{\"action\":\"subscribe\", \"params\":\"Q." + stock + "\"}");
+        }
+
+        executor.execute(() -> {
+            try {
+                while (getRealtimeQuoteForOption) {
+                    String msg = realtimeQuoteBQ.poll(1, TimeUnit.SECONDS);
+                    if (StringUtils.isBlank(msg)) {
+                        continue;
+                    }
+
+                    List<Map> maps = JSON.parseArray(msg, Map.class);
+                    for (Map map : maps) {
+                        String stock = MapUtils.getString(map, "sym", "");
+                        if (StringUtils.isBlank(stock) || !stockSet.contains(stock)) {
+                            continue;
+                        }
+
+                        Double askPrice = MapUtils.getDouble(map, "ap");
+                        Double bidPrice = MapUtils.getDouble(map, "bp");
+//                        askPrice = 219.1; // todo 测试用要删
+//                        bidPrice = 219.05; // todo 测试用要删
+                        Double tradePrice;
+                        if (bidPrice == null) {
+                            tradePrice = askPrice;
+                        } else {
+                            tradePrice = (askPrice + bidPrice) / 2;
+                        }
+                        if (tradePrice != null) {
+                            realtimeQuoteForOptionMap.put(stock, tradePrice);
+                        }
+                    }
+                    log.info("quote for option price(time={}): {}", System.currentTimeMillis(), realtimeQuoteForOptionMap);
+                }
+
+                // 退出前反订阅
+                for (String stock : stockSet) {
+                    sendMessage("{\"action\":\"unsubscribe\", \"params\":\"Q." + stock + "\"}");
+                }
+                log.info("unsubscribe real-time quote for option");
+            } catch (Exception e) {
+                log.info("getRealtimeQuoteForOption error. ", e);
+            }
+        });
+        Thread.sleep(1000);
+    }
+
     public boolean unsubscribe(String stock) {
         if (unsubcribeStockSet.contains(stock)) {
             return false;
@@ -712,7 +811,7 @@ public class RealTimeDataWS_DB {
     }
 
     public void unsubscribeAll() {
-        for (String stock : stockSet) {
+        for (String stock : allStockSet) {
             unsubscribe(stock);
         }
         log.info("=========== finish unsubscribe ===========");
@@ -812,6 +911,26 @@ public class RealTimeDataWS_DB {
         }
         log.info("reconnect finish");
         tradeExecutor.reListenStopLoss();
+    }
+
+    public void inputTestData() {
+        executor.execute(() -> {
+            Scanner scan = new Scanner(System.in);
+            while (true) {
+                System.out.println("input test data");
+                String msg = scan.nextLine();
+                System.out.println(msg);
+                if (msg.startsWith("Q.")) {
+                    realtimeQuoteBQ.offer(msg.substring(2));
+                } else if (msg.startsWith("T.")) {
+                    subscribeBQ.offer(msg.substring(2));
+                }
+                if (msg.equals("stop")) {
+                    scan.close();
+                    return;
+                }
+            }
+        });
     }
 
     public static void main(String[] args) throws InterruptedException {
