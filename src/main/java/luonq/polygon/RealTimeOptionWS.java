@@ -1,7 +1,7 @@
 package luonq.polygon;
 
-import bean.StockKLine;
 import bean.NodeList;
+import bean.StockKLine;
 import bean.StockOptionEvent;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
@@ -70,7 +70,6 @@ public class RealTimeOptionWS {
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private ThreadPoolExecutor executor;
-    private OptionQuoteExecutor optionQuoteExecutor;
 
     public void init() {
         try {
@@ -109,7 +108,6 @@ public class RealTimeOptionWS {
         listenEnd = false;
         hasAuth = new AtomicBoolean(false);
         unsubcribeStockSet = Sets.newHashSet();
-        optionQuoteExecutor = new OptionQuoteExecutor();
         tradeEventBus = asyncEventBus();
     }
 
@@ -383,7 +381,6 @@ public class RealTimeOptionWS {
         log.info(msg);
         unsubscribeAll();
         listenEnd = true;
-        optionQuoteExecutor.beginSubcribe();
     }
 
     public void unsubscribeAll() {
