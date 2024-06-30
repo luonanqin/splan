@@ -12,4 +12,11 @@ public class OptionCode {
     private int actualDigitalStrikePrice;
     private int nextDigitalStrikePrice;
 
+    public OptionCode(){
+
+    }
+
+    public OptionCode(String code) {
+        this.code = code;
+    }
 }

@@ -68,6 +68,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     public static String pwd = MD5Util.calcMD5("134931");
     public static long simulateUsAccountId = 7681786L;
+    public static long simulateUsOptionAccountId = 8141372L;
 
     private long accountId = 281756460288713754L;
     private int tradeEnv = TrdCommon.TrdEnv.TrdEnv_Real_VALUE;
@@ -800,33 +801,34 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
     public static void main(String[] args) {
         FTAPI.init();
-        TradeApi trdDemo = new TradeApi();
-        //        trdDemo.setAccountId(simulateUsAccountId);
-        //        trdDemo.useSimulateEnv();
-        trdDemo.useRealEnv();
-        trdDemo.start();
+        TradeApi trdApi = new TradeApi();
+                trdApi.setAccountId(simulateUsOptionAccountId);
+                trdApi.useSimulateEnv();
+//        trdApi.useRealEnv();
+        trdApi.start();
 
-        //        trdDemo.getTradeDate();
+        //        trdApi.getTradeDate();
 
-        //        trdDemo.unlock();
-        double funds = trdDemo.getFunds();
+        //        trdApi.unlock();
+        double funds = trdApi.getFunds();
         System.out.println(funds);
-        //        Map<String, StockPosition> positionMap = trdDemo.getPositionMap("NTES");
+        trdApi.placeNormalBuyOrder("NVDA240628C120000", 1, 4.4);
+        //        Map<String, StockPosition> positionMap = trdApi.getPositionMap("NTES");
         //        System.out.println(positionMap);
-        //        long orderId = trdDemo.placeNormalBuyOrder("OLLI", 1, 60);
+        //        long orderId = trdApi.placeNormalBuyOrder("OLLI", 1, 60);
         //        System.out.println(orderId);
-        //        long modifyOrderId = trdDemo.upOrderPrice(orderId, 1, 60.01);
+        //        long modifyOrderId = trdApi.upOrderPrice(orderId, 1, 60.01);
         //        System.out.println(modifyOrderId);
-        //        long modifyOrderId2 = trdDemo.upOrderPrice(orderId, 1, 60.02);
+        //        long modifyOrderId2 = trdApi.upOrderPrice(orderId, 1, 60.02);
         //        System.out.println(modifyOrderId2);
         //        System.out.println(crmt);
-        //        int count = trdDemo.getMaxCashBuy("AAPL", 190);
+        //        int count = trdApi.getMaxCashBuy("AAPL", 190);
         //        System.out.println(count);
-        //        trdDemo.placeOrder();
-        //        trdDemo.modifyOrder();
-        //        trdDemo.getHistoryOrderList("WWW");
-        //        trdDemo.subBasicQuote("AAPL");
-        //        double aapl = trdDemo.getBasicQot("AAPL");
+        //        trdApi.placeOrder();
+        //        trdApi.modifyOrder();
+        //        trdApi.getHistoryOrderList("WWW");
+        //        trdApi.subBasicQuote("AAPL");
+        //        double aapl = trdApi.getBasicQot("AAPL");
         //        System.out.println(aapl);
 
         //        while (true) {
@@ -859,7 +861,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 e.printStackTrace();
             }
             System.out.println(codeList);
-            trdDemo.getMarginRatio(codeList);
+            trdApi.getMarginRatio(codeList);
         }
         System.out.println();
     }

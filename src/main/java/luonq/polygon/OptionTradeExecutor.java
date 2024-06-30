@@ -64,9 +64,9 @@ public class OptionTradeExecutor {
         futuQuote = new BasicQuote();
         futuQuote.start();
         tradeApi = new TradeApi();
-        //        tradeApi.useSimulateEnv();
-        //        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
-        tradeApi.useRealEnv();
+                tradeApi.useSimulateEnv();
+                tradeApi.setAccountId(TradeApi.simulateUsAccountId);
+//        tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.unlock();
         //        tradeApi.clearStopLossStockSet();
