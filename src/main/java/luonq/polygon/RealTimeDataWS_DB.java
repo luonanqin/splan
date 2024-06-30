@@ -70,6 +70,7 @@ public class RealTimeDataWS_DB {
     public static final double HIT = 0.5d; // 策略成功率
     public static final int PRICE_LIMIT = 7; // 价格限制，用于限制这个价格下的股票不参与计算
     public static final double LOSS_RATIO = 0.07d; // 止损比例
+    public static final double OPTION_LOSS_RATIO = 0.2d; // 止损比例
     public static final int DELAY_MINUTE = 0;
     public static final long LISTENING_TIME = 60000L; // 监听时长，毫秒
     private static LocalDateTime summerTime = BaseUtils.getSummerTime(null);
