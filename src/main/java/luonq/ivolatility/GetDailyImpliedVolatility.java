@@ -53,6 +53,7 @@ public class GetDailyImpliedVolatility {
     // https://restapi.ivolatility.com/equities/eod/option-series-on-date?apiKey=S3j7pBefWG0J0glb&symbol=BILI&expFrom=2022-05-20&expTo=2022-05-20&strikeFrom=22&strikeTo=22&date=2022-05-20
     public static Map<String/* optioncode */, String/* optionId */> getOptionId(List<String> optionCodeList) throws Exception {
         String yesterday = LocalDate.now().minusDays(1).format(Constants.DB_DATE_FORMATTER);
+
         Map<String, String> optionIdMap = getOptionIdMap();
         Map<String, String> optionCodeToIdMap = Maps.newHashMap();
         List<String> result = Lists.newArrayList();
@@ -66,7 +67,8 @@ public class GetDailyImpliedVolatility {
             String stock = optionCode.substring(2, _2_index);
 
             String date = optionCode.substring(_2_index, optionCode.length() - 9);
-            String formatDate = LocalDate.parse("20" + date, DateTimeFormatter.ofPattern("yyyyMMdd")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate expireDate = LocalDate.parse("20" + date, DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String formatDate = expireDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String contractType = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
 
             String priceStr = optionCode.substring(optionCode.length() - 8);
@@ -77,6 +79,9 @@ public class GetDailyImpliedVolatility {
             }
             //            System.out.println(strikePrice);
             //            System.out.println(formatDate);
+            if (expireDate.isBefore(LocalDate.now())) {
+                yesterday = formatDate;
+            }
 
             String url = String.format("https://restapi.ivolatility.com/equities/eod/option-series-on-date?apiKey=S3j7pBefWG0J0glb&symbol=%s&expFrom=%s&expTo=%s&strikeFrom=%s&strikeTo=%s&callPut=%s&date=%s",
               stock, formatDate, formatDate, strikePrice, strikePrice, contractType, yesterday);
@@ -104,7 +109,7 @@ public class GetDailyImpliedVolatility {
                 Map map = listMap.get(0);
                 String optionId = MapUtils.getString(map, "optionId");
                 result.add(optionCode + "\t" + optionId);
-                System.out.println(optionCode + "\t" + optionId);
+//                System.out.println(optionCode + "\t" + optionId);
 
             } catch (Exception e) {
                 e.printStackTrace();

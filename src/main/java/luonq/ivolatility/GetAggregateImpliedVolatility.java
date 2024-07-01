@@ -127,13 +127,15 @@ public class GetAggregateImpliedVolatility {
             }
         } catch (Exception e) {
             System.out.println("error: " + url);
-            e.printStackTrace();
             return 0;
         } finally {
             get.releaseConnection();
         }
 
         System.out.println("getAggregateIv " + optionCode);
+        if (CollectionUtils.isEmpty(lines)) {
+            return hisIv;
+        }
         BaseUtils.createDirectory(optionFileDir);
         Collections.sort(lines, (o1, o2) -> {
             Integer time1 = Integer.valueOf(o1.split("\t")[0].substring(11).replaceAll(":", ""));
@@ -141,6 +143,14 @@ public class GetAggregateImpliedVolatility {
             return time1 - time2;
         });
         BaseUtils.writeFile(optionFilePath, lines);
+
+        if (!dateToFirstIvTimeMap.containsKey(date)) {
+            dateToFirstIvTimeMap.put(date, Maps.newHashMap());
+        }
+        String[] split = lines.get(0).split("\t");
+        String firstDateTime = split[1];
+        hisIv = Double.parseDouble(split[2]);
+        dateToFirstIvTimeMap.get(date).put(optionCode, firstDateTime);
 
         return hisIv;
     }

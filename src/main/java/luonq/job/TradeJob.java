@@ -2,6 +2,7 @@ package luonq.job;
 
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import luonq.polygon.OptionTradeExecutor;
 import luonq.polygon.RealTimeDataWS_DB;
 import luonq.polygon.TradeExecutor;
 import luonq.polygon.TradeExecutor_DB;
@@ -18,6 +19,9 @@ public class TradeJob extends BaseJob {
 
     @Autowired
     private TradeExecutor_DB tradeExecutor_db;
+
+    @Autowired
+    private OptionTradeExecutor optionTradeExecutor;
 
     @XxlJob("Trade_DB.job")
     public void trade_DB() throws Exception {
@@ -44,5 +48,16 @@ public class TradeJob extends BaseJob {
         TradeExecutor tradeExecutor = new TradeExecutor();
         tradeExecutor.closeSell();
         log.info("sellBeforeCloseMarket.job end");
+    }
+
+    @XxlJob("cancelTimeoutOrder.job")
+    public void cancelTimeoutOrder() {
+        log.info("cancelTimeoutOrder.job stat");
+        try {
+            optionTradeExecutor.cancelOrder();
+        } catch (Exception e) {
+            log.error("cancelTimeoutOrder error", e);
+        }
+        log.info("cancelTimeoutOrder.job end");
     }
 }

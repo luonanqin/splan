@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import luonq.execute.LoadOptionTradeData;
@@ -62,6 +63,7 @@ import java.util.stream.Collectors;
 @Component
 @ClientEndpoint
 @Slf4j
+@Data
 public class RealTimeDataWS_DB {
 
     public static final String TEST_STOCK = "";

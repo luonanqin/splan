@@ -39,10 +39,10 @@ public class Test2 {
     }
 
     public static void main(String[] args) throws Exception {
-//        deleteFile();
+        //        deleteFile();
         calCallWithProtect();
 
-        int week = 43;
+        int week = 12;
         double iit = 10000;
         for (int i = 0; i < week; i++) {
             iit = iit * 1.1;

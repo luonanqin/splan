@@ -54,17 +54,27 @@ public class OptionTradeExecutor {
     private RealTimeDataWS_DB client;
     private boolean realTrade = true;
     private OptionStockListener optionStockListener;
-    private Set<String> hasOrdered = Sets.newHashSet();
-    private Map<String/* call option */, Long/* orderId */> callOrderMap = Maps.newHashMap();
-    private Map<String/* put option */, Long/* orderId*/> putOrderMap = Maps.newHashMap();
-    private Set<String> hasTraded = Sets.newHashSet();
     private TradeApi tradeApi;
+
+    private static long CANCEL_BUY_ORDER_TIME_MILLI = 10 * 60 * 1000; // 开盘后10分钟撤销买入订单
+    private static long STOP_MONITORY_BUY_ORDER_TIME_MILLI = 11 * 60 * 1000; // 开盘后11分钟停止监听买入订单的成交
+    private static long STOP_MONITORY_SELL_ORDER_TIME_MILLI = 12 * 60 * 1000; // 开盘后12分钟如果没有买入成交的订单，则停止监听卖出订单的成交
+
+    private Set<String> hasBoughtOrder = Sets.newHashSet(); // 已下单买入
+    private Set<String> hasSoldOrder = Sets.newHashSet(); // 已下单卖出
+    private Set<String> hasBoughtSuccess = Sets.newHashSet(); // 已成交买入
+    private Set<String> hasSoldSuccess = Sets.newHashSet(); // 已成交卖出
+    private Map<String/* futu option */, Long/* orderId */> buyOrderMap = Maps.newHashMap(); // 下单买入的订单id
+    private Map<String/* futu option */, Long/* orderId */> sellOrderMap = Maps.newHashMap(); // 下单卖出的订单id
+
     // code的实时iv
     private Map<String, Double> optionRtIvMap = Maps.newHashMap();
     // 股票对应实时iv code
     private Map<String, String> canTradeOptionForRtIVMap = optionStockListener.getCanTradeOptionForRtIVMap();
     // 实时iv code对应富途code
     private Map<String, String> optionCodeMap = optionStockListener.getOptionCodeMap();
+    // 股票对应富途code
+    private Map<String, String> canTradeOptionForFutuMap = optionStockListener.getCanTradeOptionForFutuMap();
 
     public void init() {
         FTAPI.init();
@@ -97,8 +107,6 @@ public class OptionTradeExecutor {
         // 股票对应实时iv code
         canTradeOptionForRtIVMap = optionStockListener.getCanTradeOptionForRtIVMap();
         double riskFreeRate = LoadOptionTradeData.riskFreeRate;
-        // 给富途用来监听报价和交易用的code
-        Map<String, String> canTradeOptionForFutuMap = optionStockListener.getCanTradeOptionForFutuMap();
         // 股票的实时报价
         Map<String, Double> realtimeQuoteForOptionMap = RealTimeDataWS_DB.realtimeQuoteForOptionMap;
         //        realtimeQuoteForOptionMap.put("AAPL", 219.07); // todo 测试用要删
@@ -126,7 +134,7 @@ public class OptionTradeExecutor {
 
         while (true) {
             for (String stock : canTradeStocks) {
-                if (hasOrdered.contains(stock)) {
+                if (hasBoughtOrder.contains(stock)) {
                     continue;
                 }
 
@@ -182,15 +190,15 @@ public class OptionTradeExecutor {
                 }
                 double count = (int) (avgFund / (callTradePrice + putTradePrice) / 100);
 
-                //                tradeApi.placeNormalBuyOrder(callFutu, count, callTradePrice);
-                //                tradeApi.placeNormalBuyOrder(putFutu, count, putTradePrice);
+                long buyCallOrderId = tradeApi.placeNormalBuyOrder(callFutu, count, callTradePrice);
+                long buyPutOrderId = tradeApi.placeNormalBuyOrder(putFutu, count, putTradePrice);
                 log.info("simulate trade: {} {}, {} {}. {}", call, callTradePrice, put, putTradePrice, count);
 
-                hasOrdered.add(stock);
-                callOrderMap.put(callFutu, 0l);
-                putOrderMap.put(putFutu, 0l);
+                hasBoughtOrder.add(stock);
+                buyOrderMap.put(callFutu, buyCallOrderId);
+                buyOrderMap.put(putFutu, buyPutOrderId);
             }
-            if (canTradeStocks.size() == hasOrdered.size()) {
+            if (canTradeStocks.size() == hasBoughtOrder.size()) {
                 RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
                 break;
             }
@@ -242,6 +250,83 @@ public class OptionTradeExecutor {
         }, 0, 2000);
     }
 
+    public void monitorBuyOrder() {
+        long openTime = client.getOpenTime();
+        while (true) {
+            for (String stock : hasBoughtOrder) {
+                if (hasBoughtSuccess.contains(stock)) {
+                    continue;
+                }
+
+                String callAndPut = canTradeOptionForFutuMap.get(stock);
+                String[] split = callAndPut.split("\\|");
+                String call = split[0];
+                String put = split[1];
+
+                Long buyCallOrderId = buyOrderMap.get(call);
+                Long buyPutOrderId = buyOrderMap.get(put);
+                OrderFill buyCallOrder = tradeApi.getOrderFill(buyCallOrderId);
+                OrderFill buyPutOrder = tradeApi.getOrderFill(buyPutOrderId);
+                if (buyCallOrder != null && buyPutOrder != null) {
+                    hasBoughtSuccess.add(stock);
+                }
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
+
+            // 11分钟后监听结束直接返回
+            long current = System.currentTimeMillis();
+            if (current - openTime >= STOP_MONITORY_BUY_ORDER_TIME_MILLI) {
+                return;
+            }
+        }
+    }
+
+    public void monitorSellOrder() {
+        long openTime = client.getOpenTime();
+        while (true) {
+            long current = System.currentTimeMillis();
+            if (!hasBoughtSuccess.isEmpty()) {
+                for (String stock : hasSoldOrder) {
+                    if (hasSoldSuccess.contains(stock)) {
+                        continue;
+                    }
+
+                    String callAndPut = canTradeOptionForFutuMap.get(stock);
+                    String[] split = callAndPut.split("\\|");
+                    String call = split[0];
+                    String put = split[1];
+
+                    Long sellCallOrderId = sellOrderMap.get(call);
+                    Long sellPutOrderId = sellOrderMap.get(put);
+                    OrderFill sellCallOrder = tradeApi.getOrderFill(sellCallOrderId);
+                    OrderFill sellPutOrder = tradeApi.getOrderFill(sellPutOrderId);
+                    if (sellCallOrder != null && sellPutOrder != null) {
+                        hasSoldSuccess.add(stock);
+                    }
+                }
+
+                // 12分钟后有买入成交，当卖出订单数量等于买入成交数量时，监听结束直接返回
+                if (current - openTime >= STOP_MONITORY_SELL_ORDER_TIME_MILLI) {
+                    if (hasSoldOrder.size() == hasBoughtSuccess.size()) {
+                        return;
+                    }
+                }
+            } else {
+                // 12分钟后没有买入成交，监听结束直接返回
+                if (current - openTime >= STOP_MONITORY_SELL_ORDER_TIME_MILLI) {
+                    return;
+                }
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
     /**
      * 1.有止损流程：
      * 买入下单等待成交->已买入->触发止损->卖出下单等待成交->已卖出
@@ -249,32 +334,35 @@ public class OptionTradeExecutor {
      * 2.无止损流程：
      * 买入下单等待成交->已买入->到时间卖出->卖出下单等待成交->已卖出
      * 买入下单待成交 ≥ 已买入 = 卖出下单等待成交 = 已卖出
-     * 
      */
     public void stopLoss() {
         Map<String, String> codeToQuoteMap = futuQuote.getCodeToQuoteMap();
+        long openTime = client.getOpenTime();
         while (true) {
-            for (String stock : hasTraded) {
-                String callAndPut = canTradeOptionForRtIVMap.get(stock);
+            for (String stock : hasBoughtSuccess) {
+                if (hasSoldOrder.contains(stock)) {
+                    continue;
+                }
+
+                String callAndPut = canTradeOptionForFutuMap.get(stock);
                 String[] split = callAndPut.split("\\|");
-                String callRt = split[0];
-                String putRt = split[1];
-                String callFutu = optionCodeMap.get(callRt);
-                String putFutu = optionCodeMap.get(putRt);
-                String callQuote = codeToQuoteMap.get(callFutu);
-                String putQuote = codeToQuoteMap.get(putFutu);
+                String call = split[0];
+                String put = split[1];
+
+                String callQuote = codeToQuoteMap.get(call);
+                String putQuote = codeToQuoteMap.get(put);
                 String[] callQuoteSplit = callQuote.split("\\|");
                 String[] putQuoteSplit = putQuote.split("\\|");
                 double callBidPrice = Double.parseDouble(callQuoteSplit[0]);
                 double callAskPrice = Double.parseDouble(callQuoteSplit[1]);
-                double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
                 double putBidPrice = Double.parseDouble(putQuoteSplit[0]);
                 double putAskPrice = Double.parseDouble(putQuoteSplit[1]);
-                double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
 
                 // 根据已成交的订单查看买入价，不断以最新报价计算是否触发止损价（不能以当前市价止损，因为流动性不够偏差会很大）
-                Long callOrderId = callOrderMap.get(callFutu);
-                Long putOrderId = putOrderMap.get(putFutu);
+                Long callOrderId = buyOrderMap.get(call);
+                Long putOrderId = buyOrderMap.get(put);
                 OrderFill callOrder = tradeApi.getOrderFill(callOrderId, 1);
                 OrderFill putOrder = tradeApi.getOrderFill(putOrderId, 1);
                 double callOpen = callOrder.getAvgPrice();
@@ -286,10 +374,34 @@ public class OptionTradeExecutor {
                 double callCount = callOrder.getCount();
                 double putCount = putOrder.getCount();
                 if (diffRatio < RealTimeDataWS_DB.OPTION_LOSS_RATIO) {
-                    tradeApi.placeNormalSellOrder(callFutu, callCount, callMidPrice);
-                    tradeApi.placeNormalSellOrder(putFutu, putCount, putMidPrice);
+                    long sellCallOrderId = tradeApi.placeNormalSellOrder(call, callCount, callMidPrice);
+                    long sellPutOrderId = tradeApi.placeNormalSellOrder(put, putCount, putMidPrice);
+
+                    hasSoldOrder.add(stock);
+                    sellOrderMap.put(call, sellCallOrderId);
+                    sellOrderMap.put(put, sellPutOrderId);
                 }
             }
+            // 11分钟后没有买入成功的，监听结束直接返回
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - openTime > STOP_MONITORY_BUY_ORDER_TIME_MILLI && hasBoughtSuccess.isEmpty()) {
+                return;
+            }
+        }
+    }
+
+    public void cancelOrder() {
+        try {
+            Map<String, Long> orderMap = tradeApi.getOrderList();
+            for (String code : orderMap.keySet()) {
+                Long orderId = orderMap.get(code);
+                OrderFill orderFill = tradeApi.getOrderFill(orderId);
+                if (orderFill == null) {
+                    tradeApi.cancelOrder(orderId);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -365,19 +477,7 @@ public class OptionTradeExecutor {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        OptionTradeExecutor executor = new OptionTradeExecutor();
-        executor.init();
-        //        executor.subOrder("");
-        NodeList nodeList = new NodeList(10);
-        Node node = new Node("RNAZ", 1);
-        node.setPrice(5.71d);
-        Node node2 = new Node("AAPL", 2);
-        node2.setPrice(191.04);
-        nodeList.add(node);
-        nodeList.add(node2);
-        executor.setList(nodeList);
-        executor.beginTrade();
-
-        //        futuListener.beginTrade();
+        double v = BigDecimal.valueOf(0.47).setScale(2, RoundingMode.DOWN).doubleValue();
+        System.out.println(v);
     }
 }

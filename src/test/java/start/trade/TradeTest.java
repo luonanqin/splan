@@ -36,4 +36,9 @@ public class TradeTest extends BaseTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void test_cancelTimeoutOrder() {
+        tradeJob.cancelTimeoutOrder();
+    }
 }

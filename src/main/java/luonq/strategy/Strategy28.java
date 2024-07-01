@@ -47,9 +47,10 @@ public class Strategy28 {
     public static BlockingQueue<HttpClient> queue;
     public static ThreadPoolExecutor cachedThread;
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
+    public static int times = 1;
+    public static int threadCount = 100;
 
     public static void init() {
-        int threadCount = 100;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
@@ -64,6 +65,24 @@ public class Strategy28 {
             //            e.getHttpConnectionManager().setParams(httpConnectionManagerParams);
             queue.offer(e);
         }
+    }
+
+    public static void refresHttpClient() {
+        if (times % 10 == 0) {
+            queue.clear();
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for (int i = 0; i < threadCount; i++) {
+                HttpClient e = new HttpClient();
+                queue.offer(e);
+            }
+            System.out.println("refresHttpClient " + (times / 10));
+        }
+        times++;
     }
 
     /*
@@ -380,10 +399,11 @@ public class Strategy28 {
         String filePath = fileDirPath + fileName;
         File file = new File(filePath);
         if (file.exists()) {
-            System.out.println(fileName + " has get quote");
+            //            System.out.println(fileName + " has get quote");
             return;
         }
 
+        refresHttpClient();
         List<String> dayAllSeconds = getDayAllSeconds(date);
         List<String> result = Lists.newArrayList();
         if (testIfExistQuote(dayAllSeconds, optionCode)) {
