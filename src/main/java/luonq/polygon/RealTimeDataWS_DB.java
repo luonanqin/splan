@@ -299,9 +299,9 @@ public class RealTimeDataWS_DB {
             preTrade = now.minusDays(1);
         }
 
-        int openHour, closeHour, preMin = 0 + DELAY_MINUTE, openMin = 1;
+        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            openHour = 2;
+            openHour = 21;
             closeHour = 3;
         } else {
             openHour = 22;

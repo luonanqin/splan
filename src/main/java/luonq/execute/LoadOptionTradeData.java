@@ -158,8 +158,11 @@ public class LoadOptionTradeData {
             return;
         }
 
-        LocalDate now = LocalDate.now();
-        now = now.minusDays(1); // todo 凌晨测试用，要删
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime marketClose = LocalDateTime.of(LocalDate.now(), LocalTime.of(5, 0, 0)); // 前一交易日数据的入库时间
+        if (now.isBefore(marketClose)) {
+            now = now.minusDays(1); // 凌晨运行时需要减一天
+        }
         String today = now.format(Constants.DB_DATE_FORMATTER);
         for (String stock : earningStocks) {
             List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionChain/" + stock + "/" + today);
@@ -173,9 +176,6 @@ public class LoadOptionTradeData {
         if (CollectionUtils.isEmpty(earningStocks)) {
             return;
         }
-
-        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
-        String lastday = readFromDB.getLastTradeCalendar(today).getDate();
 
         for (String stock : earningStocks) {
             Map<String, String> fileMap = BaseUtils.getFileMap(Constants.USER_PATH + "optionData/IV/" + stock);
@@ -191,7 +191,7 @@ public class LoadOptionTradeData {
                 List<Double> ivList = Lists.newArrayList();
                 for (String date : ivMap.keySet()) {
                     ivList.add(ivMap.get(date));
-                    if (StringUtils.equals(date, lastday)) {
+                    if (StringUtils.equals(date, lastTradeDate)) {
                         break;
                     }
                 }
@@ -211,16 +211,10 @@ public class LoadOptionTradeData {
             return;
         }
 
-        LocalDate now = LocalDate.now();
-        now = now.minusDays(1);
-        String today = now.format(Constants.DB_DATE_FORMATTER);
-        TradeCalendar last = readFromDB.getLastTradeCalendar(today);
-        String lastDay = last.getDate();
-
         for (String stock : earningStocks) {
             Map<String, Map<String, OptionDaily>> dateToOptionDailyMap = BaseUtils.loadOptionDailyMap(stock);
-            if (dateToOptionDailyMap.containsKey(lastDay)) {
-                optionToLastDailyMap.putAll(dateToOptionDailyMap.get(lastDay));
+            if (dateToOptionDailyMap.containsKey(lastTradeDate)) {
+                optionToLastDailyMap.putAll(dateToOptionDailyMap.get(lastTradeDate));
             }
         }
         log.info("finish load option lastday OHLC");
