@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 public class GetDailyImpliedVolatility {
     public static BlockingQueue<HttpClient> queue;
     public static ThreadPoolExecutor cachedThread;
+    public static Map<String, String> optionIdMap = Maps.newHashMap();
 
     public static void init() throws Exception {
         int threadCount = 1;
@@ -53,7 +54,55 @@ public class GetDailyImpliedVolatility {
     // https://restapi.ivolatility.com/equities/eod/option-series-on-date?apiKey=S3j7pBefWG0J0glb&symbol=BILI&expFrom=2022-05-20&expTo=2022-05-20&strikeFrom=22&strikeTo=22&date=2022-05-20
     public static Map<String/* optioncode */, String/* optionId */> getOptionId(List<String> optionCodeList) throws Exception {
         String yesterday = LocalDate.now().minusDays(1).format(Constants.DB_DATE_FORMATTER);
+        return getOptionId(optionCodeList, yesterday);
+    }
 
+    public static Map<String/* optioncode */, String/* optionId */> getOptionId(String stock, String expirationDate, String strikePriceFrom, String strikePriceTo, String lastTradeDate) throws Exception {
+        List<String> result = Lists.newArrayList();
+
+        String url = String.format("https://restapi.ivolatility.com/equities/eod/option-series-on-date?apiKey=S3j7pBefWG0J0glb&symbol=%s&expFrom=%s&expTo=%s&strikeFrom=%s&strikeTo=%s&date=%s",
+          stock, expirationDate, expirationDate, strikePriceFrom, strikePriceTo, lastTradeDate);
+        GetMethod get = new GetMethod(url);
+
+        Map<String, String> optionCodeToIdMap = Maps.newHashMap();
+        HttpClient httpClient = new HttpClient();
+        try {
+            int status = httpClient.executeMethod(get);
+            String content = get.getResponseBodyAsString();
+            //                System.out.println(status + " " + content);
+            List<Map> listMap = JSON.parseArray(content, Map.class);
+            if (CollectionUtils.isEmpty(listMap)) {
+                log.warn("get stock {} option id empty", stock);
+            }
+            if (status == 429) {
+                System.out.println(429);
+                log.warn("get stock {} option id 429", stock);
+            }
+
+            for (Map map : listMap) {
+                String optionId = MapUtils.getString(map, "optionId");
+                String optionCode = MapUtils.getString(map, "optionSymbol", "").replaceAll(" ", "");
+                result.add("O:" + optionCode + "\t" + optionId);
+                optionCodeToIdMap.put(optionCode, optionId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            get.releaseConnection();
+        }
+        Thread.sleep(500);
+
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionId");
+        lines.addAll(result);
+        BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionId", lines);
+
+        return optionCodeToIdMap;
+    }
+
+    public static Map<String/* optioncode */, String/* optionId */> getOptionId(List<String> optionCodeList, String lastTradeDate) throws Exception {
+        if (StringUtils.isBlank(lastTradeDate)) {
+            lastTradeDate = LocalDate.now().minusDays(1).format(Constants.DB_DATE_FORMATTER);
+        }
         Map<String, String> optionIdMap = getOptionIdMap();
         Map<String, String> optionCodeToIdMap = Maps.newHashMap();
         List<String> result = Lists.newArrayList();
@@ -68,7 +117,7 @@ public class GetDailyImpliedVolatility {
 
             String date = optionCode.substring(_2_index, optionCode.length() - 9);
             LocalDate expireDate = LocalDate.parse("20" + date, DateTimeFormatter.ofPattern("yyyyMMdd"));
-            String formatDate = expireDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String expireDay = expireDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String contractType = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
 
             String priceStr = optionCode.substring(optionCode.length() - 8);
@@ -78,13 +127,13 @@ public class GetDailyImpliedVolatility {
                 strikePrice = strikePrice.substring(0, strikePrice.length() - 2);
             }
             //            System.out.println(strikePrice);
-            //            System.out.println(formatDate);
+            //            System.out.println(expireDay);
             if (expireDate.isBefore(LocalDate.now())) {
-                yesterday = formatDate;
+                lastTradeDate = expireDay;
             }
 
             String url = String.format("https://restapi.ivolatility.com/equities/eod/option-series-on-date?apiKey=S3j7pBefWG0J0glb&symbol=%s&expFrom=%s&expTo=%s&strikeFrom=%s&strikeTo=%s&callPut=%s&date=%s",
-              stock, formatDate, formatDate, strikePrice, strikePrice, contractType, yesterday);
+              stock, expireDay, expireDay, strikePrice, strikePrice, contractType, lastTradeDate);
             GetMethod get = new GetMethod(url);
 
             //            cachedThread.execute(() -> {
@@ -109,7 +158,7 @@ public class GetDailyImpliedVolatility {
                 Map map = listMap.get(0);
                 String optionId = MapUtils.getString(map, "optionId");
                 result.add(optionCode + "\t" + optionId);
-//                System.out.println(optionCode + "\t" + optionId);
+                //                System.out.println(optionCode + "\t" + optionId);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -117,7 +166,7 @@ public class GetDailyImpliedVolatility {
                 get.releaseConnection();
                 //                queue.offer(httpClient);
             }
-            Thread.sleep(1000);
+            Thread.sleep(500);
             //            });
         }
 
@@ -143,19 +192,19 @@ public class GetDailyImpliedVolatility {
         for (int i = 0; i < dateList.size() - 1; i++) {
             nextDayMap.put(dateList.get(i + 1), dateList.get(i));
         }
-        getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap);
+        getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap, null);
     }
 
     // https://restapi.ivolatility.com/equities/eod/single-stock-option-raw-iv?apiKey=S3j7pBefWG0J0glb&optionId=120387742&from=2022-05-16&to=2022-05-20
-    public static void getHistoricalIV(Map<String/* optionCode */, String/* date */> optionCodeDateMap, Map<String/* today */, List<String>/* last5Days*/> last5DaysMap, Map<String/* today */, String/* nextDay */> nextDayMap) throws Exception {
+    public static void getHistoricalIV(Map<String/* optionCode */, String/* date */> optionCodeDateMap, Map<String/* today */, List<String>/* last5Days*/> last5DaysMap, Map<String/* today */, String/* nextDay */> nextDayMap, String lastTradeDate) throws Exception {
         Map<String, String> optionIdMap = getOptionIdMap();
 
         HttpClient httpClient = new HttpClient();
         for (String optionCode : optionCodeDateMap.keySet()) {
             String optionId = optionIdMap.get(optionCode);
             if (StringUtils.isBlank(optionId)) {
-                getOptionId(Lists.newArrayList(optionCode));
-                optionIdMap = getOptionIdMap();
+                getOptionId(Lists.newArrayList(optionCode), lastTradeDate);
+                optionIdMap = refreshOptionIdMap();
 
                 optionId = optionIdMap.get(optionCode);
                 if (StringUtils.isBlank(optionId) || StringUtils.equalsAny(optionId, "0")) {
@@ -190,8 +239,11 @@ public class GetDailyImpliedVolatility {
             GetMethod get = new GetMethod(url);
             String content = null;
             try {
+                long l = System.currentTimeMillis();
                 httpClient.executeMethod(get);
                 content = get.getResponseBodyAsString();
+                long l1 = System.currentTimeMillis();
+//                log.info("tims cost: {}", l1 - l);
                 JSONObject map = JSON.parseObject(content, JSONObject.class);
                 Object data = map.get("data");
                 List<Map> maps = JSON.parseArray(data.toString(), Map.class);
@@ -225,7 +277,7 @@ public class GetDailyImpliedVolatility {
             } finally {
                 get.releaseConnection();
             }
-            Thread.sleep(1000);
+            Thread.sleep(500);
 
             // 写入文件
 
@@ -323,14 +375,27 @@ public class GetDailyImpliedVolatility {
     }
 
     public static Map<String/* optoinCode */, String/* optionId */> getOptionIdMap() throws Exception {
-        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionId");
-        Map<String, String> map = Maps.newHashMap();
-        for (String line : lines) {
-            String[] split = line.split("\t");
-            map.put(split[0], split[1]);
+        if (MapUtils.isNotEmpty(optionIdMap)) {
+            return optionIdMap;
         }
 
-        return map;
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionId");
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            optionIdMap.put(split[0], split[1]);
+        }
+
+        return optionIdMap;
+    }
+
+    public static Map<String/* optoinCode */, String/* optionId */> refreshOptionIdMap() throws Exception {
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionId");
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            optionIdMap.put(split[0], split[1]);
+        }
+
+        return optionIdMap;
     }
 
     public static List<String> buildTestData() {

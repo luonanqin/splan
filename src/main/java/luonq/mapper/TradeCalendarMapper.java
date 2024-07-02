@@ -26,4 +26,9 @@ public interface TradeCalendarMapper {
      * 查询前面N天的交易日历信息
      */
     List<TradeCalendar> queryLastNTradeCalendar(@Param("tradeDate") String tradeDate, @Param("N") int N);
+
+    /**
+     * 查询下一交易日历信息
+     */
+    TradeCalendar queryNextTradeCalendar(String tradeDate);
 }

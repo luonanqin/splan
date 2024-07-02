@@ -57,14 +57,15 @@ public class OptionStockListener {
             return;
         }
         double ratio = Math.abs(open - lastClose) / lastClose * 100;
-        if (ratio < 2 || open < 5) {
-            log.info("ratio is illegal. stock={}, open={}, lastClose={}, ratio={}", stock, open, lastClose, ratio);
+        if (ratio < 3 || open < 5) {
+            log.info("ratio is illegal. stock={}\topen={}\tlastClose={}\tratio={}", stock, open, lastClose, ratio);
             return;
         }
 
         // 开盘价附近的call和put
         List<String> callAndPuts = LoadOptionTradeData.stockToOptionCodeMap.get(stock);
         if (CollectionUtils.isEmpty(callAndPuts)) {
+            log.info("there is no call and put for open price. stock={}", stock);
             return;
         }
         String openPrice = String.valueOf(open);
@@ -111,10 +112,10 @@ public class OptionStockListener {
                 higherCall = callList.get(i + 1);
             }
         }
-        log.info("{} open={}, callOption={}, higherCall={}, lowerCall={}", stock, open, callOption, higherCall, lowerCall);
+        log.info("{} open={}\tcallOption={}\thigherCall={}\tlowerCall={}", stock, open, callOption, higherCall, lowerCall);
 
         if (StringUtils.isAnyBlank(higherCall, lowerCall)) {
-            // todo
+            log.info("there is no higherCall and lowerCall to trade. stock={}", stock);
             return;
         }
         String call = higherCall;
@@ -122,20 +123,22 @@ public class OptionStockListener {
 
         List<Double> callIvList = LoadOptionTradeData.optionToIvListMap.get(call);
         List<Double> putIvList = LoadOptionTradeData.optionToIvListMap.get(put);
+        if (CollectionUtils.isEmpty(callIvList) || CollectionUtils.isEmpty(putIvList)) {
+            log.info("there is no ivlist for stock. call={}\tput={}", call, put);
+            return;
+        }
         boolean canTradeCall = Strategy32.canTradeForIv(callIvList);
         boolean canTradePut = Strategy32.canTradeForIv(putIvList);
         if (!canTradeCall || !canTradePut) {
-            // todo
-            log.warn("{}:{}, {}:{} can't trade", call, callIvList, put, putIvList);
-            //            return;
+            log.warn("{}:{}\t{}:{} can't trade due to ivlist", call, callIvList, put, putIvList);
+            return;
         }
 
         OptionDaily callLastDaily = LoadOptionTradeData.optionToLastDailyMap.get(call);
         OptionDaily putLastDaily = LoadOptionTradeData.optionToLastDailyMap.get(put);
         if (callLastDaily == null || putLastDaily == null || callLastDaily.getVolume() < 100 || putLastDaily.getVolume() < 100) {
-            // todo
-            log.warn("{}, {} last volume is illegal", callLastDaily, putLastDaily);
-            //            return;
+            log.warn("{}\t{} last volume is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
+            return;
         }
 
         log.info("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{} can trade", stock, open, call, callIvList, put, putIvList, callLastDaily, putLastDaily);

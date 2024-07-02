@@ -17,6 +17,8 @@ import util.BaseUtils;
 import util.Constants;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,9 +42,11 @@ public class LoadOptionTradeData {
     public static Map<String/* stock */, List<String>/* call and put optioncode */> stockToOptionCodeMap = Maps.newHashMap();
     public static Map<String/* optionCode */, OptionDaily> optionToLastDailyMap = Maps.newHashMap();
     public static Double riskFreeRate = 0d;
+    public static String lastTradeDate;
 
     public void load() {
         try {
+            calLastTradeDate();
             loadRiskFreeRate();
             loadWillEarningStock();
             loadLastdayClose();
@@ -51,6 +55,25 @@ public class LoadOptionTradeData {
             loadLastdayOHLC();
         } catch (Exception e) {
             log.error("LoadOptionTradeData load error", e);
+        }
+    }
+
+    public void calLastTradeDate() {
+        LocalDateTime now = LocalDateTime.now();
+        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
+        TradeCalendar tradeCalendar = readFromDB.getTradeCalendar(today);
+        TradeCalendar lastTradeCalendar = readFromDB.getLastTradeCalendar(today);
+        TradeCalendar last2TradeCalendar = readFromDB.getLastTradeCalendar(lastTradeCalendar.getDate());
+        LocalDateTime preMarketOpen = LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 35, 0)); // 前一交易日数据的入库时间
+
+        if (tradeCalendar == null) {
+            lastTradeDate = last2TradeCalendar.getDate();
+        } else {
+            if (now.isBefore(preMarketOpen)) {
+                lastTradeDate = last2TradeCalendar.getDate();
+            } else if (now.isAfter(preMarketOpen)) {
+                lastTradeDate = lastTradeCalendar.getDate();
+            }
         }
     }
 
@@ -101,11 +124,16 @@ public class LoadOptionTradeData {
         next1dayStocks.forEach(s -> nextdayStocks.add(s));
         next2dayStocks.forEach(s -> nextdayStocks.add(s));
         next3dayStocks.forEach(s -> nextdayStocks.add(s));
-        //        nextdayStocks.add("AAPL"); // todo 测试用，要删
+        nextdayStocks.clear(); // todo 测试用，要删
+        nextdayStocks.add("AAPL"); // todo 测试用，要删
 
         Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
         Collection<String> intersection = CollectionUtils.intersection(weekOptionStock, nextdayStocks);
         earningStocks = intersection.stream().collect(Collectors.toList());
+
+        // todo 测试非财报日使用
+        earningStocks.clear();
+        earningStocks = BaseUtils.getWeekOptionStock().stream().collect(Collectors.toList());
 
         log.info("will earning stocks: {}", earningStocks);
     }
@@ -116,12 +144,8 @@ public class LoadOptionTradeData {
             return;
         }
 
-        LocalDate today = LocalDate.now();
-        //        today = today.minusDays(1); // todo 测试用，要删
-        TradeCalendar last = readFromDB.getLastTradeCalendar(today.format(Constants.DB_DATE_FORMATTER));
-        String lastDate = last.getDate();
-        int year = Integer.parseInt(lastDate.substring(0, 4));
-        List<Total> latestData = readFromDB.batchGetStockData(year, lastDate, earningStocks);
+        int year = Integer.parseInt(lastTradeDate.substring(0, 4));
+        List<Total> latestData = readFromDB.batchGetStockData(year, lastTradeDate, earningStocks);
 
         stockToLastdayCloseMap = latestData.stream().map(d -> d.toKLine()).collect(Collectors.toMap(d -> d.getCode(), d -> d.getClose()));
 
@@ -134,7 +158,9 @@ public class LoadOptionTradeData {
             return;
         }
 
-        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
+        LocalDate now = LocalDate.now();
+        now = now.minusDays(1); // todo 凌晨测试用，要删
+        String today = now.format(Constants.DB_DATE_FORMATTER);
         for (String stock : earningStocks) {
             List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionChain/" + stock + "/" + today);
             stockToOptionCodeMap.put(stock, lines);
@@ -185,7 +211,9 @@ public class LoadOptionTradeData {
             return;
         }
 
-        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
+        LocalDate now = LocalDate.now();
+        now = now.minusDays(1);
+        String today = now.format(Constants.DB_DATE_FORMATTER);
         TradeCalendar last = readFromDB.getLastTradeCalendar(today);
         String lastDay = last.getDate();
 
