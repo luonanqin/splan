@@ -208,9 +208,9 @@ public class RealTimeDataWS_DB {
     public void initHistoricalData() {
         try {
             loadOptionTradeData.load();
-//            computeHisOverBollingerRatio();
-//            loadEarningInfo();
-//            stockSet = buildStockSet();
+            computeHisOverBollingerRatio();
+            loadEarningInfo();
+            stockSet = buildStockSet();
             //            stockSet.add("AAPL"); // todo 测试用需删除
             optionStockSet = LoadOptionTradeData.earningStocks;
             // dn策略强制删除option涉及到的股票
@@ -236,8 +236,6 @@ public class RealTimeDataWS_DB {
             tradeExecutor.setClient(this);
             tradeExecutor.init();
 
-            //            optionQuoteExecutor.setList(optionQuoteExecutor.getList());
-            //            optionQuoteExecutor.setList(optionList);
             optionTradeExecutor = new OptionTradeExecutor();
             optionTradeExecutor.setClient(this);
             optionTradeExecutor.setOptionStockListener(optionStockListener);
@@ -690,9 +688,9 @@ public class RealTimeDataWS_DB {
         log.info(msg);
         unsubscribeAll();
         listenEnd = true;
-//        getRealtimeQuote();
+        getRealtimeQuote();
         getRealtimeQuoteForOption();
-//        tradeExecutor.beginTrade();
+        tradeExecutor.beginTrade();
         optionTradeExecutor.beginTrade();
     }
 

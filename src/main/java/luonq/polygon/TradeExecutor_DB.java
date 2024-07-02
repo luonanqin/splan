@@ -42,9 +42,9 @@ public class TradeExecutor_DB {
     public void init() {
         FTAPI.init();
         tradeApi = new TradeApi();
-        tradeApi.useSimulateEnv();
-        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
-        //        tradeApi.useRealEnv();
+//        tradeApi.useSimulateEnv();
+//        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
+                tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.unlock();
         tradeApi.clearStopLossStockSet();
