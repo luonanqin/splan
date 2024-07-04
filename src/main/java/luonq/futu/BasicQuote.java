@@ -118,7 +118,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
             String code = s2C.getSecurity().getCode();
             List<QotCommon.OrderBook> orderBookAskListList = s2C.getOrderBookAskListList();
             List<QotCommon.OrderBook> orderBookBidListList = s2C.getOrderBookBidListList();
-            System.out.print(code + "\t");
+            //            System.out.print(code + "\t");
             double bidPrice = 0d, askPrice = 0d;
             if (CollectionUtils.isNotEmpty(orderBookBidListList)) {
                 QotCommon.OrderBook orderBook = orderBookBidListList.get(0);
@@ -332,8 +332,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         BasicQuote quote = new BasicQuote();
         quote.start();
 
-        quote.subOrderBook("NVDA240628P127000");
-        quote.subOrderBook("NVDA240628C127000");
+        quote.subBasicQuote("ASTS240705C11000");
+//        quote.getBasicQot("ASTS240705C11000");
+        quote.subOrderBook("WULF240705C5500");
+        //        quote.subOrderBook("NVDA240628C127000");
         //        quote.subBasicQuote("NVDA240621P126000");
         for (int i = 0; i < 20000; i++) {
             //            quote.getSecuritySnapshot("NVDA");

@@ -109,6 +109,7 @@ public class RealTimeDataWS_DB {
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
+    private boolean testOption = false;
 
     private List<String> optionStockSet;
     private OptionTradeExecutor optionTradeExecutor;
@@ -146,11 +147,11 @@ public class RealTimeDataWS_DB {
 
             initTrade();
 
-            if (MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
+            if (testOption || MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
                 initHistoricalData();
                 initMessageListener();
                 subcribeStock();
-                inputTestData();
+                //                inputTestData();
                 sendToTradeDataListener();
                 close();
                 log.info("trade finish");
@@ -208,13 +209,15 @@ public class RealTimeDataWS_DB {
     public void initHistoricalData() {
         try {
             loadOptionTradeData.load();
-            computeHisOverBollingerRatio();
-            loadEarningInfo();
-            stockSet = buildStockSet();
+            if (!testOption) {
+                computeHisOverBollingerRatio();
+                loadEarningInfo();
+                stockSet = buildStockSet();
+            }
             //            stockSet.add("AAPL"); // todo 测试用需删除
             optionStockSet = LoadOptionTradeData.earningStocks;
             // dn策略强制删除option涉及到的股票
-            stockSet.removeAll(optionStockSet);
+            //            stockSet.removeAll(optionStockSet);
 
             allStockSet.addAll(stockSet);
             allStockSet.addAll(optionStockSet);
@@ -249,16 +252,14 @@ public class RealTimeDataWS_DB {
 
     public void initMessageListener() {
         try {
-//            TradeDataListener_DB tradeDataListener = new TradeDataListener_DB();
-//            tradeDataListener.setStockSet(stockSet);
-//            tradeDataListener.setClient(this);
-//            tradeDataListener.setList(list);
-//            tradeEventBus.register(tradeDataListener);
+            if (!testOption) {
+                TradeDataListener_DB tradeDataListener = new TradeDataListener_DB();
+                tradeDataListener.setStockSet(stockSet);
+                tradeDataListener.setClient(this);
+                tradeDataListener.setList(list);
+                tradeEventBus.register(tradeDataListener);
+            }
 
-            //            OptionDataListener optionDataListener = new OptionDataListener();
-            //            optionDataListener.setStockToKLineMap(buildLastStockKLine());
-            //            optionDataListener.setNodeList(optionList);
-            //            tradeEventBus.register(optionDataListener);
             tradeEventBus.register(optionStockListener);
 
             log.info("finish init message listener");
@@ -280,6 +281,10 @@ public class RealTimeDataWS_DB {
         return closeCheckTime;
     }
 
+    public void setCloseCheckTime(Date closeCheckTime) {
+        this.closeCheckTime = closeCheckTime;
+    }
+
     private void computeHisOverBollingerRatio() throws Exception {
         strategy.init();
         originRatioMap = strategy.computeHisOverBollingerRatio();
@@ -297,9 +302,9 @@ public class RealTimeDataWS_DB {
             preTrade = now.minusDays(1);
         }
 
-        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
+        int openHour, closeHour, preMin = 0 + DELAY_MINUTE, openMin = 1;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            openHour = 21;
+            openHour = 22;
             closeHour = 3;
         } else {
             openHour = 22;
@@ -635,7 +640,6 @@ public class RealTimeDataWS_DB {
                         continue;
                     }
                     Double price = MapUtils.getDouble(map, "p");
-                    //                    price = 219.07; // todo 测试用要删
                     Long time = MapUtils.getLong(map, "t");
                     if (time < openTime) {
                         if (time % 1000 == 0) {
@@ -734,7 +738,10 @@ public class RealTimeDataWS_DB {
                             realtimeQuoteMap.put(stock, tradePrice);
                         }
                     }
-                    log.info("quote price(time=" + System.currentTimeMillis() + "): " + realtimeQuoteMap);
+                    long current = System.currentTimeMillis();
+                    if ((current / 1000) % 1 == 0) {
+                        log.info("quote price(time={}): {}", current, realtimeQuoteMap);
+                    }
                 }
 
                 // 退出前反订阅
@@ -778,8 +785,6 @@ public class RealTimeDataWS_DB {
 
                         Double askPrice = MapUtils.getDouble(map, "ap");
                         Double bidPrice = MapUtils.getDouble(map, "bp");
-                        //                        askPrice = 219.1; // todo 测试用要删
-                        //                        bidPrice = 219.05; // todo 测试用要删
                         Double tradePrice;
                         if (bidPrice == null) {
                             tradePrice = askPrice;
@@ -790,7 +795,10 @@ public class RealTimeDataWS_DB {
                             realtimeQuoteForOptionMap.put(stock, tradePrice);
                         }
                     }
-                    log.info("quote for option price(time={}): {}", System.currentTimeMillis(), realtimeQuoteForOptionMap);
+                    long current = System.currentTimeMillis();
+                    if ((current / 1000) % 10 == 0) {
+                        log.info("quote for option price(time={}): {}", current, realtimeQuoteForOptionMap);
+                    }
                 }
 
                 // 退出前反订阅

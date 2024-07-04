@@ -43,10 +43,12 @@ public class LoadOptionTradeData {
     public static Map<String/* optionCode */, OptionDaily> optionToLastDailyMap = Maps.newHashMap();
     public static Double riskFreeRate = 0d;
     public static String lastTradeDate;
+    public static String currentTradeDate;
 
     public void load() {
         try {
             calLastTradeDate();
+            calCurrentTradeDate();
             loadRiskFreeRate();
             loadWillEarningStock();
             loadLastdayClose();
@@ -77,6 +79,11 @@ public class LoadOptionTradeData {
         }
     }
 
+    public void calCurrentTradeDate(){
+        TradeCalendar nextTradeCalendar = readFromDB.getNextTradeCalendar(lastTradeDate);
+        currentTradeDate = nextTradeCalendar.getDate();
+    }
+
     // 加载无风险利率
     public void loadRiskFreeRate() throws Exception {
         riskFreeRateMap = BaseUtils.loadRiskFreeRate();
@@ -86,6 +93,7 @@ public class LoadOptionTradeData {
             today = last.getDate();
             riskFreeRate = riskFreeRateMap.get(today);
             if (riskFreeRate != null) {
+                log.info("riskFreeRate: {}", riskFreeRate);
                 return;
             }
         }
@@ -124,8 +132,8 @@ public class LoadOptionTradeData {
         next1dayStocks.forEach(s -> nextdayStocks.add(s));
         next2dayStocks.forEach(s -> nextdayStocks.add(s));
         next3dayStocks.forEach(s -> nextdayStocks.add(s));
-        nextdayStocks.clear(); // todo 测试用，要删
-        nextdayStocks.add("AAPL"); // todo 测试用，要删
+//        nextdayStocks.clear(); // todo 测试用，要删
+//        nextdayStocks.add("AAPL"); // todo 测试用，要删
 
         Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
         Collection<String> intersection = CollectionUtils.intersection(weekOptionStock, nextdayStocks);
@@ -158,14 +166,8 @@ public class LoadOptionTradeData {
             return;
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime marketClose = LocalDateTime.of(LocalDate.now(), LocalTime.of(5, 0, 0)); // 前一交易日数据的入库时间
-        if (now.isBefore(marketClose)) {
-            now = now.minusDays(1); // 凌晨运行时需要减一天
-        }
-        String today = now.format(Constants.DB_DATE_FORMATTER);
         for (String stock : earningStocks) {
-            List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionChain/" + stock + "/" + today);
+            List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionChain/" + stock + "/" + currentTradeDate);
             stockToOptionCodeMap.put(stock, lines);
         }
         log.info("finish load option chain");

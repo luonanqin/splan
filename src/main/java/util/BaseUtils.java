@@ -986,6 +986,28 @@ public class BaseUtils {
         return result;
     }
 
+    public static Set<String> getPennyOptionStock() {
+        BufferedReader br = null;
+        Set<String> result = Sets.newHashSet();
+        try {
+            br = new BufferedReader(new FileReader(Constants.USER_PATH + "optionData/pennyprogram"));
+            String line;
+            while (StringUtils.isNotBlank(line = br.readLine())) {
+                result.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
     public static String getOptionPutCode(String optionCallCode) {
         StringBuffer sb = new StringBuffer(optionCallCode);
         return sb.replace(optionCallCode.length() - 9, optionCallCode.length() - 8, "P").toString();

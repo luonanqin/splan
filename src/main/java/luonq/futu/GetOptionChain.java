@@ -126,7 +126,7 @@ public class GetOptionChain implements FTSPI_Qot, FTSPI_Conn {
 
         TimeUnit.SECONDS.sleep(5);
 
-        List<String> aapl = qot.getChainList("AAPL");
+        List<String> aapl = qot.getChainList("TSLA");
         System.out.println(aapl);
 
         Map<String, String> stockFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge");

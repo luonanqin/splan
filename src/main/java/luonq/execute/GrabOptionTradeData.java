@@ -14,6 +14,7 @@ import luonq.data.ReadFromDB;
 import luonq.ivolatility.GetDailyImpliedVolatility;
 import luonq.strategy.Strategy32;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -53,6 +54,7 @@ public class GrabOptionTradeData {
     public Map<String/* stock */, List<String>/* call or put optioncode */> stockToSingleOptionCodeMap = Maps.newHashMap();
     public static Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
     public String lastTradeDate;
+    public static String currentTradeDate;
     public BlockingQueue<CloseableHttpClient> queue;
     public ThreadPoolExecutor threadPool;
 
@@ -75,6 +77,7 @@ public class GrabOptionTradeData {
         try {
             init();
             calLastTradeDate();
+            calCurrentTradeDate();
             loadWillEarningStock();
             loadLastdayClose();
             grabOptionChain();
@@ -103,6 +106,11 @@ public class GrabOptionTradeData {
                 lastTradeDate = lastTradeCalendar.getDate();
             }
         }
+    }
+
+    public void calCurrentTradeDate() {
+        TradeCalendar nextTradeCalendar = readFromDB.getNextTradeCalendar(lastTradeDate);
+        currentTradeDate = nextTradeCalendar.getDate();
     }
 
     // 加载接下来三天内发布财报的有周期权的股票
@@ -138,8 +146,8 @@ public class GrabOptionTradeData {
         next1dayStocks.forEach(s -> nextdayStocks.add(s));
         next2dayStocks.forEach(s -> nextdayStocks.add(s));
         next3dayStocks.forEach(s -> nextdayStocks.add(s));
-        nextdayStocks.clear(); // todo 测试用，要删
-        nextdayStocks.add("AAPL"); // todo 测试用，要删
+        //        nextdayStocks.clear(); // todo 测试用，要删
+        //        nextdayStocks.add("AAPL"); // todo 测试用，要删
 
         Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
         Collection<String> intersection = CollectionUtils.intersection(weekOptionStock, nextdayStocks);
@@ -221,11 +229,11 @@ public class GrabOptionTradeData {
                 continue;
             }
 
-            Double lastClose = stockToLastdayCloseMap.get(stock);
-            if (lastClose == null) {
-                cdl.countDown();
-                continue;
-            }
+            //            Double lastClose = stockToLastdayCloseMap.get(stock);
+            //            if (lastClose == null) {
+            //                cdl.countDown();
+            //                continue;
+            //            }
 
             CloseableHttpClient httpClient = queue.take();
             threadPool.execute(() -> {
@@ -233,21 +241,29 @@ public class GrabOptionTradeData {
                 HttpGet getMethod = new HttpGet(url);
                 List<String> callAndPut = Lists.newArrayList();
                 try {
-                    CloseableHttpResponse execute = httpClient.execute(getMethod);
-                    InputStream content = execute.getEntity().getContent();
-                    OptionChainResp resp = JSON.parseObject(content, OptionChainResp.class);
-                    for (OptionChain chain : resp.getResults()) {
-                        OptionChain.Detail detail = chain.getDetails();
-                        double strike_price = detail.getStrike_price();
-                        double ratio = Math.abs(strike_price - lastClose) / lastClose;
-                        if (ratio > 0.1) {
+                    while (true) {
+                        CloseableHttpResponse execute = httpClient.execute(getMethod);
+                        InputStream content = execute.getEntity().getContent();
+                        OptionChainResp resp = JSON.parseObject(content, OptionChainResp.class);
+                        for (OptionChain chain : resp.getResults()) {
+                            OptionChain.Detail detail = chain.getDetails();
+                            //                            double strike_price = detail.getStrike_price();
+                            //                            double ratio = Math.abs(strike_price - lastClose) / lastClose;
+                            //                            if (ratio > 0.1) {
                             //                            continue;
+                            //                            }
+                            String callCode = detail.getTicker();
+                            String putCode = BaseUtils.getOptionPutCode(callCode);
+                            callAndPut.add(callCode + "|" + putCode);
                         }
-                        String callCode = detail.getTicker();
-                        String putCode = BaseUtils.getOptionPutCode(callCode);
-                        callAndPut.add(callCode + "|" + putCode);
+                        String nextUrl = resp.getNext_url();
+                        if (StringUtils.isBlank(nextUrl)) {
+                            break;
+                        } else {
+                            getMethod.releaseConnection();
+                            getMethod = new HttpGet(nextUrl + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY");
+                        }
                     }
-                    resp.getResults();
                     stockToOptionCodeMap.put(stock, callAndPut);
                     stockToSingleOptionCodeMap.put(stock, callAndPut.stream().flatMap(cp -> Arrays.stream(cp.split("\\|"))).collect(Collectors.toList()));
 
@@ -256,7 +272,7 @@ public class GrabOptionTradeData {
                     BaseUtils.writeFile(chainDir + today, callAndPut);
                     log.info("finish grab option chain: {}, size: {}", stock, callAndPut.size());
                 } catch (Exception e) {
-                    // todo log
+                    log.error("grabOptionChain error. url={}", url, e);
                 } finally {
                     getMethod.releaseConnection();
                     queue.offer(httpClient);
@@ -319,22 +335,17 @@ public class GrabOptionTradeData {
 
     // 抓取期权链的历史5天IV
     public void grabHistoricalIv() throws Exception {
-        LocalDate now = LocalDate.now();
-        LocalDateTime marketClose = LocalDateTime.of(now, LocalTime.of(5, 0, 0)); // 当天交易收盘时间
-        if (LocalDateTime.now().isBefore(marketClose)) {
-            now = now.minusDays(1);
-        }
-        String today = now.format(Constants.DB_DATE_FORMATTER);
-        List<TradeCalendar> calendars = readFromDB.getLastNTradeCalendar(today, 5);
+        List<TradeCalendar> calendars = readFromDB.getLastNTradeCalendar(currentTradeDate, 5);
 
         Map<String, List<String>> last5DaysMap = Maps.newHashMap();
-        last5DaysMap.put(today, calendars.stream().map(TradeCalendar::getDate).collect(Collectors.toList()));
+        last5DaysMap.put(currentTradeDate, calendars.stream().map(TradeCalendar::getDate).collect(Collectors.toList()));
 
         Map<String, String> nextDayMap = Maps.newHashMap();
         for (int i = 0; i < calendars.size() - 1; i++) {
             nextDayMap.put(calendars.get(i + 1).getDate(), calendars.get(i).getDate());
         }
 
+        Strategy32.clearOptionDailyCache();
         for (String stock : earningStocks) {
             if (CollectionUtils.isNotEmpty(testStocks) && !testStocks.contains(stock)) {
                 continue;
@@ -342,7 +353,7 @@ public class GrabOptionTradeData {
 
             List<String> callAndPut = stockToOptionCodeMap.get(stock);
             if (CollectionUtils.isEmpty(callAndPut)) {
-                // todo
+                log.error("there is no option code to grab historical iv. stock={}", stock);
                 continue;
             }
             List<String> optionCodeList = callAndPut.stream().flatMap(cp -> Arrays.stream(cp.split("\\|"))).collect(Collectors.toList());
@@ -353,7 +364,7 @@ public class GrabOptionTradeData {
                 if (optionDaily.getVolume() < 100) {
                     continue;
                 }
-                optionCodeDateMap.put(optionCode, today);
+                optionCodeDateMap.put(optionCode, currentTradeDate);
             }
             GetDailyImpliedVolatility.getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap, lastTradeDate);
 

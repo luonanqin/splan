@@ -41,8 +41,7 @@ public class OptionStockListener {
         try {
             cal(event.getStock(), event.getPrice());
         } catch (Exception e) {
-            e.printStackTrace();
-            // todo
+            log.error("process message error. event={}", event);
         }
     }
 
@@ -68,7 +67,7 @@ public class OptionStockListener {
             log.info("there is no call and put for open price. stock={}", stock);
             return;
         }
-        String openPrice = String.valueOf(open);
+        String openPrice = String.format("%.2f", open);
         int decade = (int) open;
         int count = String.valueOf(decade).length();
 
@@ -88,7 +87,7 @@ public class OptionStockListener {
             callList.add(code);
 
             int tempDiff = strikePrice - digitalPrice;
-            if (tempDiff > 0 && priceDiff > tempDiff) {
+            if (tempDiff >= 0 && priceDiff > tempDiff) {
                 priceDiff = tempDiff;
                 if (i + 1 == callAndPuts.size()) {
                     break;

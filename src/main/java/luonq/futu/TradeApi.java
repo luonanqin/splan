@@ -127,7 +127,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     }
 
     public OrderFill getOrderFill(long orderId) {
-        return orderFillMap.get(orderId).poll();
+        return orderFillMap.get(orderId).peek();
     }
 
     public void start() {

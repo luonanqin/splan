@@ -8,4 +8,5 @@ import java.util.List;
 public class OptionChainResp {
 
     private List<OptionChain> results;
+    private String next_url;
 }
