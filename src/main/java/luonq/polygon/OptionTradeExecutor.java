@@ -238,6 +238,7 @@ public class OptionTradeExecutor {
 
         while (true) {
             if (canTradeStocks.size() == hasBoughtSuccess.size() && hasBoughtSuccess.size() == hasSoldSuccess.size()) {
+                log.info("all stock have finished trading. End!");
                 RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
                 Thread.sleep(5000);
                 return;

@@ -72,7 +72,7 @@ public class RealTimeDataWS_DB {
     public static final int PRICE_LIMIT = 7; // 价格限制，用于限制这个价格下的股票不参与计算
     public static final double LOSS_RATIO = 0.07d; // 止损比例
     public static final int DELAY_MINUTE = 0;
-    public static final long LISTENING_TIME = 30000L; // 监听时长，毫秒
+    public static final long LISTENING_TIME = 20000L; // 监听时长，毫秒
     private static LocalDateTime summerTime = BaseUtils.getSummerTime(null);
     private static LocalDateTime winterTime = BaseUtils.getWinterTime(null);
 
@@ -209,6 +209,7 @@ public class RealTimeDataWS_DB {
     public void initHistoricalData() {
         try {
             loadOptionTradeData.load();
+            ReadWriteOptionTradeInfo.init();
             if (!testOption) {
                 computeHisOverBollingerRatio();
                 loadEarningInfo();
