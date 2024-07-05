@@ -9,6 +9,7 @@ import com.google.common.eventbus.Subscribe;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
+import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.strategy.Strategy32;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,7 @@ public class OptionStockListener {
         if (!LoadOptionTradeData.earningStocks.contains(stock)) {
             return;
         }
+        ReadWriteOptionTradeInfo.addStockOpenPrice(stock, open);
         // 开盘价波动
         Double lastClose = LoadOptionTradeData.stockToLastdayCloseMap.get(stock);
         if (lastClose == null) {
