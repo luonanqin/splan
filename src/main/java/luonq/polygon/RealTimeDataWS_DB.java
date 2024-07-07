@@ -209,6 +209,7 @@ public class RealTimeDataWS_DB {
     public void initHistoricalData() {
         try {
             loadOptionTradeData.load();
+            optionTradeExecutor.init();
             ReadWriteOptionTradeInfo.init();
             if (!testOption) {
                 computeHisOverBollingerRatio();
@@ -243,7 +244,6 @@ public class RealTimeDataWS_DB {
             optionTradeExecutor = new OptionTradeExecutor();
             optionTradeExecutor.setClient(this);
             optionTradeExecutor.setOptionStockListener(optionStockListener);
-            optionTradeExecutor.init();
 
             log.info("finish init trade");
         } catch (Exception e) {
@@ -303,9 +303,9 @@ public class RealTimeDataWS_DB {
             preTrade = now.minusDays(1);
         }
 
-        int openHour, closeHour, preMin = 0 + DELAY_MINUTE, openMin = 1;
+        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            openHour = 22;
+            openHour = 21;
             closeHour = 3;
         } else {
             openHour = 22;

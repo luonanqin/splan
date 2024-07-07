@@ -547,7 +547,7 @@ public class OptionTradeExecutor {
                     double callDiff = callMidPrice - callOpen;
                     double putDiff = putMidPrice - putOpen;
                     double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                    double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen)).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     double callCount = callPosition.getCanSellQty();
                     double putCount = putPosition.getCanSellQty();
                     if ((currentTime / 1000) % 10 == 0) {
