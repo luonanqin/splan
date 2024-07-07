@@ -617,7 +617,7 @@ public class Strategy33 {
         //        Map<String, List<Double>> ivMap = loadIvMap();
 
         for (String date : dateToStockKlineMap.keySet()) {
-            String expirationDate = date;
+            String expirationDate = "";
             if (weekSet.contains(date)) {
                 //                continue;
                 int i = 0;
@@ -631,8 +631,8 @@ public class Strategy33 {
                     continue;
                 }
                 expirationDate = weekStrArray[i];
+                expirationDate = LocalDate.parse(expirationDate, Constants.DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
-            expirationDate = LocalDate.parse(expirationDate, Constants.DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
 
             if (!date.equals("2023-10-06")) {
                 //                continue;
@@ -664,12 +664,14 @@ public class Strategy33 {
                     }
                     String outPriceCallOptionCode_1 = nearlyOptionData.getOutPriceCallOptionCode_1();
                     String outPricePutOptionCode_1 = nearlyOptionData.getOutPricePutOptionCode_1();
-                    StringBuffer callSb = new StringBuffer(outPriceCallOptionCode_1);
-                    callSb.replace(callSb.length() - 15, callSb.length() - 9, expirationDate);
-                    outPriceCallOptionCode_1 = callSb.toString();
-                    StringBuffer putSb = new StringBuffer(outPricePutOptionCode_1);
-                    putSb.replace(putSb.length() - 15, putSb.length() - 9, expirationDate);
-                    outPricePutOptionCode_1 = putSb.toString();
+                    if (StringUtils.isNotBlank(expirationDate)) {
+                        StringBuffer callSb = new StringBuffer(outPriceCallOptionCode_1);
+                        callSb.replace(callSb.length() - 15, callSb.length() - 9, expirationDate);
+                        outPriceCallOptionCode_1 = callSb.toString();
+                        StringBuffer putSb = new StringBuffer(outPricePutOptionCode_1);
+                        putSb.replace(putSb.length() - 15, putSb.length() - 9, expirationDate);
+                        outPricePutOptionCode_1 = putSb.toString();
+                    }
 
                     OptionDaily callDaily = requestOptionDaily(outPriceCallOptionCode_1, formatDate);
                     OptionDaily putDaily = requestOptionDaily(outPricePutOptionCode_1, formatDate);
