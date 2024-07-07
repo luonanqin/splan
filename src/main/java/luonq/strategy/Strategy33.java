@@ -48,20 +48,20 @@ public class Strategy33 {
     public static ThreadPoolExecutor cachedThread;
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     /* 2024 */
-//        public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524 };
-//        public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24" };
-//        public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24");
-//        public static int year = 2024;
+//    public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524, 20240531, 20240607, 20240614, 20240621, 20240628, 20240705 };
+//    public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05" };
+//    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05");
+//    public static int year = 2024;
     /* 2023*/
-//    public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
-//    public static String[] weekStrArray = new String[] { "2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29" };
-//    public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
-//    public static int year = 2023;
+    //            public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
+    //            public static String[] weekStrArray = new String[] { "2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29" };
+    //            public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
+    //            public static int year = 2023;
     /* 2022 */
-                        public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
-                        public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
-                        public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
-                        public static int year = 2022;
+        public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
+        public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
+        public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
+        public static int year = 2022;
     public static Map<String/* today */, List<String>/* last5Days*/> last5DaysMap = Maps.newHashMap();
     public static Map<String, Map<String, Double>> ivMap = Maps.newHashMap();
     public static Map<String/* date */, Double/* rate */> riskFreeRateMap = Maps.newHashMap();
@@ -257,7 +257,7 @@ public class Strategy33 {
     // 获取开盘相对于前日收盘波动超过2%的kline
 
     public static Map<String/* date */, Map<String/* stock */, StockKLine>> getDateToStockKlineMap() throws Exception {
-        Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
+        Set<String> weekOptionStock = BaseUtils.getPennyOptionStock();
         Map<String/* date */, Map<String/* stock */, StockKLine>> dateToStockKline = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
         for (String stock : weekOptionStock) {
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, year, year - 1);
@@ -267,7 +267,7 @@ public class Strategy33 {
                 double open = stockKLine.getOpen();
                 double lastClose = lastKLine.getClose();
                 double ratio = Math.abs(open - lastClose) / lastClose * 100;
-                if (ratio < 2 || open < 5) {
+                if (ratio < 3 || open < 5) {
                     continue;
                 }
                 String date = stockKLine.getFormatDate();
@@ -332,6 +332,7 @@ public class Strategy33 {
         optionDaily = Strategy32.requestOptionDailyList(httpClient, date, code);
 
         Strategy32.writeOptionDaily(optionDaily, code, date);
+        Strategy32.refreshOptionDailyMap(optionDaily, code, date);
         return optionDaily;
     }
 
@@ -531,6 +532,22 @@ public class Strategy33 {
     }
 
     public static double calOpen(Map<String, Map<String, Double>> secToStockPriceMap, String optionCode, String date) throws Exception {
+        String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
+        String expireDay = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyMMdd")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        String type = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
+        String priceStr = optionCode.substring(optionCode.length() - 8);
+        int priceInt = Integer.valueOf(priceStr);
+        String strikePrice = BigDecimal.valueOf(priceInt).divide(BigDecimal.valueOf(1000)).setScale(1, RoundingMode.DOWN).toString();
+        if (strikePrice.contains(".0")) {
+            strikePrice = strikePrice.substring(0, strikePrice.length() - 2);
+        }
+        double strikePriceD = Double.valueOf(strikePrice);
+        Double dateIV = GetAggregateImpliedVolatility.getAggregateIv(optionCode.substring(2), date);
+        if (dateIV <= 0) {
+            return 0;
+        }
+
         int _2_index = optionCode.indexOf("2");
         String stock = optionCode.substring(2, _2_index);
         Double stockPrice = 0d;
@@ -548,30 +565,15 @@ public class Strategy33 {
                 firstDatetime = firstDatetime.replaceFirst("09:", hour + ":");
                 stockPrice = secToStockPriceMap.get(stock).get(firstDatetime);
                 if (stockPrice == null) {
-                    System.out.println(optionCode + " " + firstDatetime + " has no trade");
+                    //                    System.out.println(optionCode + " " + firstDatetime + " has no trade");
                     return 0;
                 }
+            } else {
+                return 0;
             }
         } else {
             List<Double> priceList = secToStockPriceMap.get(stock).values().stream().collect(Collectors.toList());
             stockPrice = priceList.get(priceList.size() - 1);
-        }
-
-        String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
-        String expireDay = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyMMdd")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        String type = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
-        String priceStr = optionCode.substring(optionCode.length() - 8);
-        int priceInt = Integer.valueOf(priceStr);
-        String strikePrice = BigDecimal.valueOf(priceInt).divide(BigDecimal.valueOf(1000)).setScale(1, RoundingMode.DOWN).toString();
-        if (strikePrice.contains(".0")) {
-            strikePrice = strikePrice.substring(0, strikePrice.length() - 2);
-        }
-        double strikePriceD = Double.valueOf(strikePrice);
-        Double dateIV = GetAggregateImpliedVolatility.getAggregateIv(optionCode.substring(2), date);
-
-        if (dateIV <= 0) {
-            return 0;
         }
 
         if (type.equalsIgnoreCase("C")) {
@@ -602,6 +604,7 @@ public class Strategy33 {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
 
         init();
+        Strategy28.init();
         Strategy32.init();
         GetDailyImpliedVolatility.init();
         GetAggregateImpliedVolatility.init();
@@ -618,16 +621,21 @@ public class Strategy33 {
                 continue;
             }
 
-            List<String> earningDates = earningForEveryDay.get(date);
+            if (!date.equals("2023-10-06")) {
+                //                continue;
+            }
+
+            List<String> earningStocks = earningForEveryDay.get(date);
             Map<String, StockKLine> stockKLineMap = dateToStockKlineMap.get(date);
-            if (CollectionUtils.isEmpty(earningDates)) {
-                continue;
+            if (CollectionUtils.isEmpty(earningStocks)) {
+                //                continue;
             }
             List<NearlyOptionData> nearlyOptionDataList = dateToOpenStrikePriceRatioMap.get(BaseUtils.unformatDate(date));
             Map<String, NearlyOptionData> stockToNearlyOption = nearlyOptionDataList.stream().collect(Collectors.toMap(NearlyOptionData::getStock, v -> v));
-            Set<String> stockSet = earningDates.stream().collect(Collectors.toSet());
+            //            Set<String> stockSet = earningStocks.stream().collect(Collectors.toSet());
+            Set<String> stockSet = stockKLineMap.keySet();
             for (String stock : stockSet) {
-                if (!stock.equals("IREN")) {
+                if (!stock.equals("ZIM")) {
                     //                    continue;
                 }
                 if (stockKLineMap.containsKey(stock)) {
@@ -643,13 +651,6 @@ public class Strategy33 {
                     }
                     String outPriceCallOptionCode_1 = nearlyOptionData.getOutPriceCallOptionCode_1();
                     String outPricePutOptionCode_1 = nearlyOptionData.getOutPricePutOptionCode_1();
-                    List<Double> callIvList = getIvList(outPriceCallOptionCode_1, date);
-                    List<Double> putIvList = getIvList(outPricePutOptionCode_1, date);
-                    boolean callCanTrade = Strategy32.canTradeForIv(callIvList);
-                    boolean putCanTrade = Strategy32.canTradeForIv(putIvList);
-                    if (!callCanTrade || !putCanTrade) {
-                        continue;
-                    }
 
                     OptionDaily callDaily = requestOptionDaily(outPriceCallOptionCode_1, formatDate);
                     OptionDaily putDaily = requestOptionDaily(outPricePutOptionCode_1, formatDate);
@@ -672,13 +673,21 @@ public class Strategy33 {
                     double putOpen = putDaily.getOpen();
                     if (callOpen == 0 || putOpen == 0) {
                         //                    if (callOpen == 0 || putOpen == 0 || callOpen < 0.1 || putOpen < 0.1) {
-                        System.out.println(stock + " " + date + " option open is 0");
+                        //                        System.out.println(stock + " " + date + " option open is 0");
                         continue;
                     }
                     double callDiff = BigDecimal.valueOf(callDaily.getClose() - callOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     double putDiff = BigDecimal.valueOf(putDaily.getClose() - putOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+                    List<Double> callIvList = getIvList(outPriceCallOptionCode_1, date);
+                    List<Double> putIvList = getIvList(outPricePutOptionCode_1, date);
+                    boolean callCanTrade = Strategy32.canTradeForIv(callIvList);
+                    boolean putCanTrade = Strategy32.canTradeForIv(putIvList);
+                    if (!callCanTrade || !putCanTrade) {
+                        continue;
+                    }
 
                     // 计算理论call和put的买入价
                     Double calCallOpen = calOpen(secToStockPriceMap, outPriceCallOptionCode_1, date);
@@ -692,9 +701,6 @@ public class Strategy33 {
                     }
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
                     String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
-                    if (callIvList.get(0) < 0.8 || putIvList.get(0) < 0.8) {
-                        //                        continue;
-                    }
                     ivInfo = callIvInfo + "\t" + putIvInfo;
                     System.out.println(stock + "\t" + open + "\t" + callDaily + "\t" + putDaily + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio + "\t" + ivInfo + "\t" + simulateTrade);
                 }

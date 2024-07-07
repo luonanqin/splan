@@ -69,20 +69,20 @@ public class Strategy32 {
     public static ThreadPoolExecutor cachedThread;
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     /* 2024 */
-//        public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524 };
-//        public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24" };
-//        public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24");
-//        public static int year = 2024;
+//    public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524, 20240531, 20240607, 20240614, 20240621, 20240628, 20240705 };
+//    public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05" };
+//    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05");
+//    public static int year = 2024;
     /* 2023*/
 //        public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
 //        public static String[] weekStrArray = new String[] { "2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29" };
 //        public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
 //        public static int year = 2023;
     /* 2022 */
-    public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
-    public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
-    public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
-    public static int year = 2022;
+        public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
+        public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
+        public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
+        public static int year = 2022;
     public static Map<String/* stock */, Map<String/* date */, Map<String/* optionCode */, OptionDaily>>> stockOptionDailyMap = Maps.newHashMap();
     public static Map<String/* stock */, Map<Integer/* 档位 */, Double/* 振幅均值 */>> stockToVolatilityMap = Maps.newHashMap();
     public static Map<String/* date */, String/* lastDate */> dateMap = Maps.newHashMap(); // 当日和前日的映射
@@ -396,35 +396,35 @@ public class Strategy32 {
 
                 // 计算行权价前后各两档的虚值期权代码
                 // 改进后算法
-                                int upStrikePrice = 0;
-                                int downStrikePrice = 0;
-                                if (openPriceDigital != strikePrice) {
-                                    if (openPriceDigital < strikePrice) {
-                                        upStrikePrice = strikePrice;
-                                        downStrikePrice = strikePrice - optionPriceStep;
-                                    } else {
-                                        upStrikePrice = strikePrice + optionPriceStep;
-                                        downStrikePrice = strikePrice;
-                                    }
-                                    if (openPriceDigital - optionPriceStep * 0.25 < downStrikePrice) {
-                                        downStrikePrice = downStrikePrice - optionPriceStep;
-                                    }
-                                    if (openPriceDigital + optionPriceStep * 0.25 > upStrikePrice) {
-                                        upStrikePrice = upStrikePrice + optionPriceStep;
-                                    }
-                                } else if (openPriceDigital == strikePrice) {
-                                    upStrikePrice = strikePrice + optionPriceStep;
-                                    downStrikePrice = strikePrice - optionPriceStep;
-                                }
-                                String call_1 = String.valueOf(upStrikePrice);
-                                String call_2 = String.valueOf(upStrikePrice + optionPriceStep);
-                                String put_1 = String.valueOf(downStrikePrice);
-                                String put_2 = String.valueOf(downStrikePrice - optionPriceStep);
+                int upStrikePrice = 0;
+                int downStrikePrice = 0;
+                if (openPriceDigital != strikePrice) {
+                    if (openPriceDigital < strikePrice) {
+                        upStrikePrice = strikePrice;
+                        downStrikePrice = strikePrice - optionPriceStep;
+                    } else {
+                        upStrikePrice = strikePrice + optionPriceStep;
+                        downStrikePrice = strikePrice;
+                    }
+                    if (openPriceDigital - optionPriceStep * 0.25 < downStrikePrice) {
+                        downStrikePrice = downStrikePrice - optionPriceStep;
+                    }
+                    if (openPriceDigital + optionPriceStep * 0.25 > upStrikePrice) {
+                        upStrikePrice = upStrikePrice + optionPriceStep;
+                    }
+                } else if (openPriceDigital == strikePrice) {
+                    upStrikePrice = strikePrice + optionPriceStep;
+                    downStrikePrice = strikePrice - optionPriceStep;
+                }
+                String call_1 = String.valueOf(upStrikePrice);
+                String call_2 = String.valueOf(upStrikePrice + optionPriceStep);
+                String put_1 = String.valueOf(downStrikePrice);
+                String put_2 = String.valueOf(downStrikePrice - optionPriceStep);
                 // 改进前算法
-//                String call_1 = String.valueOf(strikePrice + optionPriceStep);
-//                String call_2 = String.valueOf(strikePrice + optionPriceStep * 2);
-//                String put_1 = String.valueOf(strikePrice - optionPriceStep);
-//                String put_2 = String.valueOf(strikePrice - optionPriceStep * 2);
+                //                String call_1 = String.valueOf(strikePrice + optionPriceStep);
+                //                String call_2 = String.valueOf(strikePrice + optionPriceStep * 2);
+                //                String put_1 = String.valueOf(strikePrice - optionPriceStep);
+                //                String put_2 = String.valueOf(strikePrice - optionPriceStep * 2);
 
                 String optionCode_call1 = optionPrefix + call_1;
                 String optionCode_call2 = optionPrefix + call_2;
@@ -519,13 +519,15 @@ public class Strategy32 {
                 try {
                     String date = daily.getFrom();
                     OptionDaily optionDaily;
+                    String symbol = daily.getSymbol();
                     synchronized (stockOptionDailyMap) {
-                        optionDaily = getOptionDaily(daily.getSymbol(), date);
+                        optionDaily = getOptionDaily(symbol, date);
                     }
                     if (optionDaily == null) {
-                        optionDaily = requestOptionDailyList(httpClient, date, daily.getSymbol());
+                        optionDaily = requestOptionDailyList(httpClient, date, symbol);
                         synchronized (stockOptionDailyMap) {
-                            writeOptionDaily(optionDaily, daily.getSymbol(), date);
+                            writeOptionDaily(optionDaily, symbol, date);
+                            refreshOptionDailyMap(optionDaily, symbol, date);
                         }
                     }
                     if (index == 0) {
@@ -572,11 +574,24 @@ public class Strategy32 {
         return optionDaily;
     }
 
+    public static void clearOptionDailyCache(){
+        stockOptionDailyMap.clear();
+    }
+
     public static void writeOptionDaily(OptionDaily optionDaily, String optionCode, String date) throws Exception {
         if (optionDaily == null) {
             optionDaily = OptionDaily.EMPTY(date, optionCode);
         }
 
+        int _2_index = optionCode.indexOf("2");
+        String stock = optionCode.substring(2, _2_index);
+
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionDaily/" + stock);
+        lines.add(optionDaily.toString());
+        BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionDaily/" + stock, lines);
+    }
+
+    public static void refreshOptionDailyMap(OptionDaily optionDaily, String optionCode, String date) {
         int _2_index = optionCode.indexOf("2");
         String stock = optionCode.substring(2, _2_index);
         if (!stockOptionDailyMap.containsKey(stock)) {
@@ -591,12 +606,7 @@ public class Strategy32 {
 
         Map<String, OptionDaily> dateDailyMap = dailyMap.get(date);
         dateDailyMap.put(optionCode, optionDaily);
-
-        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionDaily/" + stock);
-        lines.add(optionDaily.toString());
-        BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionDaily/" + stock, lines);
     }
-
 
     private static StockKLine getLastKLine(String date, String stock) throws Exception {
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, 2024, 2021);
@@ -737,9 +747,11 @@ public class Strategy32 {
         String stock = callCode.substring(0, _2_index);
 
         String callFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + callCode;
+        Strategy28.getOptionQuoteList(new OptionCode(call.getSymbol()), date);
         //        Strategy28.sortQuote(callFilePath);
         List<String> callQuoteList = BaseUtils.readFile(callFilePath);
         String putFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + putCode;
+        Strategy28.getOptionQuoteList(new OptionCode(put.getSymbol()), date);
         //        Strategy28.sortQuote(putFilePath);
         List<String> putQuoteList = BaseUtils.readFile(putFilePath);
         if (CollectionUtils.isEmpty(callQuoteList) || CollectionUtils.isEmpty(putQuoteList)) {
@@ -793,9 +805,16 @@ public class Strategy32 {
         Map<String, String> optionToFirstMap = GetAggregateImpliedVolatility.dateToFirstIvTimeMap.get(date);
         if (MapUtils.isNotEmpty(optionToFirstMap)) {
             String firstDatetime = optionToFirstMap.get(callCode);
+            if (StringUtils.isBlank(firstDatetime)) {
+                return "empty";
+            }
             LocalDateTime firstTime = LocalDateTime.parse(firstDatetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             LocalDateTime openTime = firstTime.withMinute(30).withSecond(0);
             sec = (int) ChronoUnit.SECONDS.between(openTime, firstTime);
+        }
+        if (sec < 0) {
+            System.out.println("illegal firsttime. " + call);
+            return "empty";
         }
         for (int i = sec; i < sec + 1; i++) {
             Long openSeconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
@@ -824,46 +843,49 @@ public class Strategy32 {
             putOpen = calPutOpen;
         }
         if (callOpen < 0.1 || putOpen < 0.1) {
-            //            return "empty";
+            return "empty";
         }
+        boolean stopLoss = true;
+        //        boolean stopLoss = false;
         List<String> list = Lists.newArrayList();
         String result = "";
-        //        for (int i = 60; i < dayAllSeconds.size() - 60; i++) {
-        //            Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
-        //            Double callClose = callTradePriceMap.get(seconds);
-        //            Double putClose = putTradePriceMap.get(seconds);
-        //            if (callClose == 0 || putClose == 0) {
-        //                continue;
-        //            }
-        //            double callDiff = BigDecimal.valueOf(callClose - callOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        //            double putDiff = BigDecimal.valueOf(putClose - putOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        //            double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        //            double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        //
-        //            String sellTime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        //            String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        //            //            list.add(result);
-        //            //            System.out.println(result);
-        //            if (diffRatio < -40) {
-        //                result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
-        //                return result;
-        //            }
-        //            if (i <= 10800 && i >= 120) {
-        //                if (diffRatio > 20) {
-        //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
-        //                    return result;
-        //                } else
-        //                    if (diffRatio < -30) {
-        //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
-        //                    return result;
-        //                }
-        //            } else if (i > 10800) {
-        //                if (diffRatio < -10 || diffRatio > 10) {
-        //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
-        //                    return result;
-        //                }
-        //            }
-        //        }
+        if (stopLoss) {
+            for (int i = sec; i < dayAllSeconds.size() - 60; i++) {
+                Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
+                Double callClose = callTradePriceMap.get(seconds);
+                Double putClose = putTradePriceMap.get(seconds);
+                if (callClose == 0 || putClose == 0) {
+                    continue;
+                }
+                double callDiff = BigDecimal.valueOf(callClose - callOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double putDiff = BigDecimal.valueOf(putClose - putOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+                String sellTime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                //            list.add(result);
+                //            System.out.println(result);
+                if (diffRatio < -40) {
+                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                    return result;
+                }
+                if (i <= 10800 && i >= 120) {
+                    if (diffRatio > 20) {
+                        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                        return result;
+                    } else if (diffRatio < -20) {
+                        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                        return result;
+                    }
+                } else if (i > 10800) {
+                    if (diffRatio < -20 || diffRatio > 10) {
+                        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                        return result;
+                    }
+                }
+            }
+        }
         //                System.out.println(result);
         //        BaseUtils.writeFile(Constants.USER_PATH + "optionData/trade/" + year + "/" + date + "_" + stock, list);
         Long sellSeconds = Long.valueOf(dayAllSeconds.get(dayAllSeconds.size() - 60)) / 1000000000;
@@ -982,6 +1004,7 @@ public class Strategy32 {
                             optionDaily = requestOptionDailyList(httpClient, requestDate, optionCode);
                             synchronized (stockOptionDailyMap) {
                                 writeOptionDaily(optionDaily, optionCode, requestDate);
+                                refreshOptionDailyMap(optionDaily, optionCode, requestDate);
                             }
                             System.out.println("get " + optionCode + " " + requestDate);
                         } else {
@@ -1331,7 +1354,7 @@ public class Strategy32 {
         // 如果近三天的iv都小于0.5则不交易
         int times2 = 3;
         for (int i = 0; i < ivList.size() && times2 > 0; i++, times2--) {
-            if (ivList.get(i) > 0.5) {
+            if (ivList.get(i) > 0.5) { // todo  临时改成0.4方便测试
                 break;
             }
         }
@@ -1342,12 +1365,12 @@ public class Strategy32 {
         // 如果近一天iv小于0.8则不交易
         Double ivValue = ivList.get(0);
         if (ivValue < 0.8) {
-            return false;
+            //            return false;
         }
 
         // 如果近二天比近三天小则不交易
         if (ivList.get(1) < ivList.get(2)) {
-//            return false;
+            //            return false;
         }
 
         return result;
@@ -1368,7 +1391,7 @@ public class Strategy32 {
         //        loadHistoricalHighVolatility();
         //        calHistoricalHighVolatility();
         //                calCallWithProtect(); // 计算裸买和带保护的收益
-        getOptionQuoteList(); // 获取已过滤出的代码的报价，用于计算止损
+        //        getOptionQuoteList(); // 获取已过滤出的代码的报价，用于计算止损
 
         //        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/stockOpenDate");
         //        for (String line : lines) {
@@ -1398,5 +1421,8 @@ public class Strategy32 {
         //            BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionDaily/" + stock, linesMap.get(stock));
         //        }
 
+        //        boolean b1 = canTradeForIv(Lists.newArrayList(0.469416, 0.475573, 0.518379, 0.497572, 0.535959));
+        //        boolean b2 = canTradeForIv(Lists.newArrayList(0.444911, 0.51388, 0.49832, 0.482975, 0.580102));
+        //        System.out.println(b1&&b2);
     }
 }
