@@ -620,8 +620,19 @@ public class Strategy33 {
             String expirationDate = date;
             if (weekSet.contains(date)) {
                 //                continue;
-                expirationDate = LocalDate.parse(date, Constants.DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
+                int i = 0;
+                for (; i < weekStrArray.length; i++) {
+                    if (StringUtils.equals(date, weekStrArray[i])) {
+                        i++;
+                        break;
+                    }
+                }
+                if (i >= weekStrArray.length) {
+                    continue;
+                }
+                expirationDate = weekStrArray[i];
             }
+            expirationDate = LocalDate.parse(expirationDate, Constants.DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
 
             if (!date.equals("2023-10-06")) {
                 //                continue;
