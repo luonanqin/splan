@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -79,10 +80,10 @@ public class Strategy32 {
     //        public static Set<String> weekSet = Sets.newHashSet("2023-01-06", "2023-01-13", "2023-01-20", "2023-01-27", "2023-02-03", "2023-02-10", "2023-02-17", "2023-02-24", "2023-03-03", "2023-03-10", "2023-03-17", "2023-03-24", "2023-03-31", "2023-04-06", "2023-04-14", "2023-04-21", "2023-04-28", "2023-05-05", "2023-05-12", "2023-05-19", "2023-05-26", "2023-06-02", "2023-06-09", "2023-06-16", "2023-06-23", "2023-06-30", "2023-07-07", "2023-07-14", "2023-07-21", "2023-07-28", "2023-08-04", "2023-08-11", "2023-08-18", "2023-08-25", "2023-09-01", "2023-09-08", "2023-09-15", "2023-09-22", "2023-09-29", "2023-10-06", "2023-10-13", "2023-10-20", "2023-10-27", "2023-11-03", "2023-11-10", "2023-11-17", "2023-11-24", "2023-12-01", "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29");
     //        public static int year = 2023;
     /* 2022 */
-    //        public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
-    //        public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
-    //        public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
-    //        public static int year = 2022;
+    //            public static int[] weekArray = new int[] { 20220107, 20220114, 20220121, 20220128, 20220204, 20220211, 20220218, 20220225, 20220304, 20220311, 20220318, 20220325, 20220401, 20220408, 20220414, 20220422, 20220429, 20220506, 20220513, 20220520, 20220527, 20220603, 20220610, 20220617, 20220624, 20220701, 20220708, 20220715, 20220722, 20220729, 20220805, 20220812, 20220819, 20220826, 20220902, 20220909, 20220916, 20220923, 20220930, 20221007, 20221014, 20221021, 20221028, 20221104, 20221111, 20221118, 20221125, 20221202, 20221209, 20221216, 20221223, 20221230 };
+    //            public static String[] weekStrArray = new String[] { "2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30" };
+    //            public static Set<String> weekSet = Sets.newHashSet("2022-01-07", "2022-01-14", "2022-01-21", "2022-01-28", "2022-02-04", "2022-02-11", "2022-02-18", "2022-02-25", "2022-03-04", "2022-03-11", "2022-03-18", "2022-03-25", "2022-04-01", "2022-04-08", "2022-04-14", "2022-04-22", "2022-04-29", "2022-05-06", "2022-05-13", "2022-05-20", "2022-05-27", "2022-06-03", "2022-06-10", "2022-06-17", "2022-06-24", "2022-07-01", "2022-07-08", "2022-07-15", "2022-07-22", "2022-07-29", "2022-08-05", "2022-08-12", "2022-08-19", "2022-08-26", "2022-09-02", "2022-09-09", "2022-09-16", "2022-09-23", "2022-09-30", "2022-10-07", "2022-10-14", "2022-10-21", "2022-10-28", "2022-11-04", "2022-11-11", "2022-11-18", "2022-11-25", "2022-12-02", "2022-12-09", "2022-12-16", "2022-12-23", "2022-12-30");
+    //            public static int year = 2022;
     public static Map<String/* stock */, Map<String/* date */, Map<String/* optionCode */, OptionDaily>>> stockOptionDailyMap = Maps.newHashMap();
     public static Map<String/* stock */, Map<Integer/* 档位 */, Double/* 振幅均值 */>> stockToVolatilityMap = Maps.newHashMap();
     public static Map<String/* date */, String/* lastDate */> dateMap = Maps.newHashMap(); // 当日和前日的映射
@@ -350,6 +351,156 @@ public class Strategy32 {
         return left; // 未找到目标值，取离他最近的大值
     }
 
+    public static NearlyOptionData calOpenStrikePrice(String date, String stock, double open) throws Exception {
+        String expirationDate = "";
+        LocalDate day = LocalDate.parse(date, Constants.DB_DATE_FORMATTER);
+        for (int i = 0; i < weekStrArray.length; i++) {
+            String week = weekStrArray[i];
+            LocalDate weekDay = LocalDate.parse(week, Constants.DB_DATE_FORMATTER);
+            if (weekDay.isAfter(day)) {
+                expirationDate = week;
+                break;
+            }
+        }
+        if (StringUtils.isBlank(expirationDate)) {
+            return null;
+        }
+
+        String chainDir = Constants.USER_PATH + "optionData/optionChain/" + stock + "/";
+        String filePath = chainDir + date;
+        List<String> callAndPuts = BaseUtils.readFile(filePath);
+
+        if (CollectionUtils.isEmpty(callAndPuts)) {
+            CloseableHttpClient httpClient = queue.take();
+            String url = String.format("https://api.polygon.io/v3/reference/options/contracts?contract_type=call&"
+              + "underlying_ticker=%s&expired=%s&expiration_date=%s&order=asc&limit=100&sort=strike_price"
+              + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", stock, true, expirationDate);
+            HttpGet getMethod = new HttpGet(url);
+            try {
+                while (true) {
+                    CloseableHttpResponse execute = httpClient.execute(getMethod);
+                    InputStream content = execute.getEntity().getContent();
+                    OptionContractsResp resp = JSON.parseObject(content, OptionContractsResp.class);
+                    for (OptionContracts chain : resp.getResults()) {
+                        String callCode = chain.getTicker();
+                        String putCode = BaseUtils.getOptionPutCode(callCode);
+                        callAndPuts.add(callCode + "|" + putCode);
+                    }
+                    String nextUrl = resp.getNext_url();
+                    if (StringUtils.isBlank(nextUrl)) {
+                        break;
+                    } else {
+                        getMethod.releaseConnection();
+                        getMethod = new HttpGet(nextUrl + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY");
+                    }
+                }
+
+                BaseUtils.createDirectory(chainDir);
+                BaseUtils.writeFile(filePath, callAndPuts);
+            } catch (Exception e) {
+                System.out.println("grabOptionChain error. url=" + url);
+            } finally {
+                getMethod.releaseConnection();
+                queue.offer(httpClient);
+            }
+        }
+
+        // 开盘价附近的call和put
+        if (CollectionUtils.isEmpty(callAndPuts)) {
+//            System.out.println("there is no call and put for open price. stock=" + stock);
+            return null;
+        }
+        String openPrice = String.format("%.2f", open);
+        int decade = (int) open;
+        int count = String.valueOf(decade).length();
+
+        int standardCount = count + 3;
+        String priceStr = openPrice.replace(".", "");
+        int lastCount = standardCount - priceStr.length();
+        int digitalPrice = Integer.valueOf(priceStr) * (int) Math.pow(10, lastCount);
+
+        // 计算开盘价和行权价的差值
+        int priceDiff = Integer.MAX_VALUE;
+        String callOption = "";
+        List<String> callList = Lists.newArrayList();
+        for (int i = 0; i < callAndPuts.size(); i++) {
+            String callAndPut = callAndPuts.get(i);
+            String code = callAndPut.split("\\|")[0];
+            int strikePrice = Integer.parseInt(code.substring(code.length() - 8));
+            callList.add(code);
+
+            int tempDiff = Math.abs(strikePrice - digitalPrice);
+            if (priceDiff >= tempDiff) {
+                priceDiff = tempDiff;
+                if (i + 1 == callAndPuts.size()) {
+                    break;
+                }
+                callOption = code;
+            } else {
+                break;
+            }
+        }
+        if (StringUtils.isBlank(callOption)) {
+            System.out.println(stock + " has no option to calculate");
+            return null;
+        }
+
+        Collections.sort(callList, (o1, o2) -> {
+            int strikePrice1 = Integer.parseInt(o1.substring(o1.length() - 8));
+            int strikePrice2 = Integer.parseInt(o2.substring(o2.length() - 8));
+            return strikePrice1 - strikePrice2;
+        });
+        String lower = "", higher = "";
+        for (int i = 1; i < callList.size() - 1; i++) {
+            if (StringUtils.equalsIgnoreCase(callList.get(i), callOption)) {
+                lower = callList.get(i - 1);
+                higher = callList.get(i + 1);
+            }
+        }
+        if (StringUtils.isAnyBlank(higher, lower)) {
+            System.out.println("there is no higher and lower option to calculate option. stock=" + stock);
+            return null;
+        }
+
+        int lowerPrice = Integer.valueOf(lower.substring(lower.length() - 8));
+        int higherPrice = Integer.valueOf(higher.substring(higher.length() - 8));
+
+        int strikePrice = Integer.parseInt(callOption.substring(callOption.length() - 8));
+        String upStrike = "";
+        String downStrike = "";
+        if (digitalPrice != strikePrice) {
+            if (digitalPrice < strikePrice) {
+                upStrike = callOption;
+                downStrike = lower;
+                double downDiffRatio = (double) (strikePrice - digitalPrice) / (double) (strikePrice - lowerPrice);
+                if (downDiffRatio < 0.25) {
+                    upStrike = higher;
+                }
+            } else {
+                upStrike = higher;
+                downStrike = callOption;
+                double downDiffRatio = (double) (digitalPrice - strikePrice) / (double) (higherPrice - strikePrice);
+                if (downDiffRatio < 0.25) {
+                    downStrike = lower;
+                }
+            }
+        } else if (digitalPrice == strikePrice) {
+            upStrike = higher;
+            downStrike = lower;
+        }
+
+        String call = upStrike;
+        String put = BaseUtils.getOptionPutCode(downStrike);
+
+        NearlyOptionData nearlyOptionData = new NearlyOptionData();
+        nearlyOptionData.setOpenPrice(open);
+        nearlyOptionData.setDate(date);
+        nearlyOptionData.setStock(stock);
+        nearlyOptionData.setOutPriceCallOptionCode_1(call);
+        nearlyOptionData.setOutPricePutOptionCode_1(put);
+        return nearlyOptionData;
+    }
+
     public static Map<String/* date */, List<NearlyOptionData>> calOpenStrikePriceRatioMap() throws Exception {
         Map<String, List<NearlyOptionData>> dateToOpenStrikePriceRatioMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::dateToInt));
         Map<String, String> nearlyOptionFileMap = BaseUtils.getFileMap(Constants.USER_PATH + "optionData/nearlyOpenOption/" + year);
@@ -386,13 +537,23 @@ public class Strategy32 {
                 }
                 int strikePrice = Integer.parseInt(temp.substring(i));
                 int strikePriceLength = temp.substring(i).length();
-                StringBuffer openPriceSb = new StringBuffer(openPrice.replace(".", ""));
-                while (openPriceSb.length() < strikePriceLength) {
-                    openPriceSb.append("0");
-                }
-                int openPriceDigital = Integer.valueOf(openPriceSb.toString());
+                //                StringBuffer openPriceSb = new StringBuffer(openPrice.replace(".", ""));
+                //                while (openPriceSb.length() < strikePriceLength) {
+                //                    openPriceSb.append("0");
+                //                }
+                //                int openPriceDigital = Integer.valueOf(openPriceSb.toString());
+                int decade = Double.valueOf(openPrice).intValue();
+                int count = String.valueOf(decade).length();
+                int standardCount = count + 3;
+                String priceStr = openPrice.replace(".", "");
+                int lastCount = standardCount - priceStr.length();
+                int openPriceDigital = Integer.valueOf(priceStr) * (int) Math.pow(10, lastCount);
                 double priceDiffRatio = Math.abs(1 - (double) openPriceDigital / (double) strikePrice);
                 String optionPrefix = optionCode.substring(0, index + i);
+
+                //                if (openPriceDigital != openPriceDigital2) {
+                //                    System.out.println(openPrice + " " + optionCode);
+                //                }
 
                 // 计算行权价前后各两档的虚值期权代码
                 // 改进后算法
@@ -1384,6 +1545,7 @@ public class Strategy32 {
 
         init();
 
+        calOpenStrikePrice("2024-02-05", "NVDA", 68.225);
         //        getHasWeekOptionStock(); // 获取有周期权的股票
         //        getEqualsStrikePriceKline(); // 获取某个时间范围内，股票开盘价对应的最近行权价代码
         //                calStraddleData(); // 获取双开期权的optionDaily数据

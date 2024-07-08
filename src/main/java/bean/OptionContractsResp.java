@@ -10,4 +10,5 @@ public class OptionContractsResp {
     private String request_id;
     private List<OptionContracts> results;
     private String status;
+    private String next_url;
 }

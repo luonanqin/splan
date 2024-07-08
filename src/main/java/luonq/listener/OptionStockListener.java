@@ -88,8 +88,8 @@ public class OptionStockListener {
             int strikePrice = Integer.parseInt(code.substring(code.length() - 8));
             callList.add(code);
 
-            int tempDiff = strikePrice - digitalPrice;
-            if (tempDiff >= 0 && priceDiff > tempDiff) {
+            int tempDiff = Math.abs(strikePrice - digitalPrice);
+            if (priceDiff >= tempDiff) {
                 priceDiff = tempDiff;
                 if (i + 1 == callAndPuts.size()) {
                     break;
@@ -106,21 +106,49 @@ public class OptionStockListener {
             int strikePrice2 = Integer.parseInt(o2.substring(o2.length() - 8));
             return strikePrice1 - strikePrice2;
         });
-        String lowerCall = "", higherCall = "";
+        String lower = "", higher = "";
         for (int i = 1; i < callList.size() - 1; i++) {
             if (StringUtils.equalsIgnoreCase(callList.get(i), callOption)) {
-                lowerCall = callList.get(i - 1);
-                higherCall = callList.get(i + 1);
+                lower = callList.get(i - 1);
+                higher = callList.get(i + 1);
             }
         }
-        log.info("{} open={}\tcallOption={}\thigherCall={}\tlowerCall={}", stock, open, callOption, higherCall, lowerCall);
-
-        if (StringUtils.isAnyBlank(higherCall, lowerCall)) {
-            log.info("there is no higherCall and lowerCall to trade. stock={}", stock);
+        if (StringUtils.isAnyBlank(higher, lower)) {
+            log.info("there is no higher and lower to trade. stock={}", stock);
             return;
         }
-        String call = higherCall;
-        String put = BaseUtils.getOptionPutCode(lowerCall);
+
+        int lowerPrice = Integer.valueOf(lower.substring(lower.length() - 8));
+        int higherPrice = Integer.valueOf(higher.substring(higher.length() - 8));
+
+        int strikePrice = Integer.parseInt(callOption.substring(callOption.length() - 8));
+        String upStrike = "";
+        String downStrike = "";
+        if (digitalPrice != strikePrice) {
+            if (digitalPrice < strikePrice) {
+                upStrike = callOption;
+                downStrike = lower;
+                double downDiffRatio = (double) (strikePrice - digitalPrice) / (double) (strikePrice - lowerPrice);
+                if (downDiffRatio < 0.25) {
+                    upStrike = higher;
+                }
+            } else {
+                upStrike = higher;
+                downStrike = callOption;
+                double downDiffRatio = (double) (digitalPrice - strikePrice) / (double) (higherPrice - strikePrice);
+                if (downDiffRatio < 0.25) {
+                    downStrike = lower;
+                }
+            }
+        } else if (digitalPrice == strikePrice) {
+            upStrike = higher;
+            downStrike = lower;
+        }
+        log.info("{} open={}\tcallOption={}\tupStrike={}\tdownStrike={}", stock, open, callOption, upStrike, downStrike);
+
+
+        String call = upStrike;
+        String put = BaseUtils.getOptionPutCode(downStrike);
 
         List<Double> callIvList = LoadOptionTradeData.optionToIvListMap.get(call);
         List<Double> putIvList = LoadOptionTradeData.optionToIvListMap.get(put);
