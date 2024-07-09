@@ -81,7 +81,14 @@ public class GetHistoricalDaily {
       "ABB", "QTT", "IMRA", "CLAA", "AEHA", "SCAQ", "AVCT", "STET", "VLAT", "PACX", "CLXT", "ROC", "MICT", "HTGM", "PRVB", "AVEO",
       "BRIV", "HSAQ", "ISO", "TETC", "SKYA", "AVYA", "BRMK", "ATY", "AMV", "RAM", "CDAK", "TOAC", "QUMU", "AUD", "VLON", "EBAC", "HCNE",
       "AUY", "PSPC", "IVC", "MAXR", "PAYA", "DGNU", "AGFS", "RFP", "OPNT", "INKA", "ITQ", "APN", "STAR", "LOKM", "ALR", "BIOT", "TWNI",
-      "VLTA", "LGAC", "VLDR", "AGGR", "SCMA", "VLNS");
+      "VLTA", "LGAC", "VLDR", "AGGR", "SCMA", "VLNS", "CMRA", "OCFCP", "NMRD", "HLGN", "BSBK", "SLGC", "AGRX", "RIBT", "BSGM", "FFBW", "BBIG", "VMCA",
+      "FNVT", "TGAA", "NVTA", "NESR", "CNDA", "MSVB", "PLAO", "LTRPA", "LTRPB", "USDP", "CWBR", "TGVC", "GRTX", "MCAA", "BCEL", "ELOX", "PUCK", "XTLB",
+      "ZIVO", "SEAC", "THCP", "BLCM", "BTTX", "ELYS", "FXLV", "BLEU", "LIBY", "COMS", "THMO", "RBKB", "CORR", "BLPH", "EMLD", "SVVC", "WINV", "ARDS", "DSAQ",
+      "UTRS", "PEGR", "EVLO", "NXTP", "MDRX", "PETV", "CPTK", "ASAP", "FIAC", "ASCB", "TRIS", "SONX", "ASPU", "HGEN", "FRBK", "BNIX", "POCI", "PFTA", "EFTR",
+      "GMBL", "LTCH", "GMFI", "WTER", "ATIF", "PORT", "NRAC", "LCFY", "MOBQ", "ISUN", "CRGE", "PXMD", "EXPR", "CALA", "HHLA", "HHGC", "REED", "FSEA", "RENE",
+      "PPHP", "MOTS", "MGAM", "KRBP", "GHG", "ALSA", "KACL", "JWSM", "OMQS", "TCON", "BXRX", "PPYA", "TLGY", "VAPO", "SIOX", "VAXX", "CSTA", "NSTB", "NSTC",
+      "SRAX", "AVHI", "HALL", "OFED", "BYNO", "YTEN", "KBNT", "IVCB", "CCTS", "AFIB", "CLOE", "PROC", "SBIG", "INAQ", "SBNY", "CUEN", "MRAI", "TETE", "CLVR",
+      "MITA", "HSTO", "FEDU", "EBET", "CURO", "GHIX", "MAQC", "PBLA", "MARK", "FNCH", "MAYS", "TWLV");
 
     public static List<StockKLine> getHistoricalDaily(String stock, List<String> addDate, HttpClient httpClient) {
         List<StockKLine> list = Lists.newArrayList();
