@@ -78,7 +78,7 @@ public class GrabOptionTradeData {
             init();
             calLastTradeDate();
             calCurrentTradeDate();
-//            loadWillEarningStock();
+            //            loadWillEarningStock();
             loadPennyStock();
             loadLastdayClose();
             grabOptionChain();
@@ -370,6 +370,19 @@ public class GrabOptionTradeData {
                 if (optionDaily.getVolume() < 100) {
                     continue;
                 }
+
+                // 如果抓取的数据包含要抓取的交易日，并且iv!=-2，则不用再抓
+                boolean hasGrab = false;
+                List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/IV/" + stock + "/" + optionCode.substring(2));
+                for (String line : lines) {
+                    if (line.contains(lastTradeDate) && !line.contains("-2")) {
+                        hasGrab = true;
+                    }
+                }
+                if (hasGrab) {
+                    continue;
+                }
+
                 optionCodeDateMap.put(optionCode, currentTradeDate);
             }
             GetDailyImpliedVolatility.getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap, lastTradeDate);
