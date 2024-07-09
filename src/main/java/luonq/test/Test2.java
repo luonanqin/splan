@@ -34,7 +34,7 @@ public class Test2 {
             List<Double> doubles = dateToCall.get(date);
             Double avgRatio = doubles.stream().collect(Collectors.averagingDouble(d -> d));
             init = init * (1 + avgRatio / 100);
-            System.out.println(date + "\t" + init);
+            System.out.println(date + "\t" + (int)init);
         }
     }
 
@@ -46,7 +46,7 @@ public class Test2 {
         double iit = 10000;
         for (int i = 0; i < week; i++) {
             iit = iit * 1.1;
-            //                        System.out.println(i + 1 + "\t" + iit);
+            //            System.out.println(i + 1 + "\t" + iit);
         }
 
         List<Double> list = Lists.newArrayList();

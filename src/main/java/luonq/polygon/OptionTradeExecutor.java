@@ -4,6 +4,7 @@ import bean.NodeList;
 import bean.OptionRT;
 import bean.OptionRTResp;
 import bean.OrderFill;
+import bean.StockEvent;
 import bean.StockPosition;
 import com.alibaba.fastjson.JSON;
 import com.futu.openapi.FTAPI;
@@ -231,7 +232,7 @@ public class OptionTradeExecutor {
                 hasBoughtOrder.add(stock);
             }
             if (canTradeStocks.size() == hasBoughtOrder.size()) {
-                //                RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
+                log.info("all stock has bought order: {}. stop buy order", canTradeStocks);
                 break;
             }
         }
@@ -286,6 +287,7 @@ public class OptionTradeExecutor {
             return;
         }
 
+        long openTime = client.getOpenTime();
         HttpClient httpClient = new HttpClient();
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -327,8 +329,11 @@ public class OptionTradeExecutor {
                             showCount = 0;
                         }
                     }
+                    if (curent > openTime) {
+                        timer.cancel();
+                    }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("getRealTimeIV error. url={}", url, e);
                 }
             }
         }, 0, 2000);
@@ -386,13 +391,6 @@ public class OptionTradeExecutor {
             } catch (InterruptedException e) {
                 log.error("ignore1", e);
             }
-
-            // 11分钟后监听结束直接返回
-            //            long current = System.currentTimeMillis();
-            //            if (current - openTime >= STOP_MONITORY_BUY_ORDER_TIME_MILLI) {
-            //                log.info("time is over 11min. stop monitor buy order");
-            //                return;
-            //            }
 
             if (canTradeStocks.size() == hasBoughtSuccess.size()) {
                 log.info("all stock has bought: {}. stop monitor buy order", canTradeStocks);
@@ -452,20 +450,6 @@ public class OptionTradeExecutor {
                 }
             }
 
-            //                // 12分钟后有买入成交，当卖出订单数量等于买入成交数量时，监听结束直接返回
-            //                if (current - openTime >= STOP_MONITORY_SELL_ORDER_TIME_MILLI) {
-            //                    if (hasSoldOrder.size() == hasBoughtSuccess.size()) {
-            //                        log.info("time is over 12min. all buy order has been sold");
-            //                        return;
-            //                    }
-            //                }
-            //            } else {
-            //                // 12分钟后没有买入成交，监听结束直接返回
-            //                if (current - openTime >= STOP_MONITORY_SELL_ORDER_TIME_MILLI) {
-            //                    log.info("time is over 12min. there is no buy order. stop monitor sell order ");
-            //                    return;
-            //                }
-            //            }
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -497,14 +481,17 @@ public class OptionTradeExecutor {
         long stopGainTime = openTime + STOP_GAIN_INTERVAL_TIME_LINE;
         long cur = System.currentTimeMillis();
         long delay = monitorTime - cur;
-        if (cur > monitorTime) {
+        if (cur > monitorTime || delay > STOP_LOSS_GAIN_INTERVAL_TIME_MILLI) {
             delay = 0;
         }
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
+            int showtimes = 20, showCount = 0;
+
             @Override
             public void run() {
+                showCount++;
                 long currentTime = System.currentTimeMillis();
                 for (String stock : hasBoughtSuccess) {
                     if (hasSoldOrder.contains(stock)) {
@@ -550,7 +537,7 @@ public class OptionTradeExecutor {
                     double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen)).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     double callCount = callPosition.getCanSellQty();
                     double putCount = putPosition.getCanSellQty();
-                    if ((currentTime / 1000) % 10 == 0) {
+                    if (showCount == showtimes) {
                         log.info("monitor loss and gain. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
                           call, callOpen, callBidPrice, callAskPrice, callMidPrice, put, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
                     }
@@ -562,7 +549,7 @@ public class OptionTradeExecutor {
                      * 4.如果未到止盈线，收盘前会卖出
                      * 这么做的目的是三小时前交易活跃波动较大，所以止盈可以设置高一些。三小时之后则尽快止盈退出避免损失
                      */
-                    if (diffRatio < STOP_LOSS_RATIO || (currentTime < stopGainTime && diffRatio > STOP_GAIN_RATIO_1) || (currentTime > stopGainTime && diffRatio > STOP_GAIN_RATIO_2)) {
+                    if (diffRatio < STOP_LOSS_RATIO || (currentTime < stopGainTime && diffRatio > STOP_GAIN_RATIO_1) || (currentTime > stopGainTime && diffRatio > STOP_GAIN_RATIO_2) || currentTime > closeTime) {
                         long sellCallOrderId = tradeApi.placeNormalSellOrder(call, callCount, callMidPrice);
                         long sellPutOrderId = tradeApi.placeNormalSellOrder(put, putCount, putMidPrice);
 
@@ -580,22 +567,19 @@ public class OptionTradeExecutor {
                           call, callOpen, callBidPrice, callAskPrice, callMidPrice, put, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio, sellCallOrderId, sellPutOrderId);
                     }
                 }
-                // 11分钟后没有买入成功的，监听结束直接返回
-                //                    if (currentTime - openTime > STOP_MONITORY_BUY_ORDER_TIME_MILLI && hasBoughtSuccess.isEmpty()) {
-                //                        log.info("time is over 11min. there is no buy trade to monitor stop loss.");
-                //                        return;
-                //                    }
+
+                if (showCount == showtimes) {
+                    showCount = 0;
+                }
 
                 if (currentTime > closeTime || canTradeStocks.size() == hasSoldSuccess.size()) {
-                    // 反注册报价监听
-                    RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         log.error("ignore4 ", e);
                     }
                     log.info("time is close to the close time or all stock has sold. stop monitor");
-                    return; // todo  结束了如何停止timer
+                    timer.cancel();
                 }
             }
         }, delay, 500);
@@ -616,41 +600,37 @@ public class OptionTradeExecutor {
         }
     }
 
+    public Map<String, StockPosition> getAllPosition() {
+        return tradeApi.getPositionMap(null);
+    }
+
+    public void reSendOpenPrice() {
+        List<StockEvent> stockEvents = ReadWriteOptionTradeInfo.readStockOpenPrice();
+        for (StockEvent stockEvent : stockEvents) {
+            try {
+                optionStockListener.cal(stockEvent.getStock(), stockEvent.getPrice());
+            } catch (Exception e) {
+                log.error("resend stock event error. event={}", stockEvent, e);
+            }
+        }
+    }
+
     public void restart() {
-        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(null);
-        Map<String/* stock */, String/* call */> stockToCallMap = Maps.newHashMap();
-        Map<String/* stock */, String/* put */> stockToPutMap = Maps.newHashMap();
-        Set<String> stocks = Sets.newHashSet();
-        for (String code : positionMap.keySet()) {
-            String stock = "";
-            for (int i = 0; i < code.length(); i++) {
-                char c = code.charAt(i);
-                if (c == '2') {
-                    stock = code.substring(0, i);
-                    stocks.add(stock);
-                    break;
-                }
-            }
-            if (StringUtils.isBlank(stock)) {
-                continue;
-            }
+        hasBoughtOrder = ReadWriteOptionTradeInfo.readHasBoughtOrder();
+        hasBoughtSuccess = ReadWriteOptionTradeInfo.readHasBoughtSuccess();
+        hasSoldOrder = ReadWriteOptionTradeInfo.readHasSoldOrder();
+        hasSoldSuccess = ReadWriteOptionTradeInfo.readHasSoldSuccess();
+        buyOrderIdMap = ReadWriteOptionTradeInfo.readBuyOrderId();
+        sellOrderIdMap = ReadWriteOptionTradeInfo.readSellOrderId();
+        buyOrderTimeMap = ReadWriteOptionTradeInfo.readBuyOrderTime();
+        sellOrderTimeMap = ReadWriteOptionTradeInfo.readSellOrderTime();
+        orderCountMap = ReadWriteOptionTradeInfo.readOrderCount();
 
-            String optionTypeStr = code.substring(stock.length() + 6);
-            if (StringUtils.startsWithIgnoreCase(optionTypeStr, "C")) {
-                stockToCallMap.put(stock, code);
-            } else {
-                stockToPutMap.put(stock, code);
-            }
+        try {
+            beginTrade();
+        } catch (InterruptedException e) {
+            log.error("re begin trade error", e);
         }
-        log.info("current position: {}", positionMap);
-        for (String stock : stocks) {
-            if (stockToCallMap.containsKey(stock) && stockToPutMap.containsKey(stock)) {
-                hasBoughtSuccess.add(stock);
-                canTradeOptionForFutuMap.put(stock, stockToCallMap.get(stock) + "|" + stockToPutMap.get(stock));
-            }
-        }
-
-        stopLossAndGain();
     }
 
     public void invalidTradeStock(String stock) {

@@ -36,7 +36,7 @@ public class LoadOptionTradeData {
     private ReadFromDB readFromDB;
 
     public static Map<String/* date */, Double/* rate */> riskFreeRateMap = Maps.newHashMap();
-    public static List<String> earningStocks = Lists.newArrayList();
+    public static List<String> stocks = Lists.newArrayList();
     public static Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
     public static Map<String/* optionCode */, List<Double>/* historical iv */> optionToIvListMap = Maps.newHashMap();
     public static Map<String/* stock */, List<String>/* call and put optioncode */> stockToOptionCodeMap = Maps.newHashMap();
@@ -50,7 +50,8 @@ public class LoadOptionTradeData {
             calLastTradeDate();
             calCurrentTradeDate();
             loadRiskFreeRate();
-            loadWillEarningStock();
+            //            loadWillEarningStock();
+            loadPennyStock();
             loadLastdayClose();
             loadOptionChain();
             loadHistoricalIv();
@@ -79,7 +80,7 @@ public class LoadOptionTradeData {
         }
     }
 
-    public void calCurrentTradeDate(){
+    public void calCurrentTradeDate() {
         TradeCalendar nextTradeCalendar = readFromDB.getNextTradeCalendar(lastTradeDate);
         currentTradeDate = nextTradeCalendar.getDate();
     }
@@ -99,8 +100,13 @@ public class LoadOptionTradeData {
         }
     }
 
+    public void loadPennyStock() {
+        stocks = BaseUtils.getPennyOptionStock().stream().collect(Collectors.toList());
+        log.info("penny stocks: {}", stocks);
+    }
+
     // 加载接下来三天内发布财报的有周期权的股票
-    public void loadWillEarningStock() throws Exception {
+    public void loadWillEarningStock() {
         LocalDate today = LocalDate.now();
         String next1day = "";
         String next2day = "";
@@ -132,28 +138,24 @@ public class LoadOptionTradeData {
         next1dayStocks.forEach(s -> nextdayStocks.add(s));
         next2dayStocks.forEach(s -> nextdayStocks.add(s));
         next3dayStocks.forEach(s -> nextdayStocks.add(s));
-//        nextdayStocks.clear(); // todo 测试用，要删
-//        nextdayStocks.add("AAPL"); // todo 测试用，要删
+        //        nextdayStocks.clear(); // todo 测试用，要删
+        //        nextdayStocks.add("AAPL"); // todo 测试用，要删
 
         Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
         Collection<String> intersection = CollectionUtils.intersection(weekOptionStock, nextdayStocks);
-        earningStocks = intersection.stream().collect(Collectors.toList());
+        stocks = intersection.stream().collect(Collectors.toList());
 
-        // todo 测试非财报日使用
-        earningStocks.clear();
-        earningStocks = BaseUtils.getWeekOptionStock().stream().collect(Collectors.toList());
-
-        log.info("will earning stocks: {}", earningStocks);
+        log.info("will earning stocks: {}", stocks);
     }
 
     // 加载前一天的收盘价
     public void loadLastdayClose() throws Exception {
-        if (CollectionUtils.isEmpty(earningStocks)) {
+        if (CollectionUtils.isEmpty(stocks)) {
             return;
         }
 
         int year = Integer.parseInt(lastTradeDate.substring(0, 4));
-        List<Total> latestData = readFromDB.batchGetStockData(year, lastTradeDate, earningStocks);
+        List<Total> latestData = readFromDB.batchGetStockData(year, lastTradeDate, stocks);
 
         stockToLastdayCloseMap = latestData.stream().map(d -> d.toKLine()).collect(Collectors.toMap(d -> d.getCode(), d -> d.getClose()));
 
@@ -162,11 +164,11 @@ public class LoadOptionTradeData {
 
     // 加载股票对应的当周call和put期权链
     public void loadOptionChain() throws Exception {
-        if (CollectionUtils.isEmpty(earningStocks)) {
+        if (CollectionUtils.isEmpty(stocks)) {
             return;
         }
 
-        for (String stock : earningStocks) {
+        for (String stock : stocks) {
             List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionChain/" + stock + "/" + currentTradeDate);
             stockToOptionCodeMap.put(stock, lines);
         }
@@ -175,11 +177,11 @@ public class LoadOptionTradeData {
 
     // 加载期权链的历史5天IV
     public void loadHistoricalIv() throws Exception {
-        if (CollectionUtils.isEmpty(earningStocks)) {
+        if (CollectionUtils.isEmpty(stocks)) {
             return;
         }
 
-        for (String stock : earningStocks) {
+        for (String stock : stocks) {
             Map<String, String> fileMap = BaseUtils.getFileMap(Constants.USER_PATH + "optionData/IV/" + stock);
             for (String optionCode : fileMap.keySet()) {
                 String filePath = fileMap.get(optionCode);
@@ -209,11 +211,11 @@ public class LoadOptionTradeData {
 
     //  加载期权链前日的OHLC
     public void loadLastdayOHLC() throws Exception {
-        if (CollectionUtils.isEmpty(earningStocks)) {
+        if (CollectionUtils.isEmpty(stocks)) {
             return;
         }
 
-        for (String stock : earningStocks) {
+        for (String stock : stocks) {
             Map<String, Map<String, OptionDaily>> dateToOptionDailyMap = BaseUtils.loadOptionDailyMap(stock);
             if (dateToOptionDailyMap.containsKey(lastTradeDate)) {
                 optionToLastDailyMap.putAll(dateToOptionDailyMap.get(lastTradeDate));

@@ -48,7 +48,7 @@ public class OptionStockListener {
 
     // 计算开盘价波动、计算call和put、计算期权是否可交易
     public void cal(String stock, double open) throws Exception {
-        if (!LoadOptionTradeData.earningStocks.contains(stock)) {
+        if (!LoadOptionTradeData.stocks.contains(stock)) {
             return;
         }
         ReadWriteOptionTradeInfo.addStockOpenPrice(stock, open);

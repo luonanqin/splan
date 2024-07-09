@@ -49,7 +49,7 @@ public class GrabOptionTradeData {
     @Autowired
     private ReadFromDB readFromDB;
 
-    public List<String> earningStocks = Lists.newArrayList();
+    public List<String> stocks = Lists.newArrayList();
     public Map<String/* stock */, List<String>/* call and put optioncode */> stockToOptionCodeMap = Maps.newHashMap();
     public Map<String/* stock */, List<String>/* call or put optioncode */> stockToSingleOptionCodeMap = Maps.newHashMap();
     public static Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
@@ -78,7 +78,8 @@ public class GrabOptionTradeData {
             init();
             calLastTradeDate();
             calCurrentTradeDate();
-            loadWillEarningStock();
+//            loadWillEarningStock();
+            loadPennyStock();
             loadLastdayClose();
             grabOptionChain();
             grabLastdayOHLC();
@@ -111,6 +112,11 @@ public class GrabOptionTradeData {
     public void calCurrentTradeDate() {
         TradeCalendar nextTradeCalendar = readFromDB.getNextTradeCalendar(lastTradeDate);
         currentTradeDate = nextTradeCalendar.getDate();
+    }
+
+    public void loadPennyStock() {
+        stocks = BaseUtils.getPennyOptionStock().stream().collect(Collectors.toList());
+        log.info("penny stocks: {}", stocks);
     }
 
     // 加载接下来三天内发布财报的有周期权的股票
@@ -151,18 +157,18 @@ public class GrabOptionTradeData {
 
         Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
         Collection<String> intersection = CollectionUtils.intersection(weekOptionStock, nextdayStocks);
-        earningStocks = intersection.stream().collect(Collectors.toList());
+        stocks = intersection.stream().collect(Collectors.toList());
 
         // todo 测试非财报日使用
-        earningStocks.clear();
-        earningStocks = BaseUtils.getWeekOptionStock().stream().collect(Collectors.toList());
+        stocks.clear();
+        stocks = BaseUtils.getPennyOptionStock().stream().collect(Collectors.toList());
 
-        log.info("will earning stocks: {}", earningStocks);
+        log.info("will earning stocks: {}", stocks);
     }
 
     // 加载前一天的收盘价
     public void loadLastdayClose() throws Exception {
-        if (CollectionUtils.isEmpty(earningStocks)) {
+        if (CollectionUtils.isEmpty(stocks)) {
             return;
         }
 
@@ -172,7 +178,7 @@ public class GrabOptionTradeData {
         //        TradeCalendar last = readFromDB.getLastTradeCalendar(today.format(Constants.DB_DATE_FORMATTER));
         //        String lastDate = last.getDate();
         int year = Integer.parseInt(lastTradeDate.substring(0, 4));
-        List<Total> latestData = readFromDB.batchGetStockData(year, lastTradeDate, earningStocks);
+        List<Total> latestData = readFromDB.batchGetStockData(year, lastTradeDate, stocks);
 
         stockToLastdayCloseMap = latestData.stream().map(d -> d.toKLine()).collect(Collectors.toMap(d -> d.getCode(), d -> d.getClose()));
 
@@ -182,7 +188,7 @@ public class GrabOptionTradeData {
 
     // 抓取股票对应的当周call和put期权链，如果是周五就抓取下周的期权链
     public void grabOptionChain() throws Exception {
-        if (CollectionUtils.isEmpty(earningStocks)) {
+        if (CollectionUtils.isEmpty(stocks)) {
             return;
         }
 
@@ -221,9 +227,9 @@ public class GrabOptionTradeData {
                 break;
             }
         }
-        CountDownLatch cdl = new CountDownLatch(earningStocks.size());
+        CountDownLatch cdl = new CountDownLatch(stocks.size());
         String expirationDate = date;
-        for (String stock : earningStocks) {
+        for (String stock : stocks) {
             if (CollectionUtils.isNotEmpty(testStocks) && !testStocks.contains(stock)) {
                 cdl.countDown();
                 continue;
@@ -288,7 +294,7 @@ public class GrabOptionTradeData {
     // 抓取期权链对应的optionid
     public void grabOptionId() throws Exception {
         Map<String, String> optionIdMap = GetDailyImpliedVolatility.getOptionIdMap();
-        for (String stock : earningStocks) {
+        for (String stock : stocks) {
             if (CollectionUtils.isNotEmpty(testStocks) && !testStocks.contains(stock)) {
                 continue;
             }
@@ -346,7 +352,7 @@ public class GrabOptionTradeData {
         }
 
         Strategy32.clearOptionDailyCache();
-        for (String stock : earningStocks) {
+        for (String stock : stocks) {
             if (CollectionUtils.isNotEmpty(testStocks) && !testStocks.contains(stock)) {
                 continue;
             }

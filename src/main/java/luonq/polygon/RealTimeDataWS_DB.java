@@ -150,9 +150,17 @@ public class RealTimeDataWS_DB {
             if (testOption || MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
                 initHistoricalData();
                 initMessageListener();
-                subcribeStock();
-                //                inputTestData();
-                sendToTradeDataListener();
+                if (!testOption && MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
+                    subcribeStock();
+                    //                inputTestData();
+                    sendToTradeDataListener();
+                }
+                if (testOption && MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
+                    optionTradeExecutor.reSendOpenPrice();
+                    Thread.sleep(3000);
+                    getRealtimeQuoteForOption();
+                    optionTradeExecutor.restart();
+                }
                 close();
                 log.info("trade finish");
             }
@@ -217,7 +225,7 @@ public class RealTimeDataWS_DB {
                 stockSet = buildStockSet();
             }
             //            stockSet.add("AAPL"); // todo 测试用需删除
-            optionStockSet = LoadOptionTradeData.earningStocks;
+            optionStockSet = LoadOptionTradeData.stocks;
             // dn策略强制删除option涉及到的股票
             //            stockSet.removeAll(optionStockSet);
 
@@ -798,7 +806,7 @@ public class RealTimeDataWS_DB {
                         }
                     }
                     long current = System.currentTimeMillis();
-                    if ((current / 1000) % 10 == 0) {
+                    if ((current / 1000) % 20 == 0) {
                         log.info("quote for option price(time={}): {}", current, realtimeQuoteForOptionMap);
                     }
                 }
