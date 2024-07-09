@@ -119,7 +119,6 @@ public class OptionTradeExecutor {
         tradeApi.unlock();
         //        tradeApi.clearStopLossStockSet();
 
-        canTradeOptionForRtIVMap = optionStockListener.getCanTradeOptionForRtIVMap();
         optionCodeMap = optionStockListener.getOptionCodeMap();
         canTradeOptionForFutuMap = optionStockListener.getCanTradeOptionForFutuMap();
         optionStrikePriceMap = optionStockListener.getOptionStrikePriceMap();
@@ -156,6 +155,7 @@ public class OptionTradeExecutor {
             futuQuote.subOrderBook(optionCode);
         }
         log.info("monitor option quote list: {}", futuOptionList);
+        Thread.sleep(5000);
 
         threadPool.execute(() -> monitorBuyOrder());
         threadPool.execute(() -> monitorSellOrder());
@@ -191,7 +191,7 @@ public class OptionTradeExecutor {
                 String callQuote = codeToQuoteMap.get(callFutu);
                 String putQuote = codeToQuoteMap.get(putFutu);
                 if (StringUtils.isAnyBlank(callQuote, putQuote)) {
-                    invalidTradeStock(stock);
+//                    invalidTradeStock(stock);
                     log.info("there is no legal option quote. stock={}", stock);
                     continue;
                 }
@@ -286,8 +286,9 @@ public class OptionTradeExecutor {
             log.info("there is no canTradeOptionForRtIVMap");
             return;
         }
+        log.info("get real time iv: {}", canTradeOptionForRtIVMap);
 
-        long openTime = client.getOpenTime();
+        long closeTime = client.getCloseCheckTime().getTime();
         HttpClient httpClient = new HttpClient();
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -329,7 +330,7 @@ public class OptionTradeExecutor {
                             showCount = 0;
                         }
                     }
-                    if (curent > openTime) {
+                    if (curent > (closeTime + 60000)) {
                         timer.cancel();
                     }
                 } catch (IOException e) {
@@ -424,10 +425,10 @@ public class OptionTradeExecutor {
                 Map<String, StockPosition> positionMap = tradeApi.getPositionMap(call, put);
                 StockPosition callPosition = positionMap.get(call);
                 StockPosition putPosition = positionMap.get(put);
-                Double callTradeCount = callPosition == null ? 0 : callPosition.getCanSellQty();
-                Double putTradeCount = putPosition == null ? 0 : putPosition.getCanSellQty();
-                boolean callSuccess = callTradeCount.compareTo(count) >= 0;
-                boolean putSuccess = putTradeCount.compareTo(count) >= 0;
+                Double callTradeCount = callPosition == null ? 0d : callPosition.getCanSellQty();
+                Double putTradeCount = putPosition == null ? 0d : putPosition.getCanSellQty();
+                boolean callSuccess = callTradeCount.compareTo(0d) == 0;
+                boolean putSuccess = putTradeCount.compareTo(0d) == 0;
                 if (callSuccess && putSuccess) {
                     ReadWriteOptionTradeInfo.writeHasSoldSuccess(stock);
                     hasSoldSuccess.add(stock);

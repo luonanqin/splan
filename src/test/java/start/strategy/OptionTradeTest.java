@@ -1,7 +1,9 @@
 package start.strategy;
 
+import com.google.common.collect.Maps;
 import luonq.execute.GrabOptionTradeData;
 import luonq.execute.LoadOptionTradeData;
+import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.listener.OptionStockListener;
 import luonq.polygon.OptionTradeExecutor;
 import luonq.polygon.RealTimeDataWS_DB;
@@ -12,6 +14,7 @@ import start.BaseTest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class OptionTradeTest extends BaseTest {
@@ -34,7 +37,7 @@ public class OptionTradeTest extends BaseTest {
     public void test_getOptionChain() throws Exception {
         grabOptionTradeData.init();
         grabOptionTradeData.lastTradeDate = "2024-07-02";
-        grabOptionTradeData.earningStocks.add("NVDA");
+        grabOptionTradeData.stocks.add("NVDA");
         grabOptionTradeData.grabOptionChain();
         grabOptionTradeData.grabLastdayOHLC();
         grabOptionTradeData.grabOptionId();
@@ -51,12 +54,24 @@ public class OptionTradeTest extends BaseTest {
         loadOptionTradeData.load();
         OptionStockListener optionStockListener = new OptionStockListener();
         //        optionStockListener.cal("AAPL", 208.1); // 股价波动被过滤
-        optionStockListener.cal("AAPL", 215.07); // 股价波动超过2%
+        optionStockListener.cal("NKLA", 11.38); // 股价波动超过2%
+    }
+
+    @Test
+    public void test_getRealTimeIV() throws Exception {
+        RealTimeDataWS_DB client = new RealTimeDataWS_DB();
+        client.setOpenTime(1720531800000l);
+        HashMap<String, String> canTradeOptionForRtIVMap = Maps.newHashMap();
+        canTradeOptionForRtIVMap.put("NKLA", "NKLA++240712C00012000|NKLA++240712P00011000");
+        optionTradeExecutor.setClient(client);
+        optionTradeExecutor.getRealTimeIV(canTradeOptionForRtIVMap);
+        System.out.println();
     }
 
     @Test
     public void test_begintrade() throws Exception {
         loadOptionTradeData.load();
+        ReadWriteOptionTradeInfo.init();
         RealTimeDataWS_DB client = new RealTimeDataWS_DB();
         client.setOpenTime(1720093500000l);
         client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
@@ -72,6 +87,7 @@ public class OptionTradeTest extends BaseTest {
         optionTradeExecutor.init();
 
         optionStockListener.cal(stock, open);
+        ReadWriteOptionTradeInfo.writeStockOpenPrice();
 
         Map<String, Double> optionRtIvMap = optionTradeExecutor.getOptionRtIvMap();
         optionRtIvMap.put(callRt, 0.8);

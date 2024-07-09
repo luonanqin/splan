@@ -89,7 +89,7 @@ public class Strategy32 {
     public static Map<String/* date */, String/* lastDate */> dateMap = Maps.newHashMap(); // 当日和前日的映射
 
     public static void init() throws Exception {
-        int threadCount = 100;
+        int threadCount = 10;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;

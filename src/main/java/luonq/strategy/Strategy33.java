@@ -69,7 +69,7 @@ public class Strategy33 {
     public static LocalDateTime winterTime = BaseUtils.getWinterTime(year);
 
     public static void init() throws Exception {
-        int threadCount = 20;
+        int threadCount = 10;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
         long keepAliveTime = 60L;
@@ -199,7 +199,7 @@ public class Strategy33 {
     }
 
     public static Map<String/* date */, List<String>/* stock */> getEarningForEveryDay() throws Exception {
-        Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
+        Set<String> pennyOptionStock = BaseUtils.getPennyOptionStock();
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", year, year - 1);
         Map<String, List<String>> result = Maps.newHashMap();
         for (int i = 3; i < stockKLines.size() - 1; i++) {
@@ -220,7 +220,7 @@ public class Strategy33 {
                     if (!result.containsKey(date)) {
                         result.put(date, Lists.newArrayList());
                     }
-                    result.get(date).addAll(v.stream().filter(s -> weekOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
+                    result.get(date).addAll(v.stream().filter(s -> pennyOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
                 }
             });
             earning_1.forEach((k, v) -> {
@@ -229,7 +229,7 @@ public class Strategy33 {
                     if (!result.containsKey(date)) {
                         result.put(date, Lists.newArrayList());
                     }
-                    result.get(date).addAll(v.stream().filter(s -> weekOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
+                    result.get(date).addAll(v.stream().filter(s -> pennyOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
                 }
             });
             earning_2.forEach((k, v) -> {
@@ -238,7 +238,7 @@ public class Strategy33 {
                     if (!result.containsKey(date)) {
                         result.put(date, Lists.newArrayList());
                     }
-                    result.get(date).addAll(v.stream().filter(s -> weekOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
+                    result.get(date).addAll(v.stream().filter(s -> pennyOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
                 }
             });
             earning_3.forEach((k, v) -> {
@@ -247,7 +247,7 @@ public class Strategy33 {
                     if (!result.containsKey(date)) {
                         result.put(date, Lists.newArrayList());
                     }
-                    result.get(date).addAll(v.stream().filter(s -> weekOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
+                    result.get(date).addAll(v.stream().filter(s -> pennyOptionStock.contains(s.getStock())).map(EarningDate::getStock).collect(Collectors.toList()));
                 }
             });
         }
@@ -257,9 +257,9 @@ public class Strategy33 {
     // 获取开盘相对于前日收盘波动超过2%的kline
 
     public static Map<String/* date */, Map<String/* stock */, StockKLine>> getDateToStockKlineMap() throws Exception {
-        Set<String> weekOptionStock = BaseUtils.getPennyOptionStock();
+        Set<String> pennyOptionStock = BaseUtils.getPennyOptionStock();
         Map<String/* date */, Map<String/* stock */, StockKLine>> dateToStockKline = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
-        for (String stock : weekOptionStock) {
+        for (String stock : pennyOptionStock) {
             List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/" + stock, year, year - 1);
             for (int i = 0; i < stockKLines.size() - 2; i++) {
                 StockKLine stockKLine = stockKLines.get(i);
@@ -495,10 +495,10 @@ public class Strategy33 {
 
     public static Map<String/* stock */, Map<String/* Date */, Double/* price */>> getSecToStockPriceMap() throws Exception {
         Map<String, Map<String, Double>> map = Maps.newHashMap();
-        Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
+        Set<String> pennyOptionStock = BaseUtils.getPennyOptionStock();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        for (String stock : weekOptionStock) {
+        for (String stock : pennyOptionStock) {
             Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "sec120Aggregate/" + stock);
             map.put(stock, Maps.newHashMap());
             for (String date : fileMap.keySet()) {
@@ -576,10 +576,14 @@ public class Strategy33 {
             stockPrice = priceList.get(priceList.size() - 1);
         }
 
+        Double rate = riskFreeRateMap.get(date);
+        if (rate == null) {
+            rate = 0.0526;
+        }
         if (type.equalsIgnoreCase("C")) {
-            return BaseUtils.getCallPredictedValue(stockPrice, strikePriceD, riskFreeRateMap.get(date), dateIV, date, expireDay);
+            return BaseUtils.getCallPredictedValue(stockPrice, strikePriceD, rate, dateIV, date, expireDay);
         } else {
-            return BaseUtils.getPutPredictedValue(stockPrice, strikePriceD, riskFreeRateMap.get(date), dateIV, date, expireDay);
+            return BaseUtils.getPutPredictedValue(stockPrice, strikePriceD, rate, dateIV, date, expireDay);
         }
     }
 
@@ -634,8 +638,8 @@ public class Strategy33 {
                 expirationDate = LocalDate.parse(expirationDate, Constants.DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2023-10-06")) {
-                //                continue;
+            if (date.equals("2024-05-24")) {
+                System.out.println();
             }
 
             List<String> earningStocks = earningForEveryDay.get(date);
@@ -692,8 +696,10 @@ public class Strategy33 {
                     if (StringUtils.isBlank(lastDate)) {
                         continue;
                     }
-                    OptionDaily last_call_1 = Strategy32.getOptionDaily(callDaily.getSymbol(), lastDate);
-                    OptionDaily last_put_1 = Strategy32.getOptionDaily(putDaily.getSymbol(), lastDate);
+//                    OptionDaily last_call_1 = Strategy32.getOptionDaily(callDaily.getSymbol(), lastDate);
+//                    OptionDaily last_put_1 = Strategy32.getOptionDaily(putDaily.getSymbol(), lastDate);
+                    OptionDaily last_call_1 = requestOptionDaily(callDaily.getSymbol(), lastDate);
+                    OptionDaily last_put_1 = requestOptionDaily(putDaily.getSymbol(), lastDate);
                     if (last_call_1 == null || last_put_1 == null || (last_call_1.getVolume() < 100 || last_put_1.getVolume() < 100)) {
                         continue;
                     }

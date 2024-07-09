@@ -403,7 +403,7 @@ public class Strategy28 {
             return;
         }
 
-        refresHttpClient();
+        //        refresHttpClient();
         List<String> dayAllSeconds = getDayAllSeconds(date);
         List<String> result = Lists.newArrayList();
         if (testIfExistQuote(dayAllSeconds, optionCode)) {
@@ -457,8 +457,6 @@ public class Strategy28 {
         GetMethod get = new GetMethod(url);
         HttpClient httpClient = queue.take();
         try {
-            httpClient = queue.take();
-
             httpClient.executeMethod(get);
             InputStream openContent = get.getResponseBodyAsStream();
             OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
