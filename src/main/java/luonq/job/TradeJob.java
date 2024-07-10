@@ -49,15 +49,4 @@ public class TradeJob extends BaseJob {
         tradeExecutor.closeSell();
         log.info("sellBeforeCloseMarket.job end");
     }
-
-    @XxlJob("cancelTimeoutOrder.job")
-    public void cancelTimeoutOrder() {
-        log.info("cancelTimeoutOrder.job stat");
-        try {
-            optionTradeExecutor.cancelOrder();
-        } catch (Exception e) {
-            log.error("cancelTimeoutOrder error", e);
-        }
-        log.info("cancelTimeoutOrder.job end");
-    }
 }

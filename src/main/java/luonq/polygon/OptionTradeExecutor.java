@@ -3,7 +3,6 @@ package luonq.polygon;
 import bean.NodeList;
 import bean.OptionRT;
 import bean.OptionRTResp;
-import bean.OrderFill;
 import bean.StockEvent;
 import bean.StockPosition;
 import com.alibaba.fastjson.JSON;
@@ -155,11 +154,13 @@ public class OptionTradeExecutor {
             futuQuote.subOrderBook(optionCode);
         }
         log.info("monitor option quote list: {}", futuOptionList);
-        Thread.sleep(5000);
 
         threadPool.execute(() -> monitorBuyOrder());
         threadPool.execute(() -> monitorSellOrder());
         stopLossAndGain();
+
+        // 暂停2秒，保证实时iv有数据
+        //        Thread.sleep(2000);
 
         while (true) {
             for (String stock : canTradeStocks) {
@@ -191,13 +192,13 @@ public class OptionTradeExecutor {
                 String callQuote = codeToQuoteMap.get(callFutu);
                 String putQuote = codeToQuoteMap.get(putFutu);
                 if (StringUtils.isAnyBlank(callQuote, putQuote)) {
-//                    invalidTradeStock(stock);
+                    invalidTradeStock(stock);
                     log.info("there is no legal option quote. stock={}", stock);
                     continue;
                 }
 
                 double callTradePrice = calTradePrice(stock, callRt, CALL_TYPE);
-                double putTradePrice = calTradePrice(stock, putRt, PUT_TYPE); // todo 重点测试各种价格
+                double putTradePrice = calTradePrice(stock, putRt, PUT_TYPE);
 
                 // 如果下单数量小数位小于等于0.5，取整要减一，如果小数位大于0.5，则不变。目的是为了后面如果改价避免成交数量超过限制
                 double countDouble = avgFund / (callTradePrice + putTradePrice) / 100;
@@ -238,7 +239,8 @@ public class OptionTradeExecutor {
         }
 
         while (true) {
-            if (canTradeStocks.size() == hasBoughtSuccess.size() && hasBoughtSuccess.size() == hasSoldSuccess.size()) {
+            if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()
+              && CollectionUtils.intersection(hasBoughtSuccess, hasSoldSuccess).size() == hasBoughtSuccess.size()) {
                 log.info("all stock have finished trading. End!");
                 RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
                 Thread.sleep(5000);
@@ -285,6 +287,9 @@ public class OptionTradeExecutor {
         if (MapUtils.isEmpty(canTradeOptionForRtIVMap)) {
             log.info("there is no canTradeOptionForRtIVMap");
             return;
+        }
+        for (String soldStock : hasSoldSuccess) {
+            canTradeOptionForRtIVMap.remove(soldStock);
         }
         log.info("get real time iv: {}", canTradeOptionForRtIVMap);
 
@@ -393,7 +398,7 @@ public class OptionTradeExecutor {
                 log.error("ignore1", e);
             }
 
-            if (canTradeStocks.size() == hasBoughtSuccess.size()) {
+            if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()) {
                 log.info("all stock has bought: {}. stop monitor buy order", canTradeStocks);
                 return;
             }
@@ -457,7 +462,8 @@ public class OptionTradeExecutor {
                 log.error("ignore2", e);
             }
             // 如果可交易数量=买入成功数量，且买入成功数量=卖出成功数量
-            if (canTradeStocks.size() == hasBoughtSuccess.size() && hasBoughtSuccess.size() == hasSoldSuccess.size()) {
+            if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()
+              && CollectionUtils.intersection(hasBoughtSuccess, hasSoldSuccess).size() == hasBoughtSuccess.size()) {
                 log.info("all stock has sold: {}. stop monitor buy order", canTradeStocks);
                 return;
             }
@@ -573,7 +579,7 @@ public class OptionTradeExecutor {
                     showCount = 0;
                 }
 
-                if (currentTime > closeTime || canTradeStocks.size() == hasSoldSuccess.size()) {
+                if (currentTime > closeTime || CollectionUtils.intersection(canTradeStocks, hasSoldSuccess).size() == canTradeStocks.size()) {
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
@@ -584,21 +590,6 @@ public class OptionTradeExecutor {
                 }
             }
         }, delay, 500);
-    }
-
-    public void cancelOrder() {
-        try {
-            Map<String, Long> orderMap = tradeApi.getOrderList();
-            for (String code : orderMap.keySet()) {
-                Long orderId = orderMap.get(code);
-                OrderFill orderFill = tradeApi.getOrderFill(orderId);
-                if (orderFill == null) {
-                    tradeApi.cancelOrder(orderId);
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public Map<String, StockPosition> getAllPosition() {
