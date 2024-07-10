@@ -44,29 +44,31 @@ public class GetAggregateImpliedVolatility {
                 Map<String, String> optionFileMap = BaseUtils.getFileMap(optionFilePath);
                 for (String optionCode : optionFileMap.keySet()) {
                     List<String> lines = BaseUtils.readFile(optionFileMap.get(optionCode));
-                    double iv = 0;
-                    for (String line : lines) {
-                        String[] split = line.split("\t");
+                    for (String firstLine : lines) {
+                        String[] split = firstLine.split("\t");
+                        if (split[1].contains("09:2")) {
+                            continue;
+                        }
                         String datetime = split[0];
                         date = datetime.substring(0, 10);
-                        if (datetime.contains(openTime)) {
-                            iv = Double.parseDouble(split[2]);
-                            break;
+                        if (!dateToIvMap.containsKey(date)) {
+                            dateToIvMap.put(date, Maps.newHashMap());
                         }
+                        dateToIvMap.get(date).put(optionCode, Double.parseDouble(split[2]));
                     }
 
-                    if (!dateToIvMap.containsKey(date)) {
-                        dateToIvMap.put(date, Maps.newHashMap());
-                    }
 
-                    dateToIvMap.get(date).put(optionCode, iv);
-
-                    String firstLine = lines.get(0);
-                    String[] split = firstLine.split("\t");
-                    if (!dateToFirstIvTimeMap.containsKey(date)) {
-                        dateToFirstIvTimeMap.put(date, Maps.newHashMap());
+                    for (String firstLine : lines) {
+                        String[] split = firstLine.split("\t");
+                        if (split[1].contains("09:2")) {
+                            continue;
+                        }
+                        if (!dateToFirstIvTimeMap.containsKey(date)) {
+                            dateToFirstIvTimeMap.put(date, Maps.newHashMap());
+                        }
+                        dateToFirstIvTimeMap.get(date).put(optionCode, split[1]);
+                        break;
                     }
-                    dateToFirstIvTimeMap.get(date).put(optionCode, split[1]);
                 }
             }
         }
@@ -80,7 +82,6 @@ public class GetAggregateImpliedVolatility {
         }
 
         String stock = optionCode.substring(0, optionCode.length() - 15);
-        //        String optionInfo = optionCode.substring(optionCode.length() - 15);
         String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
         String expireDay = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyMMdd")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String type = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
@@ -96,7 +97,6 @@ public class GetAggregateImpliedVolatility {
         String optionFilePath = optionFileDir + optionCode;
         List<String> lines = Lists.newArrayList();
 
-        //        String url = String.format("https://restapi.ivolatility.com/equities/intraday/single-equity-optionsymbol-rawiv?apiKey=S3j7pBefWG0J0glb&optionSymbol=%s&date=%s&minuteType=MINUTE_1", optionCode, date);
         String url = String.format("https://restapi.ivolatility.com/equities/intraday/single-equity-option-rawiv?apiKey=S3j7pBefWG0J0glb&symbol=%s&date=%s&expDate=%s&strike=%s&optType=%s&minuteType=MINUTE_1", stock, date, expireDay, strikePrice, optionType);
         GetMethod get = new GetMethod(url);
         double hisIv = -2d;
@@ -112,7 +112,7 @@ public class GetAggregateImpliedVolatility {
                     String optionBidDateTime = iv.getOptionBidDateTime();
                     String timestamp = iv.getTimestamp();
                     String calcTimestamp = iv.getCalcTimestamp();
-                    if (!optionBidDateTime.startsWith(date) || timestamp.startsWith(marketClose) || timestamp.startsWith(marketPre)) {
+                    if (!optionBidDateTime.startsWith(date) || timestamp.startsWith(marketClose) || timestamp.startsWith(marketPre) || calcTimestamp.startsWith(marketPre)) {
                         continue;
                     }
                     double optionIv = iv.getOptionIv();
@@ -153,5 +153,12 @@ public class GetAggregateImpliedVolatility {
         dateToFirstIvTimeMap.get(date).put(optionCode, firstDateTime);
 
         return hisIv;
+    }
+
+    public static void main(String[] args) throws Exception {
+//        getAggregateIv("BB220408P00006500", "2022-04-01");
+        //        getAggregateIv("BB220408P00006500", "2022-04-01");
+        //        getAggregateIv("SOFI230623C00009500", "2023-06-16");
+        init();
     }
 }
