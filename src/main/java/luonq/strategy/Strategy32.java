@@ -70,9 +70,9 @@ public class Strategy32 {
     public static ThreadPoolExecutor cachedThread;
     public static String apiKey = "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     /* 2024 */
-    public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524, 20240531, 20240607, 20240614, 20240621, 20240628, 20240705 };
-    public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05" };
-    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05");
+    public static int[] weekArray = new int[] { 20240105, 20240112, 20240119, 20240126, 20240202, 20240209, 20240216, 20240223, 20240301, 20240308, 20240315, 20240322, 20240328, 20240405, 20240412, 20240419, 20240426, 20240503, 20240510, 20240517, 20240524, 20240531, 20240607, 20240614, 20240621, 20240628, 20240705, 20240712 };
+    public static String[] weekStrArray = new String[] { "2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05", "2024-07-12" };
+    public static Set<String> weekSet = Sets.newHashSet("2024-01-05", "2024-01-12", "2024-01-19", "2024-01-26", "2024-02-02", "2024-02-09", "2024-02-16", "2024-02-23", "2024-03-01", "2024-03-08", "2024-03-15", "2024-03-22", "2024-03-28", "2024-04-05", "2024-04-12", "2024-04-19", "2024-04-26", "2024-05-03", "2024-05-10", "2024-05-17", "2024-05-24", "2024-05-31", "2024-06-07", "2024-06-14", "2024-06-21", "2024-06-28", "2024-07-05", "2024-07-12");
     public static int year = 2024;
     /* 2023*/
     //        public static int[] weekArray = new int[] { 20230106, 20230113, 20230120, 20230127, 20230203, 20230210, 20230217, 20230224, 20230303, 20230310, 20230317, 20230324, 20230331, 20230406, 20230414, 20230421, 20230428, 20230505, 20230512, 20230519, 20230526, 20230602, 20230609, 20230616, 20230623, 20230630, 20230707, 20230714, 20230721, 20230728, 20230804, 20230811, 20230818, 20230825, 20230901, 20230908, 20230915, 20230922, 20230929, 20231006, 20231013, 20231020, 20231027, 20231103, 20231110, 20231117, 20231124, 20231201, 20231208, 20231215, 20231222, 20231229 };
@@ -407,7 +407,7 @@ public class Strategy32 {
 
         // 开盘价附近的call和put
         if (CollectionUtils.isEmpty(callAndPuts)) {
-//            System.out.println("there is no call and put for open price. stock=" + stock);
+            //            System.out.println("there is no call and put for open price. stock=" + stock);
             return null;
         }
         String openPrice = String.format("%.2f", open);
@@ -977,23 +977,21 @@ public class Strategy32 {
             System.out.println("illegal firsttime. " + call);
             return "empty";
         }
-        for (int i = sec; i < sec + 1; i++) {
-            Long openSeconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
-            if (callTradePriceMap.get(openSeconds) != 0) {
-                callOpen = callTradePriceMap.get(openSeconds);
-            }
-            if (putTradePriceMap.get(openSeconds) != 0) {
-                putOpen = putTradePriceMap.get(openSeconds);
-            }
-
-            callBid = MapUtils.getDouble(callBidTradePriceMap, openSeconds, 0d);
-            putBid = MapUtils.getDouble(putBidTradePriceMap, openSeconds, 0d);
-
-            if (callOpen != 0 && putOpen != 0) {
-                buySeconds = openSeconds;
-                break;
-            }
+        Long openSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
+        if (callTradePriceMap.get(openSeconds) != 0) {
+            callOpen = callTradePriceMap.get(openSeconds);
         }
+        if (putTradePriceMap.get(openSeconds) != 0) {
+            putOpen = putTradePriceMap.get(openSeconds);
+        }
+
+        callBid = MapUtils.getDouble(callBidTradePriceMap, openSeconds, 0d);
+        putBid = MapUtils.getDouble(putBidTradePriceMap, openSeconds, 0d);
+
+        if (callOpen != 0 && putOpen != 0) {
+            buySeconds = openSeconds;
+        }
+
         if (callOpen == 0 || putOpen == 0) {
             return "empty";
         }
