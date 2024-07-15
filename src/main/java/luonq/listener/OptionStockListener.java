@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
+import luonq.polygon.OptionTradeExecutor;
 import luonq.strategy.Strategy32;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,12 @@ public class OptionStockListener {
     public Map<String/* rt iv code */, Double/* strike price */> optionStrikePriceMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* expire date */> optionExpireDateMap = Maps.newHashMap();
 
+    private OptionTradeExecutor optionTradeExecutor;
+
+    public void setOptionTradeExecutor(OptionTradeExecutor optionTradeExecutor) {
+        this.optionTradeExecutor = optionTradeExecutor;
+    }
+
     @Subscribe
     public void onMessageEvent(StockEvent event) {
         try {
@@ -58,7 +65,7 @@ public class OptionStockListener {
             return;
         }
         double ratio = Math.abs(open - lastClose) / lastClose * 100;
-        if (ratio < 3 || open < 5) {
+        if (ratio < 3 || open < 7) {
             log.info("ratio is illegal. stock={}\topen={}\tlastClose={}\tratio={}", stock, open, lastClose, ratio);
             return;
         }
@@ -189,18 +196,20 @@ public class OptionStockListener {
         }
         String rtCall = stock + plus + callSuffix;
         String rtPut = stock + plus + putSuffix;
-        canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);
 
         String callFutuSuffix = callCode.substring(0, callCode.length() - 8);
         String putFutuSuffix = putCode.substring(0, putCode.length() - 8);
         String futuCall = callFutuSuffix + Integer.valueOf(callCode.substring(callCode.length() - 8));
         String futuPut = putFutuSuffix + Integer.valueOf(putCode.substring(putCode.length() - 8));
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
+        optionTradeExecutor.monitorQuote(futuCall);
+        optionTradeExecutor.monitorQuote(futuPut);
 
         optionCodeMap.put(rtCall, futuCall);
         optionCodeMap.put(rtPut, futuPut);
 
-        canTradeStocks.add(stock);
+        canTradeStocks.add(stock); // 这里一定要先确定可交易的股票再开始rt的监听
+        canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);
     }
 
 

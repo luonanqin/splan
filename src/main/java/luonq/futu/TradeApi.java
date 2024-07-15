@@ -1,6 +1,6 @@
 package luonq.futu;
 
-import bean.OrderFill;
+import bean.Order;
 import bean.StockPosition;
 import com.futu.openapi.FTAPI;
 import com.futu.openapi.FTAPI_Conn;
@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -78,7 +79,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     private AtomicLong orderId = new AtomicLong(0);
     private AtomicLong modifyOrderId = new AtomicLong(0);
     private AtomicDouble quote = new AtomicDouble(0);
-    private Map<Long, LinkedBlockingQueue<OrderFill>> orderFillMap = Maps.newHashMap();
+    private Map<Long, LinkedBlockingDeque<Order>> orderMap = Maps.newHashMap();
     private BlockingQueue<Map<String, StockPosition>> stockPositionBlock = new LinkedBlockingQueue<>();
     private BlockingQueue<Long> stopLossOrder = new LinkedBlockingQueue<>();
     private AtomicInteger maxCashBuy = new AtomicInteger(-2);
@@ -117,17 +118,20 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         stopLossStockSet.clear();
     }
 
-    public OrderFill getOrderFill(long orderId, long timeoutForSecond) {
+    public Order getOrder(long orderId, long timeoutForSecond) {
         try {
-            return orderFillMap.get(orderId).poll(timeoutForSecond, TimeUnit.SECONDS);
+            return orderMap.get(orderId).pollLast(timeoutForSecond, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            System.err.println("getOrderFill error. orderId={}" + orderId + ", error=" + e.getMessage());
+            log.error("getOrderFill error. orderId={}", orderId, e);
         }
         return null;
     }
 
-    public OrderFill getOrderFill(long orderId) {
-        return orderFillMap.get(orderId).peek();
+    public Order getOrder(long orderId) {
+        if (!orderMap.containsKey(orderId)) {
+            return null;
+        }
+        return orderMap.get(orderId).peekLast();
     }
 
     public void start() {
@@ -404,14 +408,21 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         int seqNo = trd.getHistoryOrderList(req);
     }
 
-    public Map<String, Long> getOrderList() throws InterruptedException {
+    public Map<String, Long> getOrderList(List<Long> orderIdList) throws InterruptedException {
         TrdCommon.TrdHeader header = TrdCommon.TrdHeader.newBuilder()
           .setAccID(accountId)
           .setTrdEnv(tradeEnv)
           .setTrdMarket(tradeMarket)
           .build();
+
+        TrdCommon.TrdFilterConditions filter = TrdCommon.TrdFilterConditions.newBuilder().build();
+        if (CollectionUtils.isNotEmpty(orderIdList)) {
+            filter = TrdCommon.TrdFilterConditions.newBuilder().addAllIdList(orderIdList).build();
+        }
+
         TrdGetOrderList.C2S c2s = TrdGetOrderList.C2S.newBuilder()
           .setHeader(header)
+          .setFilterConditions(filter)
           .build();
         TrdGetOrderList.Request req = TrdGetOrderList.Request.newBuilder().setC2S(c2s).build();
         int seqNo = trd.getOrderList(req);
@@ -492,55 +503,47 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
             log.error("TrdUpdateOrder failed: {}", rsp.getRetMsg());
         } else {
             try {
-                TrdCommon.Order order = rsp.getS2COrBuilder().getOrder();
-                long orderID = order.getOrderID();
-                int orderStatus = order.getOrderStatus();
-                double fillQty = order.getFillQty();
-                double fillAvgPrice = order.getFillAvgPrice();
-                if (orderStatus != TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE) {
-                    //                    log.info("fillQty: " + fillQty + ", fillAvgPrice: " + fillAvgPrice);
+                TrdCommon.Order trdOrder = rsp.getS2COrBuilder().getOrder();
+                long orderID = trdOrder.getOrderID();
+                int orderStatus = trdOrder.getOrderStatus();
+                if (orderStatus != TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE && orderStatus != TrdCommon.OrderStatus.OrderStatus_Filled_Part_VALUE && orderStatus != TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE) {
+                    log.info("update order: orderID={}, orderStatus={}", orderID, orderStatus);
                     return;
                 }
 
-                OrderFill fill = new OrderFill();
-                fill.setOrderID(orderID);
-                fill.setCode(order.getCode());
-                fill.setName(order.getName());
-                fill.setPrice(order.getPrice());
-                fill.setAvgPrice(order.getFillAvgPrice());
-                fill.setCreateTime(order.getCreateTime());
-                fill.setUpdateTimestamp(order.getUpdateTimestamp());
-                fill.setCount(order.getQty());
-                fill.setTradeSide(order.getTrdSide());
-                if (!orderFillMap.containsKey(orderID)) {
-                    orderFillMap.put(orderID, new LinkedBlockingQueue<>(10));
+                Order order = new Order();
+                order.setOrderID(orderID);
+                order.setOrderStatus(orderStatus);
+                order.setOrderType(trdOrder.getOrderType());
+                order.setCode(trdOrder.getCode());
+                order.setName(trdOrder.getName());
+                order.setPrice(trdOrder.getPrice());
+                order.setAvgPrice(trdOrder.getFillAvgPrice());
+                order.setCreateTime(trdOrder.getCreateTime());
+                order.setUpdateTime(trdOrder.getUpdateTime());
+                order.setCount(trdOrder.getQty());
+                order.setTradeSide(trdOrder.getTrdSide());
+                order.setOrderIDEx(trdOrder.getOrderIDEx());
+                if (!orderMap.containsKey(orderID)) {
+                    orderMap.put(orderID, new LinkedBlockingDeque<>());
                 }
-                orderFillMap.get(orderID).offer(fill);
-                log.info("update order: {}", fill);
-
-                //                if (fill.getTradeSide() == 1 && tradeEnd) {
-                //                    log.info("ready to place stop loss");
-                //                    if (!stopLossStockSet.contains(fill.getCode())) {
-                //                        placeStopLossOrder(fill);
-                //                    } else {
-                //                        log.info("stopLossStockSet contains {}", fill.getCode());
-                //                    }
-                //                }
+                orderMap.get(orderID).offerLast(order);
+                log.info("update order: {}", order);
             } catch (Exception e) {
                 log.error("onPush_UpdateOrder error.", e);
             }
         }
     }
 
-    public void placeStopLossOrder(OrderFill orderFill) {
-        if (orderFill == null) {
+    public void placeStopLossOrder(Order order) {
+        if (order == null) {
             log.info("order fill is null");
             return;
         }
 
-        String code = orderFill.getCode();
-        double canSellQty = orderFill.getCount();
-        double costPrice = orderFill.getAvgPrice();
+        String code = order.getCode();
+        double canSellQty = order.getCount();
+        double costPrice = order.getAvgPrice();
         double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS_DB.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
 
         long orderId = placeOrderForLossMarket(code, canSellQty, auxPrice);
@@ -631,7 +634,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         } else {
             try {
                 long orderID = rsp.getS2COrBuilder().getOrderID();
-                orderFillMap.put(orderID, new LinkedBlockingQueue<>());
+                orderMap.put(orderID, new LinkedBlockingDeque<>());
                 orderId.set(orderID);
                 //                String json = JsonFormat.printer().print(rsp);
                 //                log.info("Receive TrdPlaceOrder: %s\n", json);
@@ -755,10 +758,28 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 if (CollectionUtils.isEmpty(orderList)) {
                     log.info("current order list is empty");
                 } else {
-                    for (TrdCommon.Order order : orderList) {
-                        long orderID = order.getOrderID();
-                        String code = order.getCode();
+                    for (TrdCommon.Order trdOrder : orderList) {
+                        long orderID = trdOrder.getOrderID();
+                        String code = trdOrder.getCode();
                         curOrderMap.put(code, orderID);
+
+                        Order order = new Order();
+                        order.setOrderID(orderID);
+                        order.setOrderStatus(trdOrder.getOrderStatus());
+                        order.setOrderType(trdOrder.getOrderType());
+                        order.setCode(trdOrder.getCode());
+                        order.setName(trdOrder.getName());
+                        order.setPrice(trdOrder.getPrice());
+                        order.setAvgPrice(trdOrder.getFillAvgPrice());
+                        order.setCreateTime(trdOrder.getCreateTime());
+                        order.setUpdateTime(trdOrder.getUpdateTime());
+                        order.setCount(trdOrder.getQty());
+                        order.setTradeSide(trdOrder.getTrdSide());
+                        order.setOrderIDEx(trdOrder.getOrderIDEx());
+                        if (!orderMap.containsKey(orderID)) {
+                            orderMap.put(orderID, new LinkedBlockingDeque<>());
+                        }
+                        orderMap.get(orderID).offerLast(order);
                     }
                 }
             } catch (Exception e) {
@@ -803,7 +824,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         return lineList;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         FTAPI.init();
         TradeApi trdApi = new TradeApi();
         trdApi.setAccountId(simulateUsOptionAccountId);
@@ -816,7 +837,8 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         //        trdApi.unlock();
         double funds = trdApi.getFunds();
         System.out.println(funds);
-        trdApi.placeNormalBuyOrder("NVDA240628C120000", 1, 4.4);
+//        trdApi.placeNormalBuyOrder("NVDA240712C120000", 1, 4.4);
+        Map<String, Long> orderList = trdApi.getOrderList(Lists.newArrayList(4238970185723004977L));
         //        Map<String, StockPosition> positionMap = trdApi.getPositionMap("NTES");
         //        System.out.println(positionMap);
         //        long orderId = trdApi.placeNormalBuyOrder("OLLI", 1, 60);

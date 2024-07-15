@@ -2,10 +2,11 @@ package luonq.polygon;
 
 import bean.Node;
 import bean.NodeList;
-import bean.OrderFill;
+import bean.Order;
 import bean.StockPosition;
 import bean.StopLoss;
 import com.futu.openapi.FTAPI;
+import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.Data;
@@ -42,9 +43,9 @@ public class TradeExecutor_DB {
     public void init() {
         FTAPI.init();
         tradeApi = new TradeApi();
-//        tradeApi.useSimulateEnv();
-//        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
-                tradeApi.useRealEnv();
+        //        tradeApi.useSimulateEnv();
+        //        tradeApi.setAccountId(TradeApi.simulateUsAccountId);
+        tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.unlock();
         tradeApi.clearStopLossStockSet();
@@ -83,7 +84,7 @@ public class TradeExecutor_DB {
                 remainCash = tradeApi.getFunds();
                 log.info("first trade. orderPrice=" + orderPrice + ", multiple=" + multiple + " cash=" + remainCash);
                 if (remainCash == 0 && i > 0) {
-                    Map<String, Long> orderList = tradeApi.getOrderList();
+                    Map<String, Long> orderList = tradeApi.getOrderList(null);
                     if (MapUtils.isEmpty(orderList)) {
                         log.info("there is no order now!");
                         break;
@@ -130,10 +131,11 @@ public class TradeExecutor_DB {
                     log.info("buy stock. stock=" + code + ", count=" + count + ", price=" + price + ", orderPrice=" + orderPrice + ", orderId: " + orderId + " " + System.currentTimeMillis());
 
                     while (true) {
-                        /** 4.下单完成后，4秒后获取成交状态 */
-                        OrderFill orderFill = tradeApi.getOrderFill(orderId, 4);
-                        if (orderFill == null) {
-                            /** 5.如果没有成交完成，则修改价格，并继续 */
+                        /** 4.下单完成后，每4秒获取一次成交状态 */
+                        Thread.sleep(4000);
+                        Order order = tradeApi.getOrder(orderId);
+                        if (order == null || order.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
+                            /** 5.如果没有任何成交，则修改价格，并继续 */
                             orderPrice = BigDecimal.valueOf(price * (1 + upRatio * (++multiple))).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
                             log.info("modify order price. orderPrice=" + orderPrice + ", multiple=" + multiple);
                             count = (int) (count * minusCountRatio);
@@ -148,12 +150,34 @@ public class TradeExecutor_DB {
                                     break;
                                 }
                             }
+                        } else if (order != null && order.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_Part_VALUE) {
+                            /** 5.1.如果部分成交，则取最新报价修改价格和数量，并继续 */
+                            price = RealTimeDataWS_DB.realtimeQuoteMap.get(code);
+                            orderPrice = BigDecimal.valueOf(price * (1 + upRatio)).setScale(2, BigDecimal.ROUND_FLOOR).doubleValue();
+                            log.info("part trade. modify order price. orderPrice=" + orderPrice + ", multiple=" + multiple);
+                            int maxCashBuy = tradeApi.getMaxCashBuy(code, orderPrice);
+                            if (maxCashBuy < count) {
+                                count = maxCashBuy;
+                            } else {
+                                count = count - 2;
+                            }
+
+                            for (int j = 0; j <= 10; j++) {
+                                long modifyOrderId = tradeApi.upOrderPrice(orderId, count, orderPrice);
+                                log.info("part trade. {} order has been modify. orderId={}, ordePrice={}, modifyOrderId={}", code, orderId, orderPrice, modifyOrderId);
+                                if (modifyOrderId == TRADE_ERROR_CODE) {
+                                    count--;
+                                    log.info("minus count={}", count);
+                                } else {
+                                    break;
+                                }
+                            }
                         } else {
-                            /** 5.1.如果成交完成，则马上设置止损单，但只针对实盘 */
+                            /** 5.2.如果全部成交完成，则马上设置止损单，但只针对实盘 */
                             log.info(code + " order is successfully executed. orderId=" + orderId);
                             if (realTrade) {
                                 try {
-                                    placeStopLossOrder(orderFill);
+                                    placeStopLossOrder(order);
                                 } catch (Exception e) {
                                     log.info("real placeStopLossOrder failed");
                                 }
@@ -196,7 +220,7 @@ public class TradeExecutor_DB {
         /** 6.建立timer，收盘前检查是否还有持仓，如果有，则取现价下单全部卖出 */
         //        closeCheckPosition();
 
-//        Thread.sleep(5000); // todo 测试股票和期权交易时需要注释，只交易股票需要去掉注释
+        //        Thread.sleep(5000); // todo 测试股票和期权交易时需要注释，只交易股票需要去掉注释
         /** 7.计算之前已成交的止损价格，并设置止损市价单（模拟盘不支持） */
         /** 7*.（只用于模拟盘，实盘需注释掉）计算止损价格临时存储，然后让主进程监听这些股票，发现低于止损价则触发止损限价单 */
         if (!realTrade) {
@@ -261,8 +285,8 @@ public class TradeExecutor_DB {
                         log.info("retry sell stock=" + stock);
                         continue;
                     }
-                    OrderFill orderFill = tradeApi.getOrderFill(orderId, 8);
-                    if (orderFill == null) {
+                    Order order = tradeApi.getOrder(orderId, 8);
+                    if (order == null) {
                         long cancelResCode = tradeApi.cancelOrder(orderId);
                         log.info("sell stock cancel. retry stock=" + stock + ", orderId=" + orderId + ", cancelResCode=" + cancelResCode);
                         continue;
@@ -322,15 +346,15 @@ public class TradeExecutor_DB {
     }
 
     // 根据订单返回的信息设定止损单
-    public void placeStopLossOrder(OrderFill orderFill) {
-        if (orderFill == null) {
+    public void placeStopLossOrder(Order order) {
+        if (order == null) {
             log.info("order fill is null");
             return;
         }
 
-        String code = orderFill.getCode();
-        double canSellQty = orderFill.getCount();
-        double costPrice = orderFill.getAvgPrice();
+        String code = order.getCode();
+        double canSellQty = order.getCount();
+        double costPrice = order.getAvgPrice();
         double auxPrice = BigDecimal.valueOf(costPrice * (1 - RealTimeDataWS_DB.LOSS_RATIO)).setScale(3, BigDecimal.ROUND_DOWN).doubleValue();
 
         long orderId = tradeApi.placeOrderForLossMarket(code, canSellQty, auxPrice);

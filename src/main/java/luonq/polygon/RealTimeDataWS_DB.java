@@ -109,7 +109,7 @@ public class RealTimeDataWS_DB {
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
-    private boolean testOption = false;
+    private boolean testOption = true;
 
     private List<String> optionStockSet;
     private OptionTradeExecutor optionTradeExecutor;
@@ -147,23 +147,45 @@ public class RealTimeDataWS_DB {
 
             initTrade();
 
-            if (testOption || MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
+//            if (testOption || MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
+//                initHistoricalData();
+//                initMessageListener();
+//                if (!testOption && MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
+//                    subcribeStock();
+//                    //                inputTestData();
+//                    sendToTradeDataListener();
+//                }
+//                if (testOption && MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
+//                    optionTradeExecutor.reSendOpenPrice();
+//                    Thread.sleep(3000);
+//                    getRealtimeQuoteForOption();
+//                    optionTradeExecutor.restart();
+//                }
+//            }
+
+            if (testOption) {
                 initHistoricalData();
                 initMessageListener();
-                if (!testOption && MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
-                    subcribeStock();
-                    //                inputTestData();
-                    sendToTradeDataListener();
-                }
-                if (testOption && MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
+                if (MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
                     optionTradeExecutor.reSendOpenPrice();
                     Thread.sleep(3000);
                     getRealtimeQuoteForOption();
                     optionTradeExecutor.restart();
+                } else {
+                    subcribeStock();
+                    sendToTradeDataListener();
                 }
-                close();
-                log.info("trade finish");
+            } else {
+                if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
+                    testOption = true;
+                }
+                initHistoricalData();
+                initMessageListener();
+                subcribeStock();
+                sendToTradeDataListener();
             }
+            close();
+            log.info("trade finish");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -218,6 +240,7 @@ public class RealTimeDataWS_DB {
         try {
             loadOptionTradeData.load();
             optionTradeExecutor.init();
+            optionTradeExecutor.getRealTimeIV();
             ReadWriteOptionTradeInfo.init();
             if (!testOption) {
                 computeHisOverBollingerRatio();
@@ -252,6 +275,7 @@ public class RealTimeDataWS_DB {
             optionTradeExecutor = new OptionTradeExecutor();
             optionTradeExecutor.setClient(this);
             optionTradeExecutor.setOptionStockListener(optionStockListener);
+            optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
 
             log.info("finish init trade");
         } catch (Exception e) {

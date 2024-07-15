@@ -26,6 +26,7 @@ import util.Constants;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -283,7 +284,7 @@ public class GrabOptionTradeData {
                     getMethod.releaseConnection();
                     queue.offer(httpClient);
                     cdl.countDown();
-                    System.out.println("option chain cdl:" + cdl.getCount());
+//                    System.out.println("option chain cdl:" + cdl.getCount());
                 }
             });
         }
@@ -330,8 +331,8 @@ public class GrabOptionTradeData {
                 log.info("has grab {} option id", stock);
                 continue;
             }
-            String strikePriceFrom = BigDecimal.valueOf((double) min / 1000d).setScale(1).toString();
-            String strikePriceTo = BigDecimal.valueOf((double) max / 1000d).setScale(1).toString();
+            String strikePriceFrom = BigDecimal.valueOf((double) min / 1000d).setScale(1, RoundingMode.HALF_DOWN).toString();
+            String strikePriceTo = BigDecimal.valueOf((double) max / 1000d).setScale(1, RoundingMode.HALF_UP).toString();
 
             GetDailyImpliedVolatility.getOptionId(stock, expirationDate, strikePriceFrom, strikePriceTo, lastTradeDate);
             log.info("finish grab option Id: {}", stock);

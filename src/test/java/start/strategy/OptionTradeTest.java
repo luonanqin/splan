@@ -64,7 +64,7 @@ public class OptionTradeTest extends BaseTest {
         HashMap<String, String> canTradeOptionForRtIVMap = Maps.newHashMap();
         canTradeOptionForRtIVMap.put("NKLA", "NKLA++240712C00012000|NKLA++240712P00011000");
         optionTradeExecutor.setClient(client);
-        optionTradeExecutor.getRealTimeIV(canTradeOptionForRtIVMap);
+        optionTradeExecutor.getRealTimeIV();
         System.out.println();
     }
 
@@ -73,21 +73,22 @@ public class OptionTradeTest extends BaseTest {
         loadOptionTradeData.load();
         ReadWriteOptionTradeInfo.init();
         RealTimeDataWS_DB client = new RealTimeDataWS_DB();
-        client.setOpenTime(1720093500000l);
+        client.setOpenTime(1721024787753l);
         client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
-        String stock = "NVDA";
-        double open = 128.0;
-        String callRt = "TSLA++240705C00230000";
-        String putRt = "TSLA++240705C00220000";
+        String stock = "TSLA";
+        double open = 261.0;
+        String callRt = "TSLA++240719C00230000";
+        String putRt = "TSLA++240719C00220000";
         RealTimeDataWS_DB.realtimeQuoteForOptionMap.put(stock, open);
 
         OptionStockListener optionStockListener = new OptionStockListener();
         optionTradeExecutor.setClient(client);
         optionTradeExecutor.setOptionStockListener(optionStockListener);
+        optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
         optionTradeExecutor.init();
+        optionTradeExecutor.getRealTimeIV();
 
         optionStockListener.cal(stock, open);
-        ReadWriteOptionTradeInfo.writeStockOpenPrice();
 
         Map<String, Double> optionRtIvMap = optionTradeExecutor.getOptionRtIvMap();
         optionRtIvMap.put(callRt, 0.8);
