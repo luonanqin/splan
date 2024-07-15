@@ -384,13 +384,14 @@ public class OptionTradeExecutor {
                                     log.info("get realtime iv check out invalid stock: {}", stock);
                                 }
                             }
+                            log.info("rt iv data: {}", results);
                         }
 
-                        showCount++;
-                        if (showCount == showtimes) {
-                            log.info("rt iv data: {}", results);
-                            showCount = 0;
-                        }
+                        //                        showCount++;
+                        //                        if (showCount == showtimes) {
+                        //                        log.info("rt iv data: {}", results);
+                        //                            showCount = 0;
+                        //                        }
                     }
                     if (curent > (closeTime + 60000)) {
                         timer.cancel();

@@ -353,9 +353,13 @@ public class GrabOptionTradeData {
         }
 
         Strategy32.clearOptionDailyCache();
+        Set<String> hasGet = Sets.newHashSet();
         for (String stock : stocks) {
             if (CollectionUtils.isNotEmpty(testStocks) && !testStocks.contains(stock)) {
                 continue;
+            }
+            if (hasGet.contains(stock)) {
+//                continue;
             }
 
             List<String> callAndPut = stockToOptionCodeMap.get(stock);
@@ -368,7 +372,7 @@ public class GrabOptionTradeData {
             Map<String/* optionCode */, String/* date */> optionCodeDateMap = Maps.newHashMap();
             for (String optionCode : optionCodeList) {
                 OptionDaily optionDaily = Strategy32.getOptionDaily(optionCode, lastTradeDate);
-                if (optionDaily.getVolume() < 100) {
+                if (optionDaily == null || optionDaily.getVolume() < 100) {
                     continue;
                 }
 
@@ -421,7 +425,7 @@ public class GrabOptionTradeData {
                 } finally {
                     queue.offer(httpClient);
                     cdl.countDown();
-                    System.out.println("lastday OHLC cdl:" + cdl.getCount());
+//                    System.out.println("lastday OHLC cdl:" + cdl.getCount());
                 }
             });
         }

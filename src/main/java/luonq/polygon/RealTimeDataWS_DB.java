@@ -691,7 +691,7 @@ public class RealTimeDataWS_DB {
                     //                        continue;
                     //                    }
 
-                    log.info("receive data: {}", msg);
+//                    log.info("receive data: {}", msg);
                     stockToEvent.put(stock, new StockEvent(stock, price, time));
                 }
 

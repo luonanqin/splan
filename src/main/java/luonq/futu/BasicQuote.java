@@ -142,7 +142,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
             }
             String data = String.format("%.2f|%.2f", bidPrice, askPrice);
             codeToQuoteMap.put(code, data);
-            System.out.println(code + "\t" + data);
+//            System.out.println(code + "\t" + data);
         }
     }
 
