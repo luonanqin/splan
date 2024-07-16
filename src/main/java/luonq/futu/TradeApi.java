@@ -590,6 +590,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
     public void onReply_GetPositionList(FTAPI_Conn client, int nSerialNo, TrdGetPositionList.Response rsp) {
         if (rsp.getRetType() != 0) {
             log.error("TrdGetPositionList failed: {}", rsp.getRetMsg());
+            stockPositionBlock.offer(Maps.newHashMap());
         } else {
             try {
                 Map<String, StockPosition> positionMap = Maps.newHashMap();

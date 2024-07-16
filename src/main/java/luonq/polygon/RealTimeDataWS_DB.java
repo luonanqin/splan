@@ -725,10 +725,10 @@ public class RealTimeDataWS_DB {
         log.info(msg);
         unsubscribeAll();
         listenEnd = true;
-        getRealtimeQuote();
+//        getRealtimeQuote();
         getRealtimeQuoteForOption();
         ReadWriteOptionTradeInfo.writeStockOpenPrice();
-        tradeExecutor.beginTrade();
+//        tradeExecutor.beginTrade();
         optionTradeExecutor.beginTrade();
     }
 

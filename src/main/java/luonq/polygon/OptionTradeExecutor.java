@@ -575,6 +575,21 @@ public class OptionTradeExecutor {
         timer.scheduleAtFixedRate(new TimerTask() {
 
             int showtimes = 20, showCount = 0;
+            Map<String/* code */, StockPosition> positions = Maps.newHashMap();
+
+            private StockPosition getPosistion(String optionCode) {
+                if (positions.containsKey(optionCode)) {
+                    return positions.get(optionCode);
+                }
+
+                Map<String, StockPosition> positionMap = tradeApi.getPositionMap(optionCode);
+                StockPosition stockPosition = positionMap.get(optionCode);
+                if (stockPosition != null) {
+                    positions.put(optionCode, stockPosition);
+                }
+
+                return stockPosition;
+            }
 
             @Override
             public void run() {
@@ -607,8 +622,9 @@ public class OptionTradeExecutor {
                         double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
 
                         // 根据已成交的订单查看买入价，不断以最新报价计算是否触发止损价（不能以当前市价止损，因为流动性不够偏差会很大）
-                        StockPosition callPosition = tradeApi.getPositionMap(call).get(call);
-                        StockPosition putPosition = tradeApi.getPositionMap(put).get(put);
+
+                        StockPosition callPosition = getPosistion(call);
+                        StockPosition putPosition = getPosistion(call);
                         // 测试用 start ---------------
                         //                    callPosition = new StockPosition();
                         //                    callPosition.setCostPrice(1.03);
@@ -617,6 +633,10 @@ public class OptionTradeExecutor {
                         //                    putPosition.setCostPrice(0.78);
                         //                    putPosition.setCanSellQty(54);
                         // 测试用 end -----------------
+                        if (callPosition == null || putPosition == null) {
+                            log.info("{} position is null, call={}, put={}. retry", stock, callPosition, putPosition);
+                            continue;
+                        }
                         double callOpen = callPosition.getCostPrice();
                         double putOpen = putPosition.getCostPrice();
                         double callDiff = callMidPrice - callOpen;
