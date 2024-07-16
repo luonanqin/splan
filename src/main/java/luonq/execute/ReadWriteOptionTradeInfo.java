@@ -133,6 +133,7 @@ public class ReadWriteOptionTradeInfo {
         list.add(stock);
         try {
             BaseUtils.writeFile(HAS_BOUGHT_ORDER_PATH, list);
+            log.info("writeHasBoughtOrder {}", stock);
         } catch (Exception e) {
             log.error("writeHasBoughtOrder error. stock={}, list={}", stock, list, e);
         }
@@ -159,6 +160,7 @@ public class ReadWriteOptionTradeInfo {
         list.add(stock);
         try {
             BaseUtils.writeFile(HAS_BOUGHT_SUCCESS_PATH, list);
+            log.info("writeHasBoughtSuccess {}", stock);
         } catch (Exception e) {
             log.error("writeHasBoughtSuccess error. stock={}, list={}", stock, list, e);
         }
@@ -187,6 +189,7 @@ public class ReadWriteOptionTradeInfo {
         List<String> lines = map.entrySet().stream().map(e -> e.getKey() + "\t" + e.getValue()).collect(Collectors.toList());
         try {
             BaseUtils.writeFile(BUY_ORDER_ID_PATH, lines);
+            log.info("writeBuyOrderId {}, orderId={}", optionFutu, orderId);
         } catch (Exception e) {
             log.error("writeBuyOrderId error. option={}, orderId={}", optionFutu, orderId, e);
         }
@@ -213,6 +216,7 @@ public class ReadWriteOptionTradeInfo {
         list.add(stock);
         try {
             BaseUtils.writeFile(HAS_SOLD_ORDER_PATH, list);
+            log.info("writeHasSoldOrder {}", stock);
         } catch (Exception e) {
             log.error("writeHasSoldOrder error. stock={}, list={}", stock, list, e);
         }
@@ -239,6 +243,7 @@ public class ReadWriteOptionTradeInfo {
         list.add(stock);
         try {
             BaseUtils.writeFile(HAS_SOLD_SUCCESS_PATH, list);
+            log.info("writeHasSoldSuccess {}", stock);
         } catch (Exception e) {
             log.error("writeHasSoldSuccess error. stock={}, list={}", stock, list, e);
         }
@@ -267,6 +272,7 @@ public class ReadWriteOptionTradeInfo {
         List<String> lines = map.entrySet().stream().map(e -> e.getKey() + "\t" + e.getValue()).collect(Collectors.toList());
         try {
             BaseUtils.writeFile(SELL_ORDER_ID_PATH, lines);
+            log.info("writeSellOrderId {}, orderId={}", optionFutu, orderId);
         } catch (Exception e) {
             log.error("writeSellOrderId error. option={}, orderId={}", optionFutu, orderId, e);
         }
@@ -352,6 +358,7 @@ public class ReadWriteOptionTradeInfo {
         List<String> lines = map.entrySet().stream().map(e -> e.getKey() + "\t" + e.getValue()).collect(Collectors.toList());
         try {
             BaseUtils.writeFile(ORDER_COUNT_PATH, lines);
+            log.info("writeOrderCount {}, count={}", stock, count);
         } catch (Exception e) {
             log.error("writeOrderCount error. stock={}, count={}", stock, count, e);
         }

@@ -204,6 +204,8 @@ public class OptionStockListener {
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
         optionTradeExecutor.monitorQuote(futuCall);
         optionTradeExecutor.monitorQuote(futuPut);
+        optionTradeExecutor.monitorIV(futuCall);
+        optionTradeExecutor.monitorIV(futuPut);
 
         optionCodeMap.put(rtCall, futuCall);
         optionCodeMap.put(rtPut, futuPut);

@@ -65,7 +65,7 @@ public class OptionTradeExecutor {
     private static long STOP_MONITORY_BUY_ORDER_TIME_MILLI = 11 * 60 * 1000; // 开盘后11分钟停止监听买入订单的成交
     private static long STOP_MONITORY_SELL_ORDER_TIME_MILLI = 12 * 60 * 1000; // 开盘后12分钟如果没有买入成交的订单，则停止监听卖出订单的成交
     private static long STOP_LOSS_GAIN_INTERVAL_TIME_MILLI = 2 * 60 * 1000; // 开盘后2分钟才开始监听止损和止盈
-    private static long ORDER_INTERVAL_TIME_MILLI = 10 * 1000; // 下单后检查间隔时间
+    private static long ORDER_INTERVAL_TIME_MILLI = 1 * 1000; // 下单后检查间隔时间
     private static String CALL_TYPE = "C";
     private static String PUT_TYPE = "P";
     public static final double STOP_LOSS_RATIO = -0.2d; // 全交易时段的止损比例
@@ -78,6 +78,7 @@ public class OptionTradeExecutor {
     private Set<String> hasBoughtSuccess = Sets.newHashSet(); // 已成交买入
     private Set<String> hasSoldSuccess = Sets.newHashSet(); // 已成交卖出
     private Set<String> invalidStocks = Sets.newHashSet(); // 实际不能成交的股票，不用写入文件
+    private boolean hasFinishBuying = false; // 已经完成买入
     private Map<String/* futu option */, Long/* orderId */> buyOrderIdMap = Maps.newHashMap(); // 下单买入的订单id
     private Map<String/* futu option */, Long/* orderId */> sellOrderIdMap = Maps.newHashMap(); // 下单卖出的订单id
     private Map<String/* stock */, Long/* order time */> buyOrderTimeMap = Maps.newHashMap(); // 下单买入时的时间
@@ -142,6 +143,7 @@ public class OptionTradeExecutor {
         // 能交易的股票
         if (CollectionUtils.isEmpty(canTradeStocks)) {
             log.info("there is no stock can be traded");
+            hasFinishBuying = true;
             return;
         }
         log.info("there are stock can be traded. stock: {}", canTradeStocks);
@@ -245,8 +247,7 @@ public class OptionTradeExecutor {
         }
 
         while (true) {
-            if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()
-              && CollectionUtils.intersection(hasBoughtSuccess, hasSoldSuccess).size() == hasBoughtSuccess.size()) {
+            if (hasFinishBuying && CollectionUtils.intersection(hasBoughtSuccess, hasSoldSuccess).size() == hasBoughtSuccess.size()) {
                 log.info("all stock have finished trading. End!");
                 Thread.sleep(5000);
                 return;
@@ -289,6 +290,17 @@ public class OptionTradeExecutor {
         double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
         log.info("monitor option quote detail: optionCode={}\toptionBid={}\toptionAsk={}\toptionMid={}", futu, bidPrice, askPrice, midPrice);
 
+        double futuPredPrice = 0;
+        double futuIv = futuQuote.getOptionIvMap(futu);
+        if (futuIv > 0) {
+            if (StringUtils.equalsAnyIgnoreCase(optionType, CALL_TYPE)) {
+                futuPredPrice = BaseUtils.getCallPredictedValue(stockPrice, strikePrice, riskFreeRate, futuIv, currentTradeDate, expireDate);
+            } else {
+                futuPredPrice = BaseUtils.getPutPredictedValue(stockPrice, strikePrice, riskFreeRate, futuIv, currentTradeDate, expireDate);
+            }
+        }
+        log.info("calculate futu predicate price. optionCode={}\tiv={}", futuPredPrice, futuIv);
+
         double tradePrice;
         if (predPrice < bidPrice || predPrice > midPrice) {
             tradePrice = midPrice;
@@ -330,12 +342,12 @@ public class OptionTradeExecutor {
 
             @Override
             public void run() {
-                if (MapUtils.isEmpty(canTradeOptionForRtIVMap)) {
+                if (MapUtils.isEmpty(canTradeOptionForRtIVMap) && !hasFinishBuying) {
                     log.info("get realtime iv. but there is no option to get. waiting......");
                     return;
                 }
 
-                if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()) {
+                if (hasFinishBuying) {
                     log.info("all stock don't need get realtime iv");
                     timer.cancel();
                     return;
@@ -357,7 +369,7 @@ public class OptionTradeExecutor {
                             String timestamp = rt.getTimestamp();
                             double iv = rt.getIv();
                             String line = symbol + "\t" + timestamp + "\t" + iv + "\t" + curent;
-                            if (timestamp.contains("T09:2") || iv == -1.0) {
+                            if (!(timestamp.contains("T09:3") || timestamp.contains("T09:4") || timestamp.contains("T09:5")) || iv == -1.0) {
                                 continue;
                             }
                             results.add(line);
@@ -406,6 +418,7 @@ public class OptionTradeExecutor {
     public void monitorBuyOrder() {
         log.info("monitor buy order");
         long openTime = client.getOpenTime();
+        Map<String, Double> lastTradePriceMap = Maps.newHashMap();
         while (true) {
             for (String stock : hasBoughtOrder) {
                 if (hasBoughtSuccess.contains(stock)) {
@@ -440,8 +453,11 @@ public class OptionTradeExecutor {
                             hasTradeCount = buyCallOrder.getCount();
                         }
                         double tradePrice = calTradePrice(stock, callRt, CALL_TYPE);
-                        long modifyOrderId = tradeApi.upOrderPrice(buyCallOrderId, count, tradePrice);
-                        log.info("modify buy call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, call, tradePrice, count, hasTradeCount);
+                        if (!lastTradePriceMap.containsKey(call) || lastTradePriceMap.get(call).compareTo(tradePrice) != 0) {
+                            long modifyOrderId = tradeApi.upOrderPrice(buyCallOrderId, count, tradePrice);
+                            log.info("modify buy call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, call, tradePrice, count, hasTradeCount);
+                        }
+                        lastTradePriceMap.put(call, tradePrice);
                     }
                     if (!putSuccess) {
                         double hasTradeCount = 0;
@@ -449,8 +465,11 @@ public class OptionTradeExecutor {
                             hasTradeCount = buyPutOrder.getCount();
                         }
                         double tradePrice = calTradePrice(stock, putRt, PUT_TYPE);
-                        long modifyOrderId = tradeApi.upOrderPrice(buyPutOrderId, count, tradePrice);
-                        log.info("modify buy put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, put, tradePrice, count, hasTradeCount);
+                        if (!lastTradePriceMap.containsKey(put) || lastTradePriceMap.get(put).compareTo(tradePrice) != 0) {
+                            long modifyOrderId = tradeApi.upOrderPrice(buyPutOrderId, count, tradePrice);
+                            log.info("modify buy put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, put, tradePrice, count, hasTradeCount);
+                        }
+                        lastTradePriceMap.put(put, tradePrice);
                     }
                     long curTime = System.currentTimeMillis();
                     buyOrderTimeMap.put(stock, curTime);
@@ -465,6 +484,7 @@ public class OptionTradeExecutor {
 
             if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()) {
                 log.info("all stock has bought success: {}. stop monitor buy order", canTradeStocks);
+                hasFinishBuying = true;
                 RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
                 return;
             }
@@ -474,6 +494,7 @@ public class OptionTradeExecutor {
     public void monitorSellOrder() {
         log.info("monitor sell order");
         long openTime = client.getOpenTime();
+        Map<String, Double> lastTradePriceMap = Maps.newHashMap();
         while (true) {
             long current = System.currentTimeMillis();
             //            if (!hasBoughtSuccess.isEmpty()) {
@@ -513,8 +534,11 @@ public class OptionTradeExecutor {
                             continue;
                         }
 
-                        long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, count, tradePrice);
-                        log.info("modify sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, call, tradePrice, count, hasTradeCount);
+                        if (!lastTradePriceMap.containsKey(call) || lastTradePriceMap.get(call).compareTo(tradePrice) != 0) {
+                            long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, count, tradePrice);
+                            log.info("modify sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, call, tradePrice, count, hasTradeCount);
+                        }
+                        lastTradePriceMap.put(call, tradePrice);
                     }
                     if (!putSuccess) {
                         double hasTradeCount = 0;
@@ -528,8 +552,11 @@ public class OptionTradeExecutor {
                             continue;
                         }
 
-                        long modifyOrderId = tradeApi.upOrderPrice(sellPutOrderId, count, tradePrice);
-                        log.info("modify sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, put, tradePrice, count, hasTradeCount);
+                        if (!lastTradePriceMap.containsKey(put) || lastTradePriceMap.get(put).compareTo(tradePrice) != 0) {
+                            long modifyOrderId = tradeApi.upOrderPrice(sellPutOrderId, count, tradePrice);
+                            log.info("modify sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, put, tradePrice, count, hasTradeCount);
+                        }
+                        lastTradePriceMap.put(put, tradePrice);
                     }
                     long curTime = System.currentTimeMillis();
                     sellOrderTimeMap.put(stock, curTime);
@@ -538,13 +565,12 @@ public class OptionTradeExecutor {
             }
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 log.error("ignore2", e);
             }
             // 如果可交易数量=买入成功数量，且买入成功数量=卖出成功数量
-            if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()
-              && CollectionUtils.intersection(hasBoughtSuccess, hasSoldSuccess).size() == hasBoughtSuccess.size()) {
+            if (hasFinishBuying && CollectionUtils.intersection(hasBoughtSuccess, hasSoldSuccess).size() == hasBoughtSuccess.size()) {
                 log.info("all stock has sold: {}. stop monitor buy order", canTradeStocks);
                 return;
             }
@@ -756,6 +782,11 @@ public class OptionTradeExecutor {
     public void monitorQuote(String optionCode) {
         futuQuote.subOrderBook(optionCode);
         log.info("monitor option quote: {}", optionCode);
+    }
+
+    public void monitorIV(String optionCode) {
+        futuQuote.subBasicQuote(optionCode);
+        log.info("monitor option iv: {}", optionCode);
     }
 
     public static void main(String[] args) throws InterruptedException {
