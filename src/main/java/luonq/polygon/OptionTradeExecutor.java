@@ -24,6 +24,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
@@ -299,7 +300,7 @@ public class OptionTradeExecutor {
                 futuPredPrice = BaseUtils.getPutPredictedValue(stockPrice, strikePrice, riskFreeRate, futuIv, currentTradeDate, expireDate);
             }
         }
-        log.info("calculate futu predicate price. optionCode={}\tiv={}", futuPredPrice, futuIv);
+        log.info("calculate futu predicate price. optionCode={}\tpredPrice={}\tiv={}", option, futuPredPrice, futuIv);
 
         double tradePrice;
         if (predPrice < bidPrice || predPrice > midPrice) {
@@ -333,8 +334,15 @@ public class OptionTradeExecutor {
         //            return;
         //        }
 
+        int beginMarket = 93000;
+        int closeMarket = 160000;
         long closeTime = client.getCloseCheckTime().getTime();
+
         HttpClient httpClient = new HttpClient();
+        HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
+        httpConnectionManagerParams.setSoTimeout(5000);
+        httpClient.getHttpConnectionManager().setParams(httpConnectionManagerParams);
+
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -354,6 +362,7 @@ public class OptionTradeExecutor {
                 }
                 String options = canTradeOptionForRtIVMap.values().stream().flatMap(o -> Arrays.stream(o.split("\\|"))).collect(Collectors.joining(","));
                 String url = "https://restapi.ivolatility.com/equities/rt/options-rawiv?apiKey=5uO8Wid7AY945OJ2&symbols=" + options;
+                log.info("request rt iv url={}", url);
 
                 List<String> results = Lists.newArrayList();
                 GetMethod get = new GetMethod(url);
@@ -369,9 +378,22 @@ public class OptionTradeExecutor {
                             String timestamp = rt.getTimestamp();
                             double iv = rt.getIv();
                             String line = symbol + "\t" + timestamp + "\t" + iv + "\t" + curent;
-                            if (!(timestamp.contains("T09:3") || timestamp.contains("T09:4") || timestamp.contains("T09:5")) || iv == -1.0) {
+
+                            if (iv == -1.0) {
                                 continue;
                             }
+                            int timeInt = 0;
+                            try {
+                                String timeStr = timestamp.substring(11, 19).replaceAll(":", "");
+                                timeInt = Integer.valueOf(timeStr);
+                            } catch (Exception e) {
+                                log.error("calculate rt iv time error. timestamp={}", timestamp, e);
+                                return;
+                            }
+                            if (timeInt < beginMarket || timeInt > closeMarket) {
+                                continue;
+                            }
+
                             results.add(line);
                             optionRtIvMap.put(symbol.replaceAll(" ", "+"), iv);
                         }
@@ -650,7 +672,7 @@ public class OptionTradeExecutor {
                         // 根据已成交的订单查看买入价，不断以最新报价计算是否触发止损价（不能以当前市价止损，因为流动性不够偏差会很大）
 
                         StockPosition callPosition = getPosistion(call);
-                        StockPosition putPosition = getPosistion(call);
+                        StockPosition putPosition = getPosistion(put);
                         // 测试用 start ---------------
                         //                    callPosition = new StockPosition();
                         //                    callPosition.setCostPrice(1.03);
