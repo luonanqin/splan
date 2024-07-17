@@ -211,6 +211,8 @@ public class OptionStockListener {
         optionCodeMap.put(rtPut, futuPut);
 
         canTradeStocks.add(stock); // 这里一定要先确定可交易的股票再开始rt的监听
+        optionTradeExecutor.addBuyOrder(stock);
+        optionTradeExecutor.addSellOrder(stock);
         canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);
     }
 

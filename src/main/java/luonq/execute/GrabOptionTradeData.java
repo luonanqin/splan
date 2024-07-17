@@ -359,7 +359,7 @@ public class GrabOptionTradeData {
                 continue;
             }
             if (hasGet.contains(stock)) {
-//                continue;
+                continue;
             }
 
             List<String> callAndPut = stockToOptionCodeMap.get(stock);
