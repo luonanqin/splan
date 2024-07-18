@@ -147,22 +147,6 @@ public class RealTimeDataWS_DB {
 
             initTrade();
 
-//            if (testOption || MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
-//                initHistoricalData();
-//                initMessageListener();
-//                if (!testOption && MapUtils.isEmpty(tradeExecutor.getAllPosition())) {
-//                    subcribeStock();
-//                    //                inputTestData();
-//                    sendToTradeDataListener();
-//                }
-//                if (testOption && MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
-//                    optionTradeExecutor.reSendOpenPrice();
-//                    Thread.sleep(3000);
-//                    getRealtimeQuoteForOption();
-//                    optionTradeExecutor.restart();
-//                }
-//            }
-
             if (testOption) {
                 initHistoricalData();
                 initMessageListener();
@@ -335,18 +319,33 @@ public class RealTimeDataWS_DB {
             preTrade = now.minusDays(1);
         }
 
+        long checkOpenTime = 0;
+        LocalDateTime checkPre, checkOpen;
         int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
             openHour = 21;
             closeHour = 3;
+            checkPre = now.withHour(21).withMinute(22).withSecond(0).withNano(0);
+            checkOpen = now.withHour(21).withMinute(30).withSecond(0).withNano(0);
+            checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
         } else {
             openHour = 22;
             closeHour = 4;
+            checkPre = now.withHour(22).withMinute(22).withSecond(0).withNano(0);
+            checkOpen = now.withHour(22).withMinute(30).withSecond(0).withNano(0);
+            checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
         }
         preTradeTime = preTrade.withHour(openHour).withMinute(preMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
         openTime = now.withHour(openHour).withMinute(openMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
         closeCheckTime = Date.from(closeCheck.withHour(closeHour).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         listenEndTime = openTime + LISTENING_TIME;
+
+        // check the open time
+        if (now.isAfter(checkPre) && now.isBefore(checkOpen) && openTime != checkOpenTime) {
+            log.error("open time is illegal!!! please change it");
+            System.exit(0);
+        }
+
         log.info("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
     }
 
@@ -691,7 +690,7 @@ public class RealTimeDataWS_DB {
                     //                        continue;
                     //                    }
 
-//                    log.info("receive data: {}", msg);
+                    //                    log.info("receive data: {}", msg);
                     stockToEvent.put(stock, new StockEvent(stock, price, time));
                 }
 
@@ -725,10 +724,10 @@ public class RealTimeDataWS_DB {
         log.info(msg);
         unsubscribeAll();
         listenEnd = true;
-//        getRealtimeQuote();
+        //        getRealtimeQuote();
         getRealtimeQuoteForOption();
         ReadWriteOptionTradeInfo.writeStockOpenPrice();
-//        tradeExecutor.beginTrade();
+        //        tradeExecutor.beginTrade();
         optionTradeExecutor.beginTrade();
     }
 
@@ -829,10 +828,10 @@ public class RealTimeDataWS_DB {
                             realtimeQuoteForOptionMap.put(stock, tradePrice);
                         }
                     }
-                    long current = System.currentTimeMillis();
-                    if ((current / 1000) % 20 == 0) {
-                        log.info("quote for option price(time={}): {}", current, realtimeQuoteForOptionMap);
-                    }
+                    //                    long current = System.currentTimeMillis();
+                    //                    if ((current / 1000) % 20 == 0) {
+                    //                        log.info("quote for option price(time={}): {}", current, realtimeQuoteForOptionMap);
+                    //                    }
                 }
 
                 // 退出前反订阅
