@@ -597,7 +597,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
 
                 List<TrdCommon.Position> positionListList = rsp.getS2COrBuilder().getPositionListList();
                 if (CollectionUtils.isNotEmpty(positionListList)) {
-                    Map<String, TrdCommon.Position> codeToPositionMap = positionListList.stream().collect(Collectors.toMap(TrdCommon.Position::getCode, Function.identity()));
+                    Map<String, TrdCommon.Position> codeToPositionMap = positionListList.stream().collect(Collectors.toMap(TrdCommon.Position::getCode, Function.identity(), (v1, v2) -> v1));
                     for (String code : codeToPositionMap.keySet()) {
                         TrdCommon.Position position = codeToPositionMap.get(code);
                         double canSellQty = position.getCanSellQty();
@@ -838,7 +838,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         //        trdApi.unlock();
         double funds = trdApi.getFunds();
         System.out.println(funds);
-//        trdApi.placeNormalBuyOrder("NVDA240712C120000", 1, 4.4);
+        //        trdApi.placeNormalBuyOrder("NVDA240712C120000", 1, 4.4);
         Map<String, Long> orderList = trdApi.getOrderList(Lists.newArrayList(4238970185723004977L));
         //        Map<String, StockPosition> positionMap = trdApi.getPositionMap("NTES");
         //        System.out.println(positionMap);

@@ -34,6 +34,7 @@ public class OptionStockListener {
     public Map<String/* stock */, String/* call and put*/> canTradeOptionForFutuMap = Maps.newHashMap();
     public Map<String/* stock */, String/* call and put*/> canTradeOptionForRtIVMap = Maps.newHashMap();
     public Set<String> canTradeStocks = Sets.newHashSet();
+    public Map<String/* stock */, Long/* all last option volume */> stockLastOptionVolMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* futu code */> optionCodeMap = Maps.newHashMap();
     public Map<String/* rt iv code */, Double/* strike price */> optionStrikePriceMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* expire date */> optionExpireDateMap = Maps.newHashMap();
@@ -172,7 +173,10 @@ public class OptionStockListener {
 
         OptionDaily callLastDaily = LoadOptionTradeData.optionToLastDailyMap.get(call);
         OptionDaily putLastDaily = LoadOptionTradeData.optionToLastDailyMap.get(put);
-        if (callLastDaily == null || putLastDaily == null || callLastDaily.getVolume() < 100 || putLastDaily.getVolume() < 100) {
+        long callLastDailyVolume = callLastDaily.getVolume();
+        long putLastDailyVolume = putLastDaily.getVolume();
+        long totalLastDailyVolume = callLastDailyVolume + putLastDailyVolume;
+        if (callLastDaily == null || putLastDaily == null || callLastDailyVolume < 100 || putLastDailyVolume < 100) {
             log.warn("{}\t{} last volume is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
             return;
         }
@@ -211,6 +215,7 @@ public class OptionStockListener {
         optionCodeMap.put(rtPut, futuPut);
 
         canTradeStocks.add(stock); // 这里一定要先确定可交易的股票再开始rt的监听
+        stockLastOptionVolMap.put(stock, totalLastDailyVolume);
         optionTradeExecutor.addBuyOrder(stock);
         optionTradeExecutor.addSellOrder(stock);
         canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);

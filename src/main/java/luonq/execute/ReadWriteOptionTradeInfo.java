@@ -129,8 +129,9 @@ public class ReadWriteOptionTradeInfo {
     }
 
     public static void writeHasBoughtOrder(String stock) {
-        List<String> list = Lists.newArrayList(readHasBoughtOrder());
-        list.add(stock);
+        Set<String> elements = readHasBoughtOrder();
+        elements.add(stock);
+        List<String> list = Lists.newArrayList(elements);
         try {
             BaseUtils.writeFile(HAS_BOUGHT_ORDER_PATH, list);
             log.info("writeHasBoughtOrder {}", stock);
@@ -156,8 +157,10 @@ public class ReadWriteOptionTradeInfo {
     }
 
     public static void writeHasBoughtSuccess(String stock) {
-        List<String> list = Lists.newArrayList(readHasBoughtSuccess());
-        list.add(stock);
+        Set<String> elements = readHasBoughtSuccess();
+        elements.add(stock);
+        List<String> list = Lists.newArrayList(elements);
+
         try {
             BaseUtils.writeFile(HAS_BOUGHT_SUCCESS_PATH, list);
             log.info("writeHasBoughtSuccess {}", stock);
@@ -212,8 +215,9 @@ public class ReadWriteOptionTradeInfo {
     }
 
     public static void writeHasSoldOrder(String stock) {
-        List<String> list = Lists.newArrayList(readHasSoldOrder());
-        list.add(stock);
+        Set<String> elements = readHasSoldOrder();
+        elements.add(stock);
+        List<String> list = Lists.newArrayList(elements);
         try {
             BaseUtils.writeFile(HAS_SOLD_ORDER_PATH, list);
             log.info("writeHasSoldOrder {}", stock);
@@ -239,8 +243,9 @@ public class ReadWriteOptionTradeInfo {
     }
 
     public static void writeHasSoldSuccess(String stock) {
-        List<String> list = Lists.newArrayList(readHasSoldSuccess());
-        list.add(stock);
+        Set<String> elements = readHasSoldSuccess();
+        elements.add(stock);
+        List<String> list = Lists.newArrayList(elements);
         try {
             BaseUtils.writeFile(HAS_SOLD_SUCCESS_PATH, list);
             log.info("writeHasSoldSuccess {}", stock);

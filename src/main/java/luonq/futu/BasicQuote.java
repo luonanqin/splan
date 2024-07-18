@@ -24,6 +24,7 @@ import util.Constants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +116,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 if (optionExData != null) {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     optionIvMap.put(stock, impliedVolatility);
+                    System.out.println(LocalDateTime.now() + " " + stock + " " + impliedVolatility);
                     //                    double predPrice = 0;
                     //                    if (optionTypeMap.get(stock) == 1) {
                     //                        predPrice = BaseUtils.getCallPredictedValue(256.41, 257.5, 0.0522, impliedVolatility, "2024-07-16", "2024-07-19");
@@ -223,21 +225,21 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
           .setIsSubOrUnSub(true)
           .setIsRegOrUnRegPush(true)
           .build();
-//        if (stock.length() > 5) {
-//            int i = stock.length() - 1;
-//            for (; i >= 0; i--) {
-//                if (stock.charAt(i) < '0' || stock.charAt(i) > '9') {
-//                    break;
-//                }
-//            }
-//            if (stock.charAt(i) == 'C') {
-//                optionTypeMap.put(stock, 1);
-//            } else if (stock.charAt(i) == 'P') {
-//                optionTypeMap.put(stock, 2);
-//            } else {
-//                optionTypeMap.put(stock, 0);
-//            }
-//        }
+        //        if (stock.length() > 5) {
+        //            int i = stock.length() - 1;
+        //            for (; i >= 0; i--) {
+        //                if (stock.charAt(i) < '0' || stock.charAt(i) > '9') {
+        //                    break;
+        //                }
+        //            }
+        //            if (stock.charAt(i) == 'C') {
+        //                optionTypeMap.put(stock, 1);
+        //            } else if (stock.charAt(i) == 'P') {
+        //                optionTypeMap.put(stock, 2);
+        //            } else {
+        //                optionTypeMap.put(stock, 0);
+        //            }
+        //        }
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
         //        System.out.printf("Send QotSub: %d\n", seqNo);
@@ -278,7 +280,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
-        System.out.printf("Send QotSub: %d\n", seqNo);
+        //        System.out.printf("Send QotSub: %d\n", seqNo);
     }
 
     public void getSubInfo() {
@@ -370,7 +372,8 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         //        quote.subBasicQuote("SEDG240719P28000");
         //        quote.subBasicQuote("HUT240719C18500");
         //        quote.subBasicQuote("HUT240719P18000");
-        quote.subBasicQuote("TSLA240719C257500");
+//        quote.subBasicQuote("TSLA240719C252500");
+        quote.unSubBasicQuote("TSLA240719C252500");
         quote.subBasicQuote("TSLA240719P255000");
         System.out.println(quote.getOptionIvMap("TSLA240719C257500"));
         //        quote.getBasicQot("TSLA240719P255000");

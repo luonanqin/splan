@@ -93,8 +93,10 @@ public class OptionTradeExecutor {
 
     public ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 10, 3600, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
-    // 能交易的股票
+    // listener计算出能交易的股票，待过滤无效和排序截取
     private Set<String> canTradeStocks = Sets.newHashSet();
+    // listener计算出能交易的股票及对应前日期权成交量
+    Map<String, Long> stockLastOptionVolMap = Maps.newHashMap();
     // code的实时iv
     private Map<String, Double> optionRtIvMap = Maps.newHashMap();
     // 股票对应实时iv code
@@ -141,11 +143,11 @@ public class OptionTradeExecutor {
         riskFreeRate = LoadOptionTradeData.riskFreeRate;
         currentTradeDate = LoadOptionTradeData.currentTradeDate;
         canTradeStocks = optionStockListener.getCanTradeStocks();
+        stockLastOptionVolMap = optionStockListener.getStockLastOptionVolMap();
         codeToQuoteMap = futuQuote.getCodeToQuoteMap();
     }
 
     public void beginTrade() throws InterruptedException {
-        //        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
         // 能交易的股票
         if (CollectionUtils.isEmpty(canTradeStocks)) {
             log.info("there is no stock can be traded");
@@ -153,12 +155,27 @@ public class OptionTradeExecutor {
             return;
         }
         log.info("there are stock can be traded. stock: {}", canTradeStocks);
-        // 监听实时iv
-        //        getRealTimeIV();
+
+        // 按前日的总成交量倒排，过滤掉无效stock之后，截取前五个进行交易
+        List<String> sortedCanTradeStock = stockLastOptionVolMap.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).map(kv -> kv.getKey()).collect(Collectors.toList());
+        sortedCanTradeStock.removeAll(invalidStocks);
+        if (CollectionUtils.isEmpty(sortedCanTradeStock)) {
+            log.info("except invalid stock, there is no stock can be traded");
+            hasFinishBuying = true;
+            return;
+        }
+
+        if (sortedCanTradeStock.size() > 5) {
+            canTradeStocks = Sets.newHashSet(sortedCanTradeStock.subList(0, 5));
+            log.info("can trade stock size > 5. after intercept, the stocks are {}", canTradeStocks);
+        } else {
+            canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
+            log.info("can trade stock size <= 5. don't intercept, the stocks are {}", canTradeStocks);
+        }
 
         // 均分账户资金
         //        double funds = tradeApi.getFunds();
-        int actualSize = canTradeStocks.size() - hasSoldSuccess.size();
+        int actualSize = canTradeStocks.size();
         if (actualSize == 0) {
             log.info("all stock has been sold. exit");
             return;
@@ -167,20 +184,11 @@ public class OptionTradeExecutor {
         }
         log.info("funds: {}, avgFund: {}", funds, avgFund);
 
-        // 监听富途报价
-        //        List<String> futuOptionList = canTradeOptionForFutuMap.values().stream().flatMap(o -> Arrays.stream(o.split("\\|"))).collect(Collectors.toList());
-        //        for (String optionCode : futuOptionList) {
-        //            futuQuote.subOrderBook(optionCode);
-        //        }
-        //        log.info("monitor option quote list: {}", futuOptionList);
-
         getOrder();
         threadPool.execute(() -> monitorBuyOrder());
         threadPool.execute(() -> monitorSellOrder());
         stopLossAndGain();
-
-        // 暂停2秒，保证实时iv有数据
-        //        Thread.sleep(2000);
+        delayUnsubscribeQuote();
 
         while (true) {
             for (String stock : canTradeStocks) {
@@ -376,9 +384,9 @@ public class OptionTradeExecutor {
                     timer.cancel();
                     return;
                 }
-                String options = canTradeOptionForRtIVMap.values().stream().flatMap(o -> Arrays.stream(o.split("\\|"))).collect(Collectors.joining(","));
+                String options = canTradeOptionForRtIVMap.entrySet().stream().filter(kv -> !hasBoughtSuccess.contains(kv.getKey())).flatMap(kv -> Arrays.stream(kv.getValue().split("\\|"))).collect(Collectors.joining(","));
                 String url = "https://restapi.ivolatility.com/equities/rt/options-rawiv?apiKey=5uO8Wid7AY945OJ2&symbols=" + options;
-                log.info("request rt iv url={}", url);
+                //                log.info("request rt iv url={}", url);
 
                 List<String> results = Lists.newArrayList();
                 GetMethod get = new GetMethod(url);
@@ -415,6 +423,9 @@ public class OptionTradeExecutor {
                         }
                         if (MapUtils.isNotEmpty(optionRtIvMap)) {
                             for (String stock : canTradeOptionForRtIVMap.keySet()) {
+                                if (hasBoughtSuccess.contains(stock)) {
+                                    continue;
+                                }
                                 String callAndPut = canTradeOptionForRtIVMap.get(stock);
                                 String[] split = callAndPut.split("\\|");
                                 String callRt = split[0];
@@ -460,10 +471,10 @@ public class OptionTradeExecutor {
         while (true) {
             for (String stock : hasBoughtOrderMap.keySet()) {
                 int hasBoughtOrder = MapUtils.getInteger(hasBoughtOrderMap, stock, NOT_EXIST);
-                if (hasBoughtOrder == NOT_EXIST) {
+                if (hasBoughtOrder == NOT_EXIST) { // 不在boughtOrder里，说明还没有买入订单不需要监听
                     continue;
                 }
-                if (hasBoughtSuccess.contains(stock)) {
+                if (hasBoughtSuccess.contains(stock)) { // 已经全部买完，不需要监听
                     continue;
                 }
 
@@ -486,7 +497,6 @@ public class OptionTradeExecutor {
                 if (callSuccess && putSuccess) {
                     ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
                     hasBoughtSuccess.add(stock);
-                    canTradeOptionForRtIVMap.remove(stock);
                     log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, call, buyCallOrderId, put, buyPutOrderId, count);
                 } else if (System.currentTimeMillis() - buyOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
                     if (!callSuccess) {
@@ -542,10 +552,10 @@ public class OptionTradeExecutor {
             //            if (!hasBoughtSuccess.isEmpty()) {
             for (String stock : hasSoldOrderMap.keySet()) {
                 int hasSoldOrder = MapUtils.getInteger(hasSoldOrderMap, stock, NOT_EXIST);
-                if (hasSoldOrder == NOT_EXIST) {
+                if (hasSoldOrder == NOT_EXIST) { // 不在soldOrder里，说明还没有卖出订单不需要监听
                     continue;
                 }
-                if (hasSoldSuccess.contains(stock)) {
+                if (hasSoldSuccess.contains(stock)) { // 已经全部卖完，不需要监听
                     continue;
                 }
 
@@ -674,7 +684,7 @@ public class OptionTradeExecutor {
                     long currentTime = System.currentTimeMillis();
                     for (String stock : hasBoughtSuccess) {
                         int hasSoldOrder = MapUtils.getInteger(hasSoldOrderMap, stock, NOT_EXIST);
-                        if (hasSoldOrder == EXIST) {
+                        if (hasSoldOrder == EXIST) { // 在soldOrder里，说明都已经下单卖出，不需要监听
                             continue;
                         }
 
@@ -936,6 +946,9 @@ public class OptionTradeExecutor {
         sellOrderTimeMap = ReadWriteOptionTradeInfo.readSellOrderTime();
         orderCountMap = ReadWriteOptionTradeInfo.readOrderCount();
 
+        hasBoughtSuccess = hasBoughtSuccess.stream().filter(s -> canTradeStocks.contains(s)).collect(Collectors.toSet());
+        hasSoldSuccess = hasSoldSuccess.stream().filter(s -> canTradeStocks.contains(s)).collect(Collectors.toSet());
+
         try {
             beginTrade();
         } catch (InterruptedException e) {
@@ -952,7 +965,6 @@ public class OptionTradeExecutor {
         ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
         ReadWriteOptionTradeInfo.writeHasSoldOrder(stock);
         ReadWriteOptionTradeInfo.writeHasSoldSuccess(stock);
-        canTradeOptionForRtIVMap.remove(stock);
         invalidStocks.add(stock);
 
         log.info("invalid stock: {}", invalidStocks);
@@ -984,6 +996,22 @@ public class OptionTradeExecutor {
 
     public void addSellOrder(String stock) {
         hasSoldOrderMap.put(stock, NOT_EXIST);
+    }
+
+    public void delayUnsubscribeQuote() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (CollectionUtils.isNotEmpty(invalidStocks)) {
+                    for (String s : tradeStock) {
+                        futuQuote.unSubBasicQuote(s);
+                    }
+                }
+                log.info("unsubscribe quote. invalid stocks: {}", invalidStocks);
+                timer.cancel();
+            }
+        }, 1000 * 60 * 1);
     }
 
     public static void main(String[] args) throws InterruptedException {
