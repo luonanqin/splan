@@ -118,7 +118,7 @@ public class OptionTradeExecutor {
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
-    private double funds = 10000d; // todo 测试用要删
+    private double funds = 100000d; // todo 测试用要删
 
     public void init() {
         FTAPI.init();
@@ -228,6 +228,11 @@ public class OptionTradeExecutor {
                 double count = (int) countDouble;
                 if (Integer.valueOf(dotStr) <= 5) {
                     count = (int) countDouble - 1;
+                }
+
+                if (count <= 0) {
+                    invalidTradeStock(stock);
+                    log.info("count is illegal. stock={}, count={}", stock, count);
                 }
 
                 //                if (callTradePrice < 0.1 || putTradePrice < 0.1) {
@@ -748,14 +753,19 @@ public class OptionTradeExecutor {
                                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                                     ReadWriteOptionTradeInfo.writeSellOrderId(call, sellCallOrderId);
                                     lastTradePriceMap.put(call, callMidPrice);
-                                }
-                                if (putDiff > 0) {
+                                    gainSellStatusMap.put(stock, GAIN_SELLING);
+                                    gainSellOption.add(call);
+                                    log.info("gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellCallOrderId, call, callMidPrice, callCount);
+                                } else if (putDiff > 0) {
                                     long sellPutOrderId = tradeApi.placeNormalSellOrder(put, putCount, putMidPrice);
                                     sellOrderTimeMap.put(stock, curTime);
                                     sellOrderIdMap.put(put, sellPutOrderId);
                                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                                     ReadWriteOptionTradeInfo.writeSellOrderId(put, sellPutOrderId);
                                     lastTradePriceMap.put(put, putMidPrice);
+                                    gainSellStatusMap.put(stock, GAIN_SELLING);
+                                    gainSellOption.add(put);
+                                    log.info("gain sell put order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellPutOrderId, put, putMidPrice, putCount);
                                 }
                             }
                         } else if (gainSellStatus == GAIN_SELLING) { // 上涨卖出中
