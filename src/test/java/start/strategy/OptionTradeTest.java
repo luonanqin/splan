@@ -36,8 +36,9 @@ public class OptionTradeTest extends BaseTest {
     @Test
     public void test_getOptionChain() throws Exception {
         grabOptionTradeData.init();
-        grabOptionTradeData.lastTradeDate = "2024-07-02";
-        grabOptionTradeData.stocks.add("NVDA");
+        grabOptionTradeData.lastTradeDate = "2024-07-18";
+        grabOptionTradeData.calCurrentTradeDate();
+        grabOptionTradeData.stocks.add("WYNN");
         grabOptionTradeData.grabOptionChain();
         grabOptionTradeData.grabLastdayOHLC();
         grabOptionTradeData.grabOptionId();
@@ -60,10 +61,12 @@ public class OptionTradeTest extends BaseTest {
     @Test
     public void test_getRealTimeIV() throws Exception {
         RealTimeDataWS_DB client = new RealTimeDataWS_DB();
+        client.setCloseCheckTime(new Date());
         client.setOpenTime(1720531800000l);
         HashMap<String, String> canTradeOptionForRtIVMap = Maps.newHashMap();
-        canTradeOptionForRtIVMap.put("NKLA", "NKLA++240712C00012000|NKLA++240712P00011000");
+        canTradeOptionForRtIVMap.put("NKLA", "NKLA++240719C00012000|NKLA++240719P00011000");
         optionTradeExecutor.setClient(client);
+        optionTradeExecutor.setCanTradeOptionForRtIVMap(canTradeOptionForRtIVMap);
         optionTradeExecutor.getRealTimeIV();
         System.out.println();
     }
@@ -105,7 +108,7 @@ public class OptionTradeTest extends BaseTest {
     public void test_calTradePrice() throws Exception {
         loadOptionTradeData.load();
         String stock = "TSLA";
-        double open = 224.0;
+        double open = 262.7;
         String callRt = "TSLA++240705C00230000";
         String putRt = "TSLA++240705C00220000";
         RealTimeDataWS_DB.realtimeQuoteForOptionMap.put(stock, open);

@@ -14,6 +14,7 @@ import luonq.data.ReadFromDB;
 import luonq.ivolatility.GetDailyImpliedVolatility;
 import luonq.strategy.Strategy32;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -390,7 +391,9 @@ public class GrabOptionTradeData {
 
                 optionCodeDateMap.put(optionCode, currentTradeDate);
             }
-            GetDailyImpliedVolatility.getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap, lastTradeDate);
+            if (MapUtils.isNotEmpty(optionCodeDateMap)) {
+                GetDailyImpliedVolatility.getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap, lastTradeDate);
+            }
 
             log.info("finish grab historical iv: {}", stock);
         }
@@ -425,7 +428,7 @@ public class GrabOptionTradeData {
                 } finally {
                     queue.offer(httpClient);
                     cdl.countDown();
-//                    System.out.println("lastday OHLC cdl:" + cdl.getCount());
+                    System.out.println("lastday OHLC cdl:" + cdl.getCount());
                 }
             });
         }
