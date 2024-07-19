@@ -173,13 +173,11 @@ public class OptionStockListener {
 
         OptionDaily callLastDaily = LoadOptionTradeData.optionToLastDailyMap.get(call);
         OptionDaily putLastDaily = LoadOptionTradeData.optionToLastDailyMap.get(put);
-        long callLastDailyVolume = callLastDaily.getVolume();
-        long putLastDailyVolume = putLastDaily.getVolume();
-        long totalLastDailyVolume = callLastDailyVolume + putLastDailyVolume;
-        if (callLastDaily == null || putLastDaily == null || callLastDailyVolume < 100 || putLastDailyVolume < 100) {
+        if (callLastDaily == null || putLastDaily == null || callLastDaily.getVolume() < 100 || putLastDaily.getVolume() < 100) {
             log.warn("{}\t{} last volume is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
             return;
         }
+        long totalLastDailyVolume = callLastDaily.getVolume() + putLastDaily.getVolume();
 
         log.info("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{} can trade", stock, open, call, callIvList, put, putIvList, callLastDaily, putLastDaily);
         String callCode = call.substring(2);
