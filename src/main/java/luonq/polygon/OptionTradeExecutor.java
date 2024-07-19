@@ -33,6 +33,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -265,7 +268,8 @@ public class OptionTradeExecutor {
                 ReadWriteOptionTradeInfo.writeHasBoughtOrder(stock);
                 hasBoughtOrderMap.put(stock, EXIST);
             }
-            if (canTradeStocks.size() == hasBoughtOrderMap.values().stream().filter(v -> v.intValue() == EXIST).count()) {
+            Set<String> hasBoughtOrderStocks = hasBoughtOrderMap.entrySet().stream().filter(e -> e.getValue().intValue() == EXIST).map(e -> e.getKey()).collect(Collectors.toSet());
+            if (CollectionUtils.intersection(canTradeStocks, hasBoughtOrderStocks).size() == canTradeStocks.size()) {
                 log.info("all stock has bought order: {}. stop buy order", canTradeStocks);
                 break;
             }
@@ -315,16 +319,16 @@ public class OptionTradeExecutor {
         double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
         log.info("monitor option quote detail: optionCode={}\toptionBid={}\toptionAsk={}\toptionMid={}", futu, bidPrice, askPrice, midPrice);
 
-        double futuPredPrice = 0;
-        double futuIv = futuQuote.getOptionIvMap(futu);
-        if (futuIv > 0) {
-            if (StringUtils.equalsAnyIgnoreCase(optionType, CALL_TYPE)) {
-                futuPredPrice = BaseUtils.getCallPredictedValue(stockPrice, strikePrice, riskFreeRate, futuIv, currentTradeDate, expireDate);
-            } else {
-                futuPredPrice = BaseUtils.getPutPredictedValue(stockPrice, strikePrice, riskFreeRate, futuIv, currentTradeDate, expireDate);
-            }
-        }
-        log.info("calculate futu predicate price. optionCode={}\tpredPrice={}\tiv={}", option, futuPredPrice, futuIv);
+        //        double futuPredPrice = 0;
+        //        double futuIv = futuQuote.getOptionIvTimeMap(futu);
+        //        if (futuIv > 0) {
+        //            if (StringUtils.equalsAnyIgnoreCase(optionType, CALL_TYPE)) {
+        //                futuPredPrice = BaseUtils.getCallPredictedValue(stockPrice, strikePrice, riskFreeRate, futuIv, currentTradeDate, expireDate);
+        //            } else {
+        //                futuPredPrice = BaseUtils.getPutPredictedValue(stockPrice, strikePrice, riskFreeRate, futuIv, currentTradeDate, expireDate);
+        //            }
+        //        }
+        //        log.info("calculate futu predicate price. optionCode={}\tpredPrice={}\tiv={}", option, futuPredPrice, futuIv);
 
         double tradePrice;
         if (predPrice < bidPrice || predPrice > midPrice) {
@@ -459,6 +463,89 @@ public class OptionTradeExecutor {
                     }
                 } catch (IOException e) {
                     log.error("getRealTimeIV error. url={}", url, e);
+                }
+            }
+        }, 0, 1500);
+    }
+
+    public void getFutuRealTimeIV() {
+        int beginMarket = 93000;
+        int closeMarket = 160000;
+        long openTime = client.getOpenTime();
+        long closeTime = client.getCloseCheckTime().getTime();
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        HttpClient httpClient = new HttpClient();
+        HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
+        httpConnectionManagerParams.setSoTimeout(5000);
+        httpClient.getHttpConnectionManager().setParams(httpConnectionManagerParams);
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            int showtimes = 10, showCount = 0;
+
+            @Override
+            public void run() {
+                if (MapUtils.isEmpty(canTradeOptionForRtIVMap) && !hasFinishBuying) {
+                    log.info("get realtime iv. but there is no option to get. waiting......");
+                    return;
+                }
+
+                if (hasFinishBuying) {
+                    log.info("all stock don't need get realtime iv");
+                    timer.cancel();
+                    return;
+                }
+
+                for (String stock : canTradeOptionForRtIVMap.keySet()) {
+                    if (hasBoughtSuccess.contains(stock)) {
+                        continue;
+                    }
+
+                    String callAndPut = canTradeOptionForRtIVMap.get(stock);
+                    try {
+                        String[] split = callAndPut.split("\\|");
+                        String callRt = split[0];
+                        String putRt = split[1];
+
+                        String callFutu = optionCodeMap.get(callRt);
+                        String putFutu = optionCodeMap.get(putRt);
+                        String callIvTime = futuQuote.getOptionIvTimeMap(callFutu);
+                        String putIvTime = futuQuote.getOptionIvTimeMap(putFutu);
+                        if (StringUtils.isAnyBlank(callIvTime, putIvTime)) {
+                            log.info("get futu iv is empty. callIvTime={}, putIvTime={}", callIvTime, putIvTime);
+                            continue;
+                        }
+                        String[] callSplit = callIvTime.split("\\|");
+                        String[] putSplit = putIvTime.split("\\|");
+
+                        long callTime = LocalDateTime.parse(callSplit[1].substring(0, pattern.length()), formatter).toInstant(ZoneOffset.of("-4")).toEpochMilli();
+                        long putTime = LocalDateTime.parse(putSplit[1].substring(0, pattern.length()), formatter).toInstant(ZoneOffset.of("-4")).toEpochMilli();
+                        if (callTime < openTime || putTime < openTime) {
+                            continue;
+                        }
+                        String callQuote = codeToQuoteMap.get(callFutu);
+                        String putQuote = codeToQuoteMap.get(putFutu);
+                        if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                            invalidTradeStock(stock);
+                            log.info("get realtime iv check out invalid stock: {}", stock);
+                        } else {
+                            double callIv = Double.parseDouble(callSplit[0]);
+                            double putIv = Double.parseDouble(putSplit[0]);
+                            optionRtIvMap.put(callRt, callIv);
+                            optionRtIvMap.put(putRt, putIv);
+                            log.info("rt iv data: call={}\tput={}", callIvTime, putIvTime);
+                        }
+
+                    } catch (Exception e) {
+                        log.error("getFutuRealTimeIV error. callAndPut={}", callAndPut, e);
+                    }
+                }
+                long current = System.currentTimeMillis();
+                if (current > (closeTime + 60000)) {
+                    timer.cancel();
                 }
             }
         }, 0, 1500);
@@ -1015,6 +1102,8 @@ public class OptionTradeExecutor {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        long callTime = LocalDateTime.parse("2024-07-18 16:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toInstant(ZoneOffset.of("-4")).toEpochMilli();
+        System.out.println(callTime);
         double avgFund = 10000d;
         double callTradePrice = 1.2;
         double putTradePrice = 1.2;

@@ -280,6 +280,11 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
         }
         TrdPlaceOrder.C2S c2s = c2sBuilder.build();
 
+        try {
+            TimeUnit.MILLISECONDS.sleep(20);
+        } catch (InterruptedException e) {
+            log.error("ignore 20ms");
+        }
         TrdPlaceOrder.Request req = TrdPlaceOrder.Request.newBuilder().setC2S(c2s).build();
         trd.placeOrder(req);
         while (true) {
@@ -342,6 +347,11 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
           .setQty(qty)
           .setPrice(price)
           .build();
+        try {
+            TimeUnit.MILLISECONDS.sleep(40);
+        } catch (InterruptedException e) {
+            log.error("ignore 40ms");
+        }
         TrdModifyOrder.Request req = TrdModifyOrder.Request.newBuilder().setC2S(c2s).build();
         trd.modifyOrder(req);
         while (true) {

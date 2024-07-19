@@ -17,6 +17,7 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import util.BaseUtils;
@@ -35,6 +36,7 @@ import java.util.Set;
  * Created by Luonanqin on 2023/5/5.
  */
 @Data
+@Slf4j
 public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
 
 
@@ -43,7 +45,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     private Map<String, Double> stockToCurrPriceMap = Maps.newHashMap();
     private Map<String/* code */, String/* bid and ask price */> codeToQuoteMap = Maps.newHashMap();
     private Map<String/* code */, Integer/* 1=call, 2=put */> optionTypeMap = Maps.newHashMap();
-    private Map<String/* code */, Double/* iv */> optionIvMap = Maps.newHashMap();
+    private Map<String/* code */, String/* iv|updatetime */> optionIvTimeMap = Maps.newHashMap();
 
     @Data
     public static class StockQuote {
@@ -98,33 +100,27 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
-    public double getOptionIvMap(String code) {
-        return MapUtils.getDouble(optionIvMap, code, 0d);
+    public String getOptionIvTimeMap(String code) {
+        return MapUtils.getString(optionIvTimeMap, code, "");
     }
 
     @Override
     public void onPush_UpdateBasicQuote(FTAPI_Conn client, QotUpdateBasicQot.Response rsp) {
         if (rsp.getRetType() != 0) {
-            System.out.printf("QotUpdateBasicQuote failed: %s\n", rsp.getRetMsg());
+            log.info("QotUpdateBasicQuote failed: {}", rsp.getRetMsg());
         } else {
             QotUpdateBasicQot.S2C s2C = rsp.getS2C();
             List<QotCommon.BasicQot> basicQotListList = s2C.getBasicQotListList();
             for (QotCommon.BasicQot basicQot : basicQotListList) {
-                String stock = basicQot.getSecurity().getCode();
+                String updateTime = basicQot.getUpdateTime();
+                String code = basicQot.getSecurity().getCode();
                 double curPrice = basicQot.getCurPrice();
                 QotCommon.OptionBasicQotExData optionExData = basicQot.getOptionExData();
                 if (optionExData != null) {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    optionIvMap.put(stock, impliedVolatility);
-                    System.out.println(LocalDateTime.now() + " " + stock + " " + impliedVolatility);
-                    //                    double predPrice = 0;
-                    //                    if (optionTypeMap.get(stock) == 1) {
-                    //                        predPrice = BaseUtils.getCallPredictedValue(256.41, 257.5, 0.0522, impliedVolatility, "2024-07-16", "2024-07-19");
-                    //                    }
-                    //                    if (optionTypeMap.get(stock) == 2) {
-                    //                        predPrice = BaseUtils.getPutPredictedValue(256.41, 255, 0.0522, impliedVolatility, "2024-07-16", "2024-07-19");
-                    //                    }
-                    //                    System.out.println(" stock=" + stock + " price=" + curPrice + " iv=" + impliedVolatility + " pred=" + predPrice);
+                    optionIvTimeMap.put(code, impliedVolatility + "|" + updateTime);
+                    System.out.println(LocalDateTime.now() + " " + code + " " + impliedVolatility + " " + updateTime);
+                    log.info("update futu iv: {}\t{}\t{}", code, impliedVolatility, updateTime);
                 }
             }
         }
@@ -372,10 +368,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         //        quote.subBasicQuote("SEDG240719P28000");
         //        quote.subBasicQuote("HUT240719C18500");
         //        quote.subBasicQuote("HUT240719P18000");
-//        quote.subBasicQuote("TSLA240719C252500");
+        quote.subBasicQuote("NVDA240719C121000");
         quote.unSubBasicQuote("TSLA240719C252500");
         quote.subBasicQuote("TSLA240719P255000");
-        System.out.println(quote.getOptionIvMap("TSLA240719C257500"));
+        System.out.println(quote.getOptionIvTimeMap("TSLA240719C257500"));
         //        quote.getBasicQot("TSLA240719P255000");
         //                quote.getBasicQot("TSLA240719P255000");
         quote.subOrderBook("WULF240705C5500");

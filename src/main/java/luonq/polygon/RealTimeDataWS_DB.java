@@ -224,7 +224,8 @@ public class RealTimeDataWS_DB {
         try {
             loadOptionTradeData.load();
             optionTradeExecutor.init();
-            optionTradeExecutor.getRealTimeIV();
+//            optionTradeExecutor.getRealTimeIV();
+            optionTradeExecutor.getFutuRealTimeIV();
             ReadWriteOptionTradeInfo.init();
             if (!testOption) {
                 computeHisOverBollingerRatio();
