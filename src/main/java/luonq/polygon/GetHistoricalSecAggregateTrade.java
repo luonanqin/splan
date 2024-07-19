@@ -177,7 +177,7 @@ public class GetHistoricalSecAggregateTrade {
         init();
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2024, 2021);
         List<String> dateList = stockKLines.stream().map(StockKLine::getFormatDate).collect(Collectors.toList());
-        Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
+        Set<String> weekOptionStock = BaseUtils.getPennyOptionStock();
         for (String stock : weekOptionStock) {
             long begin = System.currentTimeMillis();
             System.out.println("begin " + stock);
