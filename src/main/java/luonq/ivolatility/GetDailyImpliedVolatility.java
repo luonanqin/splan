@@ -227,6 +227,9 @@ public class GetDailyImpliedVolatility {
                 String[] s = l.split("\t");
                 ivMap.put(s[0], Double.valueOf(s[1]));
             }
+            if (StringUtils.isNotBlank(lastTradeDate) && ivMap.containsKey(lastTradeDate)) {
+                continue;
+            }
 
             // 抓取数据
             String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
