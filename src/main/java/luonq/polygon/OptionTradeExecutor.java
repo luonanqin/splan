@@ -79,6 +79,8 @@ public class OptionTradeExecutor {
     public static final double STOP_GAIN_RATIO_1 = 0.2d; // 三小时前的止盈比例
     public static final double STOP_GAIN_RATIO_2 = 0.1d; // 三小时后的止盈比例
     public static final long STOP_GAIN_INTERVAL_TIME_LINE = 3 * 60 * 60 * 1000L; // 三小时止盈时间点
+    public static final int ADJUST_TRADE_PRICE_TIMES = 10; // 卖出挂单价调价次数上限
+    public static final long ADJUST_TRADE_PRICE_TIME_INTERVAL = 5 * 1000L; // 卖出挂单价调价间隔5秒
 
     private static Integer EXIST = 1;
     private static Integer NOT_EXIST = 0;
@@ -93,6 +95,8 @@ public class OptionTradeExecutor {
     private Map<String/* stock */, Long/* order time */> buyOrderTimeMap = Maps.newHashMap(); // 下单买入时的时间
     private Map<String/* stock */, Long/* order time */> sellOrderTimeMap = Maps.newHashMap(); // 下单卖出时的时间
     private Map<String/* stock */, Double/* order count */> orderCountMap = Maps.newHashMap(); // 下单买入的数量，卖出可以直接使用
+    private Map<String/* futu option */, Integer/* adjust trade price times */> optionAdjustPriceTimesMap = Maps.newHashMap(); // 卖出挂单价调价次数
+    private Map<String/* futu option */, Long/* adjust trade price timestamp */> optionAdjustPriceTimestampMap = Maps.newHashMap(); // 卖出挂单价调价的最新时间
 
     public ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 10, 3600, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
@@ -124,6 +128,7 @@ public class OptionTradeExecutor {
     // 平均到每个股票的交易金额
     private double avgFund;
     private double funds = 100000d; // todo 测试用要删
+    private long closeTime;
 
     public void init() {
         FTAPI.init();
@@ -148,6 +153,7 @@ public class OptionTradeExecutor {
         canTradeStocks = optionStockListener.getCanTradeStocks();
         stockLastOptionVolMap = optionStockListener.getStockLastOptionVolMap();
         codeToQuoteMap = futuQuote.getCodeToQuoteMap();
+        closeTime = client.getCloseCheckTime().getTime();
     }
 
     public void beginTrade() throws InterruptedException {
@@ -347,7 +353,24 @@ public class OptionTradeExecutor {
         String[] quoteSplit = quote.split("\\|");
         double bidPrice = Double.parseDouble(quoteSplit[0]);
         double askPrice = Double.parseDouble(quoteSplit[1]);
-        double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
+        BigDecimal midPriceDecimal = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN);
+        double midPrice = midPriceDecimal.doubleValue();
+
+        long current = System.currentTimeMillis();
+        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futuCode, current);
+        if (lastTimestamp == current) {
+            optionAdjustPriceTimestampMap.put(futuCode, current);
+        }
+
+        // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
+        Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futuCode, 0);
+        int adjustTimes = lastAdjustTimes + 1;
+        optionAdjustPriceTimesMap.put(futuCode, adjustTimes);
+        if (current > closeTime && current - lastTimestamp > ADJUST_TRADE_PRICE_TIME_INTERVAL) {
+            BigDecimal adjustPriceDecimal = BigDecimal.valueOf((midPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(2, RoundingMode.HALF_UP);
+            midPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            optionAdjustPriceTimestampMap.put(futuCode, current);
+        }
 
         return midPrice;
     }
@@ -364,7 +387,6 @@ public class OptionTradeExecutor {
 
         int beginMarket = 93000;
         int closeMarket = 160000;
-        long closeTime = client.getCloseCheckTime().getTime();
 
         HttpClient httpClient = new HttpClient();
         HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
@@ -472,7 +494,6 @@ public class OptionTradeExecutor {
         int beginMarket = 93000;
         int closeMarket = 160000;
         long openTime = client.getOpenTime();
-        long closeTime = client.getCloseCheckTime().getTime();
         String pattern = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 
@@ -536,9 +557,8 @@ public class OptionTradeExecutor {
                             double putIv = Double.parseDouble(putSplit[0]);
                             optionRtIvMap.put(callRt, callIv);
                             optionRtIvMap.put(putRt, putIv);
-                            log.info("rt iv data: call={}\tput={}", callIvTime, putIvTime); // todo 没打印code
+                            log.info("rt iv data: call={} {}\tput={} {}", callFutu, callIvTime, putFutu, putIvTime);
                         }
-
                     } catch (Exception e) {
                         log.error("getFutuRealTimeIV error. callAndPut={}", callAndPut, e);
                     }
@@ -705,7 +725,13 @@ public class OptionTradeExecutor {
                     sellOrderTimeMap.put(stock, curTime);
                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                 }
-                // todo 收盘卖出为了避免长时间无法成交，需要按照最初的挂单价-当时的买一价，差价除以10次（即5秒一次改单）得到每次改单需要降低的价格，每五秒降低一次卖价，尽快卖出
+                // todo 收盘卖出为了避免长时间无法成交，需要按照最新的挂单价-当时的买一价，差价除以10次（即5秒一次改单），然后乘以当前降低的次数（总共10次）得到每次改单需要降低的价格，每五秒用最新挂单价减去一次降低的价格，尽快卖出
+                // 比如：
+                // 1、当前买一1.3，卖一1.8，挂单价(1.3+1.8)/2=1.55，初次挂单不降价
+                // 2、5秒后，当前买一1.3，卖一1.8，挂单价1.55，第一次降价，降价幅度=(1.55-1.3)/10*1=0.025≈0.03（四舍五入），实际挂单价=1.55-0.03=1.52
+                // 3、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第二次降价，降价幅度=(1.3-1)/10*2=0.06，实际挂单价=1.3-0.06=1.24
+                // 4、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第三次降价，降价幅度=(1.3-1)/10*3=0.09，实际挂单价=1.3-0.09=1.21
+                // 以此类推，10个5秒也就是50秒以后，实际挂单价=买一价，一定会卖出
             }
 
             try {
@@ -733,7 +759,6 @@ public class OptionTradeExecutor {
      */
     public void stopLossAndGain() {
         long openTime = client.getOpenTime();
-        long closeTime = client.getCloseCheckTime().getTime();
         long monitorTime = openTime + STOP_LOSS_GAIN_INTERVAL_TIME_MILLI;
         long stopGainTime = openTime + STOP_GAIN_INTERVAL_TIME_LINE;
         long cur = System.currentTimeMillis();
@@ -835,6 +860,10 @@ public class OptionTradeExecutor {
                                 sellOrderTimeMap.put(stock, curTime);
                                 sellOrderIdMap.put(call, sellCallOrderId);
                                 sellOrderIdMap.put(put, sellPutOrderId);
+                                optionAdjustPriceTimestampMap.put(call, curTime);
+                                optionAdjustPriceTimestampMap.put(put, curTime);
+                                optionAdjustPriceTimesMap.put(call, 0);
+                                optionAdjustPriceTimesMap.put(put, 0);
                                 ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                                 ReadWriteOptionTradeInfo.writeSellOrderId(call, sellCallOrderId);
                                 ReadWriteOptionTradeInfo.writeSellOrderId(put, sellPutOrderId);
