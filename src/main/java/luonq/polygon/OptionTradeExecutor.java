@@ -363,13 +363,17 @@ public class OptionTradeExecutor {
         }
 
         // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
-        Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futuCode, 0);
-        int adjustTimes = lastAdjustTimes + 1;
-        optionAdjustPriceTimesMap.put(futuCode, adjustTimes);
         if (current > closeTime && current - lastTimestamp > ADJUST_TRADE_PRICE_TIME_INTERVAL) {
+            Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futuCode, 0);
+            int adjustTimes = lastAdjustTimes + 1;
+            optionAdjustPriceTimesMap.put(futuCode, adjustTimes);
+
             BigDecimal adjustPriceDecimal = BigDecimal.valueOf((midPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(2, RoundingMode.HALF_UP);
-            midPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double adjustPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
             optionAdjustPriceTimestampMap.put(futuCode, current);
+
+            log.info("adjust price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tadjustTimes={}\tadjustPrice={}", futuCode, bidPrice, askPrice, midPrice, adjustTimes, adjustPrice);
+            return adjustPrice;
         }
 
         return midPrice;
@@ -650,6 +654,15 @@ public class OptionTradeExecutor {
         }
     }
 
+    /**
+     * 收盘卖出为了避免长时间无法成交，需要按照最新的挂单价-当时的买一价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要降低的价格，每五秒用最新挂单价减去一次降低的价格，尽快卖出
+     * 比如：
+     * 1、当前买一1.3，卖一1.8，挂单价(1.3+1.8)/2=1.55，初次挂单不降价
+     * 2、5秒后，当前买一1.3，卖一1.8，挂单价1.55，第一次降价，降价幅度=(1.55-1.3)/10*1=0.025≈0.03（四舍五入），实际挂单价=1.55-0.03=1.52
+     * 3、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第二次降价，降价幅度=(1.3-1)/10*2=0.06，实际挂单价=1.3-0.06=1.24
+     * 4、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第三次降价，降价幅度=(1.3-1)/10*3=0.09，实际挂单价=1.3-0.09=1.21
+     * 以此类推，10个5秒也就是50秒以后，实际挂单价=买一价，一定会卖出
+     */
     public void monitorSellOrder() {
         log.info("monitor sell order");
         long openTime = client.getOpenTime();
@@ -725,13 +738,6 @@ public class OptionTradeExecutor {
                     sellOrderTimeMap.put(stock, curTime);
                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                 }
-                // todo 收盘卖出为了避免长时间无法成交，需要按照最新的挂单价-当时的买一价，差价除以10次（即5秒一次改单），然后乘以当前降低的次数（总共10次）得到每次改单需要降低的价格，每五秒用最新挂单价减去一次降低的价格，尽快卖出
-                // 比如：
-                // 1、当前买一1.3，卖一1.8，挂单价(1.3+1.8)/2=1.55，初次挂单不降价
-                // 2、5秒后，当前买一1.3，卖一1.8，挂单价1.55，第一次降价，降价幅度=(1.55-1.3)/10*1=0.025≈0.03（四舍五入），实际挂单价=1.55-0.03=1.52
-                // 3、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第二次降价，降价幅度=(1.3-1)/10*2=0.06，实际挂单价=1.3-0.06=1.24
-                // 4、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第三次降价，降价幅度=(1.3-1)/10*3=0.09，实际挂单价=1.3-0.09=1.21
-                // 以此类推，10个5秒也就是50秒以后，实际挂单价=买一价，一定会卖出
             }
 
             try {
