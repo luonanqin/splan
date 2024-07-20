@@ -197,7 +197,7 @@ public class OptionTradeExecutor {
         threadPool.execute(() -> monitorBuyOrder());
         threadPool.execute(() -> monitorSellOrder());
         stopLossAndGain();
-        delayUnsubscribeQuote();
+        delayUnsubscribeIv();
 
         while (true) {
             for (String stock : canTradeStocks) {
@@ -540,7 +540,7 @@ public class OptionTradeExecutor {
                         String callIvTime = futuQuote.getOptionIvTimeMap(callFutu);
                         String putIvTime = futuQuote.getOptionIvTimeMap(putFutu);
                         if (StringUtils.isAnyBlank(callIvTime, putIvTime)) {
-                            log.info("get futu iv is empty. callIvTime={}, putIvTime={}", callIvTime, putIvTime);
+                            log.info("get futu iv is empty. call={}\tcallIvTime={}, put={}\tputIvTime={}", callFutu, callIvTime, putFutu, putIvTime);
                             continue;
                         }
                         String[] callSplit = callIvTime.split("\\|");
@@ -609,6 +609,7 @@ public class OptionTradeExecutor {
                     ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
                     hasBoughtSuccess.add(stock);
                     log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, call, buyCallOrderId, put, buyPutOrderId, count);
+                    //                    delayUnsubscribeIv();
                 } else if (System.currentTimeMillis() - buyOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
                     if (!callSuccess) {
                         double hasTradeCount = 0;
@@ -1121,17 +1122,36 @@ public class OptionTradeExecutor {
         hasSoldOrderMap.put(stock, NOT_EXIST);
     }
 
-    public void delayUnsubscribeQuote() {
+    public void delayUnsubscribeIv() {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (CollectionUtils.isNotEmpty(invalidStocks)) {
-                    for (String s : tradeStock) {
-                        futuQuote.unSubBasicQuote(s);
+                    for (String stock : invalidStocks) {
+                        String callAndPut = MapUtils.getString(canTradeOptionForFutuMap, stock, "");
+                        if (StringUtils.isBlank(callAndPut)) {
+                            continue;
+                        }
+                        String[] split = callAndPut.split("\\|");
+                        String call = split[0];
+                        String put = split[1];
+                        futuQuote.unSubBasicQuote(call);
+                        futuQuote.unSubBasicQuote(put);
+                    }
+                    for (String stock : hasBoughtSuccess) {
+                        String callAndPut = MapUtils.getString(canTradeOptionForFutuMap, stock, "");
+                        if (StringUtils.isBlank(callAndPut)) {
+                            continue;
+                        }
+                        String[] split = callAndPut.split("\\|");
+                        String call = split[0];
+                        String put = split[1];
+                        futuQuote.unSubBasicQuote(call);
+                        futuQuote.unSubBasicQuote(put);
                     }
                 }
-                log.info("unsubscribe quote. invalid stocks: {}", invalidStocks);
+                log.info("unsubscribe quote. invalid={}\tbuy success={}", invalidStocks, hasBoughtSuccess);
                 timer.cancel();
             }
         }, 1000 * 60 * 1);
