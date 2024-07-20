@@ -536,7 +536,7 @@ public class OptionTradeExecutor {
                             double putIv = Double.parseDouble(putSplit[0]);
                             optionRtIvMap.put(callRt, callIv);
                             optionRtIvMap.put(putRt, putIv);
-                            log.info("rt iv data: call={}\tput={}", callIvTime, putIvTime);
+                            log.info("rt iv data: call={}\tput={}", callIvTime, putIvTime); // todo 没打印code
                         }
 
                     } catch (Exception e) {
@@ -705,6 +705,7 @@ public class OptionTradeExecutor {
                     sellOrderTimeMap.put(stock, curTime);
                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                 }
+                // todo 收盘卖出为了避免长时间无法成交，需要按照最初的挂单价-当时的买一价，差价除以10次（即5秒一次改单）得到每次改单需要降低的价格，每五秒降低一次卖价，尽快卖出
             }
 
             try {

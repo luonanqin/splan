@@ -25,7 +25,6 @@ import util.Constants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +118,6 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 if (optionExData != null) {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     optionIvTimeMap.put(code, impliedVolatility + "|" + updateTime);
-                    System.out.println(LocalDateTime.now() + " " + code + " " + impliedVolatility + " " + updateTime);
                     log.info("update futu iv: {}\t{}\t{}", code, impliedVolatility, updateTime);
                 }
             }
