@@ -137,4 +137,32 @@ public class OptionTradeTest extends BaseTest {
         optionTradeExecutor.init();
         optionTradeExecutor.restart();
     }
+
+    @Test
+    public void test_calQuoteMidPrice() throws InterruptedException {
+        String futuCode = "AAPL240726C120000";
+        optionTradeExecutor.setCloseTime(1721419140000l);
+        Map<String, String> codeToQuoteMap = Maps.newHashMap();
+        codeToQuoteMap.put(futuCode, "1.3|1.8");
+        optionTradeExecutor.setCodeToQuoteMap(codeToQuoteMap);
+        optionTradeExecutor.calQuoteMidPrice(futuCode);
+
+        Thread.sleep(5000);
+        codeToQuoteMap.put(futuCode, "1.3|1.8");
+        optionTradeExecutor.calQuoteMidPrice(futuCode);
+
+        Thread.sleep(5000);
+        codeToQuoteMap.put(futuCode, "1.0|1.6");
+        optionTradeExecutor.calQuoteMidPrice(futuCode);
+
+        Thread.sleep(5000);
+        codeToQuoteMap.put(futuCode, "1.0|1.6");
+        optionTradeExecutor.calQuoteMidPrice(futuCode);
+
+        for (int i = 0; i < 7; i++) {
+            Thread.sleep(5000);
+            codeToQuoteMap.put(futuCode, "0.5|1.0");
+            optionTradeExecutor.calQuoteMidPrice(futuCode);
+        }
+    }
 }
