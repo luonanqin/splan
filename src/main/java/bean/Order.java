@@ -15,7 +15,8 @@ public class Order {
     private int orderStatus; //订单状态, 参见 OrderStatus 的枚举定义
     private String code; //代码
     private String name; //名称
-    private double count; //成交数量，2位精度，期权单位是"张"
+    private double count; //订单数量，2位精度，期权单位是"张"
+    private double tradeCount; //成交数量，2位精度，期权单位是"张"
     private double price; //成交价格，3位精度
     private double avgPrice; //成交均价格，无精度限制
     private String createTime; //创建时间，严格按 YYYY-MM-DD HH:MM:SS 或 YYYY-MM-DD HH:MM:SS.MS 格式传

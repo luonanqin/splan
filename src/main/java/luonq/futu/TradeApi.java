@@ -532,6 +532,7 @@ public class TradeApi implements FTSPI_Trd, FTSPI_Qot, FTSPI_Conn {
                 order.setCreateTime(trdOrder.getCreateTime());
                 order.setUpdateTime(trdOrder.getUpdateTime());
                 order.setCount(trdOrder.getQty());
+                order.setTradeCount(trdOrder.getFillQty());
                 order.setTradeSide(trdOrder.getTrdSide());
                 order.setOrderIDEx(trdOrder.getOrderIDEx());
                 if (!orderMap.containsKey(orderID)) {

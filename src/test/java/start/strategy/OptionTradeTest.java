@@ -143,16 +143,16 @@ public class OptionTradeTest extends BaseTest {
         String futuCode = "AAPL240726C120000";
         optionTradeExecutor.setCloseTime(1721419140000l);
         Map<String, String> codeToQuoteMap = Maps.newHashMap();
-        codeToQuoteMap.put(futuCode, "1.3|1.8");
+        codeToQuoteMap.put(futuCode, "0.98|1.01");
         optionTradeExecutor.setCodeToQuoteMap(codeToQuoteMap);
         optionTradeExecutor.calQuoteMidPrice(futuCode);
 
         Thread.sleep(5000);
-        codeToQuoteMap.put(futuCode, "1.3|1.8");
+        codeToQuoteMap.put(futuCode, "0.98|1.01");
         optionTradeExecutor.calQuoteMidPrice(futuCode);
 
         Thread.sleep(5000);
-        codeToQuoteMap.put(futuCode, "1.0|1.6");
+        codeToQuoteMap.put(futuCode, "0.96|0.99");
         optionTradeExecutor.calQuoteMidPrice(futuCode);
 
         Thread.sleep(5000);
