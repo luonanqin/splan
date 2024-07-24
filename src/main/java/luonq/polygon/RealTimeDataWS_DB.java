@@ -43,6 +43,7 @@ import javax.websocket.WebSocketContainer;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -336,8 +337,10 @@ public class RealTimeDataWS_DB {
             checkOpen = now.withHour(22).withMinute(30).withSecond(0).withNano(0);
             checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
         }
-        preTradeTime = preTrade.withHour(openHour).withMinute(preMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        openTime = now.withHour(openHour).withMinute(openMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        Instant preTradeTimeInst = preTrade.withHour(openHour).withMinute(preMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"));
+        preTradeTime = preTradeTimeInst.toEpochMilli();
+        Instant openTimeInst = now.withHour(openHour).withMinute(openMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"));
+        openTime = openTimeInst.toEpochMilli();
         closeCheckTime = Date.from(closeCheck.withHour(closeHour).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         listenEndTime = openTime + LISTENING_TIME;
 
@@ -347,7 +350,7 @@ public class RealTimeDataWS_DB {
             System.exit(0);
         }
 
-        log.info("finish initialize many time. preTradeTime=" + preTradeTime + ", openTime=" + openTime + ", closeCheckTime=" + closeCheckTime);
+        log.info("finish initialize many time. preTradeTime=" + Date.from(preTradeTimeInst) + ", openTime=" + Date.from(openTimeInst) + ", closeCheckTime=" + closeCheckTime);
     }
 
     private void initThreadExecutor() {
