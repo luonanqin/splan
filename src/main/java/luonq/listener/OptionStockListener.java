@@ -154,7 +154,6 @@ public class OptionStockListener {
         }
         log.info("{} open={}\tcallOption={}\tupStrike={}\tdownStrike={}", stock, open, callOption, upStrike, downStrike);
 
-
         String call = upStrike;
         String put = BaseUtils.getOptionPutCode(downStrike);
 
@@ -178,6 +177,11 @@ public class OptionStockListener {
             return;
         }
         long totalLastDailyVolume = callLastDaily.getVolume() + putLastDaily.getVolume();
+        Double totalLastClose = BigDecimal.valueOf(callLastDaily.getClose() + putLastDaily.getClose()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        if (totalLastClose.compareTo(0.5) <= 0) {
+            log.warn("{}\t{} last total close is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
+            return;
+        }
 
         log.info("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{} can trade", stock, open, call, callIvList, put, putIvList, callLastDaily, putLastDaily);
         String callCode = call.substring(2);

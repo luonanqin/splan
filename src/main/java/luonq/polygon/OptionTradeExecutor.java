@@ -187,6 +187,8 @@ public class OptionTradeExecutor {
 
         if (sortedCanTradeStock.size() > 5) {
             canTradeStocks = Sets.newHashSet(sortedCanTradeStock.subList(0, 5));
+            List<String> inteceptStock = sortedCanTradeStock.subList(5, sortedCanTradeStock.size());
+            inteceptStock.forEach(s -> invalidTradeStock(s));
             log.info("can trade stock size > 5. after intercept, the stocks are {}", canTradeStocks);
         } else {
             canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
@@ -200,9 +202,9 @@ public class OptionTradeExecutor {
         //        delayUnsubscribeIv();
 
         // 开盘后20s再判断是否有无合法报价导致不能交易的股票，然后再计算avgFund
-        while (System.currentTimeMillis() > invalidTime) {
+        while (System.currentTimeMillis() < invalidTime) {
             Thread.sleep(500);
-            break;
+            log.info("wait trade...");
         }
 
         for (String stock : canTradeStocks) {
@@ -222,7 +224,7 @@ public class OptionTradeExecutor {
             String putQuote = codeToQuoteMap.get(putFutu);
             if (StringUtils.isAnyBlank(callQuote, putQuote)) {
                 invalidTradeStock(stock);
-                log.info("befor trade, check no option quote. stock={}", stock);
+                log.info("before trade, check no option quote. stock={}", stock);
             }
         }
 
