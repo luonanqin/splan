@@ -115,7 +115,7 @@ public class GetDailyImpliedVolatility {
             int _2_index = optionCode.indexOf("2");
             String stock = optionCode.substring(2, _2_index);
 
-            String date = optionCode.substring(_2_index, optionCode.length() - 9);
+            String date = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
             LocalDate expireDate = LocalDate.parse("20" + date, DateTimeFormatter.ofPattern("yyyyMMdd"));
             String expireDay = expireDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String contractType = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
