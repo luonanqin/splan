@@ -41,6 +41,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -89,11 +90,13 @@ public class RealTimeDataWS_DB {
     public static Set<String> lastEarningStockSet = Sets.newHashSet();
     public static boolean getRealtimeQuote = false;
     public static boolean getRealtimeQuoteForOption = false;
+    public static boolean getQuoteForOption = false;
     public static Map<String, Double> realtimeQuoteMap = Maps.newHashMap();
     public static Map<String, Double> realtimeQuoteForOptionMap = Maps.newHashMap();
     private BlockingQueue<String> subscribeBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> stopLossBQ = new LinkedBlockingQueue<>(1000);
     private BlockingQueue<String> realtimeQuoteBQ = new LinkedBlockingQueue<>(1000);
+    private BlockingQueue<String> optionQuoteBQ = new LinkedBlockingQueue<>(1000);
     private ThreadPoolExecutor executor;
     private long preTradeTime;
     private long openTime;
@@ -158,6 +161,7 @@ public class RealTimeDataWS_DB {
                     optionTradeExecutor.restart();
                 } else {
                     subcribeStock();
+                    getQuoteForOption();
                     sendToTradeDataListener();
                 }
             } else {
@@ -225,7 +229,7 @@ public class RealTimeDataWS_DB {
         try {
             loadOptionTradeData.load();
             optionTradeExecutor.init();
-//            optionTradeExecutor.getRealTimeIV();
+            //            optionTradeExecutor.getRealTimeIV();
             optionTradeExecutor.getFutuRealTimeIV();
             ReadWriteOptionTradeInfo.init();
             if (!testOption) {
@@ -576,11 +580,16 @@ public class RealTimeDataWS_DB {
             if (subscribed) {
                 //                log.info(message);
                 subscribeBQ.offer(message);
-            } else if (listenStopLoss) {
-                stopLossBQ.offer(message);
-            } else if (getRealtimeQuote || getRealtimeQuoteForOption) {
+            }
+            if (getQuoteForOption) {
+                optionQuoteBQ.offer(message);
+            }
+            //            } else if (listenStopLoss) {
+            //                stopLossBQ.offer(message);
+            if (getRealtimeQuote || getRealtimeQuoteForOption) {
                 realtimeQuoteBQ.offer(message);
-            } else {
+            }
+            if (!subscribed && !getQuoteForOption && !getRealtimeQuote && !getRealtimeQuoteForOption) {
                 List<Map> maps = JSON.parseArray(message, Map.class);
                 Map map = maps.get(0);
                 String status = MapUtils.getString(map, "status");
@@ -766,6 +775,9 @@ public class RealTimeDataWS_DB {
                         Double askPrice = MapUtils.getDouble(map, "ap");
                         Double bidPrice = MapUtils.getDouble(map, "bp");
                         Double tradePrice;
+                        if (bidPrice == null && askPrice == null) { // 非报价数据
+                            continue;
+                        }
                         if (bidPrice == null) {
                             tradePrice = askPrice;
                         } else {
@@ -848,6 +860,56 @@ public class RealTimeDataWS_DB {
             }
         });
         Thread.sleep(1000);
+    }
+
+    public void getQuoteForOption() throws InterruptedException {
+        getQuoteForOption = true;
+
+        executor.execute(() -> {
+            try {
+                while (getQuoteForOption) {
+                    String msg = optionQuoteBQ.poll(1, TimeUnit.SECONDS);
+                    if (StringUtils.isBlank(msg)) {
+                        continue;
+                    }
+
+                    List<Map> maps = JSON.parseArray(msg, Map.class);
+                    for (Map map : maps) {
+                        String code = MapUtils.getString(map, "sym", "");
+                        if (!StringUtils.startsWithIgnoreCase(code, "O:")) {
+                            continue;
+                        }
+
+                        Double askPrice = MapUtils.getDouble(map, "ap");
+                        Double bidPrice = MapUtils.getDouble(map, "bp");
+                        int askVol = MapUtils.getInteger(map, "ax", 0);
+                        int bidVol = MapUtils.getInteger(map, "bx", 0);
+                        if (askPrice != null && bidPrice != null && askPrice > 0 && bidPrice > 0 && askVol > 5 && bidVol > 5) {
+                            double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
+                            log.info("polygon quote. code={}\tbidPrice={}\tbidVol={}\taskPrice={}\taskVol={}\tmidPrice={}", code, bidPrice, bidVol, askPrice, askVol, midPrice);
+                        }
+                    }
+                    //                    long current = System.currentTimeMillis();
+                    //                    if ((current / 1000) % 20 == 0) {
+                    //                        log.info("quote for option price(time={}): {}", current, realtimeQuoteForOptionMap);
+                    //                    }
+                }
+
+            } catch (Exception e) {
+                log.info("getQuoteForOption error. ", e);
+            }
+        });
+        log.info("start monitor polygon quote");
+    }
+
+    public void subscribeQuoteForOption(String optionCode) {
+        sendMessage("{\"action\":\"subscribe\", \"params\":\"Q." + optionCode + "\"}");
+        log.info("subscribe {} quote for option", optionCode);
+    }
+
+    public void unsubscribeQuoteForOption(String optionCode) {
+        sendMessage("{\"action\":\"unsubscribe\", \"params\":\"Q." + optionCode + "\"}");
+        log.info("unsubscribe {} quote for option", optionCode);
     }
 
     public boolean unsubscribe(String stock) {
@@ -962,7 +1024,7 @@ public class RealTimeDataWS_DB {
             return;
         }
         log.info("reconnect finish");
-        tradeExecutor.reListenStopLoss();
+        //        tradeExecutor.reListenStopLoss();
     }
 
     public void inputTestData() {

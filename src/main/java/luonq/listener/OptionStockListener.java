@@ -182,7 +182,7 @@ public class OptionStockListener {
         log.info("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{} can trade", stock, open, call, callIvList, put, putIvList, callLastDaily, putLastDaily);
         String callCode = call.substring(2);
         String putCode = put.substring(2);
-        canTradeOptionMap.put(stock, callCode + "|" + putCode);
+        canTradeOptionMap.put(stock, call + "|" + put);
 
         optionStrikePriceMap.put(callCode, BigDecimal.valueOf(Double.valueOf(call.substring(call.length() - 8)) / 1000).setScale(1, RoundingMode.DOWN).doubleValue());
         optionStrikePriceMap.put(putCode, BigDecimal.valueOf(Double.valueOf(put.substring(put.length() - 8)) / 1000).setScale(1, RoundingMode.DOWN).doubleValue());
@@ -206,6 +206,8 @@ public class OptionStockListener {
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
         optionTradeExecutor.monitorQuote(futuCall);
         optionTradeExecutor.monitorQuote(futuPut);
+        optionTradeExecutor.monitorPolygonQuote(call);
+        optionTradeExecutor.monitorPolygonQuote(put);
         optionTradeExecutor.monitorIV(futuCall);
         optionTradeExecutor.monitorIV(futuPut);
 

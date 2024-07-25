@@ -140,7 +140,8 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 bidPrice = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 int orderCount = orderBook.getOrederCount();
-                //                System.out.print("bid price=" + bidPrice + "\tvolume=" + volume);
+                //                System.out.print(code + " bid price=" + bidPrice + "\tvolume=" + volume);
+                log.info("futu quote. code={}\tbidPrice={}\tbidVol={}", code, bidPrice, volume);
                 if (volume < 5 || bidPrice == 0) {
                     return;
                 }
@@ -150,7 +151,8 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 askPrice = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 int orderCount = orderBook.getOrederCount();
-                //                System.out.print(" ask price=" + askPrice + "\tvolume=" + volume);
+                //                System.out.print(code + " ask price=" + askPrice + "\tvolume=" + volume);
+                log.info("futu quote. code={}\taskPrice={}\taskVol={}", code, askPrice, volume);
                 if (volume < 5 || askPrice == 0) {
                     return;
                 }
@@ -252,6 +254,24 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
           .addAllSubTypeList(subTypeList)
           .setIsSubOrUnSub(true)
           .setIsRegOrUnRegPush(true)
+          .build();
+        QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.sub(req);
+        //        System.out.printf("Send QotSub: %d\n", seqNo);
+    }
+
+    public void unSubOrderBook(String stock) {
+        List<Integer> subTypeList = new ArrayList<>();
+        subTypeList.add(QotCommon.SubType.SubType_OrderBook_VALUE);
+
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setCode(stock)
+          .build();
+        QotSub.C2S c2s = QotSub.C2S.newBuilder()
+          .addSecurityList(sec)
+          .addAllSubTypeList(subTypeList)
+          .setIsSubOrUnSub(false)
           .build();
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.sub(req);
