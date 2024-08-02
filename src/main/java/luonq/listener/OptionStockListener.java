@@ -39,6 +39,8 @@ public class OptionStockListener {
     public Map<String/* polygon code */, String/* futu code */> polygonForFutuMap = Maps.newHashMap();
     public Map<String/* rt iv code */, Double/* strike price */> optionStrikePriceMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* expire date */> optionExpireDateMap = Maps.newHashMap();
+    public Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
+    public Map<String/* futu code */, String/* ikbr code */> futuForIkbrMap = Maps.newHashMap();
 
     private OptionTradeExecutor optionTradeExecutor;
 
@@ -209,8 +211,8 @@ public class OptionStockListener {
         String futuCall = callFutuSuffix + Integer.valueOf(callCode.substring(callCode.length() - 8));
         String futuPut = putFutuSuffix + Integer.valueOf(putCode.substring(putCode.length() - 8));
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
-//        optionTradeExecutor.monitorQuote(futuCall);
-//        optionTradeExecutor.monitorQuote(futuPut);
+        //        optionTradeExecutor.monitorQuote(futuCall);
+        //        optionTradeExecutor.monitorQuote(futuPut);
         polygonForFutuMap.put(call, futuCall);
         polygonForFutuMap.put(put, futuPut);
         optionTradeExecutor.monitorPolygonQuote(call);
@@ -220,6 +222,10 @@ public class OptionStockListener {
 
         optionCodeMap.put(rtCall, futuCall);
         optionCodeMap.put(rtPut, futuPut);
+        rtForIkbrMap.put(rtCall, rtCall.replaceAll("\\+", " "));
+        rtForIkbrMap.put(rtPut, rtPut.replaceAll("\\+", " "));
+        futuForIkbrMap.put(futuCall, rtCall.replaceAll("\\+", " "));
+        futuForIkbrMap.put(futuPut, rtPut.replaceAll("\\+", " "));
 
         canTradeStocks.add(stock); // 这里一定要先确定可交易的股票再开始rt的监听
         stockLastOptionVolMap.put(stock, totalLastDailyVolume);

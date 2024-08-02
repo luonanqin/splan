@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class TradeApi {
 
+    public static long simulateUsOptionAccountId = 1;
     private OrderHandlerImpl orderHandler = new OrderHandlerImpl();
     private OrderCancelHandlerImpl orderCancelHandler = new OrderCancelHandlerImpl();
     private PositionHandlerImpl positionHandler = new PositionHandlerImpl();
