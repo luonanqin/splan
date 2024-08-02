@@ -3,6 +3,7 @@ package start.trade;
 import luonq.job.GetDataJob;
 import luonq.job.TradeJob;
 import luonq.polygon.RealTimeDataWS_DB;
+import luonq.polygon.RealTimeDataWS_DB2;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import start.BaseTest;
@@ -13,6 +14,9 @@ public class TradeTest extends BaseTest {
     private RealTimeDataWS_DB realTimeDataWS_db;
 
     @Autowired
+    private RealTimeDataWS_DB2 realTimeDataWS_db2;
+
+    @Autowired
     private TradeJob tradeJob;
 
     @Autowired
@@ -21,6 +25,11 @@ public class TradeTest extends BaseTest {
     @Test
     public void test() {
         realTimeDataWS_db.init();
+    }
+
+    @Test
+    public void test2() {
+        realTimeDataWS_db2.init();
     }
 
     @Test
