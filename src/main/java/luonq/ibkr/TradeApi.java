@@ -9,9 +9,11 @@ import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
 import com.ib.controller.ApiController;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+@Slf4j
 public class TradeApi {
 
     public static long simulateUsOptionAccountId = 1;
@@ -68,7 +70,6 @@ public class TradeApi {
         contract.localSymbol(code);
         contract.secType(secType);
         contract.exchange("SMART");
-        contract.currency("USD");
 
         Order order = new Order();
         order.action(action);
@@ -78,6 +79,7 @@ public class TradeApi {
 
         OrderHandlerImpl orderHandler = new OrderHandlerImpl();
         orderHandler.setCode(code);
+        orderHandler.setCount(count);
         client.placeOrModifyOrder(contract, order, orderHandler);
         int orderId = order.orderId();
 
@@ -85,7 +87,7 @@ public class TradeApi {
         orderIdToOrderMap.put(orderId, order);
         orderIdToHandlerMap.put(orderId, orderHandler);
 
-        System.out.println("place order: action=" + action + " price=" + price + " count=" + count);
+        //        log.info("place order: action=" + action + " price=" + price + " count=" + count);
         return orderId;
     }
 
@@ -141,13 +143,13 @@ public class TradeApi {
 
         double avgPrice = orderHandler.getAvgPrice();
         OrderStatus status = orderHandler.getStatus();
-
-        System.out.println("avgPrice: " + avgPrice + " status: " + status);
+        double count = orderHandler.getCount();
+        //        System.out.println("avgPrice: " + avgPrice + " status: " + status);
 
         bean.Order order = new bean.Order();
         order.setOrderID(orderId);
         order.setAvgPrice(avgPrice);
-        order.setTradeCount(0);
+        order.setTradeCount(count);
         if (status == OrderStatus.Submitted) {
             order.setOrderStatus(5);
         } else if (status == OrderStatus.Filled) {

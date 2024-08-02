@@ -14,6 +14,7 @@ public class OrderHandlerImpl implements ApiController.IOrderHandler {
     private int permId;
     private String code;
     private OrderStatus status;
+    private double count;
     private double avgPrice = 0;
 
     @Override

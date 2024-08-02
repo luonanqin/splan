@@ -20,6 +20,7 @@ import luonq.futu.BasicQuote;
 import luonq.futu.GetOptionChain;
 import luonq.ibkr.TradeApi;
 import luonq.listener.OptionStockListener;
+import luonq.listener.OptionStockListener2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
@@ -63,9 +64,9 @@ public class OptionTradeExecutor2 {
     private GetOptionChain getOptionChain;
     private int cut = 990000;
     private List<String> tradeStock = Lists.newArrayList();
-    private RealTimeDataWS_DB client;
+    private RealTimeDataWS_DB2 client;
     private boolean realTrade = true;
-    private OptionStockListener optionStockListener;
+    private OptionStockListener2 optionStockListener;
     private TradeApi tradeApi;
 
     private static long CANCEL_BUY_ORDER_TIME_MILLI = 10 * 60 * 1000; // 开盘后10分钟撤销买入订单
@@ -939,8 +940,12 @@ public class OptionTradeExecutor2 {
                         }
 
                         /** 根据已成交的订单查看买入价，不断以最新报价计算是否触发止损价（不能以当前市价止损，因为流动性不够偏差会很大）*/
-                        StockPosition callPosition = getPosistion(callIkbr);
-                        StockPosition putPosition = getPosistion(putIkbr);
+//                        StockPosition callPosition = getPosistion(callIkbr);
+//                        StockPosition putPosition = getPosistion(putIkbr);
+                        Long buyCallOrderId = buyOrderIdMap.get(callIkbr);
+                        Long buyPutOrderId = buyOrderIdMap.get(putIkbr);
+                        Order buyCallOrder = tradeApi.getOrder(buyCallOrderId);
+                        Order buyPutOrder = tradeApi.getOrder(buyPutOrderId);
                         // 测试用 start ---------------
                         //                    callPosition = new StockPosition();
                         //                    callPosition.setCostPrice(1.03);
@@ -949,18 +954,18 @@ public class OptionTradeExecutor2 {
                         //                    putPosition.setCostPrice(0.78);
                         //                    putPosition.setCanSellQty(54);
                         // 测试用 end -----------------
-                        if (callPosition == null || putPosition == null) {
-                            log.info("{} position is null, call={}, put={}. retry", stock, callPosition, putPosition);
-                            continue;
-                        }
-                        double callOpen = callPosition.getCostPrice();
-                        double putOpen = putPosition.getCostPrice();
+//                        if (callPosition == null || putPosition == null) {
+//                            log.info("{} position is null, call={}, put={}. retry", stock, callPosition, putPosition);
+//                            continue;
+//                        }
+                        double callOpen = buyCallOrder.getAvgPrice();
+                        double putOpen = buyPutOrder.getAvgPrice();
                         double callDiff = callMidPrice - callOpen;
                         double putDiff = putMidPrice - putOpen;
                         double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
                         double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen)).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                        double callCount = callPosition.getCanSellQty();
-                        double putCount = putPosition.getCanSellQty();
+                        double callCount = buyCallOrder.getCount();
+                        double putCount = buyPutOrder.getCount();
                         if (showCount == showtimes) {
                             log.info("monitor loss and gain. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
                               callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
