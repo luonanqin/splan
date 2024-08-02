@@ -114,6 +114,7 @@ public class RealTimeDataWS_DB {
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private boolean testOption = true;
+    private RealTimeOptionWS realTimeOptionWS = new RealTimeOptionWS();
 
     private List<String> optionStockSet;
     private OptionTradeExecutor optionTradeExecutor;
@@ -161,7 +162,7 @@ public class RealTimeDataWS_DB {
                     optionTradeExecutor.restart();
                 } else {
                     subcribeStock();
-                    getQuoteForOption();
+//                    getQuoteForOption();
                     sendToTradeDataListener();
                 }
             } else {
@@ -204,6 +205,7 @@ public class RealTimeDataWS_DB {
         //        if (tradeExecutor == null) {
         //            tradeExecutor = new TradeExecutor_DB();
         //        }
+        realTimeOptionWS.init();
     }
 
     private boolean waitAuth() {
@@ -266,6 +268,9 @@ public class RealTimeDataWS_DB {
             optionTradeExecutor.setClient(this);
             optionTradeExecutor.setOptionStockListener(optionStockListener);
             optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
+
+            realTimeOptionWS.setOptionTradeExecutor(optionTradeExecutor);
+            realTimeOptionWS.setOptionStockListener(optionStockListener);
 
             log.info("finish init trade");
         } catch (Exception e) {
@@ -548,7 +553,7 @@ public class RealTimeDataWS_DB {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
-        log.info("closing websocket. reason=" + reason);
+        log.info("closing stock websocket. reason=" + reason);
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
@@ -563,6 +568,7 @@ public class RealTimeDataWS_DB {
 
     public void close() throws Exception {
         if (userSession != null) {
+            realTimeOptionWS.close();
             manualClose = true;
             userSession.close();
             executor.shutdown();
@@ -580,16 +586,11 @@ public class RealTimeDataWS_DB {
             if (subscribed) {
                 //                log.info(message);
                 subscribeBQ.offer(message);
-            }
-            if (getQuoteForOption) {
-                optionQuoteBQ.offer(message);
-            }
-            //            } else if (listenStopLoss) {
-            //                stopLossBQ.offer(message);
-            if (getRealtimeQuote || getRealtimeQuoteForOption) {
+            } else if (listenStopLoss) {
+                stopLossBQ.offer(message);
+            } else if (getRealtimeQuote || getRealtimeQuoteForOption) {
                 realtimeQuoteBQ.offer(message);
-            }
-            if (!subscribed && !getQuoteForOption && !getRealtimeQuote && !getRealtimeQuoteForOption) {
+            } else {
                 List<Map> maps = JSON.parseArray(message, Map.class);
                 Map map = maps.get(0);
                 String status = MapUtils.getString(map, "status");
@@ -882,8 +883,8 @@ public class RealTimeDataWS_DB {
 
                         Double askPrice = MapUtils.getDouble(map, "ap");
                         Double bidPrice = MapUtils.getDouble(map, "bp");
-                        int askVol = MapUtils.getInteger(map, "ax", 0);
-                        int bidVol = MapUtils.getInteger(map, "bx", 0);
+                        int askVol = MapUtils.getInteger(map, "as", 0);
+                        int bidVol = MapUtils.getInteger(map, "bs", 0);
                         if (askPrice != null && bidPrice != null && askPrice > 0 && bidPrice > 0 && askVol > 5 && bidVol > 5) {
                             double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
                             log.info("polygon quote. code={}\tbidPrice={}\tbidVol={}\taskPrice={}\taskVol={}\tmidPrice={}", code, bidPrice, bidVol, askPrice, askVol, midPrice);
@@ -903,13 +904,11 @@ public class RealTimeDataWS_DB {
     }
 
     public void subscribeQuoteForOption(String optionCode) {
-        sendMessage("{\"action\":\"subscribe\", \"params\":\"Q." + optionCode + "\"}");
-        log.info("subscribe {} quote for option", optionCode);
+        realTimeOptionWS.subscribeQuoteForOption(optionCode);
     }
 
     public void unsubscribeQuoteForOption(String optionCode) {
-        sendMessage("{\"action\":\"unsubscribe\", \"params\":\"Q." + optionCode + "\"}");
-        log.info("unsubscribe {} quote for option", optionCode);
+        realTimeOptionWS.unsubscribeQuoteForOption(optionCode);
     }
 
     public boolean unsubscribe(String stock) {

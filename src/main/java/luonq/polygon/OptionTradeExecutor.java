@@ -19,6 +19,7 @@ import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.futu.BasicQuote;
 import luonq.futu.GetOptionChain;
 import luonq.futu.TradeApi;
+//import luonq.ibkr.TradeApi;
 import luonq.listener.OptionStockListener;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -207,6 +208,7 @@ public class OptionTradeExecutor {
             log.info("wait trade...");
         }
 
+        int actualSize = canTradeStocks.size();
         for (String stock : canTradeStocks) {
             String callAndPut = canTradeOptionForRtIVMap.get(stock);
             String[] split = callAndPut.split("\\|");
@@ -224,13 +226,14 @@ public class OptionTradeExecutor {
             String putQuote = codeToQuoteMap.get(putFutu);
             if (StringUtils.isAnyBlank(callQuote, putQuote)) {
                 invalidTradeStock(stock);
+                actualSize--;
                 log.info("before trade, check no option quote. stock={}", stock);
             }
         }
 
         // 均分账户资金
         //        double funds = tradeApi.getFunds();
-        int actualSize = canTradeStocks.size() - invalidStocks.size();
+        //        int actualSize = canTradeStocks.size() - invalidStocks.size();
         if (actualSize == 0) {
             log.info("all stock has been sold. exit");
             return;
@@ -341,7 +344,7 @@ public class OptionTradeExecutor {
         sellOrderIdMap.values().forEach(id -> orderIds.add(id));
         try {
             tradeApi.getOrderList(orderIds);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             log.error("get order error", e);
         }
     }
@@ -530,29 +533,29 @@ public class OptionTradeExecutor {
                             optionRtIvMap.put(symbol.replaceAll(" ", "+"), iv);
                         }
                         if (MapUtils.isNotEmpty(optionRtIvMap)) {
-//                            for (String stock : canTradeOptionForRtIVMap.keySet()) {
-//                                if (hasBoughtSuccess.contains(stock)) {
-//                                    continue;
-//                                }
-//                                String callAndPut = canTradeOptionForRtIVMap.get(stock);
-//                                String[] split = callAndPut.split("\\|");
-//                                String callRt = split[0];
-//                                String putRt = split[1];
-//                                Double callIv = optionRtIvMap.get(callRt);
-//                                Double putIv = optionRtIvMap.get(putRt);
-//                                if (callIv == null || putIv == null) {
-//                                    continue;
-//                                }
-//
-//                                String callFutu = optionCodeMap.get(callRt);
-//                                String putFutu = optionCodeMap.get(putRt);
-//                                String callQuote = codeToQuoteMap.get(callFutu);
-//                                String putQuote = codeToQuoteMap.get(putFutu);
-//                                if (StringUtils.isAnyBlank(callQuote, putQuote)) {
-//                                    invalidTradeStock(stock);
-//                                    log.info("get realtime iv check out invalid stock: {}", stock);
-//                                }
-//                            }
+                            //                            for (String stock : canTradeOptionForRtIVMap.keySet()) {
+                            //                                if (hasBoughtSuccess.contains(stock)) {
+                            //                                    continue;
+                            //                                }
+                            //                                String callAndPut = canTradeOptionForRtIVMap.get(stock);
+                            //                                String[] split = callAndPut.split("\\|");
+                            //                                String callRt = split[0];
+                            //                                String putRt = split[1];
+                            //                                Double callIv = optionRtIvMap.get(callRt);
+                            //                                Double putIv = optionRtIvMap.get(putRt);
+                            //                                if (callIv == null || putIv == null) {
+                            //                                    continue;
+                            //                                }
+                            //
+                            //                                String callFutu = optionCodeMap.get(callRt);
+                            //                                String putFutu = optionCodeMap.get(putRt);
+                            //                                String callQuote = codeToQuoteMap.get(callFutu);
+                            //                                String putQuote = codeToQuoteMap.get(putFutu);
+                            //                                if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                            //                                    invalidTradeStock(stock);
+                            //                                    log.info("get realtime iv check out invalid stock: {}", stock);
+                            //                                }
+                            //                            }
                             log.info("rt iv data: {}", results);
                         }
 
@@ -680,10 +683,12 @@ public class OptionTradeExecutor {
                 boolean putSuccess = buyPutOrder != null && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                 if (callSuccess && putSuccess) {
                     ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
+                    tradeApi.setPositionAvgCost(callRt.replaceAll("\\+", ""), buyCallOrder.getAvgPrice());
+                    tradeApi.setPositionAvgCost(putRt.replaceAll("\\+", ""), buyPutOrder.getAvgPrice());
                     hasBoughtSuccess.add(stock);
                     log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, call, buyCallOrderId, put, buyPutOrderId, count);
                     delayUnsubscribeIv(stock);
-                    delayUnsubscribeQuote(stock);
+                    //                    unmonitorPolygonQuote(stock);
                 } else if (System.currentTimeMillis() - buyOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
                     /**
                      * 改单只有在计算价比挂单价高的时候才进行，如果改低价会导致买入成交更困难
@@ -763,6 +768,8 @@ public class OptionTradeExecutor {
                 if (callSuccess && putSuccess) {
                     ReadWriteOptionTradeInfo.writeHasSoldSuccess(stock);
                     hasSoldSuccess.add(stock);
+                    //                    delayUnsubscribeQuote(stock);
+                    unmonitorPolygonQuote(stock);
                     log.info("{} sell trade success. call={}\torderId={}\tput={}\torderId={}", stock, call, sellCallOrderId, put, sellPutOrderId);
                 } else if (System.currentTimeMillis() - sellOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
                     /**

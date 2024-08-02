@@ -7,18 +7,15 @@ import lombok.Data;
 public class OrderCancelHandlerImpl implements ApiController.IOrderCancelHandler {
 
     private ApiController client;
+    private int orderId;
 
     @Override
     public void orderStatus(String orderStatus) {
-        System.out.println("orderStatus: " + orderStatus);
+        System.out.println("orderStatus: orderId=" + orderId + " status=" + orderStatus);
     }
 
     @Override
     public void handle(int errorCode, String errorMsg) {
-        System.out.println("handle: " + errorCode + " " + errorMsg);
-    }
-
-    public void cancelOrder(int orderId) {
-        client.cancelOrder(orderId, "", this);
+        System.out.println("handle error: orderId=" + orderId + ". " + errorCode + " " + errorMsg);
     }
 }

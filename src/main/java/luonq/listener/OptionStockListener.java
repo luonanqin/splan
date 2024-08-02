@@ -36,6 +36,7 @@ public class OptionStockListener {
     public Set<String> canTradeStocks = Sets.newHashSet();
     public Map<String/* stock */, Long/* all last option volume */> stockLastOptionVolMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* futu code */> optionCodeMap = Maps.newHashMap();
+    public Map<String/* polygon code */, String/* futu code */> polygonForFutuMap = Maps.newHashMap();
     public Map<String/* rt iv code */, Double/* strike price */> optionStrikePriceMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* expire date */> optionExpireDateMap = Maps.newHashMap();
 
@@ -208,8 +209,10 @@ public class OptionStockListener {
         String futuCall = callFutuSuffix + Integer.valueOf(callCode.substring(callCode.length() - 8));
         String futuPut = putFutuSuffix + Integer.valueOf(putCode.substring(putCode.length() - 8));
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
-        optionTradeExecutor.monitorQuote(futuCall);
-        optionTradeExecutor.monitorQuote(futuPut);
+//        optionTradeExecutor.monitorQuote(futuCall);
+//        optionTradeExecutor.monitorQuote(futuPut);
+        polygonForFutuMap.put(call, futuCall);
+        polygonForFutuMap.put(put, futuPut);
         optionTradeExecutor.monitorPolygonQuote(call);
         optionTradeExecutor.monitorPolygonQuote(put);
         optionTradeExecutor.monitorIV(futuCall);
