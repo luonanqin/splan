@@ -156,16 +156,15 @@ public class RealTimeDataWS_DB2 {
             if (testOption) {
                 initHistoricalData();
                 initMessageListener();
-                if (MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
-                    optionTradeExecutor.reSendOpenPrice();
-                    Thread.sleep(3000);
-                    getRealtimeQuoteForOption();
-                    optionTradeExecutor.restart();
-                } else {
+//                if (MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
+//                    optionTradeExecutor.reSendOpenPrice();
+//                    Thread.sleep(3000);
+//                    getRealtimeQuoteForOption();
+//                    optionTradeExecutor.restart();
+//                } else {
                     subcribeStock();
-//                    getQuoteForOption();
                     sendToTradeDataListener();
-                }
+//                }
             } else {
                 if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
                     testOption = true;

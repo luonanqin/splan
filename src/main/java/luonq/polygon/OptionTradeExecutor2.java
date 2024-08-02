@@ -691,8 +691,8 @@ public class OptionTradeExecutor2 {
                 boolean putSuccess = buyPutOrder != null && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                 if (callSuccess && putSuccess) {
                     ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
-                    tradeApi.setPositionAvgCost(callRt.replaceAll("\\+", ""), buyCallOrder.getAvgPrice());
-                    tradeApi.setPositionAvgCost(putRt.replaceAll("\\+", ""), buyPutOrder.getAvgPrice());
+//                    tradeApi.setPositionAvgCost(callRt.replaceAll("\\+", ""), buyCallOrder.getAvgPrice());
+//                    tradeApi.setPositionAvgCost(putRt.replaceAll("\\+", ""), buyPutOrder.getAvgPrice());
                     hasBoughtSuccess.add(stock);
                     log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, callIkbr, buyCallOrderId, putIkbr, buyPutOrderId, count);
                     delayUnsubscribeIv(stock);
@@ -867,19 +867,15 @@ public class OptionTradeExecutor2 {
             int showtimes = 20, showCount = 0;
             Map<String/* code */, StockPosition> positions = Maps.newHashMap();
 
-            private StockPosition getPosistion(String optionCode) {
-                //                if (positions.containsKey(optionCode)) {
-                //                    return positions.get(optionCode);
-                //                }
-
-                Map<String, StockPosition> positionMap = tradeApi.getPositionMap(optionCode);
-                StockPosition stockPosition = positionMap.get(optionCode);
-                if (stockPosition != null) {
-                    positions.put(optionCode, stockPosition);
-                }
-
-                return positions.get(optionCode);
-            }
+//            private StockPosition getPosistion(String optionCode) {
+//                Map<String, StockPosition> positionMap = tradeApi.getPositionMap(optionCode);
+//                StockPosition stockPosition = positionMap.get(optionCode);
+//                if (stockPosition != null) {
+//                    positions.put(optionCode, stockPosition);
+//                }
+//
+//                return positions.get(optionCode);
+//            }
 
             @Override
             public void run() {
