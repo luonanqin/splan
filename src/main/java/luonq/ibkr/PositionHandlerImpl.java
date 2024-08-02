@@ -16,7 +16,6 @@ import java.util.Map;
 @Slf4j
 public class PositionHandlerImpl implements ApiController.IPositionHandler {
 
-    private ApiController client;
     private Map<String, StockPosition> positionMap = Maps.newHashMap();
     private boolean getPosition = false;
 

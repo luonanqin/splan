@@ -15,9 +15,10 @@ import java.util.Map;
 public class TradeApi {
 
     public static long simulateUsOptionAccountId = 1;
-    private OrderHandlerImpl orderHandler = new OrderHandlerImpl();
-    private OrderCancelHandlerImpl orderCancelHandler = new OrderCancelHandlerImpl();
     private PositionHandlerImpl positionHandler = new PositionHandlerImpl();
+    private Map<Integer/* orderId */, OrderHandlerImpl> orderIdToHandlerMap = Maps.newHashMap();
+    private Map<Integer/* orderId */, Contract> orderIdToContractMap = Maps.newHashMap();
+    private Map<Integer/* orderId */, Order> orderIdToOrderMap = Maps.newHashMap();
     private int port;
     private ApiController client;
 
@@ -40,11 +41,6 @@ public class TradeApi {
         client = new ApiController(connectionHanlder);
         //        client.connect("127.0.0.1", 7496, 1, null); // 真实账户
         client.connect("127.0.0.1", port, 1, null); // 模拟账户
-
-        orderHandler.setClient(client);
-        orderCancelHandler.setClient(client);
-        positionHandler.setClient(client);
-
     }
 
     public void end() {
@@ -67,10 +63,6 @@ public class TradeApi {
         return placeNormalOrder(code, price, count, Types.SecType.STK, Types.Action.SELL);
     }
 
-    private Map<Integer/* orderId */, OrderHandlerImpl> orderIdToHandlerMap = Maps.newHashMap();
-    private Map<Integer/* orderId */, Contract> orderIdToContractMap = Maps.newHashMap();
-    private Map<Integer/* orderId */, Order> orderIdToOrderMap = Maps.newHashMap();
-
     public long placeNormalOrder(String code, double price, double count, Types.SecType secType, Types.Action action) {
         Contract contract = new Contract();
         contract.localSymbol(code);
@@ -85,6 +77,7 @@ public class TradeApi {
         order.totalQuantity(Decimal.get(count));
 
         OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setCode(code);
         client.placeOrModifyOrder(contract, order, orderHandler);
         int orderId = order.orderId();
 
@@ -121,6 +114,11 @@ public class TradeApi {
     public long cancelOrder(long orderId) {
         OrderCancelHandlerImpl orderCancelHandler = new OrderCancelHandlerImpl();
         orderCancelHandler.setOrderId((int) orderId);
+        Contract contract = orderIdToContractMap.get((int) orderId);
+        if (contract != null) {
+            orderCancelHandler.setCode(contract.localSymbol());
+        }
+
         client.cancelOrder((int) orderId, "", orderCancelHandler);
 
         return orderId;
