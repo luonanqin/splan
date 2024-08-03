@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
-import luonq.listener.OptionStockListener;
 import luonq.listener.OptionStockListener2;
 import luonq.strategy.backup.Strategy_DB;
 import org.apache.commons.collections4.CollectionUtils;
@@ -332,9 +331,9 @@ public class RealTimeDataWS_DB2 {
 
         long checkOpenTime = 0;
         LocalDateTime checkPre, checkOpen;
-        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
+        int openHour, closeHour, preMin = 58 + DELAY_MINUTE, openMin = 59;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            openHour = 21;
+            openHour = 1;
             closeHour = 3;
             checkPre = now.withHour(21).withMinute(22).withSecond(0).withNano(0);
             checkOpen = now.withHour(21).withMinute(30).withSecond(0).withNano(0);

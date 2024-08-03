@@ -19,7 +19,6 @@ import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.futu.BasicQuote;
 import luonq.futu.GetOptionChain;
 import luonq.ibkr.TradeApi;
-import luonq.listener.OptionStockListener;
 import luonq.listener.OptionStockListener2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -160,7 +159,7 @@ public class OptionTradeExecutor2 {
         optionExpireDateMap = optionStockListener.getOptionExpireDateMap();
         optionCodeMap = optionStockListener.getOptionCodeMap();
         canTradeOptionForRtIVMap = optionStockListener.getCanTradeOptionForRtIVMap();
-        realtimeQuoteForOptionMap = RealTimeDataWS_DB.realtimeQuoteForOptionMap;
+        realtimeQuoteForOptionMap = RealTimeDataWS_DB2.realtimeQuoteForOptionMap;
         riskFreeRate = LoadOptionTradeData.riskFreeRate;
         currentTradeDate = LoadOptionTradeData.currentTradeDate;
         canTradeStocks = optionStockListener.getCanTradeStocks();
@@ -202,7 +201,7 @@ public class OptionTradeExecutor2 {
             log.info("can trade stock size <= 5. don't intercept, the stocks are {}", canTradeStocks);
         }
 
-//        getOrder();
+        //        getOrder();
         threadPool.execute(() -> monitorBuyOrder());
         threadPool.execute(() -> monitorSellOrder());
         stopLossAndGain();
@@ -318,6 +317,8 @@ public class OptionTradeExecutor2 {
                 long buyPutOrderId = tradeApi.placeNormalBuyOrder(putIkbr, count, putTradePrice);
                 log.info("begin trade: buyCallOrder={}\tcall={}\tcallPrice={}\tbuyPutOrder={}\tput={}\tputPrice={}\tcount={}", buyCallOrderId, call, callTradePrice, buyPutOrderId, put, putTradePrice, count);
 
+                lastBuyPriceMap.put(callIkbr, callTradePrice);
+                lastBuyPriceMap.put(putIkbr, putTradePrice);
                 orderCountMap.put(stock, count);
                 buyOrderTimeMap.put(stock, curTime);
                 buyOrderIdMap.put(callIkbr, buyCallOrderId);
@@ -351,7 +352,7 @@ public class OptionTradeExecutor2 {
         buyOrderIdMap.values().forEach(id -> orderIds.add(id));
         sellOrderIdMap.values().forEach(id -> orderIds.add(id));
         try {
-//            tradeApi.getOrderList(orderIds);
+            //            tradeApi.getOrderList(orderIds);
         } catch (Exception e) {
             log.error("get order error", e);
         }
@@ -691,8 +692,8 @@ public class OptionTradeExecutor2 {
                 boolean putSuccess = buyPutOrder != null && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                 if (callSuccess && putSuccess) {
                     ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
-//                    tradeApi.setPositionAvgCost(callRt.replaceAll("\\+", ""), buyCallOrder.getAvgPrice());
-//                    tradeApi.setPositionAvgCost(putRt.replaceAll("\\+", ""), buyPutOrder.getAvgPrice());
+                    //                    tradeApi.setPositionAvgCost(callRt.replaceAll("\\+", ""), buyCallOrder.getAvgPrice());
+                    //                    tradeApi.setPositionAvgCost(putRt.replaceAll("\\+", ""), buyPutOrder.getAvgPrice());
                     hasBoughtSuccess.add(stock);
                     log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, callIkbr, buyCallOrderId, putIkbr, buyPutOrderId, count);
                     delayUnsubscribeIv(stock);
@@ -701,29 +702,39 @@ public class OptionTradeExecutor2 {
                     /**
                      * 改单只有在计算价比挂单价高的时候才进行，如果改低价会导致买入成交更困难
                      */
-                    if (!callSuccess) {
+                    if (!callSuccess && buyCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                         double hasTradeCount = 0;
                         if (buyCallOrder != null) {
                             hasTradeCount = buyCallOrder.getTradeCount();
                         }
                         double tradePrice = calTradePrice(stock, callRt, CALL_TYPE);
+                        if (tradePrice == 0d) {
+                            log.warn("modify buy call order price is 0: orderId={}\tcall={}", buyCallOrderId, callIkbr);
+                            continue;
+                        }
+
                         if (!lastBuyPriceMap.containsKey(callIkbr) || lastBuyPriceMap.get(callIkbr).compareTo(tradePrice) < 0) {
                             long modifyOrderId = tradeApi.upOrderPrice(buyCallOrderId, count, tradePrice);
+                            lastBuyPriceMap.put(callIkbr, tradePrice);
                             log.info("modify buy call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callIkbr, tradePrice, count, hasTradeCount);
                         }
-                        lastBuyPriceMap.put(callIkbr, tradePrice);
                     }
-                    if (!putSuccess) {
+                    if (!putSuccess && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                         double hasTradeCount = 0;
                         if (buyPutOrder != null) {
                             hasTradeCount = buyPutOrder.getTradeCount();
                         }
                         double tradePrice = calTradePrice(stock, putRt, PUT_TYPE);
+                        if (tradePrice == 0d) {
+                            log.warn("modify buy put order price is 0: orderId={}\tcall={}", buyPutOrderId, putIkbr);
+                            continue;
+                        }
+
                         if (!lastBuyPriceMap.containsKey(putIkbr) || lastBuyPriceMap.get(putIkbr).compareTo(tradePrice) < 0) {
                             long modifyOrderId = tradeApi.upOrderPrice(buyPutOrderId, count, tradePrice);
+                            lastBuyPriceMap.put(putIkbr, tradePrice);
                             log.info("modify buy put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putIkbr, tradePrice, count, hasTradeCount);
                         }
-                        lastBuyPriceMap.put(putIkbr, tradePrice);
                     }
                     long curTime = System.currentTimeMillis();
                     buyOrderTimeMap.put(stock, curTime);
@@ -739,7 +750,7 @@ public class OptionTradeExecutor2 {
             if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()) {
                 log.info("all stock has bought success: {}. stop monitor buy order", canTradeStocks);
                 hasFinishBuying = true;
-                RealTimeDataWS_DB.getRealtimeQuoteForOption = false;
+                RealTimeDataWS_DB2.getRealtimeQuoteForOption = false;
                 return;
             }
         }
@@ -867,15 +878,15 @@ public class OptionTradeExecutor2 {
             int showtimes = 20, showCount = 0;
             Map<String/* code */, StockPosition> positions = Maps.newHashMap();
 
-//            private StockPosition getPosistion(String optionCode) {
-//                Map<String, StockPosition> positionMap = tradeApi.getPositionMap(optionCode);
-//                StockPosition stockPosition = positionMap.get(optionCode);
-//                if (stockPosition != null) {
-//                    positions.put(optionCode, stockPosition);
-//                }
-//
-//                return positions.get(optionCode);
-//            }
+            //            private StockPosition getPosistion(String optionCode) {
+            //                Map<String, StockPosition> positionMap = tradeApi.getPositionMap(optionCode);
+            //                StockPosition stockPosition = positionMap.get(optionCode);
+            //                if (stockPosition != null) {
+            //                    positions.put(optionCode, stockPosition);
+            //                }
+            //
+            //                return positions.get(optionCode);
+            //            }
 
             @Override
             public void run() {
@@ -936,8 +947,8 @@ public class OptionTradeExecutor2 {
                         }
 
                         /** 根据已成交的订单查看买入价，不断以最新报价计算是否触发止损价（不能以当前市价止损，因为流动性不够偏差会很大）*/
-//                        StockPosition callPosition = getPosistion(callIkbr);
-//                        StockPosition putPosition = getPosistion(putIkbr);
+                        //                        StockPosition callPosition = getPosistion(callIkbr);
+                        //                        StockPosition putPosition = getPosistion(putIkbr);
                         Long buyCallOrderId = buyOrderIdMap.get(callIkbr);
                         Long buyPutOrderId = buyOrderIdMap.get(putIkbr);
                         Order buyCallOrder = tradeApi.getOrder(buyCallOrderId);
@@ -950,10 +961,10 @@ public class OptionTradeExecutor2 {
                         //                    putPosition.setCostPrice(0.78);
                         //                    putPosition.setCanSellQty(54);
                         // 测试用 end -----------------
-//                        if (callPosition == null || putPosition == null) {
-//                            log.info("{} position is null, call={}, put={}. retry", stock, callPosition, putPosition);
-//                            continue;
-//                        }
+                        //                        if (callPosition == null || putPosition == null) {
+                        //                            log.info("{} position is null, call={}, put={}. retry", stock, callPosition, putPosition);
+                        //                            continue;
+                        //                        }
                         double callOpen = buyCallOrder.getAvgPrice();
                         double putOpen = buyPutOrder.getAvgPrice();
                         double callDiff = callMidPrice - callOpen;
@@ -1030,8 +1041,8 @@ public class OptionTradeExecutor2 {
                                         }
                                         if (!lastSellPriceMap.containsKey(callIkbr) || lastSellPriceMap.get(callIkbr).compareTo(callMidPrice) > 0) {
                                             long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, callCount, callMidPrice);
-                                            log.info("modify gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callIkbr, callMidPrice, callCount, hasTradeCount);
                                             lastSellPriceMap.put(callIkbr, callMidPrice);
+                                            log.info("modify gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callIkbr, callMidPrice, callCount, hasTradeCount);
                                         }
                                     } else { // 检查报价低于止盈，撤单，清除上涨卖出中状态，清除上涨卖出的期权
                                         long cancelResp = tradeApi.cancelOrder(sellCallOrderId);
@@ -1058,8 +1069,8 @@ public class OptionTradeExecutor2 {
                                         }
                                         if (!lastSellPriceMap.containsKey(putIkbr) || lastSellPriceMap.get(putIkbr).compareTo(putMidPrice) > 0) {
                                             long modifyOrderId = tradeApi.upOrderPrice(sellPutOrderId, putCount, putMidPrice);
-                                            log.info("modify gain sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putIkbr, putMidPrice, putCount, hasTradeCount);
                                             lastSellPriceMap.put(putIkbr, putMidPrice);
+                                            log.info("modify gain sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putIkbr, putMidPrice, putCount, hasTradeCount);
                                         }
                                     } else {
                                         long cancelResp = tradeApi.cancelOrder(sellPutOrderId);

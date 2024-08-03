@@ -82,6 +82,7 @@ public class TradeApi {
         orderHandler.setCount(count);
         client.placeOrModifyOrder(contract, order, orderHandler);
         int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
 
         orderIdToContractMap.put(orderId, contract);
         orderIdToOrderMap.put(orderId, order);
@@ -177,26 +178,30 @@ public class TradeApi {
         tradeApi.useSimulateEnv();
         tradeApi.start();
 
-        int count = 100;
-        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
-        String code = "NVDA  240802P00110000";
-        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.83);
+        int count = 1;
+        //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
+        String code = "TSLA  240802P00205000";
+        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
         //        long orderId = tradeApi.placeNormalBuyOrderForStock("AAPL", 1, 224.6);
         System.out.println("orderId: " + orderId);
         bean.Order order = tradeApi.getOrder(orderId);
-        tradeApi.setPositionAvgCost(code, order.getAvgPrice());
+        //        tradeApi.setPositionAvgCost(code, order.getAvgPrice());
 
-        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(null); // todo 要限制时间不能死等
-        System.out.println("position: " + positionMap);
+        //        Map<String, StockPosition> positionMap = tradeApi.getPositionMap(null); // todo 要限制时间不能死等
+        //        System.out.println("position: " + positionMap);
 
-        //        long modifyOrderId = tradeApi.upOrderPrice(orderId, 4, 5.1);
-        //        System.out.println("modifyOrderId: " + modifyOrderId);
+        System.out.println();
+        for (int i = 0; i < 4; i++) {
+            long modifyOrderId = tradeApi.upOrderPrice(orderId, count, 0.61);
+            tradeApi.upOrderPrice(orderId, count, 0.62);
+            System.out.println("modifyOrderId: " + modifyOrderId);
+        }
 
         tradeApi.getOrder(orderId);
 
         //        tradeApi.removeOrderHandler(orderId);
         //        long sellorderId = tradeApi.placeNormalSellOrderForStock(code, count, 1.0);
-        long sellorderId = tradeApi.placeNormalSellOrder(code, count, 0.9);
+//        long sellorderId = tradeApi.placeNormalSellOrder(code, count, 0.9);
 
         tradeApi.cancelOrder(orderId);
 

@@ -16,6 +16,7 @@ public class OrderHandlerImpl implements ApiController.IOrderHandler {
     private OrderStatus status;
     private double count;
     private double avgPrice = 0;
+    private int orderId = 0;
 
     @Override
     public void orderState(OrderState orderState) {
@@ -28,13 +29,13 @@ public class OrderHandlerImpl implements ApiController.IOrderHandler {
         this.status = status;
         this.avgPrice = avgFillPrice;
 
-        log.info("orderStatus: code={}\tstatus={}\tfilled={}\tremaining={}\tavgFillPrice={}\tpermId={}\tparentId={}\tlastFillPrice{}\tclientId={}\twhyHeld={}\tmktCapPrice={}",
-          code, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice);
+        log.info("orderStatus: code={}\torderId={}\tstatus={}\tfilled={}\tremaining={}\tavgFillPrice={}\tpermId={}\tparentId={}\tlastFillPrice{}\tclientId={}\twhyHeld={}\tmktCapPrice={}",
+          code, orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice);
 
     }
 
     @Override
     public void handle(int errorCode, String errorMsg) {
-        log.error("order error: code={}\tpermId={}\terrorCode={}\terrorMsg={}", code, permId, errorCode, errorMsg);
+        log.error("order error: code={}\torderId={}\tpermId={}\terrorCode={}\terrorMsg={}", code, orderId, permId, errorCode, errorMsg);
     }
 }
