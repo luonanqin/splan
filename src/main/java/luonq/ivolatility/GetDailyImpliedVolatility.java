@@ -86,7 +86,7 @@ public class GetDailyImpliedVolatility {
                 optionCodeToIdMap.put(optionCode, optionId);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("get option id error. url={}", url, e);
         } finally {
             get.releaseConnection();
         }

@@ -136,7 +136,7 @@ public class OptionTradeExecutor2 {
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
-    private double funds = 100000d; // todo 测试用要删
+    private double funds = 1400; // todo 测试用要删
     private long openTime;
     private long closeTime;
     private long invalidTime;
@@ -182,23 +182,13 @@ public class OptionTradeExecutor2 {
         }
         log.info("there are stock can be traded. stock: {}", canTradeStocks);
 
-        // 按前日的总成交量倒排，过滤掉无效stock之后，截取前五个进行交易
+        // 按前日的总成交量倒排，并过滤掉无效stock
         List<String> sortedCanTradeStock = stockLastOptionVolMap.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).map(kv -> kv.getKey()).collect(Collectors.toList());
         sortedCanTradeStock.removeAll(invalidStocks);
         if (CollectionUtils.isEmpty(sortedCanTradeStock)) {
             log.info("except invalid stock, there is no stock can be traded");
             hasFinishBuying = true;
             return;
-        }
-
-        if (sortedCanTradeStock.size() > 5) {
-            canTradeStocks = Sets.newHashSet(sortedCanTradeStock.subList(0, 5));
-            List<String> inteceptStock = sortedCanTradeStock.subList(5, sortedCanTradeStock.size());
-            inteceptStock.forEach(s -> invalidTradeStock(s));
-            log.info("can trade stock size > 5. after intercept, the stocks are {}", canTradeStocks);
-        } else {
-            canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
-            log.info("can trade stock size <= 5. don't intercept, the stocks are {}", canTradeStocks);
         }
 
         //        getOrder();
@@ -211,6 +201,58 @@ public class OptionTradeExecutor2 {
         while (System.currentTimeMillis() < invalidTime) {
             Thread.sleep(500);
             log.info("wait trade...");
+        }
+
+        List<String> tempCanTradeStock = Lists.newArrayList();
+        int size = 3;
+        while (true) {
+            double avgFund = funds / size;
+            List<String> tempInvalid = Lists.newArrayList();
+            for (String stock : sortedCanTradeStock) {
+                String callAndPut = canTradeOptionForFutuMap.get(stock);
+                if (StringUtils.isNotBlank(callAndPut)) {
+                    String[] split = callAndPut.split("\\|");
+                    String callFutu = split[0];
+                    String putFutu = split[1];
+                    String callQuote = codeToQuoteMap.get(callFutu);
+                    String putQuote = codeToQuoteMap.get(putFutu);
+                    if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                        invalidTradeStock(stock);
+                        tempInvalid.add(stock);
+                        continue;
+                    }
+
+                    String[] callQuoteSplit = callQuote.split("\\|");
+                    double callBidPrice = Double.parseDouble(callQuoteSplit[0]);
+                    double callAskPrice = Double.parseDouble(callQuoteSplit[1]);
+                    double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
+                    String[] putQuoteSplit = putQuote.split("\\|");
+                    double putBidPrice = Double.parseDouble(putQuoteSplit[0]);
+                    double putAskPrice = Double.parseDouble(putQuoteSplit[1]);
+                    double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
+                    if (100 * (callMidPrice + putMidPrice) < avgFund) {
+                        tempCanTradeStock.add(stock);
+                    }
+                }
+            }
+            sortedCanTradeStock.removeAll(tempInvalid);
+            if (tempCanTradeStock.size() >= size || size < 2) {
+                break;
+            } else {
+                tempCanTradeStock.clear();
+                size--;
+            }
+        }
+
+        sortedCanTradeStock = tempCanTradeStock;
+        if (sortedCanTradeStock.size() > size) {
+            canTradeStocks = Sets.newHashSet(sortedCanTradeStock.subList(0, size));
+            List<String> inteceptStock = sortedCanTradeStock.subList(size, sortedCanTradeStock.size());
+            inteceptStock.forEach(s -> invalidTradeStock(s));
+            log.info("can trade stock size > {}. after intercept, the stocks are {}", size, canTradeStocks);
+        } else {
+            canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
+            log.info("can trade stock size <= {}. don't intercept, the stocks are {}", size, canTradeStocks);
         }
 
         int actualSize = canTradeStocks.size();
