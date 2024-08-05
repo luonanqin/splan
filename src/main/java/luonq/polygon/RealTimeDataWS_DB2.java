@@ -331,9 +331,9 @@ public class RealTimeDataWS_DB2 {
 
         long checkOpenTime = 0;
         LocalDateTime checkPre, checkOpen;
-        int openHour, closeHour, preMin = 58 + DELAY_MINUTE, openMin = 59;
+        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            openHour = 1;
+            openHour = 21;
             closeHour = 3;
             checkPre = now.withHour(21).withMinute(22).withSecond(0).withNano(0);
             checkOpen = now.withHour(21).withMinute(30).withSecond(0).withNano(0);
