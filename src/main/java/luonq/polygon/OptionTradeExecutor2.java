@@ -217,7 +217,7 @@ public class OptionTradeExecutor2 {
                         String callQuote = codeToQuoteMap.get(callFutu);
                         String putQuote = codeToQuoteMap.get(putFutu);
                         if (StringUtils.isAnyBlank(callQuote, putQuote)) {
-                            log.info("there is no quote . call and put=", callAndPut);
+                            log.info("there is no quote . call and put={}", callAndPut);
                             invalidTradeStock(stock);
                             tempInvalid.add(stock);
                             continue;
@@ -348,7 +348,7 @@ public class OptionTradeExecutor2 {
                 int dotIndex = countStr.indexOf(".");
                 String dotStr = countStr.substring(dotIndex + 1, dotIndex + 2);
                 double count = (int) countDouble;
-                if (Integer.valueOf(dotStr) <= 5) {
+                if (Integer.valueOf(dotStr) <= 5 && count > 1) {
                     count = (int) countDouble - 1;
                 }
 
@@ -475,7 +475,7 @@ public class OptionTradeExecutor2 {
             return Double.MIN_VALUE;
         }
         boolean touchOffAdjust = current - lastTimestamp > ADJUST_BUY_PRICE_TIME_INTERVAL;
-        if (touchOffAdjust) {
+        if (!touchOffAdjust) {
             return Double.MIN_VALUE;
         }
 
@@ -520,7 +520,7 @@ public class OptionTradeExecutor2 {
             return Double.MAX_VALUE;
         }
         boolean touchOffAdjust = current - lastTimestamp > ADJUST_SELL_PRICE_TIME_INTERVAL;
-        if (touchOffAdjust) {
+        if (!touchOffAdjust) {
             return Double.MAX_VALUE;
         }
 
