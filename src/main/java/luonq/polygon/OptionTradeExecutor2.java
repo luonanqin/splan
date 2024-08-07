@@ -1,12 +1,9 @@
 package luonq.polygon;
 
 import bean.NodeList;
-import bean.OptionRT;
-import bean.OptionRTResp;
 import bean.Order;
 import bean.StockEvent;
 import bean.StockPosition;
-import com.alibaba.fastjson.JSON;
 import com.futu.openapi.FTAPI;
 import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Lists;
@@ -23,20 +20,17 @@ import luonq.listener.OptionStockListener2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,6 +94,7 @@ public class OptionTradeExecutor2 {
     private Map<String/* ikbr option */, Double/* buy price */> lastBuyPriceMap = Maps.newHashMap(); // 最新一次买入挂单价
     private Map<String/* ikbr option */, Double/* sell price */> lastSellPriceMap = Maps.newHashMap(); // 最新一次卖出挂单价
     private Map<String/* futu option */, Double/* sell price */> adjustSellInitPriceMap = Maps.newHashMap(); // 卖出调价的原始挂单价，用于调价计算
+    private Map<String/* futu option */, Double/* buy price */> adjustBuyInitPriceMap = Maps.newHashMap(); // 买入调价的原始挂单价，用于调价计算
 
     public ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 10, 3600, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
@@ -133,6 +128,8 @@ public class OptionTradeExecutor2 {
     private String currentTradeDate;
     // futu报价
     private Map<String, String> codeToQuoteMap = Maps.newHashMap();
+    // futu报价
+    private Map<String, String> allCodeToQuoteMap = Maps.newHashMap();
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
@@ -146,10 +143,10 @@ public class OptionTradeExecutor2 {
         futuQuote = new BasicQuote();
         futuQuote.start();
         tradeApi = new TradeApi();
-        tradeApi.useSimulateEnv();
-        tradeApi.setAccountId(TradeApi.simulateUsOptionAccountId);
-        realTrade = false;
-        //        tradeApi.useRealEnv();
+        //        tradeApi.useSimulateEnv();
+        //        tradeApi.setAccountId(TradeApi.simulateUsOptionAccountId);
+        //        realTrade = false;
+        tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.unlock();
         //        tradeApi.clearStopLossStockSet();
@@ -204,47 +201,57 @@ public class OptionTradeExecutor2 {
         }
 
         List<String> tempCanTradeStock = Lists.newArrayList();
-        int size = 3;
-        while (true) {
-            double avgFund = funds / size;
-            List<String> tempInvalid = Lists.newArrayList();
-            for (String stock : sortedCanTradeStock) {
-                String callAndPut = canTradeOptionForFutuMap.get(stock);
-                if (StringUtils.isNotBlank(callAndPut)) {
-                    String[] split = callAndPut.split("\\|");
-                    String callFutu = split[0];
-                    String putFutu = split[1];
-                    String callQuote = codeToQuoteMap.get(callFutu);
-                    String putQuote = codeToQuoteMap.get(putFutu);
-                    if (StringUtils.isAnyBlank(callQuote, putQuote)) {
-                        invalidTradeStock(stock);
-                        tempInvalid.add(stock);
-                        continue;
-                    }
+        int size = sortedCanTradeStock.size() > 1 ? 3 : sortedCanTradeStock.size();
+        // 如果已排序后的股票超过1只，则从size=3开始计算哪些股票价格符合条件
+        if (size > 1) {
+            while (true) {
+                double avgFund = funds / size;
+                List<String> tempInvalid = Lists.newArrayList();
+                for (String stock : sortedCanTradeStock) {
+                    String callAndPut = canTradeOptionForFutuMap.get(stock);
+                    if (StringUtils.isNotBlank(callAndPut)) {
+                        String[] split = callAndPut.split("\\|");
+                        String callFutu = split[0];
+                        String putFutu = split[1];
+                        String callQuote = codeToQuoteMap.get(callFutu);
+                        String putQuote = codeToQuoteMap.get(putFutu);
+                        if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                            invalidTradeStock(stock);
+                            tempInvalid.add(stock);
+                            continue;
+                        }
 
-                    String[] callQuoteSplit = callQuote.split("\\|");
-                    double callBidPrice = Double.parseDouble(callQuoteSplit[0]);
-                    double callAskPrice = Double.parseDouble(callQuoteSplit[1]);
-                    double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
-                    String[] putQuoteSplit = putQuote.split("\\|");
-                    double putBidPrice = Double.parseDouble(putQuoteSplit[0]);
-                    double putAskPrice = Double.parseDouble(putQuoteSplit[1]);
-                    double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
-                    if (100 * (callMidPrice + putMidPrice) < avgFund) {
-                        tempCanTradeStock.add(stock);
+                        String[] callQuoteSplit = callQuote.split("\\|");
+                        double callBidPrice = Double.parseDouble(callQuoteSplit[0]);
+                        double callAskPrice = Double.parseDouble(callQuoteSplit[1]);
+                        double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
+                        String[] putQuoteSplit = putQuote.split("\\|");
+                        double putBidPrice = Double.parseDouble(putQuoteSplit[0]);
+                        double putAskPrice = Double.parseDouble(putQuoteSplit[1]);
+                        double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
+                        if (100 * (callMidPrice + putMidPrice) < avgFund) {
+                            tempCanTradeStock.add(stock);
+                        }
                     }
                 }
+                sortedCanTradeStock.removeAll(tempInvalid);
+                if (tempCanTradeStock.size() >= size || size < 2) {
+                    break;
+                } else {
+                    tempCanTradeStock.clear();
+                    size--;
+                }
             }
-            sortedCanTradeStock.removeAll(tempInvalid);
-            if (tempCanTradeStock.size() >= size || size < 2) {
-                break;
-            } else {
-                tempCanTradeStock.clear();
-                size--;
+            log.info("after calucate by size {}, sortedCanTrade={}\ttempCanTrade={}", size, sortedCanTradeStock, tempCanTradeStock);
+            for (Iterator<String> iter = sortedCanTradeStock.iterator(); iter.hasNext(); ) {
+                String next = iter.next();
+                if (!tempCanTradeStock.contains(next)) {
+                    invalidTradeStock(next);
+                    iter.remove();
+                }
             }
         }
 
-        sortedCanTradeStock = tempCanTradeStock;
         if (sortedCanTradeStock.size() > size) {
             canTradeStocks = Sets.newHashSet(sortedCanTradeStock.subList(0, size));
             List<String> inteceptStock = sortedCanTradeStock.subList(size, sortedCanTradeStock.size());
@@ -443,7 +450,75 @@ public class OptionTradeExecutor2 {
         return tradePrice;
     }
 
-    public double calQuoteMidPrice(String futu) {
+    public double calQuickBuyPrice(String futu, Double curPrice) {
+        if (!allCodeToQuoteMap.containsKey(futu)) {
+            return 0;
+        }
+        String quote = allCodeToQuoteMap.get(futu);
+        String[] quoteSplit = quote.split("\\|");
+        double bidPrice = Double.parseDouble(quoteSplit[0]);
+        double askPrice = Double.parseDouble(quoteSplit[1]);
+        BigDecimal midPriceDecimal = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN);
+        double midPrice = midPriceDecimal.doubleValue();
+
+        long current = System.currentTimeMillis();
+        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, current);
+        if (lastTimestamp == current) {
+            optionAdjustPriceTimestampMap.put(futu, current);
+        }
+
+        /**
+         * 为了快速买进，需要按照当时的卖一价-最新的挂单价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要提高的价格，每五秒用最新挂单价加上一次提高的价格，尽快买进
+         * 比如：
+         * 1、当前买一1.3，卖一1.8，挂单价（根据iv计算）=1.55，初次挂单不提价
+         * 2、5秒后，当前买一1.3，卖一1.8，挂单价1.55，第一次提价，提价幅度=(1.8-1.55)/10*1=0.025≈0.03（四舍五入），实际挂单价=1.55+0.03=1.58
+         * 3、5秒后，当前买一1.4，卖一1.8，挂单价1.58，第二次提价，提价幅度=(1.8-1.58)/10*2=0.044，实际挂单价=1.58+0.04=1.62
+         * 4、5秒后，当前买一1.5，卖一1.9，挂单价1.62，第三次提价，提价幅度=(1.9-1.62)/10*3=0.084，实际挂单价=1.3-0.09=1.21
+         * 以此类推，10个5秒也就是50秒以后，实际挂单价=买一价，一定会卖出
+         */
+        // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
+        boolean touchOffAdjust = current - lastTimestamp > ADJUST_TRADE_PRICE_TIME_INTERVAL;
+        if (current > closeTime && touchOffAdjust) {
+            Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
+            int adjustTimes = lastAdjustTimes + 1;
+            optionAdjustPriceTimesMap.put(futu, adjustTimes);
+
+            BigDecimal adjustPriceDecimal = BigDecimal.valueOf((midPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
+            double adjustPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            optionAdjustPriceTimestampMap.put(futu, current);
+
+            log.info("adjust buy price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, adjustTimes, adjustPrice);
+            return adjustPrice;
+        }
+
+        if (realTrade) {
+            Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
+            int adjustTimes = lastAdjustTimes + 1;
+            optionAdjustPriceTimesMap.put(futu, adjustTimes);
+
+            // 5秒间隔后，最新卖一价和挂单价一样，向下调价10%。bidPrice以最新来计算调价幅度
+            Double buyInitPrice = adjustBuyInitPriceMap.get(futu);
+            if (buyInitPrice != null && buyInitPrice.compareTo(askPrice) == 0 && touchOffAdjust) {
+                BigDecimal adjustPriceDecimal = BigDecimal.valueOf((buyInitPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
+                double adjustPrice = BigDecimal.valueOf(buyInitPrice).subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                optionAdjustPriceTimestampMap.put(futu, current);
+
+                log.info("adjust buy price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tbuyInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, buyInitPrice, adjustTimes, adjustPrice);
+                return adjustPrice;
+            } else if (buyInitPrice == null || buyInitPrice.compareTo(askPrice) != 0) { // 不限定时间间隔，只要最新卖一价和挂单价不一样，重置调价卖出初始价为最新的中间价，重置调价次数，后续还是按照每5秒向下调价10%进行（最新卖一价只会比挂单价低，比他高的不会出现在卖一）
+                adjustBuyInitPriceMap.put(futu, midPrice);
+                optionAdjustPriceTimestampMap.put(futu, current);
+                optionAdjustPriceTimesMap.put(futu, 0);
+
+                log.info("change buy init price. adjust price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tbuyInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, buyInitPrice, adjustTimes, midPrice);
+                return midPrice;
+            }
+        }
+
+        return midPrice;
+    }
+
+    public double calQuickSellPrice(String futu) {
         if (!codeToQuoteMap.containsKey(futu)) {
             return 0;
         }
@@ -480,7 +555,7 @@ public class OptionTradeExecutor2 {
             double adjustPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
             optionAdjustPriceTimestampMap.put(futu, current);
 
-            log.info("adjust price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, adjustTimes, adjustPrice);
+            log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, adjustTimes, adjustPrice);
             return adjustPrice;
         }
 
@@ -496,7 +571,7 @@ public class OptionTradeExecutor2 {
                 double adjustPrice = BigDecimal.valueOf(sellInitPrice).subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 optionAdjustPriceTimestampMap.put(futu, current);
 
-                log.info("adjust price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tsellInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, sellInitPrice, adjustTimes, adjustPrice);
+                log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tsellInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, sellInitPrice, adjustTimes, adjustPrice);
                 return adjustPrice;
             } else if (sellInitPrice == null || sellInitPrice.compareTo(askPrice) != 0) { // 不限定时间间隔，只要最新卖一价和挂单价不一样，重置调价卖出初始价为最新的中间价，重置调价次数，后续还是按照每5秒向下调价10%进行（最新卖一价只会比挂单价低，比他高的不会出现在卖一）
                 adjustSellInitPriceMap.put(futu, midPrice);
@@ -509,121 +584,6 @@ public class OptionTradeExecutor2 {
         }
 
         return midPrice;
-    }
-
-    public void getRealTimeIV() {
-        //        for (String stock : hasBoughtSuccess) {
-        //            canTradeOptionForRtIVMap.remove(stock);
-        //        }
-        //        log.info("get real time iv: {}", canTradeOptionForRtIVMap);
-        //        if (MapUtils.isEmpty(canTradeOptionForRtIVMap)) {
-        //            log.info("there is no canTradeOptionForRtIVMap");
-        //            return;
-        //        }
-
-        int beginMarket = 93000;
-        int closeMarket = 160000;
-
-        HttpClient httpClient = new HttpClient();
-        HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
-        httpConnectionManagerParams.setSoTimeout(5000);
-        httpClient.getHttpConnectionManager().setParams(httpConnectionManagerParams);
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-
-            int showtimes = 10, showCount = 0;
-
-            @Override
-            public void run() {
-                if (MapUtils.isEmpty(canTradeOptionForRtIVMap) && !hasFinishBuying) {
-                    log.info("get realtime iv. but there is no option to get. waiting......");
-                    return;
-                }
-
-                if (hasFinishBuying) {
-                    log.info("all stock don't need get realtime iv");
-                    timer.cancel();
-                    return;
-                }
-                String options = canTradeOptionForRtIVMap.entrySet().stream().filter(kv -> !hasBoughtSuccess.contains(kv.getKey())).flatMap(kv -> Arrays.stream(kv.getValue().split("\\|"))).collect(Collectors.joining(","));
-                String url = "https://restapi.ivolatility.com/equities/rt/options-rawiv?apiKey=5uO8Wid7AY945OJ2&symbols=" + options;
-                //                log.info("request rt iv url={}", url);
-
-                List<String> results = Lists.newArrayList();
-                GetMethod get = new GetMethod(url);
-                try {
-                    long curent = System.currentTimeMillis();
-                    httpClient.executeMethod(get);
-                    InputStream content = get.getResponseBodyAsStream();
-                    OptionRTResp resp = JSON.parseObject(content, OptionRTResp.class);
-                    List<OptionRT> data = resp.getData();
-                    if (CollectionUtils.isNotEmpty(data)) {
-                        for (OptionRT rt : data) {
-                            String symbol = rt.getSymbol();
-                            String timestamp = rt.getTimestamp();
-                            double iv = rt.getIv();
-                            String line = symbol + "\t" + timestamp + "\t" + iv + "\t" + curent;
-
-                            if (iv == -1.0) {
-                                continue;
-                            }
-                            int timeInt = 0;
-                            try {
-                                String timeStr = timestamp.substring(11, 19).replaceAll(":", "");
-                                timeInt = Integer.valueOf(timeStr);
-                            } catch (Exception e) {
-                                log.error("calculate rt iv time error. timestamp={}", timestamp, e);
-                                return;
-                            }
-                            if (timeInt < beginMarket || timeInt > closeMarket) {
-                                continue;
-                            }
-
-                            results.add(line);
-                            optionRtIvMap.put(symbol.replaceAll(" ", "+"), iv);
-                        }
-                        if (MapUtils.isNotEmpty(optionRtIvMap)) {
-                            //                            for (String stock : canTradeOptionForRtIVMap.keySet()) {
-                            //                                if (hasBoughtSuccess.contains(stock)) {
-                            //                                    continue;
-                            //                                }
-                            //                                String callAndPut = canTradeOptionForRtIVMap.get(stock);
-                            //                                String[] split = callAndPut.split("\\|");
-                            //                                String callRt = split[0];
-                            //                                String putRt = split[1];
-                            //                                Double callIv = optionRtIvMap.get(callRt);
-                            //                                Double putIv = optionRtIvMap.get(putRt);
-                            //                                if (callIv == null || putIv == null) {
-                            //                                    continue;
-                            //                                }
-                            //
-                            //                                String callFutu = optionCodeMap.get(callRt);
-                            //                                String putFutu = optionCodeMap.get(putRt);
-                            //                                String callQuote = codeToQuoteMap.get(callFutu);
-                            //                                String putQuote = codeToQuoteMap.get(putFutu);
-                            //                                if (StringUtils.isAnyBlank(callQuote, putQuote)) {
-                            //                                    invalidTradeStock(stock);
-                            //                                    log.info("get realtime iv check out invalid stock: {}", stock);
-                            //                                }
-                            //                            }
-                            log.info("rt iv data: {}", results);
-                        }
-
-                        //                        showCount++;
-                        //                        if (showCount == showtimes) {
-                        //                        log.info("rt iv data: {}", results);
-                        //                            showCount = 0;
-                        //                        }
-                    }
-                    if (curent > (closeTime + 60000)) {
-                        timer.cancel();
-                    }
-                } catch (IOException e) {
-                    log.error("getRealTimeIV error. url={}", url, e);
-                }
-            }
-        }, 0, 1500);
     }
 
     public void getFutuRealTimeIV() {
@@ -844,7 +804,7 @@ public class OptionTradeExecutor2 {
                             hasTradeCount = sellCallOrder.getTradeCount();
                         }
 
-                        double tradePrice = calQuoteMidPrice(callFutu);
+                        double tradePrice = calQuickSellPrice(callFutu);
                         if (tradePrice == 0d) {
                             log.warn("modify sell call order price is 0: orderId={}\tcall={}", sellCallOrderId, callFutu);
                             continue;
@@ -862,7 +822,7 @@ public class OptionTradeExecutor2 {
                             hasTradeCount = sellPutOrder.getTradeCount();
                         }
 
-                        double tradePrice = calQuoteMidPrice(putFutu);
+                        double tradePrice = calQuickSellPrice(putFutu);
                         if (tradePrice == 0d) {
                             log.warn("modify sell put order price is 0: orderId={}\tput={}", sellPutOrderId, putFutu);
                             continue;
@@ -1013,8 +973,8 @@ public class OptionTradeExecutor2 {
                         double putDiff = putMidPrice - putOpen;
                         double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
                         double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen)).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                        double callCount = buyCallOrder.getCount();
-                        double putCount = buyPutOrder.getCount();
+                        double callCount = buyCallOrder.getTradeCount();
+                        double putCount = buyPutOrder.getTradeCount();
                         if (showCount == showtimes) {
                             log.info("monitor loss and gain. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
                               callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
@@ -1385,18 +1345,16 @@ public class OptionTradeExecutor2 {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        double avgFund = 10000d;
-        Double callTradePrice = 1.2;
-        Double putTradePrice = 1.3;
-        System.out.println(callTradePrice.compareTo(putTradePrice));
-        double countDouble = avgFund / (callTradePrice + putTradePrice) / 100;
-        String countStr = String.valueOf(countDouble);
-        int dotIndex = countStr.indexOf(".");
-        String dotStr = countStr.substring(dotIndex + 1, dotIndex + 2);
-        double count = (int) countDouble;
-        if (Integer.valueOf(dotStr) <= 5) {
-            count = (int) countDouble - 1;
+        List<Integer> l1 = Lists.newArrayList(1, 2, 3, 4, 5);
+        List<Integer> l2 = Lists.newArrayList(3, 4, 5);
+        //        l1.retainAll(l2);
+        System.out.println(l1);
+        for (Iterator<Integer> iter = l1.iterator(); iter.hasNext(); ) {
+            Integer next = iter.next();
+            if (!l2.contains(next)) {
+                iter.remove();
+            }
         }
-        System.out.println(count);
+        System.out.println(l1);
     }
 }
