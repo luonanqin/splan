@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
 import lombok.extern.slf4j.Slf4j;
-import luonq.listener.OptionStockListener;
 import luonq.listener.OptionStockListener2;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -221,13 +220,18 @@ public class RealTimeOptionWS2 {
                         int bidVol = MapUtils.getInteger(map, "bs", 0);
                         Map<String, String> polygonForFutuMap = optionStockListener.getPolygonForFutuMap();
                         Map<String, String> codeToQuoteMap = optionTradeExecutor.getCodeToQuoteMap();
+                        Map<String, String> allCodeToQuoteMap = optionTradeExecutor.getAllCodeToQuoteMap();
                         if (askPrice != null && bidPrice != null && askPrice > 0 && bidPrice > 0 && askVol > 5 && bidVol > 5) {
-                            double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
                             String futuCode = MapUtils.getString(polygonForFutuMap, code, "");
-                            if (StringUtils.isNotBlank(futuCode)) {
-                                codeToQuoteMap.put(futuCode, bidPrice + "|" + askPrice);
+                            allCodeToQuoteMap.put(futuCode, bidPrice + "|" + askPrice);
+
+                            if (askVol > 5 && bidVol > 5) {
+                                double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
+                                if (StringUtils.isNotBlank(futuCode)) {
+                                    codeToQuoteMap.put(futuCode, bidPrice + "|" + askPrice);
+                                }
+                                log.info("polygon quote. code={}\tbidPrice={}\tbidVol={}\taskPrice={}\taskVol={}\tmidPrice={}", code, bidPrice, bidVol, askPrice, askVol, midPrice);
                             }
-                            log.info("polygon quote. code={}\tbidPrice={}\tbidVol={}\taskPrice={}\taskVol={}\tmidPrice={}", code, bidPrice, bidVol, askPrice, askVol, midPrice);
                         }
                     }
                     //                    long current = System.currentTimeMillis();

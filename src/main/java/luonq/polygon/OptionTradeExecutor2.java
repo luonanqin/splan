@@ -74,7 +74,7 @@ public class OptionTradeExecutor2 {
     public static final double STOP_GAIN_RATIO_2 = 0.1d; // 三小时后的止盈比例
     public static final long STOP_GAIN_INTERVAL_TIME_LINE = 3 * 60 * 60 * 1000L; // 三小时止盈时间点
     public static final int ADJUST_TRADE_PRICE_TIMES = 10; // 卖出挂单价调价次数上限
-    public static final long ADJUST_SELL_PRICE_TIME_INTERVAL = 5 * 1000L; // 卖出挂单价调价间隔5秒
+    public static final long ADJUST_SELL_PRICE_TIME_INTERVAL = 4 * 1000L; // 卖出挂单价调价间隔4秒
     public static final long ADJUST_BUY_PRICE_TIME_INTERVAL = 4 * 1000L; // 买入挂单价调价间隔4秒
 
     private static Integer EXIST = 1;
@@ -375,6 +375,8 @@ public class OptionTradeExecutor2 {
                 buyOrderIdMap.put(putIkbr, buyPutOrderId);
                 adjustBuyInitPriceMap.put(callFutu, callTradePrice);
                 adjustBuyInitPriceMap.put(putFutu, putTradePrice);
+                optionAdjustPriceTimesMap.put(callFutu, 0);
+                optionAdjustPriceTimesMap.put(putFutu, 0);
                 optionAdjustPriceTimestampMap.put(callFutu, curTime);
                 optionAdjustPriceTimestampMap.put(putFutu, curTime);
                 ReadWriteOptionTradeInfo.writeOrderCount(stock, count);
@@ -456,11 +458,11 @@ public class OptionTradeExecutor2 {
     }
 
     /**
-     * 为了快速买进，需要按照最新的卖一价-最初的挂单价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要提高的价格，每五秒用最初的挂单价加上一次提高的价格，尽快买进
+     * 为了快速买进，需要按照最新的卖一价-最初的挂单价，差价除以10，然后乘以当前提高的次数（总共10次）得到每次改单需要提高的价格，每五秒用最初的挂单价加上一次提高的价格，尽快买进
      * 比如：
      * 1、当前买一1.3，卖一1.8，挂单价（根据iv计算）=1.5，初次挂单不提价
      * 2、4秒后，当前买一1.5，卖一1.8，最初挂单价1.5，第一次提价，提价幅度=(1.8-1.5)/10*1=0.03≈0.03（三位小数四舍五入），实际挂单价=1.5+0.03=1.53
-     * 3、4秒后，当前买一1.5，卖一1.8，最初挂单价1.5，第二次提价，提价幅度=(1.8-1.5)/10*2=0.06，实际挂单价=1.5+0.04=1.56
+     * 3、4秒后，当前买一1.53，卖一1.8，最初挂单价1.5，第二次提价，提价幅度=(1.8-1.5)/10*2=0.06，实际挂单价=1.5+0.04=1.56
      * 4、4秒后，当前买一1.6，卖一1.9（买一价大于挂单价，不影响），最初挂单价1.5，第三次提价，提价幅度=(1.9-1.5)/10*3=0.12，实际挂单价=1.5+0.12=1.62
      * 以此类推，10个4秒也就是40秒以后，实际挂单价=卖一价，一定会买进
      */
@@ -469,15 +471,15 @@ public class OptionTradeExecutor2 {
         Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, null);
         if (lastTimestamp == null) {
             optionAdjustPriceTimestampMap.put(futu, current);
-            return 0;
+            return Double.MIN_VALUE;
         }
         boolean touchOffAdjust = current - lastTimestamp > ADJUST_BUY_PRICE_TIME_INTERVAL;
         if (touchOffAdjust) {
-            return 0;
+            return Double.MIN_VALUE;
         }
 
         if (!allCodeToQuoteMap.containsKey(futu)) {
-            return 0;
+            return Double.MIN_VALUE;
         }
         String quote = allCodeToQuoteMap.get(futu);
         String[] quoteSplit = quote.split("\\|");
@@ -500,73 +502,118 @@ public class OptionTradeExecutor2 {
         return adjustPrice;
     }
 
+    /**
+     * 为了快速卖出，需要按照最初的挂单价-最新的买一价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要降低的价格，每五秒用最初的挂单价减去一次降低的价格，尽快卖出
+     * 比如：
+     * 1、当前买一1.3，卖一1.8，挂单价（根据iv计算）=1.5，初次挂单不提价
+     * 2、4秒后，当前买一1.3，卖一1.5，最初挂单价1.5，第一次降价，降价幅度=(1.5-1.3)/10*1=0.02≈0.02（三位小数四舍五入），实际挂单价=1.5-0.02=1.48
+     * 3、4秒后，当前买一1.3，卖一1.48，最初挂单价1.5，第二次降价，降价幅度=(1.5-1.3)/10*2=0.04，实际挂单价=1.5-0.04=1.46
+     * 4、4秒后，当前买一1.2，卖一1.42（卖一价小于挂单价，不影响），最初挂单价1.5，第三次降价，降价幅度=(1.5-1.2)/10*3=0.09，实际挂单价=1.5+0.09=1.41
+     * 以此类推，10个4秒也就是40秒以后，实际挂单价=卖一价，一定会买进
+     */
     public double calQuickSellPrice(String futu) {
-        if (!codeToQuoteMap.containsKey(futu)) {
-            return 0;
+        long current = System.currentTimeMillis();
+        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, null);
+        if (lastTimestamp == null) {
+            optionAdjustPriceTimestampMap.put(futu, current);
+            return Double.MAX_VALUE;
         }
-        String quote = codeToQuoteMap.get(futu);
+        boolean touchOffAdjust = current - lastTimestamp > ADJUST_SELL_PRICE_TIME_INTERVAL;
+        if (touchOffAdjust) {
+            return Double.MAX_VALUE;
+        }
+
+        if (!allCodeToQuoteMap.containsKey(futu)) {
+            return Double.MAX_VALUE;
+        }
+        String quote = allCodeToQuoteMap.get(futu);
         String[] quoteSplit = quote.split("\\|");
         double bidPrice = Double.parseDouble(quoteSplit[0]);
         double askPrice = Double.parseDouble(quoteSplit[1]);
-        BigDecimal midPriceDecimal = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN);
-        double midPrice = midPriceDecimal.doubleValue();
+        bidPrice = askPrice > bidPrice ? bidPrice : askPrice; // 兼容错误数据，选最小的作为买一
+        Double sellInitPrice = adjustSellInitPriceMap.get(futu);
+        BigDecimal sellInitPriceDecimal = BigDecimal.valueOf(sellInitPrice);
 
-        long current = System.currentTimeMillis();
-        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, current);
-        if (lastTimestamp == current) {
-            optionAdjustPriceTimestampMap.put(futu, current);
-        }
-
-        /**
-         * 收盘卖出为了避免长时间无法成交，需要按照最新的挂单价-当时的买一价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要降低的价格，每五秒用最新挂单价减去一次降低的价格，尽快卖出
-         * 比如：
-         * 1、当前买一1.3，卖一1.8，挂单价(1.3+1.8)/2=1.55，初次挂单不降价
-         * 2、5秒后，当前买一1.3，卖一1.8，挂单价1.55，第一次降价，降价幅度=(1.55-1.3)/10*1=0.025≈0.03（四舍五入），实际挂单价=1.55-0.03=1.52
-         * 3、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第二次降价，降价幅度=(1.3-1)/10*2=0.06，实际挂单价=1.3-0.06=1.24
-         * 4、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第三次降价，降价幅度=(1.3-1)/10*3=0.09，实际挂单价=1.3-0.09=1.21
-         * 以此类推，10个5秒也就是50秒以后，实际挂单价=买一价，一定会卖出
-         */
         // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
-        boolean touchOffAdjust = current - lastTimestamp > ADJUST_SELL_PRICE_TIME_INTERVAL;
-        if (current > closeTime && touchOffAdjust) {
-            Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
-            int adjustTimes = lastAdjustTimes + 1;
-            optionAdjustPriceTimesMap.put(futu, adjustTimes);
+        Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
+        int adjustTimes = lastAdjustTimes + 1;
+        optionAdjustPriceTimesMap.put(futu, adjustTimes);
 
-            BigDecimal adjustPriceDecimal = BigDecimal.valueOf((midPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
-            double adjustPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
-            optionAdjustPriceTimestampMap.put(futu, current);
+        BigDecimal adjustPriceDecimal = BigDecimal.valueOf((sellInitPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
+        double adjustPrice = sellInitPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        optionAdjustPriceTimestampMap.put(futu, current);
 
-            log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, adjustTimes, adjustPrice);
-            return adjustPrice;
-        }
-
-        if (realTrade) {
-            Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
-            int adjustTimes = lastAdjustTimes + 1;
-            optionAdjustPriceTimesMap.put(futu, adjustTimes);
-
-            // 5秒间隔后，最新卖一价和挂单价一样，向下调价10%。bidPrice以最新来计算调价幅度
-            Double sellInitPrice = adjustSellInitPriceMap.get(futu);
-            if (sellInitPrice != null && sellInitPrice.compareTo(askPrice) == 0 && touchOffAdjust) {
-                BigDecimal adjustPriceDecimal = BigDecimal.valueOf((sellInitPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
-                double adjustPrice = BigDecimal.valueOf(sellInitPrice).subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                optionAdjustPriceTimestampMap.put(futu, current);
-
-                log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tsellInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, sellInitPrice, adjustTimes, adjustPrice);
-                return adjustPrice;
-            } else if (sellInitPrice == null || sellInitPrice.compareTo(askPrice) != 0) { // 不限定时间间隔，只要最新卖一价和挂单价不一样，重置调价卖出初始价为最新的中间价，重置调价次数，后续还是按照每5秒向下调价10%进行（最新卖一价只会比挂单价低，比他高的不会出现在卖一）
-                adjustSellInitPriceMap.put(futu, midPrice);
-                optionAdjustPriceTimestampMap.put(futu, current);
-                optionAdjustPriceTimesMap.put(futu, 0);
-
-                log.info("change sell init price. adjust price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tsellInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, sellInitPrice, adjustTimes, midPrice);
-                return midPrice;
-            }
-        }
-
-        return midPrice;
+        log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, adjustTimes, adjustPrice);
+        return adjustPrice;
     }
+
+    //    public double calQuickSellPrice(String futu) {
+    //        if (!codeToQuoteMap.containsKey(futu)) {
+    //            return 0;
+    //        }
+    //        String quote = codeToQuoteMap.get(futu);
+    //        String[] quoteSplit = quote.split("\\|");
+    //        double bidPrice = Double.parseDouble(quoteSplit[0]);
+    //        double askPrice = Double.parseDouble(quoteSplit[1]);
+    //        BigDecimal midPriceDecimal = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN);
+    //        double midPrice = midPriceDecimal.doubleValue();
+    //
+    //        long current = System.currentTimeMillis();
+    //        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, current);
+    //        if (lastTimestamp == current) {
+    //            optionAdjustPriceTimestampMap.put(futu, current);
+    //        }
+    //
+    //        /**
+    //         * 收盘卖出为了避免长时间无法成交，需要按照最新的挂单价-当时的买一价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要降低的价格，每五秒用最新挂单价减去一次降低的价格，尽快卖出
+    //         * 比如：
+    //         * 1、当前买一1.3，卖一1.8，挂单价(1.3+1.8)/2=1.55，初次挂单不降价
+    //         * 2、5秒后，当前买一1.3，卖一1.8，挂单价1.55，第一次降价，降价幅度=(1.55-1.3)/10*1=0.025≈0.03（四舍五入），实际挂单价=1.55-0.03=1.52
+    //         * 3、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第二次降价，降价幅度=(1.3-1)/10*2=0.06，实际挂单价=1.3-0.06=1.24
+    //         * 4、5秒后，当前买一1，卖一1.6，挂单价(1+1.6)/2=1.3，第三次降价，降价幅度=(1.3-1)/10*3=0.09，实际挂单价=1.3-0.09=1.21
+    //         * 以此类推，10个5秒也就是50秒以后，实际挂单价=买一价，一定会卖出
+    //         */
+    //        // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
+    //        boolean touchOffAdjust = current - lastTimestamp > ADJUST_SELL_PRICE_TIME_INTERVAL;
+    //        if (current > closeTime && touchOffAdjust) {
+    //            Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
+    //            int adjustTimes = lastAdjustTimes + 1;
+    //            optionAdjustPriceTimesMap.put(futu, adjustTimes);
+    //
+    //            BigDecimal adjustPriceDecimal = BigDecimal.valueOf((midPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
+    //            double adjustPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    //            optionAdjustPriceTimestampMap.put(futu, current);
+    //
+    //            log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, adjustTimes, adjustPrice);
+    //            return adjustPrice;
+    //        }
+    //
+    //        if (realTrade) {
+    //            Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
+    //            int adjustTimes = lastAdjustTimes + 1;
+    //            optionAdjustPriceTimesMap.put(futu, adjustTimes);
+    //
+    //            // 5秒间隔后，最新卖一价和挂单价一样，向下调价10%。bidPrice以最新来计算调价幅度
+    //            Double sellInitPrice = adjustSellInitPriceMap.get(futu);
+    //            if (sellInitPrice != null && sellInitPrice.compareTo(askPrice) == 0 && touchOffAdjust) {
+    //                BigDecimal adjustPriceDecimal = BigDecimal.valueOf((sellInitPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
+    //                double adjustPrice = BigDecimal.valueOf(sellInitPrice).subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    //                optionAdjustPriceTimestampMap.put(futu, current);
+    //
+    //                log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tsellInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, sellInitPrice, adjustTimes, adjustPrice);
+    //                return adjustPrice;
+    //            } else if (sellInitPrice == null || sellInitPrice.compareTo(askPrice) != 0) { // 不限定时间间隔，只要最新卖一价和挂单价不一样，重置调价卖出初始价为最新的中间价，重置调价次数，后续还是按照每5秒向下调价10%进行（最新卖一价只会比挂单价低，比他高的不会出现在卖一）
+    //                adjustSellInitPriceMap.put(futu, midPrice);
+    //                optionAdjustPriceTimestampMap.put(futu, current);
+    //                optionAdjustPriceTimesMap.put(futu, 0);
+    //
+    //                log.info("change sell init price. adjust price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tsellInitPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, sellInitPrice, adjustTimes, midPrice);
+    //                return midPrice;
+    //            }
+    //        }
+    //
+    //        return midPrice;
+    //    }
 
     public void getFutuRealTimeIV() {
         int beginMarket = 93000;
@@ -717,10 +764,6 @@ public class OptionTradeExecutor2 {
                         } else {
                             tradePrice = calTradePrice(stock, putRt, PUT_TYPE);
                         }
-                        if (tradePrice == 0d) {
-                            log.warn("modify buy put order price is 0: orderId={}\tcall={}", buyPutOrderId, putIkbr);
-                            continue;
-                        }
 
                         if (!lastBuyPriceMap.containsKey(putIkbr) || lastBuyPriceMap.get(putIkbr).compareTo(tradePrice) < 0) {
                             long modifyOrderId = tradeApi.upOrderPrice(buyPutOrderId, count, tradePrice);
@@ -788,36 +831,26 @@ public class OptionTradeExecutor2 {
                     /**
                      * 改单只有在计算价比挂单价低的时候才进行，如果改高价会导致卖出成交更困难
                      */
-                    if (!callSuccess) {
+                    if (!callSuccess && sellCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                         double hasTradeCount = 0;
                         if (sellCallOrder != null) {
                             hasTradeCount = sellCallOrder.getTradeCount();
                         }
 
                         double tradePrice = calQuickSellPrice(callFutu);
-                        if (tradePrice == 0d) {
-                            log.warn("modify sell call order price is 0: orderId={}\tcall={}", sellCallOrderId, callFutu);
-                            continue;
-                        }
-
                         if (!lastSellPriceMap.containsKey(callIkbr) || lastSellPriceMap.get(callIkbr).compareTo(tradePrice) > 0) {
                             long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, count, tradePrice);
                             log.info("modify sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callFutu, tradePrice, count, hasTradeCount);
                             lastSellPriceMap.put(callIkbr, tradePrice);
                         }
                     }
-                    if (!putSuccess) {
+                    if (!putSuccess && sellPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                         double hasTradeCount = 0;
                         if (sellPutOrder != null) {
                             hasTradeCount = sellPutOrder.getTradeCount();
                         }
 
                         double tradePrice = calQuickSellPrice(putFutu);
-                        if (tradePrice == 0d) {
-                            log.warn("modify sell put order price is 0: orderId={}\tput={}", sellPutOrderId, putFutu);
-                            continue;
-                        }
-
                         if (!lastSellPriceMap.containsKey(putIkbr) || lastSellPriceMap.get(putIkbr).compareTo(tradePrice) > 0) {
                             long modifyOrderId = tradeApi.upOrderPrice(sellPutOrderId, count, tradePrice);
                             log.info("modify sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putFutu, tradePrice, count, hasTradeCount);
@@ -1082,6 +1115,8 @@ public class OptionTradeExecutor2 {
                             if (gainSellOption.contains(callIkbr)) {
                                 long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
                                 adjustSellInitPriceMap.put(putFutu, putMidPrice);
+                                optionAdjustPriceTimestampMap.put(putFutu, curTime);
+                                optionAdjustPriceTimesMap.put(putFutu, 0);
                                 lastSellPriceMap.put(putIkbr, putMidPrice);
                                 sellOrderTimeMap.put(stock, curTime);
                                 sellOrderIdMap.put(putIkbr, sellPutOrderId);
@@ -1092,6 +1127,8 @@ public class OptionTradeExecutor2 {
                             } else if (gainSellOption.contains(putIkbr)) {
                                 long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
                                 adjustSellInitPriceMap.put(callFutu, callMidPrice);
+                                optionAdjustPriceTimestampMap.put(callFutu, curTime);
+                                optionAdjustPriceTimesMap.put(callFutu, 0);
                                 lastSellPriceMap.put(callIkbr, callMidPrice);
                                 sellOrderTimeMap.put(stock, curTime);
                                 sellOrderIdMap.put(callIkbr, sellCallOrderId);

@@ -194,7 +194,11 @@ public class LoadOptionTradeData {
 
                 List<Double> ivList = Lists.newArrayList();
                 for (String date : ivMap.keySet()) {
-                    ivList.add(ivMap.get(date));
+                    Double value = ivMap.get(date);
+                    if (value == -2d) {
+                        continue;
+                    }
+                    ivList.add(value);
                     if (StringUtils.equals(date, lastTradeDate)) {
                         break;
                     }
