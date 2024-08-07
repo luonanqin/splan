@@ -450,53 +450,53 @@ public class OptionTradeExecutor2 {
         return tradePrice;
     }
 
+    /**
+     * 为了快速买进，需要按照最新的卖一价-最初的挂单价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要提高的价格，每五秒用最初的挂单价加上一次提高的价格，尽快买进
+     * 比如：
+     * 1、当前买一1.3，卖一1.8，挂单价（根据iv计算）=1.5，初次挂单不提价
+     * 2、5秒后，当前买一1.5，卖一1.8，最初挂单价1.5，第一次提价，提价幅度=(1.8-1.5)/10*1=0.03≈0.03（三位小数四舍五入），实际挂单价=1.5+0.03=1.53
+     * 3、5秒后，当前买一1.5，卖一1.8，最初挂单价1.5，第二次提价，提价幅度=(1.8-1.5)/10*2=0.06，实际挂单价=1.5+0.04=1.56
+     * 4、5秒后，当前买一1.6，卖一1.9（买一价大于挂单价，不影响），最初挂单价1.5，第三次提价，提价幅度=(1.9-1.5)/10*3=0.12，实际挂单价=1.5+0.12=1.62
+     * 以此类推，10个5秒也就是50秒以后，实际挂单价=卖一价，一定会买进
+     */
     public double calQuickBuyPrice(String futu, Double curPrice) {
+        long current = System.currentTimeMillis();
+        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, current);
+        if (lastTimestamp == current) {
+            optionAdjustPriceTimestampMap.put(futu, current);
+            return curPrice;
+        }
+        boolean touchOffAdjust = current - lastTimestamp > ADJUST_TRADE_PRICE_TIME_INTERVAL;
+        if (touchOffAdjust) {
+            return curPrice;
+        }
+
         if (!allCodeToQuoteMap.containsKey(futu)) {
-            return 0;
+            return curPrice;
         }
         String quote = allCodeToQuoteMap.get(futu);
         String[] quoteSplit = quote.split("\\|");
         double bidPrice = Double.parseDouble(quoteSplit[0]);
         double askPrice = Double.parseDouble(quoteSplit[1]);
-        BigDecimal midPriceDecimal = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN);
-        double midPrice = midPriceDecimal.doubleValue();
+//        BigDecimal midPriceDecimal = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN);
+//        double midPrice = midPriceDecimal.doubleValue();
+        Double buyInitPrice = adjustBuyInitPriceMap.get(futu);
+        BigDecimal buyInitPriceDecimal = BigDecimal.valueOf(buyInitPrice);
 
-        long current = System.currentTimeMillis();
-        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, current);
-        if (lastTimestamp == current) {
-            optionAdjustPriceTimestampMap.put(futu, current);
-        }
 
-        /**
-         * 为了快速买进，需要按照最新的卖一价-最初的挂单价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要提高的价格，每五秒用最初的挂单价加上一次提高的价格，尽快买进
-         * 比如：
-         * 1、当前买一1.3，卖一1.8，挂单价（根据iv计算）=1.5，初次挂单不提价
-         * 2、5秒后，当前买一1.5，卖一1.8，最初挂单价1.5，第一次提价，提价幅度=(1.8-1.5)/10*1=0.03≈0.03（三位小数四舍五入），实际挂单价=1.5+0.03=1.53
-         * 3、5秒后，当前买一1.5，卖一1.8，最初挂单价1.5，第二次提价，提价幅度=(1.8-1.5)/10*2=0.06，实际挂单价=1.5+0.04=1.56
-         * 4、5秒后，当前买一1.6，卖一1.9（买一价大于挂单价，不影响），最初挂单价1.5，第三次提价，提价幅度=(1.9-1.5)/10*3=0.12，实际挂单价=1.5+0.12=1.62
-         * 以此类推，10个5秒也就是50秒以后，实际挂单价=卖一价，一定会买进
-         */
-        /**
-         * 为了快速买进，需要按照当时的卖一价-最新的挂单价，差价除以10，然后乘以当前降低的次数（总共10次）得到每次改单需要提高的价格，每五秒用最新挂单价加上一次提高的价格，尽快买进
-         * 比如：
-         * 1、当前买一1.3，卖一1.8，挂单价（根据iv计算）=1.55，初次挂单不提价
-         * 2、5秒后，当前买一1.3，卖一1.8，挂单价1.55，第一次提价，提价幅度=(1.8-1.55)/10*1=0.025≈0.03（四舍五入），实际挂单价=1.55+0.03=1.58
-         * 3、5秒后，当前买一1.4，卖一1.8，挂单价1.58，第二次提价，提价幅度=(1.8-1.58)/10*2=0.044，实际挂单价=1.58+0.04=1.62
-         * 4、5秒后，当前买一1.5，卖一1.9，挂单价1.62，第三次提价，提价幅度=(1.9-1.62)/10*3=0.084，实际挂单价=1.3-0.09=1.21
-         * 以此类推，10个5秒也就是50秒以后，实际挂单价=买一价，一定会卖出
-         */
+
         // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
-        boolean touchOffAdjust = current - lastTimestamp > ADJUST_TRADE_PRICE_TIME_INTERVAL;
-        if (current > closeTime && touchOffAdjust) {
+
+        if (touchOffAdjust) {
             Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
             int adjustTimes = lastAdjustTimes + 1;
             optionAdjustPriceTimesMap.put(futu, adjustTimes);
 
-            BigDecimal adjustPriceDecimal = BigDecimal.valueOf((midPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
-            double adjustPrice = midPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            BigDecimal adjustPriceDecimal = BigDecimal.valueOf((askPrice - buyInitPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
+            double adjustPrice = buyInitPriceDecimal.add(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
             optionAdjustPriceTimestampMap.put(futu, current);
 
-            log.info("adjust buy price: option={}\tbidPrice={}\taskPrice={}\tmidPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, midPrice, adjustTimes, adjustPrice);
+            log.info("adjust buy price: option={}\tbidPrice={}\taskPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, adjustTimes, adjustPrice);
             return adjustPrice;
         }
 
@@ -506,7 +506,6 @@ public class OptionTradeExecutor2 {
             optionAdjustPriceTimesMap.put(futu, adjustTimes);
 
             // 5秒间隔后，最新卖一价和挂单价一样，向下调价10%。bidPrice以最新来计算调价幅度
-            Double buyInitPrice = adjustBuyInitPriceMap.get(futu);
             if (buyInitPrice != null && buyInitPrice.compareTo(askPrice) == 0 && touchOffAdjust) {
                 BigDecimal adjustPriceDecimal = BigDecimal.valueOf((buyInitPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
                 double adjustPrice = BigDecimal.valueOf(buyInitPrice).subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
