@@ -217,6 +217,7 @@ public class OptionTradeExecutor2 {
                         String callQuote = codeToQuoteMap.get(callFutu);
                         String putQuote = codeToQuoteMap.get(putFutu);
                         if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                            log.info("there is no quote . call and put=", callAndPut);
                             invalidTradeStock(stock);
                             tempInvalid.add(stock);
                             continue;
