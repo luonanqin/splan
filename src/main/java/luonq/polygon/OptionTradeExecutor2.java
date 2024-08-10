@@ -523,11 +523,9 @@ public class OptionTradeExecutor2 {
 
         Double bidPrice = codeToBidMap.get(futu);
         Double askPrice = codeToAskMap.get(futu);
-        if (!allCodeToQuoteMap.containsKey(futu)) {
+        if (bidPrice == null || askPrice == null) {
             return Double.MAX_VALUE;
         }
-        String quote = allCodeToQuoteMap.get(futu);
-        String[] quoteSplit = quote.split("\\|");
         bidPrice = askPrice > bidPrice ? bidPrice : askPrice; // 兼容错误数据，选最小的作为买一
         Double sellInitPrice = adjustSellInitPriceMap.get(futu);
         BigDecimal sellInitPriceDecimal = BigDecimal.valueOf(sellInitPrice);
@@ -943,6 +941,7 @@ public class OptionTradeExecutor2 {
                             continue;
                         }
 
+                        // 
                         double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
                         double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
                         /**
@@ -959,7 +958,7 @@ public class OptionTradeExecutor2 {
                                 } catch (Exception e) {
                                     log.error("gain selling get call ask price error. call={}\tquote={}", callIkbr, allCodeToQuoteMap.get(callFutu), e);
                                 }
-                                if (tradePrice.compareTo(callAskPrice) == 0) {
+                                if (tradePrice.compareTo(callAskPrice) == 0) { // 如果最新卖一价和之前的挂单价一样，则mid就等于卖一价，也就是挂单价不变，下同
                                     callMidPrice = callAskPrice;
                                 } else {
                                     log.info("change call mid price. call={}\tlastPrice={}\tmidPrice={}", callIkbr, tradePrice, callMidPrice);
@@ -987,18 +986,6 @@ public class OptionTradeExecutor2 {
                         Long buyPutOrderId = buyOrderIdMap.get(putIkbr);
                         Order buyCallOrder = tradeApi.getOrder(buyCallOrderId);
                         Order buyPutOrder = tradeApi.getOrder(buyPutOrderId);
-                        // 测试用 start ---------------
-                        //                    callPosition = new StockPosition();
-                        //                    callPosition.setCostPrice(1.03);
-                        //                    callPosition.setCanSellQty(54);
-                        //                    putPosition = new StockPosition();
-                        //                    putPosition.setCostPrice(0.78);
-                        //                    putPosition.setCanSellQty(54);
-                        // 测试用 end -----------------
-                        //                        if (callPosition == null || putPosition == null) {
-                        //                            log.info("{} position is null, call={}, put={}. retry", stock, callPosition, putPosition);
-                        //                            continue;
-                        //                        }
                         double callOpen = buyCallOrder.getAvgPrice();
                         double putOpen = buyPutOrder.getAvgPrice();
                         double callDiff = callMidPrice - callOpen;
@@ -1128,7 +1115,7 @@ public class OptionTradeExecutor2 {
                                             hasTradeCount = sellCallOrder.getTradeCount();
                                         }
                                         if (!lastSellPriceMap.containsKey(callIkbr) || lastSellPriceMap.get(callIkbr).compareTo(callMidPrice) > 0) {
-                                            long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, callCount, callMidPrice);
+                                            long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, callCount, callMidPrice); // todo 这里修改挂单价可能会失败，怎么处理？下同
                                             lastSellPriceMap.put(callIkbr, callMidPrice);
                                             log.info("modify gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callIkbr, callMidPrice, callCount, hasTradeCount);
                                         }
