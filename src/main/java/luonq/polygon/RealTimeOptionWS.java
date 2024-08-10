@@ -219,12 +219,14 @@ public class RealTimeOptionWS {
                         int askVol = MapUtils.getInteger(map, "as", 0);
                         int bidVol = MapUtils.getInteger(map, "bs", 0);
                         Map<String, String> polygonForFutuMap = optionStockListener.getPolygonForFutuMap();
-                        Map<String, String> codeToQuoteMap = optionTradeExecutor.getCodeToQuoteMap();
+                        Map<String, Double> codeToBidMap = optionTradeExecutor.getCodeToBidMap();
+                        Map<String, Double> codeToAskMap = optionTradeExecutor.getCodeToAskMap();
                         if (askPrice != null && bidPrice != null && askPrice > 0 && bidPrice > 0 && askVol > 5 && bidVol > 5) {
                             double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
                             String futuCode = MapUtils.getString(polygonForFutuMap, code, "");
                             if (StringUtils.isNotBlank(futuCode)) {
-                                codeToQuoteMap.put(futuCode, bidPrice + "|" + askPrice);
+                                codeToBidMap.put(futuCode, bidPrice);
+                                codeToAskMap.put(futuCode, askPrice);
                             }
                             log.info("polygon quote. code={}\tbidPrice={}\tbidVol={}\taskPrice={}\taskVol={}\tmidPrice={}", code, bidPrice, bidVol, askPrice, askVol, midPrice);
                         }

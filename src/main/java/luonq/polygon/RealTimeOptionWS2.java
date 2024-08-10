@@ -40,8 +40,10 @@ public class RealTimeOptionWS2 {
     public static LocalDateTime winterTime = BaseUtils.getWinterTime(null);
     public static Set<String> unsubcribeStockSet = Sets.newHashSet();
     public static boolean getQuoteForOption = false;
+    public static boolean getTradeForOption = false;
 
     private BlockingQueue<String> optionQuoteBQ = new LinkedBlockingQueue<>(10000);
+    private BlockingQueue<String> optionTradeBQ = new LinkedBlockingQueue<>(10000);
     private boolean manualClose = false;
     private AtomicBoolean hasAuth = new AtomicBoolean(false);
 
@@ -61,6 +63,7 @@ public class RealTimeOptionWS2 {
                 return;
             }
             getQuoteForOption();
+            getTradeForOption();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,7 +72,8 @@ public class RealTimeOptionWS2 {
     public void initVariable() {
         userSession = null;
         manualClose = false;
-        getQuoteForOption = false;
+//        getQuoteForOption = false;
+        getTradeForOption = false;
         hasAuth = new AtomicBoolean(false);
     }
 
@@ -165,8 +169,9 @@ public class RealTimeOptionWS2 {
     @OnMessage
     public void onMessage(String message) {
         try {
-            if (getQuoteForOption) {
+            if (getQuoteForOption || getTradeForOption) {
                 optionQuoteBQ.offer(message);
+                optionTradeBQ.offer(message);
             } else {
                 List<Map> maps = JSON.parseArray(message, Map.class);
                 Map map = maps.get(0);
@@ -216,10 +221,15 @@ public class RealTimeOptionWS2 {
 
                         Double askPrice = MapUtils.getDouble(map, "ap");
                         Double bidPrice = MapUtils.getDouble(map, "bp");
+                        if (askPrice == null || bidPrice == null) { // 非摆盘数据
+                            continue;
+                        }
+
                         int askVol = MapUtils.getInteger(map, "as", 0);
                         int bidVol = MapUtils.getInteger(map, "bs", 0);
                         Map<String, String> polygonForFutuMap = optionStockListener.getPolygonForFutuMap();
-                        Map<String, String> codeToQuoteMap = optionTradeExecutor.getCodeToQuoteMap();
+                        Map<String, Double> codeToBidMap = optionTradeExecutor.getCodeToBidMap();
+                        Map<String, Double> codeToAskMap = optionTradeExecutor.getCodeToAskMap();
                         Map<String, String> allCodeToQuoteMap = optionTradeExecutor.getAllCodeToQuoteMap();
                         if (askPrice != null && bidPrice != null && askPrice > 0 && bidPrice > 0 && askVol > 5 && bidVol > 5) {
                             String futuCode = MapUtils.getString(polygonForFutuMap, code, "");
@@ -228,7 +238,8 @@ public class RealTimeOptionWS2 {
                             if (askVol > 5 && bidVol > 5) {
                                 double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
                                 if (StringUtils.isNotBlank(futuCode)) {
-                                    codeToQuoteMap.put(futuCode, bidPrice + "|" + askPrice);
+                                    codeToBidMap.put(futuCode, bidPrice);
+                                    codeToAskMap.put(futuCode, askPrice);
                                 }
                                 log.info("polygon quote. code={}\tbidPrice={}\tbidVol={}\taskPrice={}\taskVol={}\tmidPrice={}", code, bidPrice, bidVol, askPrice, askVol, midPrice);
                             }
@@ -245,6 +256,47 @@ public class RealTimeOptionWS2 {
             }
         });
         log.info("start monitor polygon quote");
+    }
+
+    public void getTradeForOption() {
+        getTradeForOption = true;
+
+        executor.execute(() -> {
+            try {
+                while (getTradeForOption) {
+                    String msg = optionTradeBQ.poll(1, TimeUnit.SECONDS);
+                    if (StringUtils.isBlank(msg)) {
+                        continue;
+                    }
+
+                    List<Map> maps = JSON.parseArray(msg, Map.class);
+                    for (Map map : maps) {
+                        String code = MapUtils.getString(map, "sym", "");
+                        if (!StringUtils.startsWithIgnoreCase(code, "O:")) {
+                            continue;
+                        }
+
+                        Double price = MapUtils.getDouble(map, "p");
+                        Long time = MapUtils.getLong(map, "t");
+                        Integer size = MapUtils.getInteger(map, "s");
+                        if (price == null || size == null || price.compareTo(0d) == 0 || size == 0) { // 非报价数据或错误数据
+                            continue;
+                        }
+
+                        Map<String, String> polygonForFutuMap = optionStockListener.getPolygonForFutuMap();
+                        String futuCode = MapUtils.getString(polygonForFutuMap, code, "");
+                        Map<String, Double> codeToTradeMap = optionTradeExecutor.getCodeToTradeMap();
+                        codeToTradeMap.put(futuCode, price);
+
+                        log.info("polygon trade. code={}\tprice={}\ttime={}", code, price, time);
+                    }
+                }
+
+            } catch (Exception e) {
+                log.info("getTradeForOption error. ", e);
+            }
+        });
+        log.info("start monitor polygon trade");
     }
 
     public void subscribeQuoteForOption(String optionCode) {

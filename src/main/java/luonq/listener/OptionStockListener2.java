@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
-import luonq.polygon.OptionTradeExecutor;
 import luonq.polygon.OptionTradeExecutor2;
 import luonq.strategy.Strategy32;
 import org.apache.commons.collections4.CollectionUtils;
@@ -212,12 +211,12 @@ public class OptionStockListener2 {
         String futuCall = callFutuSuffix + Integer.valueOf(callCode.substring(callCode.length() - 8));
         String futuPut = putFutuSuffix + Integer.valueOf(putCode.substring(putCode.length() - 8));
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
-        //        optionTradeExecutor.monitorQuote(futuCall);
-        //        optionTradeExecutor.monitorQuote(futuPut);
+        optionTradeExecutor.monitorFutuDeep(futuCall);
+        optionTradeExecutor.monitorFutuDeep(futuPut);
         polygonForFutuMap.put(call, futuCall);
         polygonForFutuMap.put(put, futuPut);
-        optionTradeExecutor.monitorPolygonQuote(call);
-        optionTradeExecutor.monitorPolygonQuote(put);
+        //        optionTradeExecutor.monitorPolygonDeep(call);
+        //        optionTradeExecutor.monitorPolygonDeep(put);
         optionTradeExecutor.monitorIV(futuCall);
         optionTradeExecutor.monitorIV(futuPut);
 

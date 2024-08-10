@@ -127,10 +127,14 @@ public class OptionTradeExecutor2 {
     private double riskFreeRate;
     // 当前合法交易日
     private String currentTradeDate;
-    // futu报价
-    private Map<String, String> codeToQuoteMap = Maps.newHashMap();
-    // futu报价
+    // futu bid price
+    private Map<String, Double> codeToBidMap = Maps.newHashMap();
+    // futu ask price
+    private Map<String, Double> codeToAskMap = Maps.newHashMap();
+    // 全部报价
     private Map<String, String> allCodeToQuoteMap = Maps.newHashMap();
+    // 成交数据
+    private Map<String, Double> codeToTradeMap = Maps.newHashMap();
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
@@ -162,7 +166,8 @@ public class OptionTradeExecutor2 {
         currentTradeDate = LoadOptionTradeData.currentTradeDate;
         canTradeStocks = optionStockListener.getCanTradeStocks();
         stockLastOptionVolMap = optionStockListener.getStockLastOptionVolMap();
-        codeToQuoteMap = futuQuote.getCodeToQuoteMap();
+        codeToBidMap = futuQuote.getCodeToBidMap();
+        codeToAskMap = futuQuote.getCodeToAskMap();
         canTradeOptionMap = optionStockListener.getCanTradeOptionMap();
         closeTime = client.getCloseCheckTime().getTime();
         openTime = client.getOpenTime();
@@ -214,22 +219,18 @@ public class OptionTradeExecutor2 {
                         String[] split = callAndPut.split("\\|");
                         String callFutu = split[0];
                         String putFutu = split[1];
-                        String callQuote = codeToQuoteMap.get(callFutu);
-                        String putQuote = codeToQuoteMap.get(putFutu);
-                        if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                        Double callBidPrice = codeToBidMap.get(callFutu);
+                        Double callAskPrice = codeToAskMap.get(callFutu);
+                        Double putBidPrice = codeToBidMap.get(putFutu);
+                        Double putAskPrice = codeToAskMap.get(putFutu);
+                        if (callBidPrice == null || callAskPrice == null || putBidPrice == null || putAskPrice == null) {
                             log.info("there is no quote . call and put={}", callAndPut);
                             invalidTradeStock(stock);
                             tempInvalid.add(stock);
                             continue;
                         }
 
-                        String[] callQuoteSplit = callQuote.split("\\|");
-                        double callBidPrice = Double.parseDouble(callQuoteSplit[0]);
-                        double callAskPrice = Double.parseDouble(callQuoteSplit[1]);
                         double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
-                        String[] putQuoteSplit = putQuote.split("\\|");
-                        double putBidPrice = Double.parseDouble(putQuoteSplit[0]);
-                        double putAskPrice = Double.parseDouble(putQuoteSplit[1]);
                         double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
                         if (100 * (callMidPrice + putMidPrice) < avgFund) {
                             tempCanTradeStock.add(stock);
@@ -278,9 +279,8 @@ public class OptionTradeExecutor2 {
 
             String callFutu = optionCodeMap.get(callRt);
             String putFutu = optionCodeMap.get(putRt);
-            String callQuote = codeToQuoteMap.get(callFutu);
-            String putQuote = codeToQuoteMap.get(putFutu);
-            if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+            boolean hasNoDeep = checkHasNoDeep(callFutu, putFutu);
+            if (hasNoDeep) {
                 invalidTradeStock(stock);
                 actualSize--;
                 log.info("before trade, check no option quote. stock={}", stock);
@@ -331,9 +331,8 @@ public class OptionTradeExecutor2 {
                 String putIkbr = rtForIkbrMap.get(putRt);
                 String callFutu = optionCodeMap.get(callRt);
                 String putFutu = optionCodeMap.get(putRt);
-                String callQuote = codeToQuoteMap.get(callFutu);
-                String putQuote = codeToQuoteMap.get(putFutu);
-                if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                boolean hasNoDeep = checkHasNoDeep(callFutu, putFutu);
+                if (hasNoDeep) {
                     invalidTradeStock(stock);
                     log.info("there is no legal option quote. stock={}", stock);
                     continue;
@@ -366,6 +365,9 @@ public class OptionTradeExecutor2 {
 
                 long buyCallOrderId = tradeApi.placeNormalBuyOrder(callIkbr, count, callTradePrice);
                 long buyPutOrderId = tradeApi.placeNormalBuyOrder(putIkbr, count, putTradePrice);
+                futuQuote.addUserSecurity(putFutu);
+                futuQuote.addUserSecurity(callFutu);
+                futuQuote.addUserSecurity(stock);
                 log.info("begin trade: buyCallOrder={}\tcall={}\tcallPrice={}\tbuyPutOrder={}\tput={}\tputPrice={}\tcount={}", buyCallOrderId, call, callTradePrice, buyPutOrderId, put, putTradePrice, count);
 
                 lastBuyPriceMap.put(callIkbr, callTradePrice);
@@ -431,10 +433,8 @@ public class OptionTradeExecutor2 {
         log.info("calculate predicate price. stock={}\toptionCode={}\tprice={}\tStrikePrice={}\tiv={}\tpredPrice={}", stock, option, stockPrice, strikePrice, iv, predPrice);
 
         String futu = optionCodeMap.get(ivRt);
-        String quote = codeToQuoteMap.get(futu);
-        String[] quoteSplit = quote.split("\\|");
-        double bidPrice = Double.parseDouble(quoteSplit[0]);
-        double askPrice = Double.parseDouble(quoteSplit[1]);
+        double bidPrice = codeToBidMap.get(futu);
+        double askPrice = codeToAskMap.get(futu);
         double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
         log.info("monitor option quote detail: optionCode={}\toptionBid={}\toptionAsk={}\toptionMid={}", futu, bidPrice, askPrice, midPrice);
 
@@ -479,14 +479,11 @@ public class OptionTradeExecutor2 {
             return Double.MIN_VALUE;
         }
 
-        if (!allCodeToQuoteMap.containsKey(futu)) {
+        Double bidPrice = codeToBidMap.get(futu);
+        Double askPrice = codeToAskMap.get(futu);
+        if (bidPrice == null || askPrice == null) {
             return Double.MIN_VALUE;
         }
-        String quote = allCodeToQuoteMap.get(futu);
-        String[] quoteSplit = quote.split("\\|");
-        double bidPrice = Double.parseDouble(quoteSplit[0]);
-        double askPrice = Double.parseDouble(quoteSplit[1]);
-        askPrice = askPrice > bidPrice ? askPrice : bidPrice; // 兼容错误数据，选最大的作为卖一
         Double buyInitPrice = adjustBuyInitPriceMap.get(futu);
         BigDecimal buyInitPriceDecimal = BigDecimal.valueOf(buyInitPrice);
 
@@ -524,13 +521,13 @@ public class OptionTradeExecutor2 {
             return Double.MAX_VALUE;
         }
 
+        Double bidPrice = codeToBidMap.get(futu);
+        Double askPrice = codeToAskMap.get(futu);
         if (!allCodeToQuoteMap.containsKey(futu)) {
             return Double.MAX_VALUE;
         }
         String quote = allCodeToQuoteMap.get(futu);
         String[] quoteSplit = quote.split("\\|");
-        double bidPrice = Double.parseDouble(quoteSplit[0]);
-        double askPrice = Double.parseDouble(quoteSplit[1]);
         bidPrice = askPrice > bidPrice ? bidPrice : askPrice; // 兼容错误数据，选最小的作为买一
         Double sellInitPrice = adjustSellInitPriceMap.get(futu);
         BigDecimal sellInitPriceDecimal = BigDecimal.valueOf(sellInitPrice);
@@ -673,9 +670,8 @@ public class OptionTradeExecutor2 {
                             log.info("iv time is illegal. call={} {}\tput={} {}", callFutu, callIvTime, putFutu, putIvTime);
                             continue;
                         }
-                        String callQuote = codeToQuoteMap.get(callFutu);
-                        String putQuote = codeToQuoteMap.get(putFutu);
-                        if (StringUtils.isNoneBlank(callQuote, putQuote)) {
+                        boolean hasNoDeep = checkHasNoDeep(callFutu, putFutu);
+                        if (hasNoDeep) {
                             double callIv = Double.parseDouble(callSplit[0]);
                             double putIv = Double.parseDouble(putSplit[0]);
                             optionRtIvMap.put(callRt, callIv);
@@ -913,6 +909,12 @@ public class OptionTradeExecutor2 {
             //
             //                return positions.get(optionCode);
             //            }
+            public double calculateMidPrice(String futu) {
+                double bidPrice = codeToBidMap.get(futu);
+                double askPrice = codeToAskMap.get(futu);
+                double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
+                return midPrice;
+            }
 
             @Override
             public void run() {
@@ -933,19 +935,15 @@ public class OptionTradeExecutor2 {
                         String callIkbr = futuForIkbrMap.get(callFutu);
                         String putIkbr = futuForIkbrMap.get(putFutu);
 
-                        String callQuote = codeToQuoteMap.get(callFutu);
-                        String putQuote = codeToQuoteMap.get(putFutu);
-                        if (StringUtils.isAnyBlank(callQuote, putQuote)) {
+                        Double callBidPrice = codeToBidMap.get(callFutu);
+                        Double callAskPrice = codeToAskMap.get(callFutu);
+                        Double putBidPrice = codeToBidMap.get(putFutu);
+                        Double putAskPrice = codeToAskMap.get(putFutu);
+                        if (callBidPrice == null || callAskPrice == null || putBidPrice == null || putAskPrice == null) {
                             continue;
                         }
 
-                        String[] callQuoteSplit = callQuote.split("\\|");
-                        String[] putQuoteSplit = putQuote.split("\\|");
-                        double callBidPrice = Double.parseDouble(callQuoteSplit[0]);
-                        double callAskPrice = Double.parseDouble(callQuoteSplit[1]);
                         double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
-                        double putBidPrice = Double.parseDouble(putQuoteSplit[0]);
-                        double putAskPrice = Double.parseDouble(putQuoteSplit[1]);
                         double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
                         /**
                          * 只针对止盈卖出
@@ -953,9 +951,14 @@ public class OptionTradeExecutor2 {
                          * 只有低于卖一的新报价出现时，才需要重新计算中间价用于后面的逻辑计算。理论上高于卖一的报价会排在后面，不影响成交
                          * ps: 模拟交易不执行这段逻辑，仍然按照实际卖一计算中间价
                          */
-                        if (realTrade && gainSellStatus == GAIN_SELLING) {
+                        if (gainSellStatus == GAIN_SELLING) {
                             if (lastSellPriceMap.containsKey(callIkbr)) {
                                 Double tradePrice = lastSellPriceMap.get(callIkbr);
+                                try {
+                                    callAskPrice = Double.parseDouble(allCodeToQuoteMap.get(callFutu).split("\\|")[1]);
+                                } catch (Exception e) {
+                                    log.error("gain selling get call ask price error. call={}\tquote={}", callIkbr, allCodeToQuoteMap.get(callFutu), e);
+                                }
                                 if (tradePrice.compareTo(callAskPrice) == 0) {
                                     callMidPrice = callAskPrice;
                                 } else {
@@ -964,6 +967,11 @@ public class OptionTradeExecutor2 {
                             }
                             if (lastSellPriceMap.containsKey(putIkbr)) {
                                 Double tradePrice = lastSellPriceMap.get(putIkbr);
+                                try {
+                                    putAskPrice = Double.parseDouble(allCodeToQuoteMap.get(putFutu).split("\\|")[1]);
+                                } catch (Exception e) {
+                                    log.error("gain selling get put ask price error. quote={}", allCodeToQuoteMap.get(putFutu), e);
+                                }
                                 if (tradePrice.compareTo(putAskPrice) == 0) {
                                     putMidPrice = putAskPrice;
                                 } else {
@@ -1007,8 +1015,54 @@ public class OptionTradeExecutor2 {
                         long curTime = System.currentTimeMillis();
                         if (gainSellStatus == NO_GAIN_SELL) { // 无上涨卖出 继续执行止盈或止损或收盘卖出判断
                             if (diffRatio < STOP_LOSS_RATIO || currentTime > closeTime) { // 止损+收盘都同时卖出，尽快止损和收盘卖出
-                                long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
-                                long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
+                                Double callTrade = futuQuote.getOptionTrade(callFutu);
+                                Double putTrade = futuQuote.getOptionTrade(putFutu);
+                                if (callTrade == null || putTrade == null) {
+                                    log.error("can't get option trade. callTrade={}\tputTrade={}", callTrade, putTrade);
+                                    continue;
+                                }
+
+                                long sellCallOrderId, sellPutOrderId;
+                                double callDiffRatio = (callTrade - callMidPrice) / callTrade;
+                                double putDiffRatio = (putTrade - putMidPrice) / putTrade;
+                                // 先计算哪个偏离当前报价最多，最多的就先下单避免下单失败，如果失败了重新判断
+                                if (callDiffRatio > putDiffRatio) {
+                                    sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
+                                    if (sellCallOrderId == -1) { // -1表示下单失败
+                                        log.info("retry sell call. stoploss. gainSellStatus={}\tcode={}", gainSellStatus, callIkbr);
+                                        continue;
+                                    }
+
+                                    // 如果卖出call下单成功之后，put下单又失败，则不断重试直到成功下单，反之一样处理
+                                    while (true) {
+                                        sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
+                                        if (sellPutOrderId == -1) {
+                                            putMidPrice = calculateMidPrice(putFutu);
+                                            log.info("after sell call, retry sell put. stoploss. gainSellStatus={}\tcode={}\tprice=", gainSellStatus, putIkbr, putMidPrice);
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
+                                    if (sellPutOrderId == -1) {
+                                        log.info("retry sell put. stoploss. gainSellStatus={}\tcode={}", gainSellStatus, putIkbr);
+                                        continue;
+                                    }
+
+                                    while (true) {
+                                        sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
+                                        if (sellCallOrderId == -1) {
+                                            callMidPrice = calculateMidPrice(callFutu);
+                                            log.info("after sell put, retry sell call. stoploss. gainSellStatus={}\tcode={}\tprice=", gainSellStatus, callIkbr, callMidPrice);
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                //                                long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
+                                //                                long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
 
                                 adjustSellInitPriceMap.put(callFutu, callMidPrice);
                                 adjustSellInitPriceMap.put(putFutu, putMidPrice);
@@ -1032,6 +1086,10 @@ public class OptionTradeExecutor2 {
                             } else if ((currentTime < stopGainTime && diffRatio > STOP_GAIN_RATIO_1) || (currentTime > stopGainTime && diffRatio > STOP_GAIN_RATIO_2)) { // 止盈先卖出上涨的期权，卖完后再卖下跌的期权，尽量保证盈利不减少
                                 if (callDiff > 0) {
                                     long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
+                                    if (sellCallOrderId == -1) {
+                                        log.info("retry sell call. stopgain. gainSellStatus={}\tcode={}", gainSellStatus, callIkbr);
+                                        continue;
+                                    }
                                     sellOrderTimeMap.put(stock, curTime);
                                     sellOrderIdMap.put(callIkbr, sellCallOrderId);
                                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
@@ -1042,6 +1100,10 @@ public class OptionTradeExecutor2 {
                                     log.info("gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellCallOrderId, callFutu, callMidPrice, callCount);
                                 } else if (putDiff > 0) {
                                     long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
+                                    if (sellPutOrderId == -1) {
+                                        log.info("retry sell put. stopgain. gainSellStatus={}\tcode={}", gainSellStatus, putIkbr);
+                                        continue;
+                                    }
                                     sellOrderTimeMap.put(stock, curTime);
                                     sellOrderIdMap.put(putIkbr, sellPutOrderId);
                                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
@@ -1115,6 +1177,11 @@ public class OptionTradeExecutor2 {
                         } else if (gainSellStatus == GAIN_SOLD) {
                             if (gainSellOption.contains(callIkbr)) {
                                 long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
+                                if (sellPutOrderId == -1) {
+                                    log.info("retry sell put. gainSellStatus={}\tcode={}", gainSellStatus, putIkbr);
+                                    continue;
+                                }
+
                                 adjustSellInitPriceMap.put(putFutu, putMidPrice);
                                 optionAdjustPriceTimestampMap.put(putFutu, curTime);
                                 optionAdjustPriceTimesMap.put(putFutu, 0);
@@ -1127,6 +1194,11 @@ public class OptionTradeExecutor2 {
                                 hasSoldOrderMap.put(stock, EXIST);
                             } else if (gainSellOption.contains(putIkbr)) {
                                 long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
+                                if (sellCallOrderId == -1) {
+                                    log.info("retry sell put. gainSellStatus={}\tcode={}", gainSellStatus, putIkbr);
+                                    continue;
+                                }
+
                                 adjustSellInitPriceMap.put(callFutu, callMidPrice);
                                 optionAdjustPriceTimestampMap.put(callFutu, curTime);
                                 optionAdjustPriceTimesMap.put(callFutu, 0);
@@ -1266,14 +1338,14 @@ public class OptionTradeExecutor2 {
         delayUnsubscribeQuote(stock);
     }
 
-    public void monitorQuote(String optionCode) {
+    public void monitorFutuDeep(String optionCode) {
         futuQuote.subOrderBook(optionCode);
-        log.info("monitor option quote: {}", optionCode);
+        log.info("monitor futu option deep: {}", optionCode);
     }
 
-    public void monitorPolygonQuote(String optionCode) {
+    public void monitorPolygonDeep(String optionCode) {
         client.subscribeQuoteForOption(optionCode);
-        log.info("monitor polygon option quote: {}", optionCode);
+        log.info("monitor polygon option deep: {}", optionCode);
     }
 
     public void unmonitorPolygonQuote(String stock) {
@@ -1370,6 +1442,17 @@ public class OptionTradeExecutor2 {
                 timer.cancel();
             }
         }, 1000 * 60 * 1);
+    }
+
+    public boolean checkHasNoDeep(String callFutu, String putFutu) {
+        Double callBidPrice = codeToBidMap.get(callFutu);
+        Double callAskPrice = codeToAskMap.get(callFutu);
+        Double putBidPrice = codeToBidMap.get(putFutu);
+        Double putAskPrice = codeToAskMap.get(putFutu);
+        if (callBidPrice == null || callAskPrice == null || putBidPrice == null || putAskPrice == null) {
+            return true;
+        }
+        return false;
     }
 
     public static void main(String[] args) throws InterruptedException {

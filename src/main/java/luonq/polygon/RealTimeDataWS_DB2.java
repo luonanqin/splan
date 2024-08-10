@@ -155,15 +155,15 @@ public class RealTimeDataWS_DB2 {
             if (testOption) {
                 initHistoricalData();
                 initMessageListener();
-//                if (MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
-//                    optionTradeExecutor.reSendOpenPrice();
-//                    Thread.sleep(3000);
-//                    getRealtimeQuoteForOption();
-//                    optionTradeExecutor.restart();
-//                } else {
-                    subcribeStock();
-                    sendToTradeDataListener();
-//                }
+                //                if (MapUtils.isNotEmpty(optionTradeExecutor.getAllPosition())) {
+                //                    optionTradeExecutor.reSendOpenPrice();
+                //                    Thread.sleep(3000);
+                //                    getRealtimeQuoteForOption();
+                //                    optionTradeExecutor.restart();
+                //                } else {
+                subcribeStock();
+                sendToTradeDataListener();
+                //                }
             } else {
                 if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
                     testOption = true;
@@ -259,9 +259,9 @@ public class RealTimeDataWS_DB2 {
 
     public void initTrade() {
         try {
-//            tradeExecutor.setList(list);
-//            tradeExecutor.setClient(this);
-//            tradeExecutor.init();
+            //            tradeExecutor.setList(list);
+            //            tradeExecutor.setClient(this);
+            //            tradeExecutor.init();
 
             optionTradeExecutor = new OptionTradeExecutor2();
             optionTradeExecutor.setClient(this);
@@ -280,11 +280,11 @@ public class RealTimeDataWS_DB2 {
     public void initMessageListener() {
         try {
             if (!testOption) {
-//                TradeDataListener_DB tradeDataListener = new TradeDataListener_DB();
-//                tradeDataListener.setStockSet(stockSet);
-//                tradeDataListener.setClient(this);
-//                tradeDataListener.setList(list);
-//                tradeEventBus.register(tradeDataListener);
+                //                TradeDataListener_DB tradeDataListener = new TradeDataListener_DB();
+                //                tradeDataListener.setStockSet(stockSet);
+                //                tradeDataListener.setClient(this);
+                //                tradeDataListener.setList(list);
+                //                tradeEventBus.register(tradeDataListener);
             }
 
             tradeEventBus.register(optionStockListener);
@@ -331,7 +331,7 @@ public class RealTimeDataWS_DB2 {
 
         long checkOpenTime = 0;
         LocalDateTime checkPre, checkOpen;
-        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
+        int openHour, closeHour, preMin = 32 + DELAY_MINUTE, openMin = 33;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
             openHour = 21;
             closeHour = 3;
@@ -686,6 +686,10 @@ public class RealTimeDataWS_DB2 {
                     }
                     Double price = MapUtils.getDouble(map, "p");
                     Long time = MapUtils.getLong(map, "t");
+                    Integer size = MapUtils.getInteger(map, "s");
+                    if (size < 100) {
+                        continue;
+                    }
                     if (time < openTime) {
                         if (time % 1000 == 0) {
                             log.info("time is early. " + map);

@@ -9,6 +9,8 @@ import com.futu.openapi.pb.QotCommon;
 import com.futu.openapi.pb.QotGetBasicQot;
 import com.futu.openapi.pb.QotGetSecuritySnapshot;
 import com.futu.openapi.pb.QotGetSubInfo;
+import com.futu.openapi.pb.QotGetUserSecurity;
+import com.futu.openapi.pb.QotModifyUserSecurity;
 import com.futu.openapi.pb.QotRequestRehab;
 import com.futu.openapi.pb.QotSub;
 import com.futu.openapi.pb.QotUpdateBasicQot;
@@ -42,9 +44,11 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     FTAPI_Conn_Qot qot = new FTAPI_Conn_Qot();
 
     private Map<String, Double> stockToCurrPriceMap = Maps.newHashMap();
-    private Map<String/* code */, String/* bid and ask price */> codeToQuoteMap = Maps.newHashMap();
+    private Map<String/* code */, Double/* bid price */> codeToBidMap = Maps.newHashMap();
+    private Map<String/* code */, Double/* ask price */> codeToAskMap = Maps.newHashMap();
     private Map<String/* code */, Integer/* 1=call, 2=put */> optionTypeMap = Maps.newHashMap();
     private Map<String/* code */, String/* iv|updatetime */> optionIvTimeMap = Maps.newHashMap();
+    private Map<String/* code */, Double/* trade */> optionTradeMap = Maps.newHashMap();
 
     @Data
     public static class StockQuote {
@@ -103,6 +107,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         return MapUtils.getString(optionIvTimeMap, code, "");
     }
 
+    public Double getOptionTrade(String code) {
+        return MapUtils.getDouble(optionTradeMap, code, 0d);
+    }
+
     @Override
     public void onPush_UpdateBasicQuote(FTAPI_Conn client, QotUpdateBasicQot.Response rsp) {
         if (rsp.getRetType() != 0) {
@@ -118,7 +126,8 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 if (optionExData != null) {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     optionIvTimeMap.put(code, impliedVolatility + "|" + updateTime);
-                    log.info("update futu iv: {}\t{}\t{}", code, impliedVolatility, updateTime);
+                    optionTradeMap.put(code, curPrice);
+                    log.info("update futu iv and curPrice: code={}\tiv={}\tprice={}\ttime={}", code, impliedVolatility, curPrice, updateTime);
                 }
             }
         }
@@ -133,32 +142,29 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
             String code = s2C.getSecurity().getCode();
             List<QotCommon.OrderBook> orderBookAskListList = s2C.getOrderBookAskListList();
             List<QotCommon.OrderBook> orderBookBidListList = s2C.getOrderBookBidListList();
-            //            System.out.print(code + "\t");
             double bidPrice = 0d, askPrice = 0d;
             if (CollectionUtils.isNotEmpty(orderBookBidListList)) {
                 QotCommon.OrderBook orderBook = orderBookBidListList.get(0);
                 bidPrice = orderBook.getPrice();
                 long volume = orderBook.getVolume();
-                int orderCount = orderBook.getOrederCount();
                 //                System.out.print(code + " bid price=" + bidPrice + "\tvolume=" + volume);
-                log.info("futu quote. code={}\tbidPrice={}\tbidVol={}", code, bidPrice, volume);
-                if (volume < 5 || bidPrice == 0) {
-                    return;
+                //                log.info("futu quote. code={}\tbidPrice={}\tbidVol={}", code, bidPrice, volume);
+                if (volume >= 5 && bidPrice != 0) {
+                    codeToBidMap.put(code, bidPrice);
                 }
             }
             if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
                 QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
                 askPrice = orderBook.getPrice();
                 long volume = orderBook.getVolume();
-                int orderCount = orderBook.getOrederCount();
                 //                System.out.print(code + " ask price=" + askPrice + "\tvolume=" + volume);
-                log.info("futu quote. code={}\taskPrice={}\taskVol={}", code, askPrice, volume);
-                if (volume < 5 || askPrice == 0) {
-                    return;
+                //                log.info("futu quote. code={}\taskPrice={}\taskVol={}", code, askPrice, volume);
+                if (volume >= 5 && askPrice != 0) {
+                    codeToAskMap.put(code, askPrice);
                 }
             }
-            String data = String.format("%.2f|%.2f", bidPrice, askPrice);
-            codeToQuoteMap.put(code, data);
+            log.info("futu quote. code={}\tbidPrice={}\taskPrice={}", code, codeToBidMap.get(code), codeToAskMap.get(code));
+            //            String data = String.format("%.2f|%.2f", bidPrice, askPrice);
             //            System.out.println(code + "\t" + data);
         }
     }
@@ -377,22 +383,63 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
+    public void getUserSecurity() {
+        QotGetUserSecurity.C2S c2s = QotGetUserSecurity.C2S.newBuilder()
+          .setGroupName("观察")
+          .build();
+        QotGetUserSecurity.Request req = QotGetUserSecurity.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.getUserSecurity(req);
+    }
+
+    @Override
+    public void onReply_GetUserSecurity(FTAPI_Conn client, int nSerialNo, QotGetUserSecurity.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("QotGetUserSecurity failed: %s\n", rsp.getRetMsg());
+        } else {
+            try {
+                String json = JsonFormat.printer().print(rsp);
+                System.out.printf("Receive QotGetUserSecurity: %s\n", json);
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addUserSecurity(String code) {
+        QotCommon.Security sec = QotCommon.Security.newBuilder()
+          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setCode(code)
+          .build();
+        QotModifyUserSecurity.C2S c2s = QotModifyUserSecurity.C2S.newBuilder()
+          .setGroupName("观察")
+          .setOp(QotModifyUserSecurity.ModifyUserSecurityOp.ModifyUserSecurityOp_Add_VALUE)
+          .addSecurityList(sec)
+          .build();
+        QotModifyUserSecurity.Request req = QotModifyUserSecurity.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.modifyUserSecurity(req);
+    }
+
     public static void main(String[] args) throws Exception {
         FTAPI.init();
         BasicQuote quote = new BasicQuote();
         quote.start();
 
-        //        quote.subBasicQuote("SEDG240719C30000");
+        //        quote.getUserSecurity();
+        //        quote.addUserSecurity("AAPL");
+        //        quote.addUserSecurity("AAPL240809C210000");
+        //        quote.addUserSecurity("AAPL240809P207500");
+        quote.subBasicQuote("U240816C15500");
         //        quote.subBasicQuote("SEDG240719P28000");
         //        quote.subBasicQuote("HUT240719C18500");
         //        quote.subBasicQuote("HUT240719P18000");
-        quote.subBasicQuote("NVDA240719C121000");
-        quote.unSubBasicQuote("TSLA240719C252500");
-        quote.subBasicQuote("TSLA240719P255000");
-        System.out.println(quote.getOptionIvTimeMap("TSLA240719C257500"));
+        //        quote.subBasicQuote("NVDA240719C121000");
+        //        quote.unSubBasicQuote("TSLA240719C252500");
+        //        quote.subBasicQuote("TSLA240719P255000");
+        //        System.out.println(quote.getOptionIvTimeMap("TSLA240719C257500"));
         //        quote.getBasicQot("TSLA240719P255000");
         //                quote.getBasicQot("TSLA240719P255000");
-        quote.subOrderBook("WULF240705C5500");
+        quote.subOrderBook("U240816C15500");
+        //        quote.subOrderBook("WULF240705C5500");
         //        quote.subOrderBook("NVDA240628C127000");
         //        quote.subBasicQuote("NVDA240621P126000");
         for (int i = 0; i < 20000; i++) {

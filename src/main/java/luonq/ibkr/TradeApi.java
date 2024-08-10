@@ -1,6 +1,7 @@
 package luonq.ibkr;
 
 import bean.StockPosition;
+import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Maps;
 import com.ib.client.Contract;
 import com.ib.client.Decimal;
@@ -12,6 +13,7 @@ import com.ib.controller.ApiController;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class TradeApi {
@@ -58,7 +60,23 @@ public class TradeApi {
     }
 
     public long placeNormalSellOrder(String code, double count, double price) {
-        return placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.SELL);
+        long orderId = placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.SELL);
+        while (true) {
+            bean.Order sellCallOrder = getOrder(orderId);
+            int orderStatus = sellCallOrder.getOrderStatus();
+            if (orderStatus == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE || orderStatus == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
+                log.info("sell option submit success. code={}", code);
+                break;
+            } else if (orderStatus == TrdCommon.OrderStatus.OrderStatus_Cancelled_All_VALUE) {
+                return -1;
+            }
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+            }
+            log.info("waiting sell option. code={}", code);
+        }
+        return orderId;
     }
 
     public long placeNormalSellOrderForStock(String code, double count, double price) {
@@ -201,7 +219,7 @@ public class TradeApi {
 
         //        tradeApi.removeOrderHandler(orderId);
         //        long sellorderId = tradeApi.placeNormalSellOrderForStock(code, count, 1.0);
-//        long sellorderId = tradeApi.placeNormalSellOrder(code, count, 0.9);
+        //        long sellorderId = tradeApi.placeNormalSellOrder(code, count, 0.9);
 
         tradeApi.cancelOrder(orderId);
 

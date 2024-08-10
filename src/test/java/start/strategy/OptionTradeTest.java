@@ -97,9 +97,10 @@ public class OptionTradeTest extends BaseTest {
         optionRtIvMap.put(callRt, 0.8);
         optionRtIvMap.put(putRt, 0.8);
 
-        Map<String, String> codeToQuoteMap = optionTradeExecutor.getFutuQuote().getCodeToQuoteMap();
-        codeToQuoteMap.put("TSLA240705C230000", "0.22|0.23");
-        codeToQuoteMap.put("TSLA240705P220000", "0.22|0.23");
+        Map<String, Double> codeToAskMap = optionTradeExecutor.getFutuQuote().getCodeToAskMap();
+        Map<String, Double> codeToBidMap = optionTradeExecutor.getFutuQuote().getCodeToBidMap();
+        codeToAskMap.put("TSLA240705C230000", 0.23);
+        codeToBidMap.put("TSLA240705P220000", 0.22);
 
         optionTradeExecutor.beginTrade();
     }
@@ -123,9 +124,10 @@ public class OptionTradeTest extends BaseTest {
         optionRtIvMap.put(callRt, 0.8);
         optionRtIvMap.put(putRt, 0.8);
 
-        Map<String, String> codeToQuoteMap = optionTradeExecutor.getFutuQuote().getCodeToQuoteMap();
-        codeToQuoteMap.put("TSLA240705C230000", "0.22|0.23");
-        codeToQuoteMap.put("TSLA240705P220000", "0.22|0.23");
+        Map<String, Double> codeToAskMap = optionTradeExecutor.getFutuQuote().getCodeToAskMap();
+        Map<String, Double> codeToBidMap = optionTradeExecutor.getFutuQuote().getCodeToBidMap();
+        codeToAskMap.put("TSLA240705C230000", 0.23);
+        codeToBidMap.put("TSLA240705P220000", 0.22);
 
         optionTradeExecutor.calTradePrice(stock, callRt, "C");
     }
@@ -142,27 +144,38 @@ public class OptionTradeTest extends BaseTest {
     public void test_calQuoteMidPrice() throws InterruptedException {
         String futuCode = "AAPL240726C120000";
         optionTradeExecutor.setCloseTime(1721419140000l);
-        Map<String, String> codeToQuoteMap = Maps.newHashMap();
-        codeToQuoteMap.put(futuCode, "0.98|1.01");
-        optionTradeExecutor.setCodeToQuoteMap(codeToQuoteMap);
+        Map<String, Double> codeToAskMap = Maps.newHashMap();
+        Map<String, Double> codeToBidMap = Maps.newHashMap();
+        codeToAskMap.put(futuCode, 1.01);
+        codeToBidMap.put(futuCode, 0.98);
+        optionTradeExecutor.setCodeToAskMap(codeToAskMap);
+        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
         optionTradeExecutor.calQuoteMidPrice(futuCode);
 
         Thread.sleep(5000);
-        codeToQuoteMap.put(futuCode, "0.98|1.01");
+        codeToAskMap.put(futuCode, 1.01);
+        codeToBidMap.put(futuCode, 0.98);
         optionTradeExecutor.calQuoteMidPrice(futuCode);
+        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
 
         Thread.sleep(5000);
-        codeToQuoteMap.put(futuCode, "0.96|0.99");
+        codeToAskMap.put(futuCode, 0.99);
+        codeToBidMap.put(futuCode, 0.96);
         optionTradeExecutor.calQuoteMidPrice(futuCode);
+        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
 
         Thread.sleep(5000);
-        codeToQuoteMap.put(futuCode, "1.0|1.6");
+        codeToAskMap.put(futuCode, 1.6);
+        codeToBidMap.put(futuCode, 1.0);
         optionTradeExecutor.calQuoteMidPrice(futuCode);
+        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
 
         for (int i = 0; i < 7; i++) {
             Thread.sleep(5000);
-            codeToQuoteMap.put(futuCode, "0.5|1.0");
+            codeToAskMap.put(futuCode, 1.0);
+            codeToBidMap.put(futuCode, 0.5);
             optionTradeExecutor.calQuoteMidPrice(futuCode);
+            optionTradeExecutor.setCodeToBidMap(codeToBidMap);
         }
     }
 }
