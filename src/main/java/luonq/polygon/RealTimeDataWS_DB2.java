@@ -114,7 +114,7 @@ public class RealTimeDataWS_DB2 {
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private boolean testOption = true;
-    private RealTimeOptionWS2 realTimeOptionWS = new RealTimeOptionWS2();
+//    private RealTimeOptionWS2 realTimeOptionWS = new RealTimeOptionWS2();
 
     private List<String> optionStockSet;
     private OptionTradeExecutor2 optionTradeExecutor;
@@ -204,7 +204,7 @@ public class RealTimeDataWS_DB2 {
         //        if (tradeExecutor == null) {
         //            tradeExecutor = new TradeExecutor_DB();
         //        }
-        realTimeOptionWS.init();
+        //        realTimeOptionWS.init();
     }
 
     private boolean waitAuth() {
@@ -268,8 +268,8 @@ public class RealTimeDataWS_DB2 {
             optionTradeExecutor.setOptionStockListener(optionStockListener);
             optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
 
-            realTimeOptionWS.setOptionTradeExecutor(optionTradeExecutor);
-            realTimeOptionWS.setOptionStockListener(optionStockListener);
+//            realTimeOptionWS.setOptionTradeExecutor(optionTradeExecutor);
+//            realTimeOptionWS.setOptionStockListener(optionStockListener);
 
             log.info("finish init trade");
         } catch (Exception e) {
@@ -567,7 +567,7 @@ public class RealTimeDataWS_DB2 {
 
     public void close() throws Exception {
         if (userSession != null) {
-            realTimeOptionWS.close();
+//            realTimeOptionWS.close();
             manualClose = true;
             userSession.close();
             executor.shutdown();
@@ -907,11 +907,11 @@ public class RealTimeDataWS_DB2 {
     }
 
     public void subscribeQuoteForOption(String optionCode) {
-        realTimeOptionWS.subscribeQuoteForOption(optionCode);
+//        realTimeOptionWS.subscribeQuoteForOption(optionCode);
     }
 
     public void unsubscribeQuoteForOption(String optionCode) {
-        realTimeOptionWS.unsubscribeQuoteForOption(optionCode);
+//        realTimeOptionWS.unsubscribeQuoteForOption(optionCode);
     }
 
     public boolean unsubscribe(String stock) {
