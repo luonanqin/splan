@@ -52,7 +52,27 @@ public class TradeApi {
     }
 
     public long placeNormalBuyOrder(String code, double count, double price) {
-        return placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.BUY);
+        long orderId = placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.BUY);
+        while (true) {
+            bean.Order buyCallOrder = getOrder(orderId);
+            if (buyCallOrder == null) {
+                continue;
+            }
+
+            int orderStatus = buyCallOrder.getOrderStatus();
+            if (orderStatus == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE || orderStatus == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
+                log.info("buy option submit success. code={}", code);
+                break;
+            } else if (orderStatus == TrdCommon.OrderStatus.OrderStatus_Cancelled_All_VALUE) {
+                return -1;
+            }
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+            }
+            log.info("waiting buy option. code={}", code);
+        }
+        return orderId;
     }
 
     public long placeNormalBuyOrderForStock(String code, double count, double price) {
@@ -63,6 +83,10 @@ public class TradeApi {
         long orderId = placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.SELL);
         while (true) {
             bean.Order sellCallOrder = getOrder(orderId);
+            if (sellCallOrder == null) {
+                continue;
+            }
+
             int orderStatus = sellCallOrder.getOrderStatus();
             if (orderStatus == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE || orderStatus == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                 log.info("sell option submit success. code={}", code);
@@ -113,6 +137,25 @@ public class TradeApi {
     // modify order
     public long upOrderPrice(long orderId, double count, double price) {
         modifyOrder((int) orderId, price, count);
+        while (true) {
+            bean.Order order = getOrder(orderId);
+            if (order == null) {
+                continue;
+            }
+
+            int orderStatus = order.getOrderStatus();
+            if (orderStatus == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE || orderStatus == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
+                log.info("modify option submit success. orderId={}", orderId);
+                break;
+            } else if (orderStatus == TrdCommon.OrderStatus.OrderStatus_Cancelled_All_VALUE) {
+                return -1;
+            }
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+            }
+            log.info("waiting modify option. orderId={}", orderId);
+        }
         return orderId;
     }
 
