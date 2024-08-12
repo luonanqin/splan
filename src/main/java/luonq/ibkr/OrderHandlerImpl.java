@@ -29,7 +29,7 @@ public class OrderHandlerImpl implements ApiController.IOrderHandler {
         this.status = status;
         this.avgPrice = avgFillPrice;
 
-        log.info("orderStatus: code={}\torderId={}\tstatus={}\tfilled={}\tremaining={}\tavgFillPrice={}\tpermId={}\tparentId={}\tlastFillPrice{}\tclientId={}\twhyHeld={}\tmktCapPrice={}",
+        log.info("orderStatus: code={}\torderId={}\tstatus={}\tfilled={}\tremaining={}\tavgFillPrice={}\tpermId={}\tparentId={}\tlastFillPrice={}\tclientId={}\twhyHeld={}\tmktCapPrice={}",
           code, orderId, status, filled, remaining, avgFillPrice, permId, parentId, lastFillPrice, clientId, whyHeld, mktCapPrice);
 
     }
