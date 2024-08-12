@@ -90,8 +90,10 @@ public class OptionTradeExecutor2 {
     private Map<String/* stock */, Long/* order time */> buyOrderTimeMap = Maps.newHashMap(); // 下单买入时的时间
     private Map<String/* stock */, Long/* order time */> sellOrderTimeMap = Maps.newHashMap(); // 下单卖出时的时间
     private Map<String/* stock */, Double/* order count */> orderCountMap = Maps.newHashMap(); // 下单买入的数量，卖出可以直接使用
-    private Map<String/* futu option */, Integer/* adjust trade price times */> optionAdjustPriceTimesMap = Maps.newHashMap(); // 卖出挂单价调价次数
-    private Map<String/* futu option */, Long/* adjust trade price timestamp */> optionAdjustPriceTimestampMap = Maps.newHashMap(); // 卖出挂单价调价的最新时间
+    private Map<String/* futu option */, Integer/* adjust trade price times */> adjustSellPriceTimesMap = Maps.newHashMap(); // 卖出挂单价调价次数
+    private Map<String/* futu option */, Long/* adjust trade price timestamp */> adjustSellPriceTimestampMap = Maps.newHashMap(); // 卖出挂单价调价的最新时间
+    private Map<String/* futu option */, Integer/* adjust trade price times */> adjustBuyPriceTimesMap = Maps.newHashMap(); // 买入挂单价调价次数
+    private Map<String/* futu option */, Long/* adjust trade price timestamp */> adjustBuyPriceTimestampMap = Maps.newHashMap(); // 买入挂单价调价的最新时间
     private Map<String/* ikbr option */, Double/* buy price */> lastBuyPriceMap = Maps.newHashMap(); // 最新一次买入挂单价
     private Map<String/* ikbr option */, Double/* sell price */> lastSellPriceMap = Maps.newHashMap(); // 最新一次卖出挂单价
     private Map<String/* futu option */, Double/* sell price */> adjustSellInitPriceMap = Maps.newHashMap(); // 卖出调价的原始挂单价，用于调价计算
@@ -466,10 +468,10 @@ public class OptionTradeExecutor2 {
                 buyOrderIdMap.put(putIkbr, buyPutOrderId);
                 adjustBuyInitPriceMap.put(callFutu, callCalcPrice);
                 adjustBuyInitPriceMap.put(putFutu, putCalcPrice);
-                optionAdjustPriceTimesMap.put(callFutu, 0);
-                optionAdjustPriceTimesMap.put(putFutu, 0);
-                optionAdjustPriceTimestampMap.put(callFutu, curTime);
-                optionAdjustPriceTimestampMap.put(putFutu, curTime);
+                adjustBuyPriceTimesMap.put(callFutu, 0);
+                adjustBuyPriceTimesMap.put(putFutu, 0);
+                adjustBuyPriceTimestampMap.put(callFutu, curTime);
+                adjustBuyPriceTimestampMap.put(putFutu, curTime);
                 ReadWriteOptionTradeInfo.writeOrderCount(stock, count);
                 ReadWriteOptionTradeInfo.writeBuyOrderTime(stock, curTime);
                 ReadWriteOptionTradeInfo.writeBuyOrderId(callIkbr, buyCallOrderId);
@@ -532,8 +534,8 @@ public class OptionTradeExecutor2 {
         } else {
             tradePrice = predPrice;
         }
-        log.info("calculate trade price. option={}\tstockPrice={}\tstrikePrice={}\tiv={}\tpredPrice={}\tbid={}\task={}\tmid={}\ttradePrice={}",
-          option, stockPrice, strikePrice, iv, predPrice, bidPrice, askPrice, midPrice, tradePrice);
+        log.info("calculate trade price. option={}\tstockPrice={}\tstrikePrice={}\tiv={}\tbid={}\task={}\tpredPrice={}\tmid={}\ttradePrice={}",
+          option, stockPrice, strikePrice, iv, bidPrice, askPrice, predPrice, midPrice, tradePrice);
         return tradePrice;
     }
 
@@ -548,9 +550,9 @@ public class OptionTradeExecutor2 {
      */
     public double calQuickBuyPrice(String futu) {
         long current = System.currentTimeMillis();
-        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, null);
+        Long lastTimestamp = MapUtils.getLong(adjustBuyPriceTimestampMap, futu, null);
         if (lastTimestamp == null) {
-            optionAdjustPriceTimestampMap.put(futu, current);
+            adjustBuyPriceTimestampMap.put(futu, current);
             return Double.MIN_VALUE;
         }
         boolean touchOffAdjust = current - lastTimestamp > ADJUST_BUY_PRICE_TIME_INTERVAL;
@@ -567,13 +569,13 @@ public class OptionTradeExecutor2 {
         BigDecimal buyInitPriceDecimal = BigDecimal.valueOf(buyInitPrice);
 
         // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
-        Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
+        Integer lastAdjustTimes = MapUtils.getInteger(adjustBuyPriceTimesMap, futu, 0);
         int adjustTimes = lastAdjustTimes + 1;
-        optionAdjustPriceTimesMap.put(futu, adjustTimes);
+        adjustBuyPriceTimesMap.put(futu, adjustTimes);
 
         BigDecimal adjustPriceDecimal = BigDecimal.valueOf((askPrice - buyInitPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
         double adjustPrice = buyInitPriceDecimal.add(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        optionAdjustPriceTimestampMap.put(futu, current);
+        adjustBuyPriceTimestampMap.put(futu, current);
 
         log.info("adjust buy price: option={}\tbidPrice={}\taskPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, adjustTimes, adjustPrice);
         return adjustPrice;
@@ -590,9 +592,9 @@ public class OptionTradeExecutor2 {
      */
     public double calQuickSellPrice(String futu) {
         long current = System.currentTimeMillis();
-        Long lastTimestamp = MapUtils.getLong(optionAdjustPriceTimestampMap, futu, null);
+        Long lastTimestamp = MapUtils.getLong(adjustSellPriceTimestampMap, futu, null);
         if (lastTimestamp == null) {
-            optionAdjustPriceTimestampMap.put(futu, current);
+            adjustSellPriceTimestampMap.put(futu, current);
             return Double.MAX_VALUE;
         }
         boolean touchOffAdjust = current - lastTimestamp > ADJUST_SELL_PRICE_TIME_INTERVAL;
@@ -610,13 +612,13 @@ public class OptionTradeExecutor2 {
         BigDecimal sellInitPriceDecimal = BigDecimal.valueOf(sellInitPrice);
 
         // 记录调价次数，并计算每间隔5秒一次调价幅度，同时更新最新调价时间和调价次数
-        Integer lastAdjustTimes = MapUtils.getInteger(optionAdjustPriceTimesMap, futu, 0);
+        Integer lastAdjustTimes = MapUtils.getInteger(adjustSellPriceTimesMap, futu, 0);
         int adjustTimes = lastAdjustTimes + 1;
-        optionAdjustPriceTimesMap.put(futu, adjustTimes);
+        adjustSellPriceTimesMap.put(futu, adjustTimes);
 
         BigDecimal adjustPriceDecimal = BigDecimal.valueOf((sellInitPrice - bidPrice) / ADJUST_TRADE_PRICE_TIMES * adjustTimes).setScale(3, RoundingMode.HALF_UP);
         double adjustPrice = sellInitPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        optionAdjustPriceTimestampMap.put(futu, current);
+        adjustSellPriceTimestampMap.put(futu, current);
 
         log.info("adjust sell price: option={}\tbidPrice={}\taskPrice={}\tadjustTimes={}\tadjustPrice={}", futu, bidPrice, askPrice, adjustTimes, adjustPrice);
         return adjustPrice;
@@ -758,8 +760,8 @@ public class OptionTradeExecutor2 {
                                 } else {
                                     tradePrice = calTradePrice(stock, callRt, CALL_TYPE);
                                     adjustBuyInitPriceMap.put(callFutu, tradePrice);
-                                    optionAdjustPriceTimesMap.put(callFutu, 0);
-                                    optionAdjustPriceTimestampMap.put(callFutu, System.currentTimeMillis());
+                                    adjustBuyPriceTimesMap.put(callFutu, 0);
+                                    adjustBuyPriceTimestampMap.put(callFutu, System.currentTimeMillis());
                                     modifyOrderId = tradeApi.placeNormalBuyOrder(callIkbr, count, tradePrice);
                                     log.info("retry modify buy call order: call={}\ttradePrice={}\torderId={}", callIkbr, tradePrice, modifyOrderId);
                                 }
@@ -788,8 +790,8 @@ public class OptionTradeExecutor2 {
                                 } else {
                                     tradePrice = calTradePrice(stock, putRt, CALL_TYPE);
                                     adjustBuyInitPriceMap.put(putFutu, tradePrice);
-                                    optionAdjustPriceTimesMap.put(putFutu, 0);
-                                    optionAdjustPriceTimestampMap.put(putFutu, System.currentTimeMillis());
+                                    adjustBuyPriceTimesMap.put(putFutu, 0);
+                                    adjustBuyPriceTimestampMap.put(putFutu, System.currentTimeMillis());
                                     modifyOrderId = tradeApi.placeNormalBuyOrder(putIkbr, count, tradePrice);
                                     log.info("retry modify buy put order: put={}\ttradePrice={}\torderId={}", putIkbr, tradePrice, modifyOrderId);
                                 }
@@ -873,8 +875,8 @@ public class OptionTradeExecutor2 {
                                 } else {
                                     tradePrice = calculateMidPrice(callFutu);
                                     adjustSellInitPriceMap.put(callFutu, tradePrice);
-                                    optionAdjustPriceTimesMap.put(callFutu, 0);
-                                    optionAdjustPriceTimestampMap.put(callFutu, System.currentTimeMillis());
+                                    adjustSellPriceTimesMap.put(callFutu, 0);
+                                    adjustSellPriceTimestampMap.put(callFutu, System.currentTimeMillis());
                                     modifyOrderId = tradeApi.placeNormalSellOrder(callIkbr, count, tradePrice);
                                     log.info("retry modify sell call order: call={}\ttradePrice={}\torderId={}", callIkbr, tradePrice, modifyOrderId);
                                 }
@@ -899,8 +901,8 @@ public class OptionTradeExecutor2 {
                                 } else {
                                     tradePrice = calculateMidPrice(putFutu);
                                     adjustSellInitPriceMap.put(putFutu, tradePrice);
-                                    optionAdjustPriceTimesMap.put(putFutu, 0);
-                                    optionAdjustPriceTimestampMap.put(putFutu, System.currentTimeMillis());
+                                    adjustSellPriceTimesMap.put(putFutu, 0);
+                                    adjustSellPriceTimestampMap.put(putFutu, System.currentTimeMillis());
                                     modifyOrderId = tradeApi.placeNormalSellOrder(putIkbr, count, tradePrice);
                                     log.info("retry modify sell put order: put={}\ttradePrice={}\torderId={}", putIkbr, tradePrice, modifyOrderId);
                                 }
@@ -1111,10 +1113,10 @@ public class OptionTradeExecutor2 {
                                 sellOrderTimeMap.put(stock, curTime);
                                 sellOrderIdMap.put(callIkbr, sellCallOrderId);
                                 sellOrderIdMap.put(putIkbr, sellPutOrderId);
-                                optionAdjustPriceTimestampMap.put(callFutu, curTime);
-                                optionAdjustPriceTimestampMap.put(putFutu, curTime);
-                                optionAdjustPriceTimesMap.put(callFutu, 0);
-                                optionAdjustPriceTimesMap.put(putFutu, 0);
+                                adjustSellPriceTimestampMap.put(callFutu, curTime);
+                                adjustSellPriceTimestampMap.put(putFutu, curTime);
+                                adjustSellPriceTimesMap.put(callFutu, 0);
+                                adjustSellPriceTimesMap.put(putFutu, 0);
                                 ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                                 ReadWriteOptionTradeInfo.writeSellOrderId(callIkbr, sellCallOrderId);
                                 ReadWriteOptionTradeInfo.writeSellOrderId(putIkbr, sellPutOrderId);
@@ -1225,8 +1227,8 @@ public class OptionTradeExecutor2 {
                                 }
 
                                 adjustSellInitPriceMap.put(putFutu, putMidPrice);
-                                optionAdjustPriceTimestampMap.put(putFutu, curTime);
-                                optionAdjustPriceTimesMap.put(putFutu, 0);
+                                adjustSellPriceTimestampMap.put(putFutu, curTime);
+                                adjustSellPriceTimesMap.put(putFutu, 0);
                                 lastSellPriceMap.put(putIkbr, putMidPrice);
                                 sellOrderTimeMap.put(stock, curTime);
                                 sellOrderIdMap.put(putIkbr, sellPutOrderId);
@@ -1242,8 +1244,8 @@ public class OptionTradeExecutor2 {
                                 }
 
                                 adjustSellInitPriceMap.put(callFutu, callMidPrice);
-                                optionAdjustPriceTimestampMap.put(callFutu, curTime);
-                                optionAdjustPriceTimesMap.put(callFutu, 0);
+                                adjustSellPriceTimestampMap.put(callFutu, curTime);
+                                adjustSellPriceTimesMap.put(callFutu, 0);
                                 lastSellPriceMap.put(callIkbr, callMidPrice);
                                 sellOrderTimeMap.put(stock, curTime);
                                 sellOrderIdMap.put(callIkbr, sellCallOrderId);
