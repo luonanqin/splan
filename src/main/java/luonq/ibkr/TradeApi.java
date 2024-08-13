@@ -1,6 +1,5 @@
 package luonq.ibkr;
 
-import bean.StockPosition;
 import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Maps;
 import com.ib.client.Contract;
@@ -45,6 +44,8 @@ public class TradeApi {
         client = new ApiController(connectionHanlder);
         //        client.connect("127.0.0.1", 7496, 1, null); // 真实账户
         client.connect("127.0.0.1", port, 1, null); // 模拟账户
+
+        client.reqPositions(positionHandler);
     }
 
     public void end() {
@@ -225,13 +226,8 @@ public class TradeApi {
         return order;
     }
 
-    public Map<String, StockPosition> getPositionMap(String code) {
-        client.reqPositions(positionHandler);
-        return positionHandler.getPositionMap();
-    }
-
-    public void setPositionAvgCost(String code, double avgCost) {
-        positionHandler.setAvgCost(code, avgCost);
+    public double getCanSellQty(String code) {
+        return positionHandler.getCanSellQty(code);
     }
 
     public static void main(String[] args) {
