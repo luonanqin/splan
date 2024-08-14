@@ -3,7 +3,6 @@ package luonq.polygon;
 import bean.NodeList;
 import bean.Order;
 import bean.StockEvent;
-import bean.StockPosition;
 import com.futu.openapi.FTAPI;
 import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Lists;
@@ -140,7 +139,8 @@ public class OptionTradeExecutor2 {
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
-    private double funds = 10000; // todo 测试用要删
+    private double funds = 2000; // todo 测试用要删
+    private int limitCount = 3; // todo 限制股票数量
     private long openTime;
     private long closeTime;
     private long invalidTime;
@@ -179,6 +179,7 @@ public class OptionTradeExecutor2 {
     }
 
     public void beginTrade() throws InterruptedException {
+        tradeApi.reqPosition();
         // 能交易的股票
         if (CollectionUtils.isEmpty(canTradeStocks)) {
             log.info("there is no stock can be traded");
@@ -209,7 +210,7 @@ public class OptionTradeExecutor2 {
         }
 
         canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
-        int size = sortedCanTradeStock.size() > 3 ? 3 : sortedCanTradeStock.size();
+        int size = sortedCanTradeStock.size() > limitCount ? limitCount : sortedCanTradeStock.size();
         avgFund = (int) funds / size;
         //        List<String> tempCanTradeStock = Lists.newArrayList();
         // 如果已排序后的股票超过1只，则从size=3开始计算哪些股票价格符合条件（size根据本金大小进行调整）
@@ -575,6 +576,11 @@ public class OptionTradeExecutor2 {
         double adjustPrice = 0;
         int adjustTimes = 0;
         while (true) {
+            // 如果卖一价低于初始挂单价，则调价幅度为负数，无论如何调价，都会低于最近的挂单价，导致无法跳出循环
+            if (askPrice.compareTo(buyInitPrice) < 0) {
+                return Double.MIN_VALUE;
+            }
+
             Integer lastAdjustTimes = MapUtils.getInteger(adjustBuyPriceTimesMap, futu, 0);
             adjustTimes = lastAdjustTimes + 1;
             adjustBuyPriceTimesMap.put(futu, adjustTimes);
@@ -634,6 +640,11 @@ public class OptionTradeExecutor2 {
         double adjustPrice = 0;
         int adjustTimes = 0;
         while (true) {
+            // 如果初始挂单价低于买一价，则调价幅度为负数，无论如何调价，都会高于最近的挂单价，导致无法跳出循环
+            if (sellInitPrice.compareTo(bidPrice) < 0) {
+                return Double.MAX_VALUE;
+            }
+
             Integer lastAdjustTimes = MapUtils.getInteger(adjustSellPriceTimesMap, futu, 0);
             adjustTimes = lastAdjustTimes + 1;
             adjustSellPriceTimesMap.put(futu, adjustTimes);
@@ -991,17 +1002,6 @@ public class OptionTradeExecutor2 {
         timer.scheduleAtFixedRate(new TimerTask() {
 
             int showtimes = 20, showCount = 0;
-            Map<String/* code */, StockPosition> positions = Maps.newHashMap();
-
-            //            private StockPosition getPosistion(String optionCode) {
-            //                Map<String, StockPosition> positionMap = tradeApi.getPositionMap(optionCode);
-            //                StockPosition stockPosition = positionMap.get(optionCode);
-            //                if (stockPosition != null) {
-            //                    positions.put(optionCode, stockPosition);
-            //                }
-            //
-            //                return positions.get(optionCode);
-            //            }
 
             @Override
             public void run() {
