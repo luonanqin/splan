@@ -45,6 +45,10 @@ public class ReadWriteOptionTradeInfo {
      * 股票期权的下单数量
      */
     public static String ORDER_COUNT_PATH = "orderCount";
+    /**
+     * 买入成功的成本价
+     */
+    public static String BUY_ORDER_COST_PATH = "buyOrderCost";
 
     /**
      * 已下单卖出的股票
@@ -75,6 +79,7 @@ public class ReadWriteOptionTradeInfo {
         BUY_ORDER_TIME_PATH = basePath + BUY_ORDER_TIME_PATH;
         HAS_BOUGHT_SUCCESS_PATH = basePath + HAS_BOUGHT_SUCCESS_PATH;
         ORDER_COUNT_PATH = basePath + ORDER_COUNT_PATH;
+        BUY_ORDER_COST_PATH = basePath + BUY_ORDER_COST_PATH;
         HAS_SOLD_ORDER_PATH = basePath + HAS_SOLD_ORDER_PATH;
         SELL_ORDER_ID_PATH = basePath + SELL_ORDER_ID_PATH;
         SELL_ORDER_TIME_PATH = basePath + SELL_ORDER_TIME_PATH;
@@ -181,6 +186,35 @@ public class ReadWriteOptionTradeInfo {
             for (String line : lines) {
                 String[] split = line.split("\t");
                 map.put(split[0], Long.valueOf(split[1]));
+            }
+        }
+        return map;
+    }
+
+    public static void writeBuyOrderCost(String optionFutu, Double cost) {
+        Map<String, Double> map = readBuyOrderCost();
+        map.put(optionFutu, cost);
+        List<String> lines = map.entrySet().stream().map(e -> e.getKey() + "\t" + e.getValue()).collect(Collectors.toList());
+        try {
+            BaseUtils.writeFile(BUY_ORDER_COST_PATH, lines);
+            log.info("writeBuyOrderCost={}, cost={}", optionFutu, cost);
+        } catch (Exception e) {
+            log.error("writeBuyOrderCost error. option={}, cost={}", optionFutu, cost, e);
+        }
+    }
+
+    public static Map<String, Double> readBuyOrderCost() {
+        Map<String, Double> map = Maps.newHashMap();
+        List<String> lines = null;
+        try {
+            lines = BaseUtils.readFile(BUY_ORDER_COST_PATH);
+        } catch (Exception e) {
+            log.error("readBuyOrderCost error", e);
+        }
+        if (CollectionUtils.isNotEmpty(lines)) {
+            for (String line : lines) {
+                String[] split = line.split("\t");
+                map.put(split[0], Double.valueOf(split[1]));
             }
         }
         return map;

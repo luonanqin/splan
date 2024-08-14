@@ -137,10 +137,27 @@ public class OptionTradeTest2 extends BaseTest {
 
     @Test
     public void test_restart() throws Exception {
+        loadOptionTradeData.load();
+        ReadWriteOptionTradeInfo.init();
+
         OptionStockListener2 optionStockListener = new OptionStockListener2();
         optionTradeExecutor.setOptionStockListener(optionStockListener);
+
+        RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
+        client.setOpenTime(1723469400000l);
+        client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
+        optionTradeExecutor.setClient(client);
+
         optionTradeExecutor.init();
         optionTradeExecutor.restart();
+    }
+
+    @Test
+    public void test_readWrite(){
+        loadOptionTradeData.load();
+        ReadWriteOptionTradeInfo.init();
+
+        ReadWriteOptionTradeInfo.writeBuyOrderCost("NVDA  240816C00115000", 1.43);
     }
 
     @Test

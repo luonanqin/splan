@@ -8,6 +8,7 @@ import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.ib.client.OrderStatus;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
@@ -29,7 +30,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -771,9 +771,9 @@ public class OptionTradeExecutor2 {
                 boolean callSuccess = buyCallOrder != null && buyCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                 boolean putSuccess = buyPutOrder != null && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                 if (callSuccess && putSuccess) {
+                    ReadWriteOptionTradeInfo.writeBuyOrderCost(callIkbr, buyCallOrder.getAvgPrice());
+                    ReadWriteOptionTradeInfo.writeBuyOrderCost(putIkbr, buyPutOrder.getAvgPrice());
                     ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
-                    //                    tradeApi.setPositionAvgCost(callRt.replaceAll("\\+", ""), buyCallOrder.getAvgPrice());
-                    //                    tradeApi.setPositionAvgCost(putRt.replaceAll("\\+", ""), buyPutOrder.getAvgPrice());
                     hasBoughtSuccess.add(stock);
                     log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, callIkbr, buyCallOrderId, putIkbr, buyPutOrderId, count);
                     delayUnsubscribeIv(stock);
@@ -809,6 +809,8 @@ public class OptionTradeExecutor2 {
                                     log.info("retry modify buy call order: call={}\ttradePrice={}\torderId={}", callIkbr, tradePrice, modifyOrderId);
                                 }
                             }
+
+                            ReadWriteOptionTradeInfo.writeBuyOrderId(callIkbr, buyCallOrderId);
                             lastBuyPriceMap.put(callIkbr, tradePrice);
                             log.info("modify buy call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callIkbr, tradePrice, count, hasTradeCount);
                         }
@@ -839,6 +841,8 @@ public class OptionTradeExecutor2 {
                                     log.info("retry modify buy put order: put={}\ttradePrice={}\torderId={}", putIkbr, tradePrice, modifyOrderId);
                                 }
                             }
+
+                            ReadWriteOptionTradeInfo.writeBuyOrderId(putIkbr, buyPutOrderId);
                             lastBuyPriceMap.put(putIkbr, tradePrice);
                             log.info("modify buy put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putIkbr, tradePrice, count, hasTradeCount);
                         }
@@ -927,6 +931,7 @@ public class OptionTradeExecutor2 {
                                 }
                             }
 
+                            ReadWriteOptionTradeInfo.writeSellOrderId(callIkbr, sellCallOrderId);
                             lastSellPriceMap.put(callIkbr, tradePrice);
                             log.info("modify sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callFutu, tradePrice, callCount, hasTradeCount);
                         }
@@ -954,6 +959,7 @@ public class OptionTradeExecutor2 {
                                 }
                             }
 
+                            ReadWriteOptionTradeInfo.writeSellOrderId(putIkbr, sellPutOrderId);
                             log.info("modify sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putFutu, tradePrice, putCount, hasTradeCount);
                             lastSellPriceMap.put(putIkbr, tradePrice);
                         }
@@ -1367,9 +1373,28 @@ public class OptionTradeExecutor2 {
         hasBoughtSuccess = hasBoughtSuccess.stream().filter(s -> canTradeStocks.contains(s)).collect(Collectors.toSet());
         hasSoldSuccess = hasSoldSuccess.stream().filter(s -> canTradeStocks.contains(s)).collect(Collectors.toSet());
 
+        Map<String, Double> buyOrderCostMap = ReadWriteOptionTradeInfo.readBuyOrderCost();
+        for (String option : buyOrderIdMap.keySet()) {
+            Long orderId = buyOrderIdMap.get(option);
+            Double cost = buyOrderCostMap.get(option);
+            if (cost == null) {
+                log.warn("restart buy order cost is null. option={}", option);
+                continue;
+            }
+
+            int index = option.indexOf(" ");
+            String stock = option;
+            if (index > 0) {
+                stock = option.substring(0, index);
+            }
+            Double count = MapUtils.getDouble(orderCountMap, stock, 0d);
+
+            tradeApi.rebuildOrderHandler(orderId, cost, count, OrderStatus.Filled);
+        }
+
         try {
             beginTrade();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             log.error("re begin trade error", e);
         }
     }
@@ -1527,16 +1552,12 @@ public class OptionTradeExecutor2 {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        List<Integer> l1 = Lists.newArrayList(1, 2, 3, 4, 5);
-        List<Integer> l2 = Lists.newArrayList(3, 4, 5);
-        //        l1.retainAll(l2);
-        System.out.println(l1);
-        for (Iterator<Integer> iter = l1.iterator(); iter.hasNext(); ) {
-            Integer next = iter.next();
-            if (!l2.contains(next)) {
-                iter.remove();
-            }
+        String option = "NVDA  240816C00115000";
+        int index = option.indexOf(" ");
+        String stock = option;
+        if (index > 0) {
+            stock = option.substring(0, index);
         }
-        System.out.println(l1);
+        System.out.println(stock);
     }
 }

@@ -231,6 +231,15 @@ public class TradeApi {
         client.reqPositions(positionHandler);
     }
 
+    public void rebuildOrderHandler(long orderId, double cost, double count, OrderStatus status) {
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setAvgPrice(cost);
+        orderHandler.setCount(count);
+        orderHandler.setStatus(status);
+
+        orderIdToHandlerMap.put((int) orderId, orderHandler);
+    }
+
     public static void main(String[] args) {
         TradeApi tradeApi = new TradeApi();
         tradeApi.useSimulateEnv();
