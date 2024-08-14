@@ -98,7 +98,7 @@ public class GrabOptionTradeData {
         TradeCalendar tradeCalendar = readFromDB.getTradeCalendar(today);
         TradeCalendar lastTradeCalendar = readFromDB.getLastTradeCalendar(today);
         TradeCalendar last2TradeCalendar = readFromDB.getLastTradeCalendar(lastTradeCalendar.getDate());
-        LocalDateTime preMarketOpen = LocalDateTime.of(LocalDate.now(), LocalTime.of(13, 35, 0)); // 前一交易日数据的入库时间
+        LocalDateTime preMarketOpen = LocalDateTime.of(LocalDate.now(), LocalTime.of(13, 0, 0)); // 前一交易日数据的入库时间
 
         if (tradeCalendar == null) {
             lastTradeDate = last2TradeCalendar.getDate();

@@ -49,6 +49,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     private Map<String/* code */, Integer/* 1=call, 2=put */> optionTypeMap = Maps.newHashMap();
     private Map<String/* code */, String/* iv|updatetime */> optionIvTimeMap = Maps.newHashMap();
     private Map<String/* code */, Double/* trade */> optionTradeMap = Maps.newHashMap();
+    private Map<String/* code */, Boolean/* show price */> showTradePriceMap = Maps.newHashMap();
 
     @Data
     public static class StockQuote {
@@ -111,6 +112,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         return MapUtils.getDouble(optionTradeMap, code, 0d);
     }
 
+    public void setShowTradePrice(String code) {
+        showTradePriceMap.put(code, true);
+    }
+
     @Override
     public void onPush_UpdateBasicQuote(FTAPI_Conn client, QotUpdateBasicQot.Response rsp) {
         if (rsp.getRetType() != 0) {
@@ -127,7 +132,12 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     optionIvTimeMap.put(code, impliedVolatility + "|" + updateTime);
                     optionTradeMap.put(code, curPrice);
-                    log.info("update futu iv and curPrice: code={}\tiv={}\tprice={}\ttime={}", code, impliedVolatility, curPrice, updateTime);
+                    boolean showTradePrice = MapUtils.getBoolean(showTradePriceMap, code, false);
+                    if (showTradePrice) {
+                        log.info("option cur price: code={}\tprice={}", code, curPrice);
+                    } else {
+                        log.info("update futu iv and curPrice: code={}\tiv={}\tprice={}\ttime={}", code, impliedVolatility, curPrice, updateTime);
+                    }
                 }
             }
         }
@@ -213,13 +223,13 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
-    public void subBasicQuote(String stock) {
+    public void subBasicQuote(String code) {
         List<Integer> subTypeList = new ArrayList<>();
         subTypeList.add(QotCommon.SubType.SubType_Basic_VALUE);
 
         QotCommon.Security sec = QotCommon.Security.newBuilder()
           .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
-          .setCode(stock)
+          .setCode(code)
           .build();
         QotSub.C2S c2s = QotSub.C2S.newBuilder()
           .addSecurityList(sec)
@@ -227,19 +237,19 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
           .setIsSubOrUnSub(true)
           .setIsRegOrUnRegPush(true)
           .build();
-        //        if (stock.length() > 5) {
-        //            int i = stock.length() - 1;
+        //        if (code.length() > 5) {
+        //            int i = code.length() - 1;
         //            for (; i >= 0; i--) {
-        //                if (stock.charAt(i) < '0' || stock.charAt(i) > '9') {
+        //                if (code.charAt(i) < '0' || code.charAt(i) > '9') {
         //                    break;
         //                }
         //            }
-        //            if (stock.charAt(i) == 'C') {
-        //                optionTypeMap.put(stock, 1);
-        //            } else if (stock.charAt(i) == 'P') {
-        //                optionTypeMap.put(stock, 2);
+        //            if (code.charAt(i) == 'C') {
+        //                optionTypeMap.put(code, 1);
+        //            } else if (code.charAt(i) == 'P') {
+        //                optionTypeMap.put(code, 2);
         //            } else {
-        //                optionTypeMap.put(stock, 0);
+        //                optionTypeMap.put(code, 0);
         //            }
         //        }
         QotSub.Request req = QotSub.Request.newBuilder().setC2S(c2s).build();
@@ -428,13 +438,13 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         //        quote.addUserSecurity("AAPL");
         //        quote.addUserSecurity("AAPL240809C210000");
         //        quote.addUserSecurity("AAPL240809P207500");
-        quote.subBasicQuote("U240816C15500");
+        //        quote.subBasicQuote("U240816C15500");
         //        quote.subBasicQuote("SEDG240719P28000");
         //        quote.subBasicQuote("HUT240719C18500");
         //        quote.subBasicQuote("HUT240719P18000");
         //        quote.subBasicQuote("NVDA240719C121000");
         //        quote.unSubBasicQuote("TSLA240719C252500");
-        //        quote.subBasicQuote("TSLA240719P255000");
+        quote.subBasicQuote("TSLA240816P207500");
         //        System.out.println(quote.getOptionIvTimeMap("TSLA240719C257500"));
         //        quote.getBasicQot("TSLA240719P255000");
         //                quote.getBasicQot("TSLA240719P255000");

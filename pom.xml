@@ -157,6 +157,13 @@
             <artifactId>openapi-java-sdk</artifactId>
             <version>2.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.ib</groupId>
+            <artifactId>interactive-brokers-api</artifactId>
+            <version>9.73-1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/TwsApi.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <!--<repositories>-->
@@ -217,10 +224,20 @@
                         <exclude>testData/**</exclude>
                         <exclude>tradeData/**</exclude>
                         <exclude>tradeLog/**</exclude>
+                        <exclude>executeLog/**</exclude>
                         <!-- 去除指定的类-->
                     </excludes>
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 </project>

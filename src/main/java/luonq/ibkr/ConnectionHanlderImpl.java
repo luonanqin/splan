@@ -1,38 +1,40 @@
 package luonq.ibkr;
 
 import com.ib.controller.ApiController;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 public class ConnectionHanlderImpl implements ApiController.IConnectionHandler {
 
     @Override
     public void connected() {
-        System.out.println("connected");
+        log.info("connected");
     }
 
     @Override
     public void disconnected() {
-        System.out.println("disconnected");
+        log.info("disconnected");
     }
 
     @Override
     public void accountList(List<String> list) {
-        System.out.println("account list:" + list);
+        log.info("account list: {}", list);
     }
 
     @Override
     public void error(Exception e) {
-        System.out.println("error: " + e.getMessage());
+        log.error("connection error: ", e);
     }
 
     @Override
     public void message(int id, int errorCode, String errorMsg, String advancedOrderRejectJson) {
-        System.out.println("message: " + id + " " + errorCode + " " + errorMsg + " " + advancedOrderRejectJson);
+        log.info("connection message: id={}\terrorCode={}\terrorMsg={}\tadvancedOrderRejectJson={}", id, errorCode, errorMsg, advancedOrderRejectJson);
     }
 
     @Override
     public void show(String string) {
-        System.out.println("show: " + string);
+        log.info("connection show: {}", string);
     }
 }

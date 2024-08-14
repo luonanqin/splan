@@ -45,4 +45,13 @@ public class TradeTest extends BaseTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void test_getOptionTradeDataJob() {
+        try {
+            getDataJob.getOptionTradeDataJob();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

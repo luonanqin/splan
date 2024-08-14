@@ -392,21 +392,21 @@ public class OptionTradeExecutor2 {
                     continue;
                 }
 
-                // 如果下单数量小数位小于等于0.5，取整要减一，如果小数位大于0.5，则不变。目的是为了后面如果改价避免成交数量超过限制。但是如果count=1则不减一
-                String countStr = String.valueOf(countDouble);
-                int dotIndex = countStr.indexOf(".");
-                String dotStr = countStr.substring(dotIndex + 1, dotIndex + 2);
+                // 仅在满仓投入时才使用以下逻辑：如果下单数量小数位小于等于0.5，取整要减一，如果小数位大于0.5，则不变。目的是为了后面如果改价避免成交数量超过限制。但是如果count=1则不减一
+                //                String countStr = String.valueOf(countDouble);
+                //                int dotIndex = countStr.indexOf(".");
+                //                String dotStr = countStr.substring(dotIndex + 1, dotIndex + 2);
+                //                double count = (int) countDouble;
+                //                if (Integer.valueOf(dotStr) <= 5 && count > 1) {
+                //                    count = (int) countDouble - 1;
+                //                }
+                //                if (count <= 0) {
+                //                    invalidTradeStock(stock);
+                //                    log.info("count is illegal. stock={}, count={}", stock, count);
+                //                    tempInvalidStocks.add(stock);
+                //                    continue;
+                //                }
                 double count = (int) countDouble;
-                if (Integer.valueOf(dotStr) <= 5 && count > 1) {
-                    count = (int) countDouble - 1;
-                }
-
-                if (count <= 0) {
-                    invalidTradeStock(stock);
-                    log.info("count is illegal. stock={}, count={}", stock, count);
-                    tempInvalidStocks.add(stock);
-                    continue;
-                }
 
                 // 买入下单也需要判断差价决定下单顺序并检查下单结果
                 Double callTrade = futuQuote.getOptionTrade(callFutu);
@@ -776,7 +776,8 @@ public class OptionTradeExecutor2 {
                     ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
                     hasBoughtSuccess.add(stock);
                     log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, callIkbr, buyCallOrderId, putIkbr, buyPutOrderId, count);
-                    delayUnsubscribeIv(stock);
+                    disableShowIv(callFutu, putFutu);
+                    //                    delayUnsubscribeIv(stock);
                     //                    unmonitorPolygonQuote(stock);
                 } else if (System.currentTimeMillis() - buyOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
                     /**
@@ -1461,30 +1462,6 @@ public class OptionTradeExecutor2 {
         hasSoldOrderMap.put(stock, NOT_EXIST);
     }
 
-    public void delayUnsubscribeIv() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (CollectionUtils.isNotEmpty(invalidStocks)) {
-                    for (String stock : invalidStocks) {
-                        String callAndPut = MapUtils.getString(canTradeOptionForFutuMap, stock, "");
-                        if (StringUtils.isBlank(callAndPut)) {
-                            continue;
-                        }
-                        String[] split = callAndPut.split("\\|");
-                        String call = split[0];
-                        String put = split[1];
-                        futuQuote.unSubBasicQuote(call);
-                        futuQuote.unSubBasicQuote(put);
-                    }
-                }
-                log.info("unsubscribe quote. invalid={}\tbuy success={}", invalidStocks, hasBoughtSuccess);
-                timer.cancel();
-            }
-        }, 1000 * 60 * 1);
-    }
-
     public void delayUnsubscribeIv(String stock) {
         if (StringUtils.isBlank(stock)) {
             log.info("delayUnsubscribeIv error. stock is blank");
@@ -1531,6 +1508,11 @@ public class OptionTradeExecutor2 {
                 timer.cancel();
             }
         }, 1000 * 60 * 1);
+    }
+
+    public void disableShowIv(String callFutu, String putFutu) {
+        futuQuote.setShowTradePrice(callFutu);
+        futuQuote.setShowTradePrice(putFutu);
     }
 
     public boolean checkHasNoDeep(String callFutu, String putFutu) {
