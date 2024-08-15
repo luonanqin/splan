@@ -139,7 +139,7 @@ public class OptionTradeExecutor2 {
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
-    private double funds = 2000; // todo 测试用要删
+    private double funds = 2367; // todo 测试用要删 -686
     private int limitCount = 3; // todo 限制股票数量
     private long openTime;
     private long closeTime;

@@ -49,7 +49,7 @@ public class TradeTest extends BaseTest {
     @Test
     public void test_getOptionTradeDataJob() {
         try {
-            getDataJob.getOptionTradeDataJob();
+            getDataJob.getOptionTradeData();
         } catch (Exception e) {
             e.printStackTrace();
         }
