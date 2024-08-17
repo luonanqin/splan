@@ -899,16 +899,17 @@ public class Strategy32 {
         }
     }
 
-    public static void getOptionTradeDetail(String stock, String option, List<String> dayAllSeconds, String date) {
+    public static List<String> getOptionTradeDetail(String stock, String option, List<String> dayAllSeconds, String date) {
+        List<String> list = Lists.newArrayList();
         CloseableHttpClient httpClient = null;
         try {
             httpClient = queue.take();
             String beginTime = dayAllSeconds.get(0);
-            String endTime = dayAllSeconds.get(1800);
-            List<String> list = GetOptionTrade.getData(httpClient, option, beginTime, endTime);
-            String path = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
-            BaseUtils.createDirectory(path);
-            BaseUtils.writeFile(path + option.substring(2), list);
+            String endTime = dayAllSeconds.get(dayAllSeconds.size() - 1);
+            list = GetOptionTrade.getData(httpClient, option, beginTime, endTime);
+            //            String path = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+            //            BaseUtils.createDirectory(path);
+            //            BaseUtils.writeFile(path + option.substring(2), list);
         } catch (Exception e) {
             System.out.println("getTradeDetail error. option=" + option);
         } finally {
@@ -916,6 +917,52 @@ public class Strategy32 {
                 queue.offer(httpClient);
             }
         }
+        return list;
+    }
+
+    public static List<String> getOptionTradeDetail(String option, String beginTime, String endTime) {
+        List<String> list = Lists.newArrayList();
+        CloseableHttpClient httpClient = null;
+        try {
+            httpClient = queue.take();
+            list = GetOptionTrade.getData(httpClient, option, beginTime, endTime);
+            //            String path = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+            //            BaseUtils.createDirectory(path);
+            //            BaseUtils.writeFile(path + option.substring(2), list);
+        } catch (Exception e) {
+            System.out.println("getTradeDetail error. option=" + option);
+        } finally {
+            if (httpClient != null) {
+                queue.offer(httpClient);
+            }
+        }
+        return list;
+    }
+
+    public static void getOptionTradeData(String stock, String call, String put, List<String> dayAllSeconds, String date) throws Exception {
+        String beginTime = dayAllSeconds.get(0);
+        String endTime = dayAllSeconds.get(dayAllSeconds.size() - 1);
+
+        List<String> callDetail = getOptionTradeDetail(call, beginTime, endTime);
+        List<String> putDetail = getOptionTradeDetail(put, beginTime, endTime);
+        String callLast = callDetail.get(callDetail.size() - 1);
+        String putLast = putDetail.get(putDetail.size() - 1);
+
+        Long callLastTime = Long.valueOf(callLast.split("\t")[0]);
+        Long putLastTime = Long.valueOf(putLast.split("\t")[0]);
+
+        if (callLastTime > putLastTime) {
+            putDetail = getOptionTradeDetail(put, beginTime, String.valueOf(callLastTime));
+        } else {
+            callDetail = getOptionTradeDetail(call, beginTime, String.valueOf(putLastTime));
+        }
+
+        String callPath = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+        BaseUtils.createDirectory(callPath);
+        BaseUtils.writeFile(callPath + call.substring(2), callDetail);
+        String putPath = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+        BaseUtils.createDirectory(putPath);
+        BaseUtils.writeFile(putPath + put.substring(2), putDetail);
     }
 
     // 根据报价数据计算双开模拟交易数据，用于测试止损和止盈点
@@ -941,8 +988,7 @@ public class Strategy32 {
 
         List<String> dayAllSeconds = Strategy28.getDayAllSeconds(date);
 
-        getOptionTradeDetail(stock, call.getSymbol(), dayAllSeconds, date);
-        getOptionTradeDetail(stock, put.getSymbol(), dayAllSeconds, date);
+        getOptionTradeData(stock, call.getSymbol(), put.getSymbol(), dayAllSeconds, date);
 
         Map<Long, Double> callQuotePriceMap = calQuoteListForSeconds(callQuoteList);
         Map<Long, Double> putQuotePriceMap = calQuoteListForSeconds(putQuoteList);
