@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import luonq.ivolatility.GetAggregateImpliedVolatility;
+import luonq.polygon.GetOptionTrade;
 import org.apache.commons.collections.list.SynchronizedList;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -898,6 +899,25 @@ public class Strategy32 {
         }
     }
 
+    public static void getOptionTradeDetail(String stock, String option, List<String> dayAllSeconds, String date) {
+        CloseableHttpClient httpClient = null;
+        try {
+            httpClient = queue.take();
+            String beginTime = dayAllSeconds.get(0);
+            String endTime = dayAllSeconds.get(1800);
+            List<String> list = GetOptionTrade.getData(httpClient, option, beginTime, endTime);
+            String path = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+            BaseUtils.createDirectory(path);
+            BaseUtils.writeFile(path + option.substring(2), list);
+        } catch (Exception e) {
+            System.out.println("getTradeDetail error. option=" + option);
+        } finally {
+            if (httpClient != null) {
+                queue.offer(httpClient);
+            }
+        }
+    }
+
     // 根据报价数据计算双开模拟交易数据，用于测试止损和止盈点
     public static String calStraddleSimulateTrade(OptionDaily call, OptionDaily put, Double calCallOpen, Double calPutOpen) throws Exception {
         String date = call.getFrom();
@@ -920,6 +940,10 @@ public class Strategy32 {
         }
 
         List<String> dayAllSeconds = Strategy28.getDayAllSeconds(date);
+
+        getOptionTradeDetail(stock, call.getSymbol(), dayAllSeconds, date);
+        getOptionTradeDetail(stock, put.getSymbol(), dayAllSeconds, date);
+
         Map<Long, Double> callQuotePriceMap = calQuoteListForSeconds(callQuoteList);
         Map<Long, Double> putQuotePriceMap = calQuoteListForSeconds(putQuoteList);
         Map<Long, Double> callBidPriceMap = calQuoteBidForSeconds(callQuoteList);
