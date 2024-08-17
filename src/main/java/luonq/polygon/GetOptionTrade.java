@@ -76,6 +76,31 @@ public class GetOptionTrade {
         return lines;
     }
 
+    public static List<String> getAllData(CloseableHttpClient httpClient, String option, String beginTime, String endTime) {
+        List<String> lines = Lists.newArrayList();
+
+        String url = String.format(urlString, option, beginTime, endTime);
+        while (true) {
+            TradeResp tradeResp = getTradeResp(url, httpClient);
+            if (tradeResp == null) {
+                return null;
+            } else if (CollectionUtils.isNotEmpty(tradeResp.getResults())) {
+                List<Trade> results = tradeResp.getResults();
+                for (Trade result : results) {
+                    lines.add(result.getSip_timestamp() + "\t" + result.getPrice());
+                }
+                String next_url = tradeResp.getNext_url();
+                if (StringUtils.isBlank(next_url)) {
+                    break;
+                } else {
+                    url = next_url + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
+                }
+            }
+        }
+
+        return lines;
+    }
+
     private static TradeResp getTradeResp(String url, CloseableHttpClient httpClient) {
         HttpGet get = new HttpGet(url);
 

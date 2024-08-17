@@ -920,15 +920,16 @@ public class Strategy32 {
         return list;
     }
 
-    public static List<String> getOptionTradeDetail(String option, String beginTime, String endTime) {
+    public static List<String> getOptionTradeDetail(String option, String beginTime, String endTime, boolean limit) {
         List<String> list = Lists.newArrayList();
         CloseableHttpClient httpClient = null;
         try {
             httpClient = queue.take();
-            list = GetOptionTrade.getData(httpClient, option, beginTime, endTime);
-            //            String path = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
-            //            BaseUtils.createDirectory(path);
-            //            BaseUtils.writeFile(path + option.substring(2), list);
+            if (limit) {
+                list = GetOptionTrade.getData(httpClient, option, beginTime, endTime);
+            } else {
+                list = GetOptionTrade.getAllData(httpClient, option, beginTime, endTime);
+            }
         } catch (Exception e) {
             System.out.println("getTradeDetail error. option=" + option);
         } finally {
@@ -951,8 +952,8 @@ public class Strategy32 {
         String beginTime = dayAllSeconds.get(0);
         String endTime = dayAllSeconds.get(dayAllSeconds.size() - 1);
 
-        List<String> callDetail = getOptionTradeDetail(call, beginTime, endTime);
-        List<String> putDetail = getOptionTradeDetail(put, beginTime, endTime);
+        List<String> callDetail = getOptionTradeDetail(call, beginTime, endTime, true);
+        List<String> putDetail = getOptionTradeDetail(put, beginTime, endTime, true);
         if (callDetail == null || putDetail == null) {
             return;
         }
@@ -964,9 +965,9 @@ public class Strategy32 {
         Long putLastTime = Long.valueOf(putLast.split("\t")[0]);
 
         if (callLastTime > putLastTime) {
-            putDetail = getOptionTradeDetail(put, beginTime, String.valueOf(callLastTime));
+            putDetail = getOptionTradeDetail(put, beginTime, String.valueOf(callLastTime), false);
         } else {
-            callDetail = getOptionTradeDetail(call, beginTime, String.valueOf(putLastTime));
+            callDetail = getOptionTradeDetail(call, beginTime, String.valueOf(putLastTime), false);
         }
 
         BaseUtils.createDirectory(dir);
