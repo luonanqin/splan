@@ -27,7 +27,8 @@ public class GetOptionTrade {
     public static final String ERROR_MSG = "can't get pre market data";
     public static BlockingQueue<HttpClient> clients;
     public static ThreadPoolExecutor cachedThread;
-    public static String urlString = "https://api.polygon.io/v3/trades/%s?order=asc&timestamp.gte=%s&timestamp.lte=%s&limit=100&sort=timestamp&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
+    public static String urlString = "https://api.polygon.io/v3/trades/%s?order=asc&timestamp.gte=%s&timestamp.lte=%s&limit=20&sort=timestamp&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
+    public static String urlString2 = "https://api.polygon.io/v3/trades/%s?order=asc&timestamp.gte=%s&timestamp.lte=%s&limit=100&sort=timestamp&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
     //    public static void init() {
     //        int threadCount = 100;
@@ -79,7 +80,7 @@ public class GetOptionTrade {
     public static List<String> getAllData(CloseableHttpClient httpClient, String option, String beginTime, String endTime) {
         List<String> lines = Lists.newArrayList();
 
-        String url = String.format(urlString, option, beginTime, endTime);
+        String url = String.format(urlString2, option, beginTime, endTime);
         while (true) {
             TradeResp tradeResp = getTradeResp(url, httpClient);
             if (tradeResp == null) {
