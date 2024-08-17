@@ -1066,6 +1066,11 @@ public class BaseUtils {
         return riskFreeRateMap;
     }
 
+    public static boolean fileExist(String path) {
+        File file = new File(path);
+        return file.exists();
+    }
+
     public static void main(String[] args) throws Exception {
         double callPredictedValue = getCallPredictedValue(7.8452, 8.5, 0.0527, 1.6317, "2024-02-20", "2024-02-23");
         System.out.println(callPredictedValue);

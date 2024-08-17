@@ -940,11 +940,23 @@ public class Strategy32 {
     }
 
     public static void getOptionTradeData(String stock, String call, String put, List<String> dayAllSeconds, String date) throws Exception {
+        String dir = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+        String callPath = dir + call.substring(2);
+        String putPath = dir + put.substring(2);
+
+        if (BaseUtils.fileExist(callPath) && BaseUtils.fileExist(putPath)) {
+            return;
+        }
+
         String beginTime = dayAllSeconds.get(0);
         String endTime = dayAllSeconds.get(dayAllSeconds.size() - 1);
 
         List<String> callDetail = getOptionTradeDetail(call, beginTime, endTime);
         List<String> putDetail = getOptionTradeDetail(put, beginTime, endTime);
+        if (callDetail == null || putDetail == null) {
+            return;
+        }
+
         String callLast = callDetail.get(callDetail.size() - 1);
         String putLast = putDetail.get(putDetail.size() - 1);
 
@@ -957,12 +969,9 @@ public class Strategy32 {
             callDetail = getOptionTradeDetail(call, beginTime, String.valueOf(putLastTime));
         }
 
-        String callPath = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
-        BaseUtils.createDirectory(callPath);
-        BaseUtils.writeFile(callPath + call.substring(2), callDetail);
-        String putPath = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
-        BaseUtils.createDirectory(putPath);
-        BaseUtils.writeFile(putPath + put.substring(2), putDetail);
+        BaseUtils.createDirectory(dir);
+        BaseUtils.writeFile(callPath, callDetail);
+        BaseUtils.writeFile(putPath, putDetail);
     }
 
     // 根据报价数据计算双开模拟交易数据，用于测试止损和止盈点
