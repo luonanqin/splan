@@ -139,11 +139,12 @@ public class OptionTradeExecutor2 {
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
-    private double funds = 2367; // todo 测试用要删 -686
-    private int limitCount = 3; // todo 限制股票数量
+    private double funds = 653; // todo 测试用要删
+    private int limitCount = 10; // todo 限制股票数量
     private long openTime;
     private long closeTime;
     private long invalidTime;
+    private long stopBuyTime; // 停止交易时间为开盘后一分钟，但是如果其中一个已经交易则不终止
 
     public void init() {
         FTAPI.init();
@@ -176,6 +177,7 @@ public class OptionTradeExecutor2 {
         rtForIkbrMap = optionStockListener.getRtForIkbrMap();
         futuForIkbrMap = optionStockListener.getFutuForIkbrMap();
         invalidTime = openTime + 15000;
+        stopBuyTime = openTime + 60000;
     }
 
     public void beginTrade() throws InterruptedException {
@@ -347,6 +349,18 @@ public class OptionTradeExecutor2 {
                 }
 
                 long curTime = System.currentTimeMillis();
+                if (curTime > stopBuyTime) {
+                    invalidTradeStock(stock);
+                    log.info("trade time out 1 min. stop {} trade", stock);
+                    continue;
+                }
+
+                // todo 测试阶段用预定限额控制下单股票
+                if (funds < 0) {
+                    invalidTradeStock(stock);
+                    log.info("over fund. stop {} trade", stock);
+                    continue;
+                }
 
                 // 2.1.没有iv的 和 有iv没有摆盘的 继续循环判断
                 String callAndPut = canTradeOptionForRtIVMap.get(stock);
@@ -380,10 +394,19 @@ public class OptionTradeExecutor2 {
                     continue;
                 }
 
-                double callCalcPrice = calTradePrice(stock, callRt, CALL_TYPE);
-                double putCalcPrice = calTradePrice(stock, putRt, PUT_TYPE);
+                double callCalcPrice = calTradePrice(stock, callRt, CALL_TYPE, null);
+                double putCalcPrice = calTradePrice(stock, putRt, PUT_TYPE, null);
 
-                double countDouble = avgFund / (callCalcPrice + putCalcPrice) / 100;
+                double tradeTotal = callCalcPrice + putCalcPrice;
+
+                double countDouble = avgFund / tradeTotal / 100;
+                // todo 测试阶段，临时限制每次交易数量
+                if (tradeTotal < 0.5) {
+                    countDouble = 2d;
+                } else {
+                    countDouble = 1d;
+                }
+
                 // 2.2.判断摆盘数据即callTrade+putTrade是否大于avgFund，如果大于则过滤。
                 if (countDouble < 1) {
                     invalidTradeStock(stock);
@@ -431,7 +454,7 @@ public class OptionTradeExecutor2 {
                     while (true) {
                         buyPutOrderId = tradeApi.placeNormalBuyOrder(putIkbr, count, putCalcPrice);
                         if (buyPutOrderId == -1) {
-                            putCalcPrice = calTradePrice(stock, putRt, PUT_TYPE);
+                            putCalcPrice = calTradePrice(stock, putRt, PUT_TYPE, null);
                             log.info("after buy call, retry buy put. code={}\ttradePrice={}\tcalcPrice=", putIkbr, putTrade, putCalcPrice);
                         } else {
                             break;
@@ -447,7 +470,7 @@ public class OptionTradeExecutor2 {
                     while (true) {
                         buyCallOrderId = tradeApi.placeNormalBuyOrder(callIkbr, count, callCalcPrice);
                         if (buyCallOrderId == -1) {
-                            callCalcPrice = calTradePrice(stock, callRt, CALL_TYPE);
+                            callCalcPrice = calTradePrice(stock, callRt, CALL_TYPE, null);
                             log.info("after buy put, retry buy call. code={}\ttradePrice={}\tcalcPrice=", callIkbr, callTrade, callCalcPrice);
                         } else {
                             break;
@@ -460,6 +483,9 @@ public class OptionTradeExecutor2 {
                 futuQuote.addUserSecurity(callFutu);
                 futuQuote.addUserSecurity(stock);
                 log.info("begin trade: buyCallOrder={}\tcall={}\tcallPrice={}\tbuyPutOrder={}\tput={}\tputPrice={}\tcount={}", buyCallOrderId, call, callCalcPrice, buyPutOrderId, put, putCalcPrice, count);
+
+                // todo 测试阶段用预定限额控制下单股票
+                funds = funds - tradeTotal * 100;
 
                 lastBuyPriceMap.put(callIkbr, callCalcPrice);
                 lastBuyPriceMap.put(putIkbr, putCalcPrice);
@@ -508,7 +534,7 @@ public class OptionTradeExecutor2 {
         }
     }
 
-    public double calTradePrice(String stock, String ivRt, String optionType) {
+    public double calTradePrice(String stock, String ivRt, String optionType, Double lastPrice) {
         Double iv = optionRtIvMap.get(ivRt);
         String option = ivRt.replaceAll("\\+", "");
         Double strikePrice = optionStrikePriceMap.get(option);
@@ -530,8 +556,12 @@ public class OptionTradeExecutor2 {
         //        log.info("monitor option quote detail: optionCode={}\toptionBid={}\toptionAsk={}\toptionMid={}", futu, bidPrice, askPrice, midPrice);
 
         double tradePrice;
-        if (predPrice <= bidPrice || predPrice > midPrice) {
-            tradePrice = midPrice;
+        if (lastPrice == null || bidPrice > lastPrice) {
+            if (predPrice <= bidPrice || predPrice > midPrice) {
+                tradePrice = midPrice;
+            } else {
+                tradePrice = predPrice;
+            }
         } else {
             tradePrice = predPrice;
         }
@@ -592,6 +622,11 @@ public class OptionTradeExecutor2 {
             // 只有调价大于最新挂单价才返回，否则持续调价
             if (lastPrice.compareTo(adjustPrice) < 0) {
                 break;
+            } else {
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                }
             }
         }
         // 但是如果调价大于卖一价，则最多调至卖一价，不能超过
@@ -656,6 +691,11 @@ public class OptionTradeExecutor2 {
             // 只有调价于最新挂单价才返回，否则持续调价
             if (lastPrice.compareTo(adjustPrice) > 0) {
                 break;
+            } else {
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                }
             }
         }
         // 但是如果调价小于买一价，则最多调至买一价，不能超过
@@ -779,6 +819,11 @@ public class OptionTradeExecutor2 {
                     disableShowIv(callFutu, putFutu);
                     //                    delayUnsubscribeIv(stock);
                     //                    unmonitorPolygonQuote(stock);
+                } else if (System.currentTimeMillis() > stopBuyTime && !callSuccess && !putSuccess) {
+                    tradeApi.cancelOrder(buyCallOrderId);
+                    tradeApi.cancelOrder(buyPutOrderId);
+                    invalidTradeStock(stock);
+                    log.info("trade time out 1 min. cancel {} trade", stock);
                 } else if (System.currentTimeMillis() - buyOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
                     /**
                      * 改单只有在计算价比挂单价高的时候才进行，如果改低价会导致买入成交更困难
@@ -789,20 +834,21 @@ public class OptionTradeExecutor2 {
                             hasTradeCount = buyCallOrder.getTradeCount();
                         }
                         double tradePrice;
+                        Double lastPrice = lastBuyPriceMap.get(callIkbr);
                         if (putSuccess) { // 如果put已经成交，则需要尽快成交call
-                            tradePrice = calQuickBuyPrice(callFutu, lastBuyPriceMap.get(callIkbr));
+                            tradePrice = calQuickBuyPrice(callFutu, lastPrice);
                         } else {
-                            tradePrice = calTradePrice(stock, callRt, CALL_TYPE);
+                            tradePrice = calTradePrice(stock, callRt, CALL_TYPE, lastPrice);
                         }
 
-                        if (!lastBuyPriceMap.containsKey(callIkbr) || lastBuyPriceMap.get(callIkbr).compareTo(tradePrice) < 0) {
+                        if (!lastBuyPriceMap.containsKey(callIkbr) || lastPrice.compareTo(tradePrice) < 0) {
                             long modifyOrderId = tradeApi.upOrderPrice(buyCallOrderId, count, tradePrice);
                             // 如果快速改单失败，则重新计算价格重新下单
                             while (true) {
                                 if (modifyOrderId != -1) {
                                     break;
                                 } else {
-                                    tradePrice = calTradePrice(stock, callRt, CALL_TYPE);
+                                    tradePrice = calTradePrice(stock, callRt, CALL_TYPE, null);
                                     adjustBuyInitPriceMap.put(callFutu, tradePrice);
                                     adjustBuyPriceTimesMap.put(callFutu, 0);
                                     adjustBuyPriceTimestampMap.put(callFutu, System.currentTimeMillis());
@@ -822,19 +868,20 @@ public class OptionTradeExecutor2 {
                             hasTradeCount = buyPutOrder.getTradeCount();
                         }
                         double tradePrice;
+                        Double lastPrice = lastBuyPriceMap.get(putIkbr);
                         if (callSuccess) { // 如果call已经成交，则需要尽快成交put
-                            tradePrice = calQuickBuyPrice(putFutu, lastBuyPriceMap.get(putIkbr));
+                            tradePrice = calQuickBuyPrice(putFutu, lastPrice);
                         } else {
-                            tradePrice = calTradePrice(stock, putRt, PUT_TYPE);
+                            tradePrice = calTradePrice(stock, putRt, PUT_TYPE, lastPrice);
                         }
 
-                        if (!lastBuyPriceMap.containsKey(putIkbr) || lastBuyPriceMap.get(putIkbr).compareTo(tradePrice) < 0) {
+                        if (!lastBuyPriceMap.containsKey(putIkbr) || lastPrice.compareTo(tradePrice) < 0) {
                             long modifyOrderId = tradeApi.upOrderPrice(buyPutOrderId, count, tradePrice);
                             while (true) {
                                 if (modifyOrderId != -1) {
                                     break;
                                 } else {
-                                    tradePrice = calTradePrice(stock, putRt, CALL_TYPE);
+                                    tradePrice = calTradePrice(stock, putRt, PUT_TYPE, null);
                                     adjustBuyInitPriceMap.put(putFutu, tradePrice);
                                     adjustBuyPriceTimesMap.put(putFutu, 0);
                                     adjustBuyPriceTimestampMap.put(putFutu, System.currentTimeMillis());
@@ -1099,6 +1146,8 @@ public class OptionTradeExecutor2 {
                         long curTime = System.currentTimeMillis();
                         if (gainSellStatus == NO_GAIN_SELL) { // 无上涨卖出 继续执行止盈或止损或收盘卖出判断
                             if (diffRatio < STOP_LOSS_RATIO || currentTime > closeTime) { // 止损+收盘都同时卖出，尽快止损和收盘卖出
+                                log.info("stop loss and close order. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
+                                  callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
                                 Double callTrade = futuQuote.getOptionTrade(callFutu);
                                 Double putTrade = futuQuote.getOptionTrade(putFutu);
                                 if (callTrade == null || putTrade == null) {
@@ -1165,9 +1214,10 @@ public class OptionTradeExecutor2 {
                                 ReadWriteOptionTradeInfo.writeHasSoldOrder(stock);
                                 hasSoldOrderMap.put(stock, EXIST);
 
-                                log.info("stop loss and gain order. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}\tsellCallOrder={}\tsellPutOrder={}",
-                                  callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio, sellCallOrderId, sellPutOrderId);
+                                log.info("stop loss and close order success. sellCallOrder={}\tsellPutOrder={}", sellCallOrderId, sellPutOrderId);
                             } else if ((currentTime < stopGainTime && diffRatio > STOP_GAIN_RATIO_1) || (currentTime > stopGainTime && diffRatio > STOP_GAIN_RATIO_2)) { // 止盈先卖出上涨的期权，卖完后再卖下跌的期权，尽量保证盈利不减少
+                                log.info("stop gain order. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
+                                  callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
                                 // 如果止盈卖出下单失败，则重新判断重新下单
                                 if (callDiff > 0) {
                                     long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);

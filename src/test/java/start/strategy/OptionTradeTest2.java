@@ -132,7 +132,7 @@ public class OptionTradeTest2 extends BaseTest {
         codeToAskMap.put("TSLA240705C230000", 0.23);
         codeToBidMap.put("TSLA240705P220000", 0.22);
 
-        optionTradeExecutor.calTradePrice(stock, callRt, "C");
+        optionTradeExecutor.calTradePrice(stock, callRt, "C", null);
     }
 
     @Test
