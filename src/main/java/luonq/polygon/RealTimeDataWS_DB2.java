@@ -570,6 +570,7 @@ public class RealTimeDataWS_DB2 {
 //            realTimeOptionWS.close();
             manualClose = true;
             userSession.close();
+            optionTradeExecutor.close();
             executor.shutdown();
         }
     }

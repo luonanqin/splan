@@ -23,49 +23,61 @@ public class ReadWriteOptionTradeInfo {
     /**
      * 股票的开盘价
      */
-    public static String OPEN_PRICE_PATH = "openPrice";
+    public static String OPEN_PRICE_PATH_SUFFIX = "openPrice";
 
     /**
      * 已下单买入的股票
      */
-    public static String HAS_BOUGHT_ORDER_PATH = "hasBoughtOrder";
+    public static String HAS_BOUGHT_ORDER_PATH_SUFFIX = "hasBoughtOrder";
     /**
      * 已下单买入的期权订单id
      */
-    public static String BUY_ORDER_ID_PATH = "buyOrderId";
+    public static String BUY_ORDER_ID_PATH_SUFFIX = "buyOrderId";
     /**
      * 下单买入的时间
      */
-    public static String BUY_ORDER_TIME_PATH = "buyOrderTime";
+    public static String BUY_ORDER_TIME_PATH_SUFFIX = "buyOrderTime";
     /**
      * 下单买入成功的股票
      */
-    public static String HAS_BOUGHT_SUCCESS_PATH = "hasBoughtSuccess";
+    public static String HAS_BOUGHT_SUCCESS_PATH_SUFFIX = "hasBoughtSuccess";
     /**
      * 股票期权的下单数量
      */
-    public static String ORDER_COUNT_PATH = "orderCount";
+    public static String ORDER_COUNT_PATH_SUFFIX = "orderCount";
     /**
      * 买入成功的成本价
      */
-    public static String BUY_ORDER_COST_PATH = "buyOrderCost";
+    public static String BUY_ORDER_COST_PATH_SUFFIX = "buyOrderCost";
 
     /**
      * 已下单卖出的股票
      */
-    public static String HAS_SOLD_ORDER_PATH = "hasSoldOrder";
+    public static String HAS_SOLD_ORDER_PATH_SUFFIX = "hasSoldOrder";
     /**
      * 已下单卖出的期权订单id
      */
-    public static String SELL_ORDER_ID_PATH = "sellOrderId";
+    public static String SELL_ORDER_ID_PATH_SUFFIX = "sellOrderId";
     /**
      * 下单卖出的时间
      */
-    public static String SELL_ORDER_TIME_PATH = "sellOrderTime";
+    public static String SELL_ORDER_TIME_PATH_SUFFIX = "sellOrderTime";
     /**
      * 下单卖出成功的股票
      */
-    public static String HAS_SOLD_SUCCESS_PATH = "hasSoldSuccess";
+    public static String HAS_SOLD_SUCCESS_PATH_SUFFIX = "hasSoldSuccess";
+
+    private static String OPEN_PRICE_PATH;
+    private static String HAS_BOUGHT_ORDER_PATH;
+    private static String BUY_ORDER_ID_PATH;
+    private static String BUY_ORDER_TIME_PATH;
+    private static String HAS_BOUGHT_SUCCESS_PATH;
+    private static String ORDER_COUNT_PATH;
+    private static String BUY_ORDER_COST_PATH;
+    private static String HAS_SOLD_ORDER_PATH;
+    private static String SELL_ORDER_ID_PATH;
+    private static String SELL_ORDER_TIME_PATH;
+    private static String HAS_SOLD_SUCCESS_PATH;
 
     private static List<String> openPriceList = Lists.newArrayList();
 
@@ -73,17 +85,17 @@ public class ReadWriteOptionTradeInfo {
         String currentTradeDate = LoadOptionTradeData.currentTradeDate;
         String basePath = TRADE_INFO_BASE_PATH + currentTradeDate + "/";
         BaseUtils.createDirectory(basePath);
-        OPEN_PRICE_PATH = basePath + OPEN_PRICE_PATH;
-        HAS_BOUGHT_ORDER_PATH = basePath + HAS_BOUGHT_ORDER_PATH;
-        BUY_ORDER_ID_PATH = basePath + BUY_ORDER_ID_PATH;
-        BUY_ORDER_TIME_PATH = basePath + BUY_ORDER_TIME_PATH;
-        HAS_BOUGHT_SUCCESS_PATH = basePath + HAS_BOUGHT_SUCCESS_PATH;
-        ORDER_COUNT_PATH = basePath + ORDER_COUNT_PATH;
-        BUY_ORDER_COST_PATH = basePath + BUY_ORDER_COST_PATH;
-        HAS_SOLD_ORDER_PATH = basePath + HAS_SOLD_ORDER_PATH;
-        SELL_ORDER_ID_PATH = basePath + SELL_ORDER_ID_PATH;
-        SELL_ORDER_TIME_PATH = basePath + SELL_ORDER_TIME_PATH;
-        HAS_SOLD_SUCCESS_PATH = basePath + HAS_SOLD_SUCCESS_PATH;
+        OPEN_PRICE_PATH = basePath + OPEN_PRICE_PATH_SUFFIX;
+        HAS_BOUGHT_ORDER_PATH = basePath + HAS_BOUGHT_ORDER_PATH_SUFFIX;
+        BUY_ORDER_ID_PATH = basePath + BUY_ORDER_ID_PATH_SUFFIX;
+        BUY_ORDER_TIME_PATH = basePath + BUY_ORDER_TIME_PATH_SUFFIX;
+        HAS_BOUGHT_SUCCESS_PATH = basePath + HAS_BOUGHT_SUCCESS_PATH_SUFFIX;
+        ORDER_COUNT_PATH = basePath + ORDER_COUNT_PATH_SUFFIX;
+        BUY_ORDER_COST_PATH = basePath + BUY_ORDER_COST_PATH_SUFFIX;
+        HAS_SOLD_ORDER_PATH = basePath + HAS_SOLD_ORDER_PATH_SUFFIX;
+        SELL_ORDER_ID_PATH = basePath + SELL_ORDER_ID_PATH_SUFFIX;
+        SELL_ORDER_TIME_PATH = basePath + SELL_ORDER_TIME_PATH_SUFFIX;
+        HAS_SOLD_SUCCESS_PATH = basePath + HAS_SOLD_SUCCESS_PATH_SUFFIX;
     }
 
     public static void addStockOpenPrice(String stock, Double price) {

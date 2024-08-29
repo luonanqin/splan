@@ -96,6 +96,8 @@ public class GetOptionTrade {
                 } else {
                     url = next_url + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
                 }
+            } else {
+                break;
             }
         }
 
@@ -123,7 +125,8 @@ public class GetOptionTrade {
             TradeResp tradeResp = JSON.parseObject(stream, TradeResp.class);
             return tradeResp;
         } catch (Exception e) {
-            //            log.error("GetHistoricalMinAggregateTrade.getTrade error. url={}", url, e);
+            //                        log.error("GetHistoricalMinAggregateTrade.getTrade error. url={}", url, e);
+            System.err.println("GetOptionTrade.getTrade error. url=" + url);
             e.printStackTrace();
         } finally {
             get.releaseConnection();

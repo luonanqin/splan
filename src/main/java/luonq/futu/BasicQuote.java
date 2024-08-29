@@ -152,26 +152,43 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
             String code = s2C.getSecurity().getCode();
             List<QotCommon.OrderBook> orderBookAskListList = s2C.getOrderBookAskListList();
             List<QotCommon.OrderBook> orderBookBidListList = s2C.getOrderBookBidListList();
-            double bidPrice = 0d, askPrice = 0d;
+            Double bidPrice = null, askPrice = null;
             if (CollectionUtils.isNotEmpty(orderBookBidListList)) {
                 QotCommon.OrderBook orderBook = orderBookBidListList.get(0);
-                bidPrice = orderBook.getPrice();
+                double price = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 //                System.out.print(code + " bid price=" + bidPrice + "\tvolume=" + volume);
                 //                log.info("futu quote. code={}\tbidPrice={}\tbidVol={}", code, bidPrice, volume);
-                if (volume >= 5 && bidPrice != 0) {
-                    codeToBidMap.put(code, bidPrice);
+                if (volume >= 5 && price != 0) {
+                    bidPrice = price;
                 }
             }
             if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
                 QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
-                askPrice = orderBook.getPrice();
+                double price = orderBook.getPrice();
                 long volume = orderBook.getVolume();
                 //                System.out.print(code + " ask price=" + askPrice + "\tvolume=" + volume);
                 //                log.info("futu quote. code={}\taskPrice={}\taskVol={}", code, askPrice, volume);
-                if (volume >= 5 && askPrice != 0) {
-                    codeToAskMap.put(code, askPrice);
+                if (volume >= 5 && price != 0) {
+                    askPrice = price;
                 }
+            }
+            Double lastBid = codeToBidMap.get(code);
+            Double lastAsk = codeToAskMap.get(code);
+            if (bidPrice != null && askPrice != null) {
+                if (lastBid == null || lastAsk == null) { // 如果没有最新摆盘，则put
+                    codeToBidMap.put(code, bidPrice);
+                    codeToAskMap.put(code, askPrice);
+                } else {
+                    if (!(bidPrice.compareTo(lastBid) < 0 && askPrice.compareTo(lastAsk) > 0)) { // 如果bid小于最新bid，且ask大于最新ask，则认为是无效摆盘
+                        codeToBidMap.put(code, bidPrice);
+                        codeToAskMap.put(code, askPrice);
+                    }
+                }
+            } else if (bidPrice != null) {
+                codeToBidMap.put(code, bidPrice);
+            } else if (askPrice != null) {
+                codeToAskMap.put(code, askPrice);
             }
             log.info("futu quote. code={}\tbidPrice={}\taskPrice={}", code, codeToBidMap.get(code), codeToAskMap.get(code));
             //            String data = String.format("%.2f|%.2f", bidPrice, askPrice);
@@ -430,6 +447,9 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     }
 
     public static void main(String[] args) throws Exception {
+        Double a = 1.4;
+        Double b = 1.3;
+        System.out.println(a.compareTo(b));
         FTAPI.init();
         BasicQuote quote = new BasicQuote();
         quote.start();

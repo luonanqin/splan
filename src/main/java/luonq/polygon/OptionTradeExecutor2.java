@@ -206,10 +206,10 @@ public class OptionTradeExecutor2 {
         //        delayUnsubscribeIv();
 
         // 开盘后15s再开始交易逻辑
-        while (System.currentTimeMillis() < invalidTime) {
-            Thread.sleep(500);
-            log.info("wait trade...");
-        }
+//        while (System.currentTimeMillis() < invalidTime) {
+//            Thread.sleep(500);
+//            log.info("wait trade...");
+//        }
 
         canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
         int size = sortedCanTradeStock.size() > limitCount ? limitCount : sortedCanTradeStock.size();
@@ -1581,6 +1581,10 @@ public class OptionTradeExecutor2 {
         double askPrice = codeToAskMap.get(futu);
         double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
         return midPrice;
+    }
+
+    public void close(){
+        tradeApi.end();
     }
 
     public static void main(String[] args) throws InterruptedException {
