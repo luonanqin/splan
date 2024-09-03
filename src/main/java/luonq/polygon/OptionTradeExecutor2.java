@@ -799,6 +799,9 @@ public class OptionTradeExecutor2 {
                 if (hasBoughtSuccess.contains(stock)) { // 已经全部买完，不需要监听
                     continue;
                 }
+                if (cancelStocks.contains(stock)) { // 已撤单的不需要监听
+                    continue;
+                }
 
                 Double count = orderCountMap.get(stock);
 
@@ -832,9 +835,17 @@ public class OptionTradeExecutor2 {
                 } else if (System.currentTimeMillis() > stopBuyTime && !callSuccess && !putSuccess && callCount == 0 && putCount == 0) { // 只有call和put都没有持仓才可以取消订单
                     tradeApi.cancelOrder(buyCallOrderId);
                     tradeApi.cancelOrder(buyPutOrderId);
-                    invalidTradeStock(stock);
-                    cancelStocks.add(stock);
-                    log.info("trade time out 1 min. cancel {} trade", stock);
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                    }
+                    if (tradeApi.getCanSellQty(callIkbr) == 0 && tradeApi.getCanSellQty(putIkbr) == 0) {
+                        invalidTradeStock(stock);
+                        log.info("trade time out 1 min. no position. cancel {} success", stock);
+                    } else {
+                        cancelStocks.add(stock);
+                        log.info("trade time out 1 min. has position. call={}\tcallCount={}\tput={}\tputCount{}", callIkbr, callCount, putIkbr, putCount);
+                    }
                 } else if (System.currentTimeMillis() - buyOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
                     /**
                      * 改单只有在计算价比挂单价高的时候才进行，如果改低价会导致买入成交更困难
@@ -961,7 +972,6 @@ public class OptionTradeExecutor2 {
                     ReadWriteOptionTradeInfo.writeHasSoldSuccess(stock);
                     hasSoldSuccess.add(stock);
                     delayUnsubscribeQuote(stock);
-                    //                    unmonitorPolygonQuote(stock);
                     delayUnsubscribeIv(stock);
                     log.info("{} sell trade success. call={}\torderId={}\tput={}\torderId={}", stock, callFutu, sellCallOrderId, putFutu, sellPutOrderId);
                 } else if (System.currentTimeMillis() - sellOrderTimeMap.get(stock) > ORDER_INTERVAL_TIME_MILLI) {
@@ -1126,10 +1136,18 @@ public class OptionTradeExecutor2 {
                         ReadWriteOptionTradeInfo.writeSellOrderId(putIkbr, sellPutOrderId);
                     }
 
+                    // 先写入卖出标志，再写入买入标志，避免触发止损逻辑
                     sellOrderTimeMap.put(stock, curTime);
                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                     ReadWriteOptionTradeInfo.writeHasSoldOrder(stock);
                     hasSoldOrderMap.put(stock, EXIST);
+
+                    hasBoughtSuccess.add(stock);
+                    hasBoughtOrderMap.put(stock, EXIST);
+                    ReadWriteOptionTradeInfo.writeHasBoughtOrder(stock);
+                    ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
+
+                    log.info("cancel option {} has placed order", stock);
                 }
             }
 
@@ -1565,10 +1583,10 @@ public class OptionTradeExecutor2 {
     }
 
     public void invalidTradeStock(String stock) {
-        hasBoughtOrderMap.put(stock, EXIST);
         hasBoughtSuccess.add(stock);
-        hasSoldOrderMap.put(stock, EXIST);
+        hasBoughtOrderMap.put(stock, EXIST);
         hasSoldSuccess.add(stock);
+        hasSoldOrderMap.put(stock, EXIST);
         ReadWriteOptionTradeInfo.writeHasBoughtOrder(stock);
         ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
         ReadWriteOptionTradeInfo.writeHasSoldOrder(stock);
