@@ -40,4 +40,6 @@ public final class Constants {
 
     public static int TRADE_ERROR_CODE = -500;
     public static int TRADE_PROHIBT_CODE = -600;
+
+    public static double INIT_CASH = 1405;
 }

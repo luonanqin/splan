@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
+import util.Constants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -64,7 +65,7 @@ public class OptionTradeExecutor2 {
     private static long CANCEL_BUY_ORDER_TIME_MILLI = 10 * 60 * 1000; // 开盘后10分钟撤销买入订单
     private static long STOP_MONITORY_BUY_ORDER_TIME_MILLI = 11 * 60 * 1000; // 开盘后11分钟停止监听买入订单的成交
     private static long STOP_MONITORY_SELL_ORDER_TIME_MILLI = 12 * 60 * 1000; // 开盘后12分钟如果没有买入成交的订单，则停止监听卖出订单的成交
-    private static long STOP_LOSS_GAIN_INTERVAL_TIME_MILLI = 2 * 60 * 1000; // 开盘后2分钟才开始监听止损和止盈
+    private static long STOP_LOSS_GAIN_INTERVAL_TIME_MILLI = 2 * 60 * 1000; // 开盘后2分钟才开始监听止损，止盈从买入完成即开始，不用等待两分钟
     private static long ORDER_INTERVAL_TIME_MILLI = 1 * 1000; // 下单后检查间隔时间
     private static String CALL_TYPE = "C";
     private static String PUT_TYPE = "P";
@@ -139,8 +140,8 @@ public class OptionTradeExecutor2 {
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
-    private double funds = 653; // todo 测试用要删
-    private int limitCount = 10; // todo 限制股票数量
+    private double funds = Constants.INIT_CASH;
+    private int limitCount = 3; // 限制股票数量
     private long openTime;
     private long closeTime;
     private long invalidTime;
@@ -182,6 +183,8 @@ public class OptionTradeExecutor2 {
 
     public void beginTrade() throws InterruptedException {
         tradeApi.reqPosition();
+        funds = tradeApi.getAccountCash();
+
         // 能交易的股票
         if (CollectionUtils.isEmpty(canTradeStocks)) {
             log.info("there is no stock can be traded");
@@ -206,10 +209,10 @@ public class OptionTradeExecutor2 {
         //        delayUnsubscribeIv();
 
         // 开盘后15s再开始交易逻辑
-//        while (System.currentTimeMillis() < invalidTime) {
-//            Thread.sleep(500);
-//            log.info("wait trade...");
-//        }
+        //        while (System.currentTimeMillis() < invalidTime) {
+        //            Thread.sleep(500);
+        //            log.info("wait trade...");
+        //        }
 
         canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
         int size = sortedCanTradeStock.size() > limitCount ? limitCount : sortedCanTradeStock.size();
@@ -355,12 +358,13 @@ public class OptionTradeExecutor2 {
                     continue;
                 }
 
-                // todo 测试阶段用预定限额控制下单股票
-                if (funds < 0) {
-                    invalidTradeStock(stock);
-                    log.info("over fund. stop {} trade", stock);
-                    continue;
-                }
+                // 测试阶段用预定限额控制下单股票
+                //                if (funds < 0) {
+                //                    invalidTradeStock(stock);
+                //                    log.info("over fund. stop {} trade", stock);
+                //                    continue;
+                //                }
+                // 测试阶段用预定限额控制下单股票
 
                 // 2.1.没有iv的 和 有iv没有摆盘的 继续循环判断
                 String callAndPut = canTradeOptionForRtIVMap.get(stock);
@@ -400,12 +404,13 @@ public class OptionTradeExecutor2 {
                 double tradeTotal = callCalcPrice + putCalcPrice;
 
                 double countDouble = avgFund / tradeTotal / 100;
-                // todo 测试阶段，临时限制每次交易数量
-                if (tradeTotal < 0.5) {
-                    countDouble = 2d;
-                } else {
-                    countDouble = 1d;
-                }
+                // 测试阶段，临时限制每次交易数量
+                //                if (tradeTotal < 0.5) {
+                //                    countDouble = 2d;
+                //                } else {
+                //                    countDouble = 1d;
+                //                }
+                // 测试阶段，临时限制每次交易数量
 
                 // 2.2.判断摆盘数据即callTrade+putTrade是否大于avgFund，如果大于则过滤。
                 if (countDouble < 1) {
@@ -415,7 +420,7 @@ public class OptionTradeExecutor2 {
                     continue;
                 }
 
-                // 仅在满仓投入时才使用以下逻辑：如果下单数量小数位小于等于0.5，取整要减一，如果小数位大于0.5，则不变。目的是为了后面如果改价避免成交数量超过限制。但是如果count=1则不减一
+                // （勿删！！！！）仅在满仓投入时才使用以下逻辑：如果下单数量小数位小于等于0.5，取整要减一，如果小数位大于0.5，则不变。目的是为了后面如果改价避免成交数量超过限制。但是如果count=1则不减一
                 //                String countStr = String.valueOf(countDouble);
                 //                int dotIndex = countStr.indexOf(".");
                 //                String dotStr = countStr.substring(dotIndex + 1, dotIndex + 2);
@@ -484,8 +489,9 @@ public class OptionTradeExecutor2 {
                 futuQuote.addUserSecurity(stock);
                 log.info("begin trade: buyCallOrder={}\tcall={}\tcallPrice={}\tbuyPutOrder={}\tput={}\tputPrice={}\tcount={}", buyCallOrderId, call, callCalcPrice, buyPutOrderId, put, putCalcPrice, count);
 
-                // todo 测试阶段用预定限额控制下单股票
-                funds = funds - tradeTotal * 100;
+                // 测试阶段用预定限额控制下单股票
+                //                funds = funds - tradeTotal * 100;
+                // 测试阶段用预定限额控制下单股票
 
                 lastBuyPriceMap.put(callIkbr, callCalcPrice);
                 lastBuyPriceMap.put(putIkbr, putCalcPrice);
@@ -1145,7 +1151,7 @@ public class OptionTradeExecutor2 {
 
                         long curTime = System.currentTimeMillis();
                         if (gainSellStatus == NO_GAIN_SELL) { // 无上涨卖出 继续执行止盈或止损或收盘卖出判断
-                            if (diffRatio < STOP_LOSS_RATIO || currentTime > closeTime) { // 止损+收盘都同时卖出，尽快止损和收盘卖出
+                            if ((diffRatio < STOP_LOSS_RATIO && currentTime > monitorTime) || currentTime > closeTime) { // 止损+收盘都同时卖出，尽快止损和收盘卖出
                                 log.info("stop loss and close order. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
                                   callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
                                 Double callTrade = futuQuote.getOptionTrade(callFutu);
@@ -1382,7 +1388,7 @@ public class OptionTradeExecutor2 {
                     log.error("stopLossAndGain error", e);
                 }
             }
-        }, delay, 1000);
+        }, 0, 5000);
     }
 
     public void reSendOpenPrice() {
@@ -1583,7 +1589,7 @@ public class OptionTradeExecutor2 {
         return midPrice;
     }
 
-    public void close(){
+    public void close() {
         tradeApi.end();
     }
 

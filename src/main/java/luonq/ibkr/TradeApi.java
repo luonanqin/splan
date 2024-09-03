@@ -8,8 +8,10 @@ import com.ib.client.Order;
 import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
 import com.ib.client.Types;
+import com.ib.controller.AccountSummaryTag;
 import com.ib.controller.ApiController;
 import lombok.extern.slf4j.Slf4j;
+import util.Constants;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +53,7 @@ public class TradeApi {
 
     public long placeNormalBuyOrder(String code, double count, double price) {
         long orderId = placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.BUY);
+        log.info("place buy order. code={}\tcount={}\tprice={}\torderId={}", code, count, price, orderId);
         while (true) {
             bean.Order buyCallOrder = getOrder(orderId);
             if (buyCallOrder == null) {
@@ -79,6 +82,7 @@ public class TradeApi {
 
     public long placeNormalSellOrder(String code, double count, double price) {
         long orderId = placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.SELL);
+        log.info("place sell order. code={}\tcount={}\tprice={}\torderId={}", code, count, price, orderId);
         while (true) {
             bean.Order sellCallOrder = getOrder(orderId);
             if (sellCallOrder == null) {
@@ -240,12 +244,29 @@ public class TradeApi {
         orderIdToHandlerMap.put((int) orderId, orderHandler);
     }
 
+    public double getAccountCash() {
+        AccountSummaryHandlerImpl accountSummaryHandler = new AccountSummaryHandlerImpl();
+        client.reqAccountSummary("All", new AccountSummaryTag[] { AccountSummaryTag.NetLiquidation }, accountSummaryHandler);
+        double cash = accountSummaryHandler.getCash();
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+        }
+        if (cash == 0) {
+            cash = Constants.INIT_CASH;
+        }
+        client.cancelAccountSummary(accountSummaryHandler);
+        return cash;
+    }
+
     public static void main(String[] args) {
         TradeApi tradeApi = new TradeApi();
-        tradeApi.useSimulateEnv();
+//        tradeApi.useSimulateEnv();
+        tradeApi.useRealEnv();
         tradeApi.start();
         tradeApi.reqPosition();
-
+        double accountCash = tradeApi.getAccountCash();
+        System.out.println(accountCash);
         int count = 1;
         //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
         String code = "TSLA  240802P00205000";
