@@ -19,7 +19,7 @@ public class AccountSummaryHandlerImpl implements ApiController.IAccountSummaryH
         if (StringUtils.isNotBlank(value)) {
             try {
                 double totalCash = Double.valueOf(value);
-                cash = totalCash - 24999;
+                cash = totalCash - 25000;
             } catch (Exception e) {
                 log.error("get account cash error. ", e);
                 cash = Constants.INIT_CASH;
