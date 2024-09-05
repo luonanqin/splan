@@ -104,9 +104,8 @@ public class RealTimeDataWS_DB2 {
     private Date closeCheckTime;
     private boolean listenEnd = false;
     private NodeList list = new NodeList(10);
-    private NodeList optionList = new NodeList(10);
     private AtomicBoolean hasAuth = new AtomicBoolean(false);
-    private OptionStockListener2 optionStockListener = new OptionStockListener2();
+    private OptionStockListener2 optionStockListener;
 
     public static Set<String> stockSet = Sets.newHashSet();
     public Set<String> allStockSet = Sets.newHashSet();
@@ -201,6 +200,7 @@ public class RealTimeDataWS_DB2 {
         hasAuth = new AtomicBoolean(false);
         unsubcribeStockSet = Sets.newHashSet();
         tradeEventBus = asyncEventBus();
+        optionStockListener = new OptionStockListener2();
         //        if (tradeExecutor == null) {
         //            tradeExecutor = new TradeExecutor_DB();
         //        }

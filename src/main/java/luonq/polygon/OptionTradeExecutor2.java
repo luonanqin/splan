@@ -1514,7 +1514,7 @@ public class OptionTradeExecutor2 {
                     log.error("stopLossAndGain error", e);
                 }
             }
-        }, 0, 5000);
+        }, 0, 1000);
     }
 
     public void reSendOpenPrice() {
