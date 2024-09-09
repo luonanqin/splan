@@ -651,7 +651,7 @@ public class Strategy32 {
             OptionDaily resp = JSON.parseObject(stream, OptionDaily.class);
             String status = resp.getStatus();
             if (!StringUtils.equalsIgnoreCase(status, "OK")) {
-                System.out.println("get failed. " + url);
+                //                System.out.println("get failed. " + url);
                 return null;
             }
 
@@ -975,21 +975,77 @@ public class Strategy32 {
         BaseUtils.writeFile(putPath, putDetail);
     }
 
+    public static void getOption1MinTradeData(String stock, String call, String put, List<String> dayAllSeconds, String date) throws Exception {
+        String dir = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+        String callPath = dir + call.substring(2);
+        String putPath = dir + put.substring(2);
+
+        if (BaseUtils.fileExist(callPath) && BaseUtils.fileExist(putPath)) {
+            return;
+        }
+
+        String beginTime = dayAllSeconds.get(0);
+        String endTime = dayAllSeconds.get(59);
+
+        List<String> callDetail = getOptionTradeDetail(call, beginTime, endTime, true);
+        List<String> putDetail = getOptionTradeDetail(put, beginTime, endTime, true);
+        if (callDetail == null || putDetail == null) {
+            System.out.println("getOptionTradeDetail null. call=" + call + " put=" + put);
+            return;
+        }
+
+        BaseUtils.createDirectory(dir);
+        BaseUtils.writeFile(callPath, callDetail);
+        BaseUtils.writeFile(putPath, putDetail);
+    }
+
+    public static int calCanTradeSeconds(String stock, String date, String call, String put, List<String> dayAllSeconds) throws Exception {
+        String dir = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+        String callPath = dir + call.substring(2);
+        String putPath = dir + put.substring(2);
+
+        List<String> callList = BaseUtils.readFile(callPath);
+        List<String> putList = BaseUtils.readFile(putPath);
+        String callData = callList.get(4);
+        String putData = putList.get(4);
+        Long callTime = Long.valueOf(callData.split("\t")[0]);
+        Long putTime = Long.valueOf(putData.split("\t")[0]);
+        Long tradeTime = callTime > putTime ? callTime : putTime;
+        for (int i = 0; i < dayAllSeconds.size(); i++) {
+            if (Long.valueOf(dayAllSeconds.get(i)) > tradeTime) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public static boolean calCanTrade1Min(String stock, String date, String call, String put, List<String> dayAllSeconds) throws Exception {
+        String dir = Constants.USER_PATH + "optionData/trade/" + stock + "/" + date + "/";
+        String callPath = dir + call.substring(2);
+        String putPath = dir + put.substring(2);
+
+        List<String> callList = BaseUtils.readFile(callPath);
+        List<String> putList = BaseUtils.readFile(putPath);
+        return !CollectionUtils.isEmpty(callList) && !CollectionUtils.isEmpty(putList);
+    }
+
     // 根据报价数据计算双开模拟交易数据，用于测试止损和止盈点
     public static String calStraddleSimulateTrade(OptionDaily call, OptionDaily put, Double calCallOpen, Double calPutOpen) throws Exception {
         String date = call.getFrom();
-        String callCode = call.getSymbol().substring(2);
-        String putCode = put.getSymbol().substring(2);
+        String callSymbol = call.getSymbol();
+        String putSymbol = put.getSymbol();
+        String callCode = callSymbol.substring(2);
+        String putCode = putSymbol.substring(2);
 
         int _2_index = callCode.indexOf("2");
         String stock = callCode.substring(0, _2_index);
 
         String callFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + callCode;
-        Strategy28.getOptionQuoteList(new OptionCode(call.getSymbol()), date);
+        Strategy28.getOptionQuoteList(new OptionCode(callSymbol), date);
         //        Strategy28.sortQuote(callFilePath);
         List<String> callQuoteList = BaseUtils.readFile(callFilePath);
         String putFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + putCode;
-        Strategy28.getOptionQuoteList(new OptionCode(put.getSymbol()), date);
+        Strategy28.getOptionQuoteList(new OptionCode(putSymbol), date);
         //        Strategy28.sortQuote(putFilePath);
         List<String> putQuoteList = BaseUtils.readFile(putFilePath);
         if (CollectionUtils.isEmpty(callQuoteList) || CollectionUtils.isEmpty(putQuoteList)) {
@@ -998,7 +1054,12 @@ public class Strategy32 {
 
         List<String> dayAllSeconds = Strategy28.getDayAllSeconds(date);
 
-        getOptionTradeData(stock, call.getSymbol(), put.getSymbol(), dayAllSeconds, date);
+        //        getOptionTradeData(stock, call.getSymbol(), put.getSymbol(), dayAllSeconds, date);
+        getOption1MinTradeData(stock, callSymbol, putSymbol, dayAllSeconds, date);
+        boolean canTrade1Min = calCanTrade1Min(stock, date, callSymbol, putSymbol, dayAllSeconds);
+        if (!canTrade1Min) {
+            return "empty";
+        }
 
         Map<Long, Double> callQuotePriceMap = calQuoteListForSeconds(callQuoteList);
         Map<Long, Double> putQuotePriceMap = calQuoteListForSeconds(putQuoteList);
@@ -1053,8 +1114,15 @@ public class Strategy32 {
             LocalDateTime openTime = firstTime.withMinute(30).withSecond(0);
             sec = (int) ChronoUnit.SECONDS.between(openTime, firstTime);
         }
+        //        int tradeSec = calCanTradeSeconds(stock, date, call.getSymbol(), put.getSymbol(), dayAllSeconds);
+        //        if (sec < tradeSec) {
+        //            sec = tradeSec;
+        //        }
         if (sec < 0) {
             System.out.println("illegal firsttime. " + call);
+            return "empty";
+        }
+        if (sec > 60) {
             return "empty";
         }
         Long openSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
@@ -1233,6 +1301,11 @@ public class Strategy32 {
                 continue;
             }
 
+            //            double diff = bidPrice < 3 ? (askPrice - bidPrice) / 0.01 : (askPrice - bidPrice) / 0.05;
+            //            if (diff > 15) {
+            //                LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault());
+            //                System.out.println("time=" + dateTime + ", diff=" + diff + ", bid=" + bidPrice + ", ask=" + askPrice);
+            //            }
             if (timestamp != latestTime) {
                 Double avgAskPrice = askPriceList.stream().collect(Collectors.averagingDouble(a -> a));
                 Double avgBidPrice = bidPriceList.stream().collect(Collectors.averagingDouble(b -> b));

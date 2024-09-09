@@ -40,7 +40,7 @@ public class Strategy31 {
             OptionDaily resp = JSON.parseObject(stream, OptionDaily.class);
             String status = resp.getStatus();
             if (!StringUtils.equalsIgnoreCase(status, "OK")) {
-                System.out.println("get failed. " + url);
+//                System.out.println("get failed. " + url);
                 return null;
             }
 

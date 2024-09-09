@@ -14,8 +14,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.LoggerFactory;
-import util.BaseUtils;
-import util.Constants;
 
 import java.io.InputStream;
 import java.util.List;
@@ -56,8 +54,9 @@ public class GetOptionTrade {
         //        for (String stock : stockSets) {
         //            getData(stock);
         //        }
-        List<String> list = getData(HttpClients.createDefault(), "O:AAPL240816C00225000", "1723815000000000000", "1723816800000000000");
-        BaseUtils.writeFile(Constants.USER_PATH + "optionData/trade/AAPL/2024-08-16/test", list);
+        List<String> list = getData(HttpClients.createDefault(), "O:MARA240913P00014000", "1725629400000000000", "1725629460000000000");
+//        BaseUtils.writeFile(Constants.USER_PATH + "optionData/trade/AAPL/2024-08-16/test", list);
+        System.out.println();
     }
 
     public static List<String> getData(CloseableHttpClient httpClient, String option, String beginTime, String endTime) {
