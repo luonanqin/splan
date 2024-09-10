@@ -1285,7 +1285,7 @@ public class Strategy32 {
         return result;
     }
 
-    private static Map<Long, Double> calQuoteListForSeconds(List<String> quoteList) {
+    public static Map<Long, Double> calQuoteListForSeconds(List<String> quoteList) {
         Map<Long, Double> secondsPriceMap = Maps.newHashMap();
         long latestTime = 0;
         List<Double> askPriceList = Lists.newArrayList();
@@ -1325,7 +1325,7 @@ public class Strategy32 {
         return secondsPriceMap;
     }
 
-    private static Map<Long, Double> calQuoteBidForSeconds(List<String> quoteList) {
+    public static Map<Long, Double> calQuoteBidForSeconds(List<String> quoteList) {
         Map<Long, Double> secondsPriceMap = Maps.newHashMap();
         long latestTime = 0;
         List<Double> priceList = Lists.newArrayList();
@@ -1513,185 +1513,6 @@ public class Strategy32 {
         Strategy28.init();
         List<String> list = Lists.newArrayList();
         list.add("2022-02-01	O:SNAP220204C00035000");
-        list.add("2022-02-10	O:UPST220211C00109000");
-        list.add("2022-02-14	O:RBLX220218C00069000");
-        list.add("2022-02-15	O:CROX220218C00105000");
-        list.add("2022-02-15	O:ROKU220218C00165000");
-        list.add("2022-02-15	O:TTD220218C00080000");
-        list.add("2022-02-15	O:SPWR220218C00017000");
-        list.add("2022-02-15	O:NVDA220218C00252500");
-        list.add("2022-02-15	O:DVN220218C00052000");
-        list.add("2022-02-16	O:DKNG220218C00023500");
-        list.add("2022-02-17	O:FUBO220218C00011000");
-        list.add("2022-02-22	O:BABA220225C00115000");
-        list.add("2022-02-22	O:RKT220225C00012500");
-        list.add("2022-02-23	O:COIN220225C00182500");
-        list.add("2022-02-23	O:LAZR220225C00015000");
-        list.add("2022-02-24	O:AMC220225C00015500");
-        list.add("2022-02-24	O:MARA220225C00020000");
-        list.add("2022-03-01	O:SOFI220304C00012500");
-        list.add("2022-03-07	O:FCEL220311C00006000");
-        list.add("2022-03-09	O:BLNK220311C00025500");
-        list.add("2022-03-15	O:S220318C00035000");
-        list.add("2022-03-29	O:MU220401C00083000");
-        list.add("2022-05-05	O:COIN220506C00126000");
-        list.add("2022-05-05	O:LAZR220506C00012500");
-        list.add("2022-05-09	O:UPST220513C00082000");
-        list.add("2022-05-09	O:NCLH220513C00018500");
-        list.add("2022-05-09	O:CPNG220513C00012000");
-        list.add("2022-05-10	O:COIN220513C00088000");
-        list.add("2022-05-10	O:CPNG220513C00010500");
-        list.add("2022-05-10	O:RIOT220513C00009000");
-        list.add("2022-05-10	O:AFRM220513C00020000");
-        list.add("2022-05-19	O:XPEV220520C00024000");
-        list.add("2022-05-23	O:NVDA220527C00165000");
-        list.add("2022-05-24	O:CGC220527C00005500");
-        list.add("2022-05-24	O:NVDA220527C00167500");
-        list.add("2022-05-26	O:COST220527C00455000");
-        list.add("2022-05-26	O:AEO220527C00014500");
-        list.add("2022-06-06	O:NIO220610C00019500");
-        list.add("2022-06-21	O:BB220624C00006000");
-        list.add("2022-07-14	O:C220715C00045000");
-        list.add("2022-07-19	O:UAL220722C00040500");
-        list.add("2022-07-19	O:AAL220722C00015500");
-        list.add("2022-07-26	O:AMZN220729C00117000");
-        list.add("2022-07-27	O:META220729C00165000");
-        list.add("2022-08-02	O:NKLA220805C00007000");
-        list.add("2022-08-03	O:LUMN220805C00011500");
-        list.add("2022-08-03	O:NKLA220805C00007500");
-        list.add("2022-08-04	O:AMC220805C00019500");
-        list.add("2022-08-04	O:OPEN220805C00005500");
-        list.add("2022-08-08	O:RIVN220812C00037000");
-        list.add("2022-08-08	O:PLUG220812C00027000");
-        list.add("2022-08-08	O:NCLH220812C00014000");
-        list.add("2022-08-09	O:COIN220812C00095000");
-        list.add("2022-08-16	O:TGT220819C00180000");
-        list.add("2022-08-17	O:KSS220819C00034500");
-        list.add("2022-08-22	O:PTON220826C00012000");
-        list.add("2022-08-22	O:AFRM220826C00030000");
-        list.add("2022-08-24	O:PDD220826C00049500");
-        list.add("2022-08-24	O:AFRM220826C00030500");
-        list.add("2022-08-25	O:CHPT220826C00016000");
-        list.add("2022-08-29	O:CHPT220902C00015500");
-        list.add("2022-08-30	O:CHPT220902C00016000");
-        list.add("2022-09-01	O:GME220902C00028500");
-        list.add("2022-10-13	O:NFLX221014C00215000");
-        list.add("2022-10-17	O:TSLA221021C00212500");
-        list.add("2022-10-18	O:TSLA221021C00232500");
-        list.add("2022-10-26	O:AMZN221028C00117000");
-        list.add("2022-10-31	O:SOFI221104C00006000");
-        list.add("2022-10-31	O:ROKU221104C00057000");
-        list.add("2022-10-31	O:PARA221104C00019000");
-        list.add("2022-11-01	O:RKT221104C00007500");
-        list.add("2022-11-01	O:MRNA221104C00157500");
-        list.add("2022-11-01	O:HOOD221104C00012500");
-        list.add("2022-11-01	O:BTU221104C00025000");
-        list.add("2022-11-01	O:LAZR221104C00009000");
-        list.add("2022-11-01	O:ABNB221104C00112000");
-        list.add("2022-11-01	O:COIN221104C00070000");
-        list.add("2022-11-01	O:AMD221104C00062000");
-        list.add("2022-11-01	O:PARA221104C00019000");
-        list.add("2022-11-01	O:GOOS221104C00018000");
-        list.add("2022-11-02	O:WBD221104C00013500");
-        list.add("2022-11-07	O:PLUG221111C00015500");
-        list.add("2022-11-07	O:LYFT221111C00014500");
-        list.add("2022-11-09	O:RIVN221111C00031500");
-        list.add("2022-11-10	O:RUM221111C00013000");
-        list.add("2022-11-15	O:NVDA221118C00170000");
-        list.add("2022-11-17	O:JD221118C00053000");
-        list.add("2022-11-17	O:STNE221118C00010500");
-        list.add("2022-12-06	O:LI221209C00023000");
-        list.add("2022-12-07	O:LI221209C00022500");
-        list.add("2022-02-01	O:SNAP220204P00033000");
-        list.add("2022-02-10	O:UPST220211P00107000");
-        list.add("2022-02-14	O:RBLX220218P00067000");
-        list.add("2022-02-15	O:CROX220218P00095000");
-        list.add("2022-02-15	O:ROKU220218P00160000");
-        list.add("2022-02-15	O:TTD220218P00078000");
-        list.add("2022-02-15	O:SPWR220218P00016000");
-        list.add("2022-02-15	O:NVDA220218P00247500");
-        list.add("2022-02-15	O:DVN220218P00050000");
-        list.add("2022-02-16	O:DKNG220218P00022500");
-        list.add("2022-02-17	O:FUBO220218P00010000");
-        list.add("2022-02-22	O:BABA220225P00113000");
-        list.add("2022-02-22	O:RKT220225P00011500");
-        list.add("2022-02-23	O:COIN220225P00177500");
-        list.add("2022-02-23	O:LAZR220225P00014000");
-        list.add("2022-02-24	O:AMC220225P00014500");
-        list.add("2022-02-24	O:MARA220225P00019000");
-        list.add("2022-03-01	O:SOFI220304P00011500");
-        list.add("2022-03-07	O:FCEL220311P00005000");
-        list.add("2022-03-09	O:BLNK220311P00024500");
-        list.add("2022-03-15	O:S220318P00025000");
-        list.add("2022-03-29	O:MU220401P00081000");
-        list.add("2022-05-05	O:COIN220506P00124000");
-        list.add("2022-05-05	O:LAZR220506P00011500");
-        list.add("2022-05-09	O:UPST220513P00080000");
-        list.add("2022-05-09	O:NCLH220513P00017500");
-        list.add("2022-05-09	O:CPNG220513P00011000");
-        list.add("2022-05-10	O:COIN220513P00086000");
-        list.add("2022-05-10	O:CPNG220513P00009500");
-        list.add("2022-05-10	O:RIOT220513P00008000");
-        list.add("2022-05-10	O:AFRM220513P00018000");
-        list.add("2022-05-19	O:XPEV220520P00023000");
-        list.add("2022-05-23	O:NVDA220527P00160000");
-        list.add("2022-05-24	O:CGC220527P00004500");
-        list.add("2022-05-24	O:NVDA220527P00162500");
-        list.add("2022-05-26	O:COST220527P00445000");
-        list.add("2022-05-26	O:AEO220527P00013500");
-        list.add("2022-06-06	O:NIO220610P00018500");
-        list.add("2022-06-21	O:BB220624P00005000");
-        list.add("2022-07-14	O:C220715P00044000");
-        list.add("2022-07-19	O:UAL220722P00039500");
-        list.add("2022-07-19	O:AAL220722P00014500");
-        list.add("2022-07-26	O:AMZN220729P00115000");
-        list.add("2022-07-27	O:META220729P00160000");
-        list.add("2022-08-02	O:NKLA220805P00006000");
-        list.add("2022-08-03	O:LUMN220805P00010500");
-        list.add("2022-08-03	O:NKLA220805P00006500");
-        list.add("2022-08-04	O:AMC220805P00018500");
-        list.add("2022-08-04	O:OPEN220805P00004500");
-        list.add("2022-08-08	O:RIVN220812P00036000");
-        list.add("2022-08-08	O:PLUG220812P00026000");
-        list.add("2022-08-08	O:NCLH220812P00013000");
-        list.add("2022-08-09	O:COIN220812P00093000");
-        list.add("2022-08-16	O:TGT220819P00175000");
-        list.add("2022-08-17	O:KSS220819P00033500");
-        list.add("2022-08-22	O:PTON220826P00011000");
-        list.add("2022-08-22	O:AFRM220826P00029000");
-        list.add("2022-08-24	O:PDD220826P00048500");
-        list.add("2022-08-24	O:AFRM220826P00029500");
-        list.add("2022-08-25	O:CHPT220826P00015000");
-        list.add("2022-08-29	O:CHPT220902P00014500");
-        list.add("2022-08-30	O:CHPT220902P00015000");
-        list.add("2022-09-01	O:GME220902P00027500");
-        list.add("2022-10-13	O:NFLX221014P00210000");
-        list.add("2022-10-17	O:TSLA221021P00207500");
-        list.add("2022-10-18	O:TSLA221021P00227500");
-        list.add("2022-10-26	O:AMZN221028P00115000");
-        list.add("2022-10-31	O:SOFI221104P00005000");
-        list.add("2022-10-31	O:ROKU221104P00055000");
-        list.add("2022-10-31	O:PARA221104P00018000");
-        list.add("2022-11-01	O:RKT221104P00006500");
-        list.add("2022-11-01	O:MRNA221104P00152500");
-        list.add("2022-11-01	O:HOOD221104P00011500");
-        list.add("2022-11-01	O:BTU221104P00024000");
-        list.add("2022-11-01	O:LAZR221104P00008000");
-        list.add("2022-11-01	O:ABNB221104P00110000");
-        list.add("2022-11-01	O:COIN221104P00068000");
-        list.add("2022-11-01	O:AMD221104P00060000");
-        list.add("2022-11-01	O:PARA221104P00018000");
-        list.add("2022-11-01	O:GOOS221104P00016000");
-        list.add("2022-11-02	O:WBD221104P00012500");
-        list.add("2022-11-07	O:PLUG221111P00014500");
-        list.add("2022-11-07	O:LYFT221111P00013500");
-        list.add("2022-11-09	O:RIVN221111P00030500");
-        list.add("2022-11-10	O:RUM221111P00012000");
-        list.add("2022-11-15	O:NVDA221118P00165000");
-        list.add("2022-11-17	O:JD221118P00051000");
-        list.add("2022-11-17	O:STNE221118P00009500");
-        list.add("2022-12-06	O:LI221209P00022000");
-        list.add("2022-12-07	O:LI221209P00021500");
         for (String l : list) {
             String[] split = l.split("\t");
             String date = split[0];
@@ -1772,7 +1593,13 @@ public class Strategy32 {
 
         init();
 
-        calOpenStrikePrice("2024-02-05", "NVDA", 68.225);
+        //        calOpenStrikePrice("2024-02-05", "NVDA", 68.225);
+        //        String callFilePath = Constants.USER_PATH + "optionData/optionQuote/HOOD/2024-08-15/HOOD240816C00019500"; // <0.5 =>6
+        //        String callFilePath = Constants.USER_PATH + "optionData/optionQuote/MU/2024-08-14/MU240816C00102000"; // >1 <1.5
+        //        String callFilePath = Constants.USER_PATH + "optionData/optionQuote/MU/2024-08-14/MU240816P00100000"; // >1 <1.5 =>15
+        String callFilePath = Constants.USER_PATH + "optionData/optionQuote/ONON/2024-08-13/ONON240816C00042000"; // >1 <1.5 =>15
+        List<String> callQuoteList = BaseUtils.readFile(callFilePath);
+        calQuoteListForSeconds(callQuoteList);
         //        getHasWeekOptionStock(); // 获取有周期权的股票
         //        getEqualsStrikePriceKline(); // 获取某个时间范围内，股票开盘价对应的最近行权价代码
         //                calStraddleData(); // 获取双开期权的optionDaily数据

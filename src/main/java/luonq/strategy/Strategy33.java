@@ -6,16 +6,15 @@ import bean.OptionDaily;
 import bean.StockKLine;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import luonq.ivolatility.GetAggregateImpliedVolatility;
 import luonq.ivolatility.GetDailyImpliedVolatility;
+import luonq.polygon.GetHistoricalSecAggregateTrade;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -23,13 +22,10 @@ import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
-import java.io.File;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
@@ -599,10 +595,6 @@ public class Strategy33 {
 
     // 每周最后一天没有计算，需要改进代码取下一周的期权来计算
     public static void main(String[] args) throws Exception {
-        //        moveQuoteFile();
-        //        moveIVFile();
-        //        Strategy32.calCallWithProtect();
-
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
