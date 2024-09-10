@@ -80,8 +80,12 @@ public class GetDailyImpliedVolatility {
             }
 
             for (Map map : listMap) {
-                String optionId = MapUtils.getString(map, "optionId");
                 String optionCode = MapUtils.getString(map, "optionSymbol", "").replaceAll(" ", "");
+                String optionId = MapUtils.getString(map, "optionId");
+                if (StringUtils.isBlank(optionId)) {
+                    log.error("get option id is null. option={}\turl={}", optionCode, url);
+                    continue;
+                }
                 result.add("O:" + optionCode + "\t" + optionId);
                 optionCodeToIdMap.put(optionCode, optionId);
             }
@@ -246,7 +250,7 @@ public class GetDailyImpliedVolatility {
                 httpClient.executeMethod(get);
                 content = get.getResponseBodyAsString();
                 long l1 = System.currentTimeMillis();
-//                log.info("tims cost: {}", l1 - l);
+                //                log.info("tims cost: {}", l1 - l);
                 JSONObject map = JSON.parseObject(content, JSONObject.class);
                 Object data = map.get("data");
                 List<Map> maps = JSON.parseArray(data.toString(), Map.class);
