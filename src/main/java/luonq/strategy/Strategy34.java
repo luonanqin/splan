@@ -184,6 +184,46 @@ public class Strategy34 {
         return ivList;
     }
 
+    public static double calAllOpenPrice(String call, String put, String date) throws Exception {
+        List<String> callQuoteList = Strategy28.getOption2MinQuoteList(new OptionCode(call), date);
+        List<String> putQuoteList = Strategy28.getOption2MinQuoteList(new OptionCode(put), date);
+
+        Map<Long, Double> callQuotePriceMap = Strategy32.calQuoteListForSeconds(callQuoteList);
+        Map<Long, Double> putQuotePriceMap = Strategy32.calQuoteListForSeconds(putQuoteList);
+
+        Map<Long, Double> callTradePriceMap = Maps.newHashMap();
+        Map<Long, Double> putTradePriceMap = Maps.newHashMap();
+
+        double tempCallPrice = 0, tempPutPrice = 0;
+        List<String> dayAllSeconds = Strategy28.getDayAllSeconds(date);
+        for (int i = 0; i < 61; i++) {
+            Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
+            Double callPrice = callQuotePriceMap.get(seconds);
+            Double putPrice = putQuotePriceMap.get(seconds);
+            if (callPrice != null) {
+                tempCallPrice = callPrice;
+            }
+            if (putPrice != null) {
+                tempPutPrice = putPrice;
+            }
+            callTradePriceMap.put(seconds, tempCallPrice);
+            putTradePriceMap.put(seconds, tempPutPrice);
+        }
+
+        Double callOpen = 0d;
+        Double putOpen = 0d;
+        int sec = 60;
+        Long openSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
+        if (callTradePriceMap.get(openSeconds) != 0) {
+            callOpen = callTradePriceMap.get(openSeconds);
+        }
+        if (putTradePriceMap.get(openSeconds) != 0) {
+            putOpen = putTradePriceMap.get(openSeconds);
+        }
+
+        return callOpen + putOpen;
+    }
+
     public static String calStraddleSimulateTrade(OptionDaily call, OptionDaily put) throws Exception {
         String date = call.getFrom();
         String callSymbol = call.getSymbol();
@@ -203,13 +243,17 @@ public class Strategy34 {
             return "empty";
         }
 
+        double allOpen = calAllOpenPrice(callSymbol, putSymbol, date);
+        if (!(allOpen > 0.5) || !(allOpen < 1)) {
+            System.out.println("open is illegal. date=" + date + " call=" + callSymbol + " put=" + putSymbol);
+            return "empty";
+        }
+
         String callFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + callCode;
         Strategy28.getOptionQuoteList(new OptionCode(callSymbol), date);
-        //        Strategy28.sortQuote(callFilePath);
         List<String> callQuoteList = BaseUtils.readFile(callFilePath);
         String putFilePath = Constants.USER_PATH + "optionData/optionQuote/" + stock + "/" + date + "/" + putCode;
         Strategy28.getOptionQuoteList(new OptionCode(putSymbol), date);
-        //        Strategy28.sortQuote(putFilePath);
         List<String> putQuoteList = BaseUtils.readFile(putFilePath);
         if (CollectionUtils.isEmpty(callQuoteList) || CollectionUtils.isEmpty(putQuoteList)) {
             return "noData";
@@ -217,16 +261,11 @@ public class Strategy34 {
 
         Map<Long, Double> callQuotePriceMap = Strategy32.calQuoteListForSeconds(callQuoteList);
         Map<Long, Double> putQuotePriceMap = Strategy32.calQuoteListForSeconds(putQuoteList);
-        Map<Long, Double> callBidPriceMap = Strategy32.calQuoteBidForSeconds(callQuoteList);
-        Map<Long, Double> putBidPriceMap = Strategy32.calQuoteBidForSeconds(putQuoteList);
 
         Map<Long, Double> callTradePriceMap = Maps.newHashMap();
         Map<Long, Double> putTradePriceMap = Maps.newHashMap();
-        Map<Long, Double> callBidTradePriceMap = Maps.newHashMap();
-        Map<Long, Double> putBidTradePriceMap = Maps.newHashMap();
 
         double tempCallPrice = 0, tempPutPrice = 0;
-        double tempCallBidPrice = 0, tempPutBidPrice = 0;
         for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
             Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
             Double callPrice = callQuotePriceMap.get(seconds);
@@ -239,22 +278,10 @@ public class Strategy34 {
             }
             callTradePriceMap.put(seconds, tempCallPrice);
             putTradePriceMap.put(seconds, tempPutPrice);
-
-            Double callBidPrice = callBidPriceMap.get(seconds);
-            Double putBidPrice = putBidPriceMap.get(seconds);
-            if (callBidPrice != null) {
-                tempCallBidPrice = callBidPrice;
-            }
-            if (putBidPrice != null) {
-                tempPutBidPrice = putBidPrice;
-            }
-            callBidTradePriceMap.put(seconds, tempCallBidPrice);
-            putBidTradePriceMap.put(seconds, tempPutBidPrice);
         }
 
         Double callOpen = 0d;
         Double putOpen = 0d;
-        Long buySeconds = 0L;
         int sec = 60;
         Long openSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
         if (callTradePriceMap.get(openSeconds) != 0) {
@@ -263,42 +290,44 @@ public class Strategy34 {
         if (putTradePriceMap.get(openSeconds) != 0) {
             putOpen = putTradePriceMap.get(openSeconds);
         }
-        if (callOpen != 0 && putOpen != 0) {
-            buySeconds = openSeconds;
-        }
         if (callOpen == 0 || putOpen == 0) {
             return "empty";
         }
-        boolean stopLoss = true;
-        //        boolean stopLoss = false;
-        List<String> list = Lists.newArrayList();
-        String result = "";
-        if (stopLoss) {
-            for (int i = sec; i < dayAllSeconds.size() - 60; i++) {
-                Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
-                Double callClose = callTradePriceMap.get(seconds);
-                Double putClose = putTradePriceMap.get(seconds);
-                if (callClose == 0 || putClose == 0) {
-                    continue;
-                }
-                double open = BigDecimal.valueOf(putOpen + callOpen).setScale(5, RoundingMode.HALF_UP).doubleValue();
-                double callDiff = BigDecimal.valueOf(callOpen - callClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
-                double putDiff = BigDecimal.valueOf(callOpen - putClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
-                double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(5, RoundingMode.HALF_UP).doubleValue();
-                double diffRatio = BigDecimal.valueOf(allDiff / open * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-                String sellTime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                //            list.add(result);
-                //            System.out.println(result);
-                if (diffRatio < -40) {
+        Long buySeconds = openSeconds;
+        String result = "";
+        double open = BigDecimal.valueOf(putOpen + callOpen).setScale(5, RoundingMode.HALF_UP).doubleValue();
+        for (int i = sec; i < dayAllSeconds.size() - 60; i++) {
+            Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
+            Double callClose = callTradePriceMap.get(seconds);
+            Double putClose = putTradePriceMap.get(seconds);
+            if (callClose == 0 || putClose == 0) {
+                continue;
+            }
+            double callDiff = BigDecimal.valueOf(callOpen - callClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+            double putDiff = BigDecimal.valueOf(putOpen - putClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+            double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(5, RoundingMode.HALF_UP).doubleValue();
+            double diffRatio = BigDecimal.valueOf(allDiff / open * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+            String sellTime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            if (diffRatio < -40) {
+                result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                return result;
+            }
+
+            //                if (diffRatio >= 20 || diffRatio < -20) {
+            //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+            //                    return result;
+            //                }
+
+            if (i <= 14000) {
+                if (diffRatio >= 20 || diffRatio < -20) {
                     result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
                     return result;
                 }
-                if (diffRatio >= 20) {
-                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
-                    return result;
-                } else if (diffRatio < -20) {
+            } else {
+                if (diffRatio >= 10 || diffRatio < -20) {
                     result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
                     return result;
                 }
@@ -312,7 +341,7 @@ public class Strategy34 {
         double callDiff = BigDecimal.valueOf(callOpen - callClose).setScale(2, RoundingMode.HALF_UP).doubleValue();
         double putDiff = BigDecimal.valueOf(putOpen - putClose).setScale(2, RoundingMode.HALF_UP).doubleValue();
         double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        double diffRatio = BigDecimal.valueOf(allDiff / open * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
         String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String sellTime = LocalDateTime.ofEpochSecond(sellSeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
@@ -430,11 +459,11 @@ public class Strategy34 {
 
                     List<Double> callIvList = getIvList(outPriceCallOptionCode_1, date);
                     List<Double> putIvList = getIvList(outPricePutOptionCode_1, date);
-//                    boolean callCanTrade = Strategy32.canTradeForIv(callIvList);
-//                    boolean putCanTrade = Strategy32.canTradeForIv(putIvList);
-//                    if (!callCanTrade || !putCanTrade) {
-//                        continue;
-//                    }
+                    //                    boolean callCanTrade = Strategy32.canTradeForIv(callIvList);
+                    //                    boolean putCanTrade = Strategy32.canTradeForIv(putIvList);
+                    //                    if (!callCanTrade || !putCanTrade) {
+                    //                        continue;
+                    //                    }
 
                     Double calCallOpen = 0d;
                     Double calPutOpen = 0d;
