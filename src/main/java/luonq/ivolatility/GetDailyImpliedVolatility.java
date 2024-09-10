@@ -108,7 +108,6 @@ public class GetDailyImpliedVolatility {
             lastTradeDate = LocalDate.now().minusDays(1).format(Constants.DB_DATE_FORMATTER);
         }
         Map<String, String> optionIdMap = getOptionIdMap();
-        Map<String, String> optionCodeToIdMap = Maps.newHashMap();
         List<String> result = Lists.newArrayList();
         for (String optionCode : optionCodeList) {
             if (optionIdMap.containsKey(optionCode)) {
@@ -161,9 +160,12 @@ public class GetDailyImpliedVolatility {
 
                 Map map = listMap.get(0);
                 String optionId = MapUtils.getString(map, "optionId");
+                if (StringUtils.isBlank(optionId)) {
+                    return optionIdMap;
+                }
                 result.add(optionCode + "\t" + optionId);
                 //                System.out.println(optionCode + "\t" + optionId);
-
+                optionIdMap.put(optionCode, optionId);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -178,7 +180,7 @@ public class GetDailyImpliedVolatility {
         lines.addAll(result);
         BaseUtils.writeFile(Constants.USER_PATH + "optionData/optionId", lines);
 
-        return optionCodeToIdMap;
+        return optionIdMap;
     }
 
     public static void getHistoricalIV(Map<String/* optionCode */, String/* date */> optionCodeDateMap) throws Exception {
