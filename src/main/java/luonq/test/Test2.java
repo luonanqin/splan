@@ -70,7 +70,7 @@ public class Test2 {
         for (String date : dateToLine.keySet()) {
             List<String> l = dateToLine.get(date);
             if (l.size() == 1) {
-//                continue;
+                //                continue;
             }
             double avgFund = init / l.size();
             init = 0;
@@ -115,14 +115,95 @@ public class Test2 {
             System.out.println(date + "\t" + (int) init);
         }
 
-//        for (Integer open : openSumAllToCount.keySet()) {
-//            Integer allCount = openSumAllToCount.get(open);
-//            Integer count = openSumToCount.get(open);
-//            if (count != null) {
-//                System.out.println("open=" + open + ", -20 count=" + count + " allCount=" + allCount + " ratio=" + (double) count / (double) allCount);
-//            }
-//        }
-//        System.out.println(openSumToCount);
+        //        for (Integer open : openSumAllToCount.keySet()) {
+        //            Integer allCount = openSumAllToCount.get(open);
+        //            Integer count = openSumToCount.get(open);
+        //            if (count != null) {
+        //                System.out.println("open=" + open + ", -20 count=" + count + " allCount=" + allCount + " ratio=" + (double) count / (double) allCount);
+        //            }
+        //        }
+        //        System.out.println(openSumToCount);
+    }
+
+    public static void calSellStraddleWithHandleFee() throws Exception {
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/裸卖双开带手续费");
+        Map<String, Map<String, Integer>> dateToVolume = Maps.newHashMap();
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = split[0];
+            int lastVolume = Integer.valueOf(1);
+
+            if (!dateToVolume.containsKey(date)) {
+                dateToVolume.put(date, Maps.newHashMap());
+            }
+            dateToVolume.get(date).put(line, lastVolume);
+        }
+
+        Map<String, List<String>> dateToLine = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
+        dateToVolume.forEach((k, v) -> {
+            //            if (v.size() > 5) {
+            //                List<String> sorted = v.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).map(s -> s.getKey()).collect(Collectors.toList());
+            //                dateToLine.put(k, sorted.subList(0, 5));
+            //            } else {
+            dateToLine.put(k, Lists.newArrayList(v.keySet()));
+            //            }
+        });
+
+        Map<Integer, Integer> openSumToCount = Maps.newHashMap();
+        Map<Integer, Integer> openSumAllToCount = Maps.newHashMap();
+        double init = 10000;
+        for (String date : dateToLine.keySet()) {
+            List<String> l = dateToLine.get(date);
+            if (l.size() == 1) {
+                //                continue;
+            }
+            int size = l.size();
+            size = l.size() > 3 ? 3 : l.size();
+
+            double avgFund = init / size;
+            init = 0;
+
+            for (int i = 0; i < size; i++) {
+                String line = l.get(i);
+                String[] split = line.split("\t");
+                double callBuy = Double.parseDouble(split[1]);
+                double callSell = Double.parseDouble(split[2]);
+                double putBuy = Double.parseDouble(split[3]);
+                double putSell = Double.parseDouble(split[4]);
+                int sumOpen = (int) (callBuy + putBuy);
+                if (!openSumToCount.containsKey(sumOpen)) {
+                    openSumToCount.put(sumOpen, 0);
+                }
+                if (!openSumAllToCount.containsKey(sumOpen)) {
+                    openSumAllToCount.put(sumOpen, 0);
+                }
+                //                if (callBuy + putBuy < 0.5) {
+                //                    init += avgFund;
+                //                    continue;
+                //                }
+                int count = (int) (avgFund / 100 / (callBuy + putBuy));
+                //                if (callBuy + putBuy < 1) {
+                //                    count = count / 2;
+                //                }
+
+                //                double fee = futuFee(callBuy, callSell, putBuy, putSell, count);
+                double fee = ibkrFee(callBuy, callSell, putBuy, putSell, count);
+                double gainOrLoss = count * (callBuy + putBuy - callSell - putSell) * 100;
+
+                double actualGainOrLoss = gainOrLoss - fee;
+
+                init += (avgFund + actualGainOrLoss);
+
+                if (gainOrLoss < -20) {
+                    Integer openCount = openSumToCount.get(sumOpen) + 1;
+                    openSumToCount.put(sumOpen, openCount);
+                }
+
+                int openAllCount = openSumAllToCount.get(sumOpen) + 1;
+                openSumAllToCount.put(sumOpen, openAllCount);
+            }
+            System.out.println(date + "\t" + (int) init);
+        }
     }
 
     public static double ibkrFee(double callBuy, double callSell, double putBuy, double putSell, int count) {
@@ -217,9 +298,10 @@ public class Test2 {
 
     public static void main(String[] args) throws Exception {
         //        deleteFile();
-//        calCallWithProtect();
-//        System.out.println();
-        calGainWithHandleFee();
+        //        calCallWithProtect();
+        //        System.out.println();
+        //        calGainWithHandleFee();
+        calSellStraddleWithHandleFee();
 
         int week = 12;
         double iit = 10000;
