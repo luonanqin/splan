@@ -219,6 +219,7 @@ public class OptionTradeExecutor2 {
         canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
         int size = sortedCanTradeStock.size() > limitCount ? limitCount : sortedCanTradeStock.size();
         avgFund = (int) funds / size;
+        log.info("init avgFund is {}", avgFund);
         //        List<String> tempCanTradeStock = Lists.newArrayList();
         // 如果已排序后的股票超过1只，则从size=3开始计算哪些股票价格符合条件（size根据本金大小进行调整）
         //        if (size > 1) {
@@ -344,6 +345,7 @@ public class OptionTradeExecutor2 {
                 // 2.4.挂单数量除以2（包含call和put）等于限制数量后，剩下的全部失效
                 if (buyOrderIdMap.size() / 2 == size) {
                     invalidTradeStock(stock);
+                    log.info("trade stock over size={}. stop {} trade", size, stock);
                     continue;
                 }
 
@@ -351,6 +353,7 @@ public class OptionTradeExecutor2 {
                 if (MapUtils.isEmpty(buyOrderIdMap) && canTradeStocks.size() - tempInvalidStocks.size() < size) {
                     size = canTradeStocks.size() - tempInvalidStocks.size();
                     avgFund = (int) funds / size;
+                    log.info("adjust avgFund is {}, size={}", avgFund, size);
                 }
 
                 long curTime = System.currentTimeMillis();
@@ -484,8 +487,6 @@ public class OptionTradeExecutor2 {
                         }
                     }
                 }
-                //                buyCallOrderId = tradeApi.placeNormalBuyOrder(callIkbr, count, callCalcPrice);
-                //                buyPutOrderId = tradeApi.placeNormalBuyOrder(putIkbr, count, putCalcPrice);
                 futuQuote.addUserSecurity(putFutu);
                 futuQuote.addUserSecurity(callFutu);
                 futuQuote.addUserSecurity(stock);
@@ -665,7 +666,13 @@ public class OptionTradeExecutor2 {
             adjustSellPriceTimestampMap.put(futu, current);
             return Double.MAX_VALUE;
         }
-        boolean touchOffAdjust = current - lastTimestamp > ADJUST_SELL_PRICE_TIME_INTERVAL;
+
+        long adjustSellPriceTimeInterval = ADJUST_SELL_PRICE_TIME_INTERVAL;
+        /** 如果调价时间早于收盘卖出时间一分钟以上，则调价间隔为标准间隔的2倍。比如标准调价间隔是4秒，12点触发止盈卖出时的调价间隔为8秒 */
+        if ((current + 60000) < closeTime) {
+            adjustSellPriceTimeInterval = ADJUST_SELL_PRICE_TIME_INTERVAL * 2;
+        }
+        boolean touchOffAdjust = current - lastTimestamp > adjustSellPriceTimeInterval;
         if (!touchOffAdjust) {
             return Double.MAX_VALUE;
         }
@@ -696,12 +703,16 @@ public class OptionTradeExecutor2 {
             adjustPrice = sellInitPriceDecimal.subtract(adjustPriceDecimal).setScale(2, RoundingMode.HALF_UP).doubleValue();
             adjustSellPriceTimestampMap.put(futu, current);
 
-            // 只有调价于最新挂单价才返回，否则持续调价
+            // 只有调价低于最新挂单价才返回，否则持续调价
             if (lastPrice.compareTo(adjustPrice) > 0) {
                 break;
             } else {
                 try {
-                    TimeUnit.SECONDS.sleep(3);
+                    if ((current + 60000) < closeTime) {
+                        TimeUnit.SECONDS.sleep(6);
+                    } else {
+                        TimeUnit.SECONDS.sleep(3);
+                    }
                 } catch (InterruptedException e) {
                 }
             }
@@ -1236,6 +1247,8 @@ public class OptionTradeExecutor2 {
                                 //                                }
                                 if (tradePrice.compareTo(callAskPrice) == 0) { // 如果最新卖一价和之前的挂单价一样，则mid就等于卖一价，也就是挂单价不变，下同
                                     callMidPrice = callAskPrice;
+                                } else if (tradePrice.compareTo(calGainSellPrice(callBidPrice, callAskPrice)) == 0) {
+                                    callMidPrice = tradePrice;
                                 } else {
                                     log.info("change call mid price. call={}\tlastPrice={}\tmidPrice={}", callIkbr, tradePrice, callMidPrice);
                                 }
@@ -1249,6 +1262,8 @@ public class OptionTradeExecutor2 {
                                 //                                }
                                 if (tradePrice.compareTo(putAskPrice) == 0) {
                                     putMidPrice = putAskPrice;
+                                } else if (tradePrice.compareTo(calGainSellPrice(putBidPrice, putAskPrice)) == 0) {
+                                    putMidPrice = tradePrice;
                                 } else {
                                     log.info("change put mid price. put={}\tlastPrice={}\tmidPrice={}", putIkbr, tradePrice, putMidPrice);
                                 }
@@ -1352,7 +1367,8 @@ public class OptionTradeExecutor2 {
                                   callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
                                 // 如果止盈卖出下单失败，则重新判断重新下单
                                 if (callDiff > 0) {
-                                    long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, callMidPrice);
+                                    double tradePrice = calGainSellPrice(callBidPrice, callAskPrice);
+                                    long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, tradePrice);
                                     if (sellCallOrderId == -1) {
                                         log.info("retry sell call. stopgain. gainSellStatus={}\tcode={}", gainSellStatus, callIkbr);
                                         continue;
@@ -1361,12 +1377,13 @@ public class OptionTradeExecutor2 {
                                     sellOrderIdMap.put(callIkbr, sellCallOrderId);
                                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                                     ReadWriteOptionTradeInfo.writeSellOrderId(callIkbr, sellCallOrderId);
-                                    lastSellPriceMap.put(callIkbr, callMidPrice);
+                                    lastSellPriceMap.put(callIkbr, tradePrice);
                                     gainSellStatusMap.put(stock, GAIN_SELLING);
                                     gainSellOption.add(callIkbr);
-                                    log.info("gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellCallOrderId, callFutu, callMidPrice, callCount);
+                                    log.info("gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellCallOrderId, callFutu, tradePrice, callCount);
                                 } else if (putDiff > 0) {
-                                    long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, putMidPrice);
+                                    double tradePrice = calGainSellPrice(putBidPrice, putAskPrice);
+                                    long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, tradePrice);
                                     if (sellPutOrderId == -1) {
                                         log.info("retry sell put. stopgain. gainSellStatus={}\tcode={}", gainSellStatus, putIkbr);
                                         continue;
@@ -1375,10 +1392,10 @@ public class OptionTradeExecutor2 {
                                     sellOrderIdMap.put(putIkbr, sellPutOrderId);
                                     ReadWriteOptionTradeInfo.writeSellOrderTime(stock, curTime);
                                     ReadWriteOptionTradeInfo.writeSellOrderId(putIkbr, sellPutOrderId);
-                                    lastSellPriceMap.put(putIkbr, putMidPrice);
+                                    lastSellPriceMap.put(putIkbr, tradePrice);
                                     gainSellStatusMap.put(stock, GAIN_SELLING);
                                     gainSellOption.add(putIkbr);
-                                    log.info("gain sell put order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellPutOrderId, putFutu, putMidPrice, putCount);
+                                    log.info("gain sell put order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellPutOrderId, putFutu, tradePrice, putCount);
                                 }
                             }
                         } else if (gainSellStatus == GAIN_SELLING) { // 上涨卖出中
@@ -1515,6 +1532,14 @@ public class OptionTradeExecutor2 {
                 }
             }
         }, 0, 1000);
+    }
+
+    public double calGainSellPrice(double bidPrice, double askPrice) {
+        if (askPrice - bidPrice > 0.06) {
+            return BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN).add(BigDecimal.valueOf(0.01)).doubleValue();
+        } else {
+            return BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
+        }
     }
 
     public void reSendOpenPrice() {

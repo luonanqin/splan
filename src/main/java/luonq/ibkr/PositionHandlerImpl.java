@@ -39,4 +39,8 @@ public class PositionHandlerImpl implements ApiController.IPositionHandler {
     public double getCanSellQty(String code) {
         return MapUtils.getDouble(positionCountMap, code, 0d);
     }
+
+    public boolean isEmpty(){
+        return MapUtils.isEmpty(positionCountMap);
+    }
 }

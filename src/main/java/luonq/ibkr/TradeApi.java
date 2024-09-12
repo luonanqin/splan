@@ -235,6 +235,10 @@ public class TradeApi {
         client.reqPositions(positionHandler);
     }
 
+    public boolean positionIsEmpty(){
+        return positionHandler.isEmpty();
+    }
+
     public void rebuildOrderHandler(long orderId, double cost, double count, OrderStatus status) {
         OrderHandlerImpl orderHandler = new OrderHandlerImpl();
         orderHandler.setAvgPrice(cost);
