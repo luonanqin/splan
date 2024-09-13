@@ -63,7 +63,7 @@ public class OptionTradeExecutor3 {
     private static long ORDER_INTERVAL_TIME_MILLI = 1 * 1000; // 下单后检查间隔时间
     private static String CALL_TYPE = "C";
     private static String PUT_TYPE = "P";
-    public static final double STOP_LOSS_RATIO = -0.2d; // 全交易时段的止损比例
+    public static final double STOP_LOSS_RATIO = -0.15d; // 全交易时段的止损比例
     public static final double STOP_GAIN_RATIO_1 = 0.1d; // 三小时前的止盈比例
     public static final double STOP_GAIN_RATIO_2 = 0.1d; // 三小时后的止盈比例
     public static final long STOP_GAIN_INTERVAL_TIME_LINE = 3 * 60 * 60 * 1000L; // 三小时止盈时间点
@@ -412,6 +412,12 @@ public class OptionTradeExecutor3 {
                 double putCalcPrice = calculateMidPrice(putFutu);
 
                 double tradeTotal = callCalcPrice + putCalcPrice;
+                if (tradeTotal < 0.5 || tradeTotal > 1) {
+                    invalidTradeStock(stock);
+                    log.info("the price is greater than 1 or less than 0.5. callAndPut={}\tcallPrice={}\tputPrice={}", callAndPut, callCalcPrice, putCalcPrice);
+                    tempInvalidStocks.add(stock);
+                    continue;
+                }
 
                 double countDouble = avgFund / tradeTotal / 100;
 

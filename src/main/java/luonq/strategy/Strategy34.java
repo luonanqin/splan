@@ -168,9 +168,9 @@ public class Strategy34 {
         return ivList;
     }
 
-    public static double calAllOpenPrice(String call, String put, String date) throws Exception {
-        List<String> callQuoteList = Strategy28.getOption2MinQuoteList(new OptionCode(call), date);
-        List<String> putQuoteList = Strategy28.getOption2MinQuoteList(new OptionCode(put), date);
+    public static double calAllOpenPrice(String call, String put, String date, int min) throws Exception {
+        List<String> callQuoteList = Strategy28.getOptionMinQuoteList(new OptionCode(call), date, min + 1);
+        List<String> putQuoteList = Strategy28.getOptionMinQuoteList(new OptionCode(put), date, min + 1);
 
         Map<Long, Double> callQuotePriceMap = Strategy32.calQuoteListForSeconds(callQuoteList);
         Map<Long, Double> putQuotePriceMap = Strategy32.calQuoteListForSeconds(putQuoteList);
@@ -180,7 +180,8 @@ public class Strategy34 {
 
         double tempCallPrice = 0, tempPutPrice = 0;
         List<String> dayAllSeconds = Strategy28.getDayAllSeconds(date);
-        for (int i = 0; i < 61; i++) {
+        int end = min * 60 + 1;
+        for (int i = 0; i < end; i++) {
             Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
             Double callPrice = callQuotePriceMap.get(seconds);
             Double putPrice = putQuotePriceMap.get(seconds);
@@ -196,7 +197,7 @@ public class Strategy34 {
 
         Double callOpen = 0d;
         Double putOpen = 0d;
-        int sec = 60;
+        int sec = min * 60;
         Long openSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
         if (callTradePriceMap.get(openSeconds) != 0) {
             callOpen = callTradePriceMap.get(openSeconds);
@@ -227,7 +228,8 @@ public class Strategy34 {
             return "empty";
         }
 
-        double allOpen = calAllOpenPrice(callSymbol, putSymbol, date);
+        int min = 5;
+        double allOpen = calAllOpenPrice(callSymbol, putSymbol, date, min);
         if (!(allOpen > 0.5) || !(allOpen < 1)) {
             //            System.out.println("open is illegal. date=" + date + " call=" + callSymbol + " put=" + putSymbol);
             return "empty";
@@ -266,7 +268,7 @@ public class Strategy34 {
 
         Double callOpen = 0d;
         Double putOpen = 0d;
-        int sec = 300;
+        int sec = min * 60;
         Long openSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
         if (callTradePriceMap.get(openSeconds) != 0) {
             callOpen = callTradePriceMap.get(openSeconds);

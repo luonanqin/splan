@@ -256,11 +256,11 @@ public class TradeApi {
     public double getAccountCash() {
         AccountSummaryHandlerImpl accountSummaryHandler = new AccountSummaryHandlerImpl();
         client.reqAccountSummary("All", new AccountSummaryTag[] { AccountSummaryTag.NetLiquidation }, accountSummaryHandler);
-        double cash = accountSummaryHandler.getCash();
         try {
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
         }
+        double cash = accountSummaryHandler.getCash();
         if (cash == 0) {
             cash = Constants.INIT_CASH;
         }
@@ -271,8 +271,8 @@ public class TradeApi {
     public static void main(String[] args) {
         TradeApi tradeApi = new TradeApi();
 //        tradeApi.useSimulateEnv();
-        tradeApi.useRealEnv();
-        tradeApi.start();
+//        tradeApi.useRealEnv();
+//        tradeApi.start();
         tradeApi.reqPosition();
         double accountCash = tradeApi.getAccountCash();
         System.out.println(accountCash);

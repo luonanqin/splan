@@ -9,9 +9,8 @@ import com.google.common.eventbus.Subscribe;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
-import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.polygon.OptionTradeExecutor3;
-import luonq.strategy.Strategy32;
+import luonq.strategy.Strategy34;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import util.BaseUtils;
@@ -62,7 +61,7 @@ public class OptionStockListener3 {
         if (!LoadOptionTradeData.stocks.contains(stock)) {
             return;
         }
-        ReadWriteOptionTradeInfo.addStockOpenPrice(stock, open);
+        //        ReadWriteOptionTradeInfo.addStockOpenPrice(stock, open);
         // 开盘价波动
         Double lastClose = LoadOptionTradeData.stockToLastdayCloseMap.get(stock);
         if (lastClose == null) {
@@ -166,8 +165,8 @@ public class OptionStockListener3 {
             log.info("there is no ivlist for stock. call={}\tput={}", call, put);
             return;
         }
-        boolean canTradeCall = Strategy32.canTradeForIv(callIvList);
-        boolean canTradePut = Strategy32.canTradeForIv(putIvList);
+        boolean canTradeCall = Strategy34.canTradeForIv(callIvList);
+        boolean canTradePut = Strategy34.canTradeForIv(putIvList);
         if (!canTradeCall || !canTradePut) {
             log.warn("{}:{}\t{}:{} can't trade due to ivlist", call, callIvList, put, putIvList);
             return;
