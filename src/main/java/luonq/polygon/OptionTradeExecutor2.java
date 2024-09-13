@@ -3,7 +3,6 @@ package luonq.polygon;
 import bean.NodeList;
 import bean.Order;
 import bean.StockEvent;
-import com.futu.openapi.FTAPI;
 import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -149,16 +148,16 @@ public class OptionTradeExecutor2 {
     private long stopBuyTime; // 停止交易时间为开盘后一分钟，但是如果其中一个已经交易则不终止
 
     public void init() {
-        FTAPI.init();
-        futuQuote = new BasicQuote();
-        futuQuote.start();
-        tradeApi = new TradeApi();
+        //        FTAPI.init();
+        //        futuQuote = new BasicQuote();
+        //        futuQuote.start();
+        //        tradeApi = new TradeApi();
         //        tradeApi.useSimulateEnv();
         //        tradeApi.setAccountId(TradeApi.simulateUsOptionAccountId);
         //        realTrade = false;
-        tradeApi.useRealEnv();
-        tradeApi.start();
-        tradeApi.unlock();
+        //        tradeApi.useRealEnv();
+        //        tradeApi.start();
+        //        tradeApi.unlock();
         //        tradeApi.clearStopLossStockSet();
 
         canTradeOptionForFutuMap = optionStockListener.getCanTradeOptionForFutuMap();

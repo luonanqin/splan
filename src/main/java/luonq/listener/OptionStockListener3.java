@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
-import luonq.polygon.OptionTradeExecutor2;
+import luonq.polygon.OptionTradeExecutor3;
 import luonq.strategy.Strategy32;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,9 +42,9 @@ public class OptionStockListener3 {
     public Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
     public Map<String/* futu code */, String/* ikbr code */> futuForIkbrMap = Maps.newHashMap();
 
-    private OptionTradeExecutor2 optionTradeExecutor;
+    private OptionTradeExecutor3 optionTradeExecutor;
 
-    public void setOptionTradeExecutor(OptionTradeExecutor2 optionTradeExecutor) {
+    public void setOptionTradeExecutor(OptionTradeExecutor3 optionTradeExecutor) {
         this.optionTradeExecutor = optionTradeExecutor;
     }
 

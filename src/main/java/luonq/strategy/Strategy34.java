@@ -266,7 +266,7 @@ public class Strategy34 {
 
         Double callOpen = 0d;
         Double putOpen = 0d;
-        int sec = 60;
+        int sec = 300;
         Long openSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
         if (callTradePriceMap.get(openSeconds) != 0) {
             callOpen = callTradePriceMap.get(openSeconds);
@@ -281,7 +281,7 @@ public class Strategy34 {
         Long buySeconds = openSeconds;
         String result = "";
         double open = BigDecimal.valueOf(putOpen + callOpen).setScale(5, RoundingMode.HALF_UP).doubleValue();
-        for (int i = sec; i < dayAllSeconds.size() - 60; i++) {
+        for (int i = sec + 60; i < dayAllSeconds.size() - 60; i++) {
             Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
             Double callClose = callTradePriceMap.get(seconds);
             Double putClose = putTradePriceMap.get(seconds);
@@ -300,22 +300,22 @@ public class Strategy34 {
                 return result;
             }
 
+            if (diffRatio >= 10 || diffRatio < -15) {
+                result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                return result;
+            }
+
+            //            if (i <= 14000) {
             //                if (diffRatio >= 20 || diffRatio < -20) {
             //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
             //                    return result;
             //                }
-
-            if (i <= 14000) {
-                if (diffRatio >= 20 || diffRatio < -20) {
-                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
-                    return result;
-                }
-            } else {
-                if (diffRatio >= 10 || diffRatio < -20) {
-                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
-                    return result;
-                }
-            }
+            //            } else {
+            //                if (diffRatio >= 10 || diffRatio < -20) {
+            //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+            //                    return result;
+            //                }
+            //            }
         }
         //                System.out.println(result);
         //        BaseUtils.writeFile(USER_PATH + "optionData/trade/" + year + "/" + date + "_" + stock, list);

@@ -14,6 +14,7 @@ import bean.StockRehab;
 import bean.StopLoss;
 import bean.Total;
 import com.alibaba.fastjson.JSON;
+import com.futu.openapi.FTAPI;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -22,7 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
+import luonq.futu.BasicQuote;
+import luonq.ibkr.TradeApi;
 import luonq.listener.OptionStockListener2;
+import luonq.listener.OptionStockListener3;
 import luonq.strategy.backup.Strategy_DB;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -105,7 +109,6 @@ public class RealTimeDataWS_DB2 {
     private boolean listenEnd = false;
     private NodeList list = new NodeList(10);
     private AtomicBoolean hasAuth = new AtomicBoolean(false);
-    private OptionStockListener2 optionStockListener;
 
     public static Set<String> stockSet = Sets.newHashSet();
     public Set<String> allStockSet = Sets.newHashSet();
@@ -116,7 +119,10 @@ public class RealTimeDataWS_DB2 {
 //    private RealTimeOptionWS2 realTimeOptionWS = new RealTimeOptionWS2();
 
     private List<String> optionStockSet;
-    private OptionTradeExecutor2 optionTradeExecutor;
+    private OptionTradeExecutor2 optionTradeExecutor2;
+    private OptionStockListener2 optionStockListener2;
+    private OptionTradeExecutor3 optionTradeExecutor3;
+    private OptionStockListener3 optionStockListener3;
 
     @Autowired
     private TradeExecutor_DB tradeExecutor;
@@ -191,6 +197,7 @@ public class RealTimeDataWS_DB2 {
         todayEarningStockSet = Sets.newHashSet();
         lastEarningStockSet = Sets.newHashSet();
         getRealtimeQuote = false;
+        getRealtimeQuoteForOption = false;
         realtimeQuoteMap = Maps.newHashMap();
         subscribeBQ = new LinkedBlockingQueue<>(1000);
         stopLossBQ = new LinkedBlockingQueue<>(1000);
@@ -200,7 +207,8 @@ public class RealTimeDataWS_DB2 {
         hasAuth = new AtomicBoolean(false);
         unsubcribeStockSet = Sets.newHashSet();
         tradeEventBus = asyncEventBus();
-        optionStockListener = new OptionStockListener2();
+        optionStockListener2 = new OptionStockListener2();
+        optionStockListener3 = new OptionStockListener3();
         //        if (tradeExecutor == null) {
         //            tradeExecutor = new TradeExecutor_DB();
         //        }
@@ -229,9 +237,11 @@ public class RealTimeDataWS_DB2 {
     public void initHistoricalData() {
         try {
             loadOptionTradeData.load();
-            optionTradeExecutor.init();
+            optionTradeExecutor2.init();
+            optionTradeExecutor3.init();
             //            optionTradeExecutor.getRealTimeIV();
-            optionTradeExecutor.getFutuRealTimeIV();
+            optionTradeExecutor2.getFutuRealTimeIV();
+            optionTradeExecutor3.getFutuRealTimeIV();
             ReadWriteOptionTradeInfo.init();
             if (!testOption) {
                 computeHisOverBollingerRatio();
@@ -262,11 +272,25 @@ public class RealTimeDataWS_DB2 {
             //            tradeExecutor.setList(list);
             //            tradeExecutor.setClient(this);
             //            tradeExecutor.init();
+            TradeApi tradeApi = new TradeApi();
 
-            optionTradeExecutor = new OptionTradeExecutor2();
-            optionTradeExecutor.setClient(this);
-            optionTradeExecutor.setOptionStockListener(optionStockListener);
-            optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
+            FTAPI.init();
+            BasicQuote futuQuote = new BasicQuote();
+            futuQuote.start();
+
+            optionTradeExecutor2 = new OptionTradeExecutor2();
+            optionTradeExecutor2.setFutuQuote(futuQuote);
+            optionTradeExecutor2.setTradeApi(tradeApi);
+            optionTradeExecutor2.setClient(this);
+            optionTradeExecutor2.setOptionStockListener(optionStockListener2);
+            optionStockListener2.setOptionTradeExecutor(optionTradeExecutor2);
+
+            optionTradeExecutor3 = new OptionTradeExecutor3();
+            optionTradeExecutor3.setFutuQuote(futuQuote);
+            optionTradeExecutor3.setTradeApi(tradeApi);
+            optionTradeExecutor3.setClient(this);
+            optionTradeExecutor3.setOptionStockListener(optionStockListener3);
+            optionStockListener3.setOptionTradeExecutor(optionTradeExecutor3);
 
 //            realTimeOptionWS.setOptionTradeExecutor(optionTradeExecutor);
 //            realTimeOptionWS.setOptionStockListener(optionStockListener);
@@ -287,7 +311,8 @@ public class RealTimeDataWS_DB2 {
                 //                tradeEventBus.register(tradeDataListener);
             }
 
-            tradeEventBus.register(optionStockListener);
+            tradeEventBus.register(optionStockListener2);
+            tradeEventBus.register(optionStockListener3);
 
             log.info("finish init message listener");
         } catch (Exception e) {
@@ -570,7 +595,7 @@ public class RealTimeDataWS_DB2 {
 //            realTimeOptionWS.close();
             manualClose = true;
             userSession.close();
-            optionTradeExecutor.close();
+            optionTradeExecutor2.close();
             executor.shutdown();
         }
     }
@@ -743,10 +768,15 @@ public class RealTimeDataWS_DB2 {
         unsubscribeAll();
         listenEnd = true;
         //        getRealtimeQuote();
-        getRealtimeQuoteForOption();
+        getRealtimeQuoteForOption(optionStockListener2.getCanTradeStocks());
         ReadWriteOptionTradeInfo.writeStockOpenPrice();
         //        tradeExecutor.beginTrade();
-        optionTradeExecutor.beginTrade();
+        optionTradeExecutor2.beginTrade();
+
+        if (optionTradeExecutor3.checkCanTrade()) {
+            getRealtimeQuoteForOption(optionStockListener3.getCanTradeStocks());
+            optionTradeExecutor3.beginTrade();
+        }
     }
 
     // 成交前获取实时报价
@@ -810,9 +840,8 @@ public class RealTimeDataWS_DB2 {
         Thread.sleep(1000);
     }
 
-    public void getRealtimeQuoteForOption() throws InterruptedException {
+    public void getRealtimeQuoteForOption(Set<String> stockSet) throws InterruptedException {
         getRealtimeQuoteForOption = true;
-        Set<String> stockSet = optionStockListener.getCanTradeStocks();
         if (CollectionUtils.isEmpty(stockSet)) {
             log.info("there is no stock to get real-time quote for option");
             return;
