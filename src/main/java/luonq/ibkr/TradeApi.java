@@ -27,6 +27,11 @@ public class TradeApi {
     private int port;
     private ApiController client;
 
+    public TradeApi() {
+        useRealEnv();
+        start();
+    }
+
     public void useSimulateEnv() {
         port = 7497;
     }
