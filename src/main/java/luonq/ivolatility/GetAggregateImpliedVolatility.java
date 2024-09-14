@@ -25,6 +25,8 @@ public class GetAggregateImpliedVolatility {
 
     public static Map<String/* data */, Map<String/* optionCode */, Double/* IV */>> dateToIvMap = Maps.newHashMap();
     public static Map<String/* data */, Map<String/* optionCode */, String/* firstIvTime */>> dateToFirstIvTimeMap = Maps.newHashMap();
+    public static Map<String/* data */, Map<String/* optionCode */, List<Double>/* IV */>> dateToIvListMap = Maps.newHashMap();
+    public static Map<String/* data */, Map<String/* optionCode */, List<String>/* firstIvTime */>> dateToFirstIvTimeListMap = Maps.newHashMap();
     public static HttpClient httpClient = new HttpClient();
 
     public static void init() throws Exception {
@@ -55,8 +57,8 @@ public class GetAggregateImpliedVolatility {
                             dateToIvMap.put(date, Maps.newHashMap());
                         }
                         dateToIvMap.get(date).put(optionCode, Double.parseDouble(split[2]));
+                        break;
                     }
-
 
                     for (String firstLine : lines) {
                         String[] split = firstLine.split("\t");
@@ -68,6 +70,29 @@ public class GetAggregateImpliedVolatility {
                         }
                         dateToFirstIvTimeMap.get(date).put(optionCode, split[1]);
                         break;
+                    }
+
+                    for (String firstLine : lines) {
+                        String[] split = firstLine.split("\t");
+                        if (split[1].contains("09:2")) {
+                            continue;
+                        }
+
+                        if (!dateToIvListMap.containsKey(date)) {
+                            dateToIvListMap.put(date, Maps.newHashMap());
+                        }
+                        if (!dateToIvListMap.get(date).containsKey(optionCode)) {
+                            dateToIvListMap.get(date).put(optionCode, Lists.newArrayList());
+                        }
+                        dateToIvListMap.get(date).get(optionCode).add(Double.parseDouble(split[2]));
+
+                        if (!dateToFirstIvTimeListMap.containsKey(date)) {
+                            dateToFirstIvTimeListMap.put(date, Maps.newHashMap());
+                        }
+                        if (!dateToFirstIvTimeListMap.get(date).containsKey(optionCode)) {
+                            dateToFirstIvTimeListMap.get(date).put(optionCode, Lists.newArrayList());
+                        }
+                        dateToFirstIvTimeListMap.get(date).get(optionCode).add(split[1]);
                     }
                 }
             }
@@ -155,8 +180,97 @@ public class GetAggregateImpliedVolatility {
         return hisIv;
     }
 
+    public static List<Double> getAggregateIvList(String optionCode, String date) throws Exception {
+        if (dateToIvListMap.containsKey(date) && dateToIvListMap.get(date).containsKey(optionCode)) {
+            return dateToIvListMap.get(date).get(optionCode);
+        }
+
+        String stock = optionCode.substring(0, optionCode.length() - 15);
+        String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
+        String expireDay = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyMMdd")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String type = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
+        String optionType = StringUtils.equalsIgnoreCase(type, "C") ? "CALL" : "PUT";
+        String priceStr = optionCode.substring(optionCode.length() - 8);
+        int priceInt = Integer.valueOf(priceStr);
+        String strikePrice = BigDecimal.valueOf(priceInt).divide(BigDecimal.valueOf(1000)).setScale(1, RoundingMode.DOWN).toString();
+        if (strikePrice.contains(".0")) {
+            strikePrice = strikePrice.substring(0, strikePrice.length() - 2);
+        }
+
+        String optionFileDir = Constants.USER_PATH + "optionData/aggregateIV/" + stock + "/" + date + "/";
+        String optionFilePath = optionFileDir + optionCode;
+        List<String> lines = Lists.newArrayList();
+
+        String url = String.format("https://restapi.ivolatility.com/equities/intraday/single-equity-option-rawiv?apiKey=S3j7pBefWG0J0glb&symbol=%s&date=%s&expDate=%s&strike=%s&optType=%s&minuteType=MINUTE_1", stock, date, expireDay, strikePrice, optionType);
+        GetMethod get = new GetMethod(url);
+        double hisIv = -2d;
+        String marketClose = date + " 16:";
+        String marketPre = date + " 09:29";
+
+        if (!dateToFirstIvTimeListMap.containsKey(date)) {
+            dateToFirstIvTimeListMap.put(date, Maps.newHashMap());
+        }
+        if (!dateToFirstIvTimeListMap.get(date).containsKey(optionCode)) {
+            dateToFirstIvTimeListMap.get(date).put(optionCode, Lists.newArrayList());
+        }
+        List<String> timeList = dateToFirstIvTimeListMap.get(date).get(optionCode);
+
+        if (!dateToIvListMap.containsKey(date)) {
+            dateToIvListMap.put(date, Maps.newHashMap());
+        }
+        if (!dateToIvListMap.get(date).containsKey(optionCode)) {
+            dateToIvListMap.get(date).put(optionCode, Lists.newArrayList());
+        }
+        List<Double> ivList = dateToIvListMap.get(date).get(optionCode);
+        try {
+            httpClient.executeMethod(get);
+            InputStream content = get.getResponseBodyAsStream();
+            AggregateOptionIVResp resp = JSON.parseObject(content, AggregateOptionIVResp.class);
+            List<AggregateOptionIV> dataList = resp.getData();
+            if (CollectionUtils.isNotEmpty(dataList)) {
+                for (AggregateOptionIV iv : dataList) {
+                    String optionBidDateTime = iv.getOptionBidDateTime();
+                    String timestamp = iv.getTimestamp();
+                    String calcTimestamp = iv.getCalcTimestamp();
+                    if (!optionBidDateTime.startsWith(date) || timestamp.startsWith(marketClose) || timestamp.startsWith(marketPre) || calcTimestamp.startsWith(marketPre)) {
+                        continue;
+                    }
+                    double optionIv = iv.getOptionIv();
+                    if (optionIv == -1) {
+                        continue;
+                    }
+                    if (optionIv == 0) {
+                        optionIv = -2d;
+                    }
+                    lines.add(timestamp + "\t" + calcTimestamp + "\t" + optionIv);
+                    timeList.add(calcTimestamp);
+                    ivList.add(optionIv);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("error: " + url);
+            return Lists.newArrayList();
+        } finally {
+            get.releaseConnection();
+        }
+
+        System.out.println("getAggregateIv " + optionCode);
+        if (CollectionUtils.isEmpty(lines)) {
+            return Lists.newArrayList(hisIv);
+        }
+        BaseUtils.createDirectory(optionFileDir);
+        Collections.sort(lines, (o1, o2) -> {
+            Integer time1 = Integer.valueOf(o1.split("\t")[0].substring(11).replaceAll(":", ""));
+            Integer time2 = Integer.valueOf(o2.split("\t")[0].substring(11).replaceAll(":", ""));
+            return time1 - time2;
+        });
+        BaseUtils.writeFile(optionFilePath, lines);
+
+        return ivList;
+    }
+
     public static void main(String[] args) throws Exception {
-//        getAggregateIv("BB220408P00006500", "2022-04-01");
+        //        getAggregateIv("BB220408P00006500", "2022-04-01");
         //        getAggregateIv("BB220408P00006500", "2022-04-01");
         //        getAggregateIv("SOFI230623C00009500", "2023-06-16");
         init();
