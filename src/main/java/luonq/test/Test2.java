@@ -131,7 +131,7 @@ public class Test2 {
         for (String line : lines) {
             String[] split = line.split("\t");
             String date = split[0];
-            int lastVolume = Integer.valueOf(1);
+            int lastVolume = Integer.valueOf(split[5]);
 
             if (!dateToVolume.containsKey(date)) {
                 dateToVolume.put(date, Maps.newHashMap());
@@ -141,11 +141,11 @@ public class Test2 {
 
         Map<String, List<String>> dateToLine = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
         dateToVolume.forEach((k, v) -> {
-            //            if (v.size() > 5) {
-            //                List<String> sorted = v.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).map(s -> s.getKey()).collect(Collectors.toList());
-            //                dateToLine.put(k, sorted.subList(0, 5));
+            //                        if (v.size() > 5) {
+            List<String> sorted = v.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).map(s -> s.getKey()).collect(Collectors.toList());
+            dateToLine.put(k, sorted);
             //            } else {
-            dateToLine.put(k, Lists.newArrayList(v.keySet()));
+            //            dateToLine.put(k, Lists.newArrayList(v.keySet()));
             //            }
         });
 
@@ -153,6 +153,9 @@ public class Test2 {
         Map<Integer, Integer> openSumAllToCount = Maps.newHashMap();
         double init = 10000;
         for (String date : dateToLine.keySet()) {
+            if (!date.equals("2023-09-05")) {
+//                continue;
+            }
             List<String> l = dateToLine.get(date);
             if (l.size() == 1) {
                 //                continue;
