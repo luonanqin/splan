@@ -43,6 +43,8 @@ import java.util.stream.Collectors;
 public class Strategy28 {
 
     public static final String QUOTE_DIR = "optionData/optionQuote/";
+    public static final String _2MIN_QUOTE_DIR = "optionData/2minOptionQuote/";
+    public static final String LAST_QUOTE_DIR = "optionData/optionLastQuote/";
     public static CloseableHttpClient httpClient = HttpClients.createDefault();
     public static BlockingQueue<HttpClient> queue;
     public static ThreadPoolExecutor cachedThread;
@@ -407,41 +409,70 @@ public class Strategy28 {
         List<String> dayAllSeconds = getDayAllSeconds(date);
         List<String> result = Lists.newArrayList();
         if (testIfExistQuote(dayAllSeconds, optionCode)) {
-            CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
             Map<String/* seconds */, String/* data */> dataMap = Maps.newHashMap();
-            for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
-                String begin = dayAllSeconds.get(i);
-                String end = dayAllSeconds.get(i + 1);
-                cachedThread.execute(() -> {
-                    String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=1"
-                      + "&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
-                    GetMethod openRequest = new GetMethod(url);
-                    HttpClient httpClient = null;
-                    try {
-                        httpClient = queue.take();
+//            CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
+//            for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
+//                String begin = dayAllSeconds.get(i);
+//                String end = dayAllSeconds.get(i + 1);
+//                cachedThread.execute(() -> {
+//                    String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=1"
+//                      + "&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
+//                    GetMethod openRequest = new GetMethod(url);
+//                    HttpClient httpClient = null;
+//                    try {
+//                        httpClient = queue.take();
+//
+//                        httpClient.executeMethod(openRequest);
+//                        InputStream openContent = openRequest.getResponseBodyAsStream();
+//                        OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+//                        if (openResp == null) {
+//                            System.out.println(url + " is null");
+//                        } else {
+//                            List<OptionQuote> openResults = openResp.getResults();
+//                            if (CollectionUtils.isNotEmpty(openResults)) {
+//                                dataMap.put(begin, openResults.get(0).print());
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        System.out.println(begin + " " + url);
+//                        e.printStackTrace();
+//                    } finally {
+//                        queue.offer(httpClient);
+//                        cdl.countDown();
+//                        openRequest.releaseConnection();
+//                    }
+//                });
+//            }
+//            cdl.await();
+            String begin = dayAllSeconds.get(0);
+            String end = dayAllSeconds.get(dayAllSeconds.size() - 1);
+            String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=50000&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
+            GetMethod openRequest = new GetMethod(url);
+            HttpClient httpClient = null;
+            try {
+                while (true) {
+                    httpClient = queue.take();
 
-                        httpClient.executeMethod(openRequest);
-                        InputStream openContent = openRequest.getResponseBodyAsStream();
-                        OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
-                        if (openResp == null) {
-                            System.out.println(url + " is null");
-                        } else {
-                            List<OptionQuote> openResults = openResp.getResults();
-                            if (CollectionUtils.isNotEmpty(openResults)) {
-                                dataMap.put(begin, openResults.get(0).print());
-                            }
-                        }
-                    } catch (Exception e) {
-                        System.out.println(begin + " " + url);
-                        e.printStackTrace();
-                    } finally {
-                        queue.offer(httpClient);
-                        cdl.countDown();
-                        openRequest.releaseConnection();
+                    httpClient.executeMethod(openRequest);
+                    InputStream openContent = openRequest.getResponseBodyAsStream();
+                    OptionQuoteResp resp = JSON.parseObject(openContent, OptionQuoteResp.class);
+                    for (OptionQuote chain : resp.getResults()) {
+                        dataMap.put(String.valueOf(chain.getSip_timestamp()), chain.print());
                     }
-                });
+                    String nextUrl = resp.getNext_url();
+                    if (StringUtils.isBlank(nextUrl)) {
+                        break;
+                    } else {
+                        openRequest.releaseConnection();
+                        openRequest = new GetMethod(nextUrl + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("getOptionMinQuoteList error." + url);
+            } finally {
+                queue.offer(httpClient);
+                openRequest.releaseConnection();
             }
-            cdl.await();
 
             result.addAll(dataMap.values());
         }
@@ -449,6 +480,179 @@ public class Strategy28 {
         BaseUtils.writeFile(filePath, result);
         //        System.out.println(dataMap);
         sortQuote(filePath);
+    }
+
+    public static List<String> getOptionMinQuoteList(OptionCode optionCodeBean, String date, int min) throws Exception {
+        if (optionCodeBean == null) {
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        String optionCode = optionCodeBean.getCode();
+        String fileName = optionCode.substring(2);
+        int _2_index = optionCode.indexOf("2");
+        String stock = optionCode.substring(2, _2_index);
+        String fileDirPath = Constants.USER_PATH + "optionData/" + min + "minOptionQuote/" + stock + "/" + date + "/";
+        File fileDir = new File(fileDirPath);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        String filePath = fileDirPath + fileName;
+        File file = new File(filePath);
+        if (file.exists()) {
+            //            System.out.println(fileName + " has get quote");
+            return BaseUtils.readFile(file);
+        }
+
+        List<String> dayAllSeconds = getDayAllSeconds(date);
+        dayAllSeconds = dayAllSeconds.subList(0, min * 60);
+        List<String> result = Lists.newArrayList();
+        if (testIfExistQuote(dayAllSeconds, optionCode)) {
+            Map<String/* seconds */, String/* data */> dataMap = Maps.newHashMap();
+            //            CountDownLatch cdl = new CountDownLatch(dayAllSeconds.size() - 1);
+            //            for (int i = 0; i < dayAllSeconds.size() - 1; i++) {
+            //                String begin = dayAllSeconds.get(i);
+            //                String end = dayAllSeconds.get(i + 1);
+            //                cachedThread.execute(() -> {
+            //                    String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=1"
+            //                      + "&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
+            //                    GetMethod openRequest = new GetMethod(url);
+            //                    HttpClient httpClient = null;
+            //                    try {
+            //                        httpClient = queue.take();
+            //
+            //                        httpClient.executeMethod(openRequest);
+            //                        InputStream openContent = openRequest.getResponseBodyAsStream();
+            //                        OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+            //                        if (openResp == null) {
+            //                            System.out.println(url + " is null");
+            //                        } else {
+            //                            List<OptionQuote> openResults = openResp.getResults();
+            //                            if (CollectionUtils.isNotEmpty(openResults)) {
+            //                                dataMap.put(begin, openResults.get(0).print());
+            //                            }
+            //                        }
+            //                    } catch (Exception e) {
+            //                        System.out.println(begin + " " + url);
+            //                        e.printStackTrace();
+            //                    } finally {
+            //                        queue.offer(httpClient);
+            //                        cdl.countDown();
+            //                        openRequest.releaseConnection();
+            //                    }
+            //                });
+            //            }
+            //            cdl.await();
+
+            String begin = dayAllSeconds.get(0);
+            String end = dayAllSeconds.get(dayAllSeconds.size() - 1);
+            String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=5000&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
+            GetMethod openRequest = new GetMethod(url);
+            HttpClient httpClient = null;
+            try {
+                while (true) {
+                    httpClient = queue.take();
+
+                    httpClient.executeMethod(openRequest);
+                    InputStream openContent = openRequest.getResponseBodyAsStream();
+                    OptionQuoteResp resp = JSON.parseObject(openContent, OptionQuoteResp.class);
+                    for (OptionQuote chain : resp.getResults()) {
+                        dataMap.put(String.valueOf(chain.getSip_timestamp()), chain.print());
+                    }
+                    String nextUrl = resp.getNext_url();
+                    if (StringUtils.isBlank(nextUrl)) {
+                        break;
+                    } else {
+                        openRequest.releaseConnection();
+                        openRequest = new GetMethod(nextUrl + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("getOptionMinQuoteList error." + url);
+            } finally {
+                queue.offer(httpClient);
+                openRequest.releaseConnection();
+            }
+
+            result.addAll(dataMap.values());
+        }
+
+        Map<Long, String> map = Maps.newTreeMap((o1, o2) -> o1.compareTo(o2));
+        for (String line : result) {
+            String[] split = line.split("\t");
+            String time = split[0];
+            map.put(Long.valueOf(time), line);
+        }
+
+        result.clear();
+        for (Long time : map.keySet()) {
+            result.add(map.get(time));
+        }
+
+        BaseUtils.writeFile(filePath, result);
+        return result;
+    }
+
+    // 抓取前一日的摆盘，用来计算正常的摆盘差价
+    public static void getLastOptionQuoteList(String optionCode, String date) throws Exception {
+        String fileName = optionCode.substring(2);
+        int _2_index = optionCode.indexOf("2");
+        String stock = optionCode.substring(2, _2_index);
+        String fileDirPath = Constants.USER_PATH + LAST_QUOTE_DIR + stock + "/" + date + "/";
+        File fileDir = new File(fileDirPath);
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
+        }
+        String filePath = fileDirPath + fileName;
+        File file = new File(filePath);
+        if (file.exists()) {
+            return;
+        }
+
+        List<String> dayAllSeconds = getDayAllSeconds(date);
+        List<String> result = Lists.newArrayList();
+        String begin = dayAllSeconds.get(0);
+        String end = dayAllSeconds.get(dayAllSeconds.size() - 1);
+        HttpClient httpClient = queue.take();
+        cachedThread.execute(() -> {
+            String url = String.format("https://api.polygon.io/v3/quotes/%s?order=asc&limit=100&timestamp.lt=%s&timestamp.gt=%s%s", optionCode, end, begin, apiKey);
+            try {
+                while (true) {
+                    GetMethod openRequest = new GetMethod(url);
+
+                    httpClient.executeMethod(openRequest);
+                    InputStream openContent = openRequest.getResponseBodyAsStream();
+                    OptionQuoteResp openResp = JSON.parseObject(openContent, OptionQuoteResp.class);
+                    if (openResp == null) {
+                        System.out.println(url + " is null");
+                    } else {
+                        List<OptionQuote> openResults = openResp.getResults();
+                        if (CollectionUtils.isNotEmpty(openResults)) {
+                            for (OptionQuote openResult : openResults) {
+                                //                                    dataMap.put(begin, openResult.print());
+                                result.add(openResult.print());
+                            }
+                            String next_url = openResp.getNext_url();
+                            if (StringUtils.isNotBlank(next_url)) {
+                                url = next_url + apiKey;
+                            } else {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                        //                        if (result.size() >= 1000) {
+                        //                            break;
+                        //                        }
+                    }
+                    openRequest.releaseConnection();
+                }
+                BaseUtils.writeFile(filePath, result); //        System.out.println(dataMap);
+                sortQuote(filePath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                queue.offer(httpClient);
+            }
+        });
     }
 
     public static boolean testIfExistQuote(List<String> dayAllSeconds, String optionCode) throws Exception {
@@ -896,11 +1100,17 @@ public class Strategy28 {
         BaseUtils.writeFile(filePath, lines);
     }
 
+    public static void shutdown() {
+        cachedThread.shutdown();
+    }
+
     public static void main(String[] args) throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.INFO);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.INFO);
 
         init();
+        getLastOptionQuoteList("O:AAPL240823P00225000", "2024-08-16");
 
         //        List<String> dayAllSeconds = getDayAllSeconds("2024-01-05");
         //        calOptionQuote("AGL", 7.75, "2024-01-05");
