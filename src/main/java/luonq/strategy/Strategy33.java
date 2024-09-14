@@ -45,6 +45,7 @@ public class Strategy33 {
     public static Map<String/* today */, List<String>/* last5Days*/> last5DaysMap = Maps.newHashMap();
     public static Map<String, Map<String, Double>> ivMap = Maps.newHashMap();
     public static Map<String/* date */, Double/* rate */> riskFreeRateMap = Maps.newHashMap();
+    public static Map<String/* date */, Map<String/* stock */, Double/* last close*/>> dateToLastClose = Maps.newHashMap();
     public static LocalDateTime summerTime = BaseUtils.getSummerTime(year);
     public static LocalDateTime winterTime = BaseUtils.getWinterTime(year);
 
@@ -191,6 +192,11 @@ public class Strategy33 {
                 }
 
                 dateToStockKline.get(date).put(stock, stockKLine);
+
+                if (!dateToLastClose.containsKey(date)) {
+                    dateToLastClose.put(date, Maps.newHashMap());
+                }
+                dateToLastClose.get(date).put(stock, lastClose);
             }
         }
 
@@ -452,8 +458,8 @@ public class Strategy33 {
                 expirationDate = LocalDate.parse(expirationDate, DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2024-07-10")) {
-//                continue;
+            if (!date.equals("2024-09-13")) {
+                                continue;
             }
 
             List<String> earningStocks = earningForEveryDay.get(date);
