@@ -699,6 +699,7 @@ public class OptionTradeExecutor3 {
         HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
         httpConnectionManagerParams.setSoTimeout(5000);
         httpClient.getHttpConnectionManager().setParams(httpConnectionManagerParams);
+        long openTime = client.getOpenTime();
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -757,7 +758,7 @@ public class OptionTradeExecutor3 {
                     }
                 }
                 long current = System.currentTimeMillis();
-                if (current > (openTime)) {
+                if (current > (OptionTradeExecutor3.this.openTime)) {
                     timer.cancel();
                 }
             }
@@ -1598,6 +1599,12 @@ public class OptionTradeExecutor3 {
 
         delayUnsubscribeIv(stock);
         delayUnsubscribeQuote(stock);
+    }
+
+    public void cancalMonitor() {
+        for (String canTradeStock : canTradeStocks) {
+            invalidTradeStock(canTradeStock);
+        }
     }
 
     public void monitorFutuDeep(String optionCode) {

@@ -123,6 +123,7 @@ public class RealTimeDataWS_DB2 {
     private OptionStockListener2 optionStockListener2;
     private OptionTradeExecutor3 optionTradeExecutor3;
     private OptionStockListener3 optionStockListener3;
+    private TradeApi tradeApi;
 
     @Autowired
     private TradeExecutor_DB tradeExecutor;
@@ -272,7 +273,7 @@ public class RealTimeDataWS_DB2 {
             //            tradeExecutor.setList(list);
             //            tradeExecutor.setClient(this);
             //            tradeExecutor.init();
-            TradeApi tradeApi = new TradeApi();
+            tradeApi = new TradeApi();
 
             FTAPI.init();
             BasicQuote futuQuote = new BasicQuote();
@@ -595,7 +596,7 @@ public class RealTimeDataWS_DB2 {
 //            realTimeOptionWS.close();
             manualClose = true;
             userSession.close();
-            optionTradeExecutor2.close();
+            tradeApi.end();
             executor.shutdown();
         }
     }
