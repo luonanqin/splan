@@ -240,7 +240,7 @@ public class TradeApi {
         client.reqPositions(positionHandler);
     }
 
-    public boolean positionIsEmpty(){
+    public boolean positionIsEmpty() {
         return positionHandler.isEmpty();
     }
 
@@ -254,25 +254,30 @@ public class TradeApi {
     }
 
     public double getAccountCash() {
+        double cash = Constants.INIT_CASH;
         AccountSummaryHandlerImpl accountSummaryHandler = new AccountSummaryHandlerImpl();
-        client.reqAccountSummary("All", new AccountSummaryTag[] { AccountSummaryTag.NetLiquidation }, accountSummaryHandler);
-        try {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {
+        for (int i = 0; i < 3; i++) {
+            log.info("getAccountCash");
+            client.reqAccountSummary("All", new AccountSummaryTag[] { AccountSummaryTag.NetLiquidation }, accountSummaryHandler);
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+            }
+            client.cancelAccountSummary(accountSummaryHandler);
+            double accountCash = accountSummaryHandler.getCash();
+
+            if (accountCash == 0) {
+                continue;
+            } else {
+                cash = accountCash;
+                break;
+            }
         }
-        double cash = accountSummaryHandler.getCash();
-        if (cash == 0) {
-            cash = Constants.INIT_CASH;
-        }
-        client.cancelAccountSummary(accountSummaryHandler);
         return cash;
     }
 
     public static void main(String[] args) {
         TradeApi tradeApi = new TradeApi();
-//        tradeApi.useSimulateEnv();
-//        tradeApi.useRealEnv();
-//        tradeApi.start();
         tradeApi.reqPosition();
         double accountCash = tradeApi.getAccountCash();
         System.out.println(accountCash);

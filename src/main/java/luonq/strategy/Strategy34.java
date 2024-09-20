@@ -12,6 +12,7 @@ import luonq.ivolatility.GetAggregateImpliedVolatility;
 import luonq.ivolatility.GetDailyImpliedVolatility;
 import luonq.polygon.GetHistoricalSecAggregateTrade;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -93,6 +94,51 @@ public class Strategy34 {
     }
 
     // 获取开盘相对于前日收盘波动小于1%且开盘价大于7的kline
+    public static Map<String/* date */, Map<String/* stock */, StockKLine>> getDateToStockKlineMap(Map<String, Map<String, List<Double>>> secToStockPriceMap) throws Exception {
+        Set<String> pennyOptionStock = BaseUtils.getPennyOptionStock();
+        Map<String/* date */, Map<String/* stock */, StockKLine>> dateToStockKline = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
+        for (String stock : pennyOptionStock) {
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(HIS_BASE_PATH + "merge/" + stock, year, year - 1);
+            for (int i = 0; i < stockKLines.size() - 2; i++) {
+                StockKLine stockKLine = stockKLines.get(i);
+                StockKLine lastKLine = stockKLines.get(i + 1);
+                String date = stockKLine.getFormatDate();
+                double open = stockKLine.getOpen();
+                double lastClose = lastKLine.getClose();
+                double ratio = Math.abs(open - lastClose) / lastClose * 100;
+                if (ratio >= 1 || open < 7) {
+                    continue;
+                }
+                Map<String, List<Double>> dateToSecPriceMap = secToStockPriceMap.get(stock);
+                if (MapUtils.isEmpty(dateToSecPriceMap)) {
+                    continue;
+                }
+                List<Double> secPriceList = dateToSecPriceMap.get(date);
+                if (CollectionUtils.isEmpty(secPriceList)) {
+                    continue;
+                }
+                Double secPrice = secPriceList.get(secPriceList.size() - 1);
+                double secPriceRatio = Math.abs(secPrice - lastClose) / lastClose * 100;
+                if (secPriceRatio > 1) {
+                    continue;
+                }
+                if (!dateToStockKline.containsKey(date)) {
+                    dateToStockKline.put(date, Maps.newHashMap());
+                }
+
+                dateToStockKline.get(date).put(stock, stockKLine);
+
+                if (!dateToLastClose.containsKey(date)) {
+                    dateToLastClose.put(date, Maps.newHashMap());
+                }
+                dateToLastClose.get(date).put(stock, lastClose);
+            }
+        }
+
+        return dateToStockKline;
+    }
+
+    // 获取开盘相对于前日收盘波动小于1%且开盘价大于7的kline
     public static Map<String/* date */, Map<String/* stock */, StockKLine>> getDateToStockKlineMap() throws Exception {
         Set<String> pennyOptionStock = BaseUtils.getPennyOptionStock();
         Map<String/* date */, Map<String/* stock */, StockKLine>> dateToStockKline = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
@@ -122,6 +168,53 @@ public class Strategy34 {
         }
 
         return dateToStockKline;
+    }
+
+
+    public static Map<String/* stock */, Map<String/* Date */, List<Double/* price */>>> getSecToStockPriceMap() throws Exception {
+        Map<String, Map<String, List<Double>>> map = Maps.newHashMap();
+        Set<String> pennyOptionStock = BaseUtils.getPennyOptionStock();
+        int sec = 1800;
+
+        for (String stock : pennyOptionStock) {
+            String dirPath = HIS_BASE_PATH + "sec" + sec + "Aggregate/" + stock;
+            Map<String, String> fileMap = BaseUtils.getFileMap(dirPath);
+            map.put(stock, Maps.newHashMap());
+            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(HIS_BASE_PATH + "merge/" + stock, year, year - 1);
+            for (StockKLine stockKLine : stockKLines) {
+                String date = stockKLine.getFormatDate();
+                String filePah = fileMap.get(date);
+                if (StringUtils.isBlank(filePah)) {
+                    GetHistoricalSecAggregateTrade.getDataSync(stock, date, sec);
+                    filePah = dirPath + "/" + date;
+                }
+                List<String> lines = BaseUtils.readFile(filePah);
+                LocalDateTime day = LocalDate.parse(date, DB_DATE_FORMATTER).atTime(0, 0);
+                if (CollectionUtils.isNotEmpty(lines)) {
+                    List<Double> priceList = Lists.newArrayList();
+                    for (String line : lines) {
+                        String[] split = line.split("\t");
+                        String dateTime = split[0];
+                        int time = Integer.parseInt(dateTime.substring(11, 19).replaceAll("\\:", ""));
+                        if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
+                            if (time > 220000) {
+                                break;
+                            }
+                        } else {
+                            if (time > 230000) {
+                                break;
+                            }
+                        }
+                        Double price = Double.valueOf(split[5]);
+                        priceList.add(price);
+                    }
+                    map.get(stock).put(date, priceList);
+                }
+            }
+            //            System.out.println("load " + stock + " finish");
+        }
+
+        return map;
     }
 
     public static OptionDaily requestOptionDaily(String code, String date) throws Exception {
@@ -228,9 +321,10 @@ public class Strategy34 {
             return "empty";
         }
 
-        int min = 5;
+        int min = 30;
         double allOpen = calAllOpenPrice(callSymbol, putSymbol, date, min);
-        if (!(allOpen > 0.5) || !(allOpen < 1)) {
+        if (!(allOpen > 0.5)) {
+//        if (!(allOpen > 0.5) || !(allOpen < 1)) {
             //            System.out.println("open is illegal. date=" + date + " call=" + callSymbol + " put=" + putSymbol);
             return "empty";
         }
@@ -302,7 +396,7 @@ public class Strategy34 {
                 return result;
             }
 
-            if (diffRatio >= 10 || diffRatio < -15) {
+            if (diffRatio >= 20 || diffRatio < -20) {
                 result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
                 return result;
             }
@@ -390,7 +484,9 @@ public class Strategy34 {
         GetAggregateImpliedVolatility.init();
         GetHistoricalSecAggregateTrade.init();
 
-        Map<String, Map<String, StockKLine>> dateToStockKlineMap = getDateToStockKlineMap();
+        Map<String, Map<String, List<Double>>> secToStockPriceMap = getSecToStockPriceMap();
+        //        Map<String, Map<String, StockKLine>> dateToStockKlineMap = getDateToStockKlineMap();
+        Map<String, Map<String, StockKLine>> dateToStockKlineMap = getDateToStockKlineMap(secToStockPriceMap);
 
         for (String date : dateToStockKlineMap.keySet()) {
             // 有做多成交的就不进行做空
@@ -416,8 +512,8 @@ public class Strategy34 {
                 expirationDate = LocalDate.parse(expirationDate, DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2024-09-06")) {
-                //                continue;
+            if (!date.equals("2024-09-18")) {
+                                continue;
             }
 
             Map<String, StockKLine> stockKLineMap = dateToStockKlineMap.get(date);

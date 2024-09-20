@@ -26,7 +26,6 @@ import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.futu.BasicQuote;
 import luonq.ibkr.TradeApi;
 import luonq.listener.OptionStockListener2;
-import luonq.listener.OptionStockListener3;
 import luonq.strategy.backup.Strategy_DB;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -109,6 +108,7 @@ public class RealTimeDataWS_DB2 {
     private boolean listenEnd = false;
     private NodeList list = new NodeList(10);
     private AtomicBoolean hasAuth = new AtomicBoolean(false);
+    private double funds;
 
     public static Set<String> stockSet = Sets.newHashSet();
     public Set<String> allStockSet = Sets.newHashSet();
@@ -116,13 +116,12 @@ public class RealTimeDataWS_DB2 {
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private boolean testOption = true;
-//    private RealTimeOptionWS2 realTimeOptionWS = new RealTimeOptionWS2();
 
     private List<String> optionStockSet;
     private OptionTradeExecutor2 optionTradeExecutor2;
     private OptionStockListener2 optionStockListener2;
-    private OptionTradeExecutor3 optionTradeExecutor3;
-    private OptionStockListener3 optionStockListener3;
+    //    private OptionTradeExecutor3 optionTradeExecutor3;
+    //    private OptionStockListener3 optionStockListener3;
     private TradeApi tradeApi;
 
     @Autowired
@@ -143,6 +142,10 @@ public class RealTimeDataWS_DB2 {
 
     public void setOpenTime(long openTime) {
         this.openTime = openTime;
+    }
+
+    public double getFunds() {
+        return funds;
     }
 
     public void init() {
@@ -209,11 +212,7 @@ public class RealTimeDataWS_DB2 {
         unsubcribeStockSet = Sets.newHashSet();
         tradeEventBus = asyncEventBus();
         optionStockListener2 = new OptionStockListener2();
-        optionStockListener3 = new OptionStockListener3();
-        //        if (tradeExecutor == null) {
-        //            tradeExecutor = new TradeExecutor_DB();
-        //        }
-        //        realTimeOptionWS.init();
+        //        optionStockListener3 = new OptionStockListener3();
     }
 
     private boolean waitAuth() {
@@ -239,10 +238,10 @@ public class RealTimeDataWS_DB2 {
         try {
             loadOptionTradeData.load();
             optionTradeExecutor2.init();
-            optionTradeExecutor3.init();
+            //            optionTradeExecutor3.init();
             //            optionTradeExecutor.getRealTimeIV();
             optionTradeExecutor2.getFutuRealTimeIV();
-            optionTradeExecutor3.getFutuRealTimeIV();
+            //            optionTradeExecutor3.getFutuRealTimeIV();
             ReadWriteOptionTradeInfo.init();
             if (!testOption) {
                 computeHisOverBollingerRatio();
@@ -270,10 +269,10 @@ public class RealTimeDataWS_DB2 {
 
     public void initTrade() {
         try {
-            //            tradeExecutor.setList(list);
-            //            tradeExecutor.setClient(this);
-            //            tradeExecutor.init();
             tradeApi = new TradeApi();
+            TimeUnit.SECONDS.sleep(5);
+            funds = tradeApi.getAccountCash();
+            log.info("funds is {}", funds);
 
             FTAPI.init();
             BasicQuote futuQuote = new BasicQuote();
@@ -286,16 +285,12 @@ public class RealTimeDataWS_DB2 {
             optionTradeExecutor2.setOptionStockListener(optionStockListener2);
             optionStockListener2.setOptionTradeExecutor(optionTradeExecutor2);
 
-            optionTradeExecutor3 = new OptionTradeExecutor3();
-            optionTradeExecutor3.setFutuQuote(futuQuote);
-            optionTradeExecutor3.setTradeApi(tradeApi);
-            optionTradeExecutor3.setClient(this);
-            optionTradeExecutor3.setOptionStockListener(optionStockListener3);
-            optionStockListener3.setOptionTradeExecutor(optionTradeExecutor3);
-
-//            realTimeOptionWS.setOptionTradeExecutor(optionTradeExecutor);
-//            realTimeOptionWS.setOptionStockListener(optionStockListener);
-
+            //            optionTradeExecutor3 = new OptionTradeExecutor3();
+            //            optionTradeExecutor3.setFutuQuote(futuQuote);
+            //            optionTradeExecutor3.setTradeApi(tradeApi);
+            //            optionTradeExecutor3.setClient(this);
+            //            optionTradeExecutor3.setOptionStockListener(optionStockListener3);
+            //            optionStockListener3.setOptionTradeExecutor(optionTradeExecutor3);
             log.info("finish init trade");
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,16 +299,8 @@ public class RealTimeDataWS_DB2 {
 
     public void initMessageListener() {
         try {
-            if (!testOption) {
-                //                TradeDataListener_DB tradeDataListener = new TradeDataListener_DB();
-                //                tradeDataListener.setStockSet(stockSet);
-                //                tradeDataListener.setClient(this);
-                //                tradeDataListener.setList(list);
-                //                tradeEventBus.register(tradeDataListener);
-            }
-
             tradeEventBus.register(optionStockListener2);
-            tradeEventBus.register(optionStockListener3);
+            //            tradeEventBus.register(optionStockListener3);
 
             log.info("finish init message listener");
         } catch (Exception e) {
@@ -593,7 +580,6 @@ public class RealTimeDataWS_DB2 {
 
     public void close() throws Exception {
         if (userSession != null) {
-//            realTimeOptionWS.close();
             manualClose = true;
             userSession.close();
             tradeApi.end();
@@ -727,12 +713,6 @@ public class RealTimeDataWS_DB2 {
                         beginTrade(stock + " time is " + time + ", price is " + price + ".listen end!");
                         return;
                     }
-                    //                    // 当前价大于前一天的下轨则直接过滤
-                    //                    Double lastDn = stockToLastDn.get(stock);
-                    //                    if (lastDn == null || price > lastDn || price < PRICE_LIMIT) {
-                    //                        unsubscribe(stock);
-                    //                        continue;
-                    //                    }
 
                     //                    log.info("receive data: {}", msg);
                     stockToEvent.put(stock, new StockEvent(stock, price, time));
@@ -768,17 +748,34 @@ public class RealTimeDataWS_DB2 {
         log.info(msg);
         unsubscribeAll();
         listenEnd = true;
-        //        getRealtimeQuote();
         getRealtimeQuoteForOption(optionStockListener2.getCanTradeStocks());
         ReadWriteOptionTradeInfo.writeStockOpenPrice();
-        //        tradeExecutor.beginTrade();
+        //        asynCheckExecutor3();
         optionTradeExecutor2.beginTrade();
-
-        if (optionTradeExecutor3.checkCanTrade()) {
-            getRealtimeQuoteForOption(optionStockListener3.getCanTradeStocks());
-            optionTradeExecutor3.beginTrade();
-        }
+        //        optionTradeExecutor3.beginTrade();
     }
+
+    //    private void asynCheckExecutor3() {
+    //        executor.execute(() -> {
+    //            while (true) {
+    //                if (optionTradeExecutor3.checkNoPosition()) {
+    //                    try {
+    //                        TimeUnit.SECONDS.sleep(1);
+    //                    } catch (InterruptedException e) {
+    //                    }
+    //                    if (System.currentTimeMillis() > optionTradeExecutor3.getOpenTime()) {
+    //                        log.info("check executor3 is over time");
+    //                        return;
+    //                    }
+    //                } else {
+    //                    optionTradeExecutor3.cannotTrade();
+    //                    optionTradeExecutor3.cancelMonitor();
+    //                    log.info("check executor3 has position");
+    //                    return;
+    //                }
+    //            }
+    //        });
+    //    }
 
     // 成交前获取实时报价
     public void getRealtimeQuote() throws InterruptedException {
@@ -935,14 +932,6 @@ public class RealTimeDataWS_DB2 {
             }
         });
         log.info("start monitor polygon quote");
-    }
-
-    public void subscribeQuoteForOption(String optionCode) {
-//        realTimeOptionWS.subscribeQuoteForOption(optionCode);
-    }
-
-    public void unsubscribeQuoteForOption(String optionCode) {
-//        realTimeOptionWS.unsubscribeQuoteForOption(optionCode);
     }
 
     public boolean unsubscribe(String stock) {

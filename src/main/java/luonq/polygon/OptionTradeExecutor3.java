@@ -140,6 +140,7 @@ public class OptionTradeExecutor3 {
     private long openTime;
     private long closeTime;
     private long stopBuyTime; // 停止交易时间为开盘后一分钟，但是如果其中一个已经交易则不终止
+    private boolean canTrade;
 
     public void init() {
         //        FTAPI.init();
@@ -171,14 +172,11 @@ public class OptionTradeExecutor3 {
         rtForIkbrMap = optionStockListener.getRtForIkbrMap();
         futuForIkbrMap = optionStockListener.getFutuForIkbrMap();
         stopBuyTime = openTime + 60000;
+        canTrade = true;
+        funds = client.getFunds();
     }
 
-    public boolean checkCanTrade() {
-        if (System.currentTimeMillis() > openTime) {
-            log.info("current time is over open time. stop sell option trade");
-            return false;
-        }
-
+    public boolean checkNoPosition() {
         boolean positionIsEmpty = tradeApi.positionIsEmpty();
         if (!positionIsEmpty) {
             log.info("position is not empty. stop sell option trade");
@@ -188,15 +186,23 @@ public class OptionTradeExecutor3 {
         return true;
     }
 
+    public void cannotTrade() {
+        canTrade = false;
+    }
+
     public void beginTrade() throws InterruptedException {
+        /* 如果在开始交易前检查不通过，则做多结束后，进入这里直接返回不交易 */
+        if (!canTrade) {
+            log.info("can not trade. stop sell option trade");
+            return;
+        }
+        /* 如果做多无交易，则会提前进入while循环，但是需等待直到开始交易时间 */
         while (true) {
             if (System.currentTimeMillis() > openTime) {
                 break;
             }
             TimeUnit.SECONDS.sleep(1);
         }
-
-        funds = tradeApi.getAccountCash();
 
         // 能交易的股票
         if (CollectionUtils.isEmpty(canTradeStocks)) {
@@ -412,9 +418,9 @@ public class OptionTradeExecutor3 {
                 double putCalcPrice = calculateMidPrice(putFutu);
 
                 double tradeTotal = callCalcPrice + putCalcPrice;
-                if (tradeTotal < 0.5 || tradeTotal > 1) {
+                if (tradeTotal < 0.5) {
                     invalidTradeStock(stock);
-                    log.info("the price is greater than 1 or less than 0.5. callAndPut={}\tcallPrice={}\tputPrice={}", callAndPut, callCalcPrice, putCalcPrice);
+                    log.info("the price is less than 0.5. callAndPut={}\tcallPrice={}\tputPrice={}", callAndPut, callCalcPrice, putCalcPrice);
                     tempInvalidStocks.add(stock);
                     continue;
                 }
@@ -752,7 +758,7 @@ public class OptionTradeExecutor3 {
                         double putIv = Double.parseDouble(putSplit[0]);
                         optionRtIvMap.put(callRt, callIv);
                         optionRtIvMap.put(putRt, putIv);
-                        log.info("rt iv data: call={} {}\tput={} {}", callFutu, callIvTime, putFutu, putIvTime);
+//                        log.info("rt iv data: call={} {}\tput={} {}", callFutu, callIvTime, putFutu, putIvTime);
                     } catch (Exception e) {
                         log.error("getFutuRealTimeIV error. callAndPut={}", callAndPut, e);
                     }
@@ -1601,7 +1607,7 @@ public class OptionTradeExecutor3 {
         delayUnsubscribeQuote(stock);
     }
 
-    public void cancalMonitor() {
+    public void cancelMonitor() {
         for (String canTradeStock : canTradeStocks) {
             invalidTradeStock(canTradeStock);
         }
@@ -1610,22 +1616,6 @@ public class OptionTradeExecutor3 {
     public void monitorFutuDeep(String optionCode) {
         futuQuote.subOrderBook(optionCode);
         log.info("monitor futu option deep: {}", optionCode);
-    }
-
-    public void monitorPolygonDeep(String optionCode) {
-        client.subscribeQuoteForOption(optionCode);
-        log.info("monitor polygon option deep: {}", optionCode);
-    }
-
-    public void unmonitorPolygonQuote(String stock) {
-        String callAndPut = MapUtils.getString(canTradeOptionMap, stock, "");
-        if (callAndPut.contains("|")) {
-            String call = callAndPut.split("\\|")[0];
-            String put = callAndPut.split("\\|")[1];
-            client.unsubscribeQuoteForOption(call);
-            client.unsubscribeQuoteForOption(put);
-            log.info("unmonitor polygon option quote: {}", callAndPut);
-        }
     }
 
     public void monitorIV(String optionCode) {

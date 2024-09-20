@@ -179,11 +179,11 @@ public class OptionTradeExecutor2 {
         futuForIkbrMap = optionStockListener.getFutuForIkbrMap();
         invalidTime = openTime + 15000;
         stopBuyTime = openTime + 60000;
+        funds = client.getFunds();
     }
 
     public void beginTrade() throws InterruptedException {
         tradeApi.reqPosition();
-        funds = tradeApi.getAccountCash();
 
         // 能交易的股票
         if (CollectionUtils.isEmpty(canTradeStocks)) {
@@ -1637,22 +1637,6 @@ public class OptionTradeExecutor2 {
     public void monitorFutuDeep(String optionCode) {
         futuQuote.subOrderBook(optionCode);
         log.info("monitor futu option deep: {}", optionCode);
-    }
-
-    public void monitorPolygonDeep(String optionCode) {
-        client.subscribeQuoteForOption(optionCode);
-        log.info("monitor polygon option deep: {}", optionCode);
-    }
-
-    public void unmonitorPolygonQuote(String stock) {
-        String callAndPut = MapUtils.getString(canTradeOptionMap, stock, "");
-        if (callAndPut.contains("|")) {
-            String call = callAndPut.split("\\|")[0];
-            String put = callAndPut.split("\\|")[1];
-            client.unsubscribeQuoteForOption(call);
-            client.unsubscribeQuoteForOption(put);
-            log.info("unmonitor polygon option quote: {}", callAndPut);
-        }
     }
 
     public void monitorIV(String optionCode) {
