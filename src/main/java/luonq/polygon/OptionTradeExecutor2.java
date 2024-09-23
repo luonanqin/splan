@@ -157,8 +157,6 @@ public class OptionTradeExecutor2 {
         //        realTrade = false;
         //        tradeApi.useRealEnv();
         //        tradeApi.start();
-        //        tradeApi.unlock();
-        //        tradeApi.clearStopLossStockSet();
 
         canTradeOptionForFutuMap = optionStockListener.getCanTradeOptionForFutuMap();
         optionStrikePriceMap = optionStockListener.getOptionStrikePriceMap();
@@ -204,126 +202,15 @@ public class OptionTradeExecutor2 {
             return;
         }
 
-        //        getOrder();
         threadPool.execute(() -> monitorBuyOrder());
         threadPool.execute(() -> monitorSellOrder());
         threadPool.execute(() -> checkCancel());
         stopLossAndGain();
-        //        delayUnsubscribeIv();
-
-        // 开盘后15s再开始交易逻辑
-        //        while (System.currentTimeMillis() < invalidTime) {
-        //            Thread.sleep(500);
-        //            log.info("wait trade...");
-        //        }
 
         canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
         int size = sortedCanTradeStock.size() > limitCount ? limitCount : sortedCanTradeStock.size();
         avgFund = (int) funds / size;
         log.info("init avgFund is {}", avgFund);
-        //        List<String> tempCanTradeStock = Lists.newArrayList();
-        // 如果已排序后的股票超过1只，则从size=3开始计算哪些股票价格符合条件（size根据本金大小进行调整）
-        //        if (size > 1) {
-        //            while (true) {
-        //                double avgFund = funds / size;
-        //                List<String> tempInvalid = Lists.newArrayList();
-        //                for (String stock : sortedCanTradeStock) {
-        //                    String callAndPut = canTradeOptionForFutuMap.get(stock);
-        //                    String callAndPutRt = canTradeOptionForRtIVMap.get(stock);
-        //
-        //                    String[] splitRt = callAndPutRt.split("\\|");
-        //                    String callRt = splitRt[0];
-        //                    String putRt = splitRt[1];
-        //                    Double callIv = optionRtIvMap.get(callRt);
-        //                    Double putIv = optionRtIvMap.get(putRt);
-        //
-        //                    String[] split = callAndPut.split("\\|");
-        //                    String callFutu = split[0];
-        //                    String putFutu = split[1];
-        //                    Double callBidPrice = codeToBidMap.get(callFutu);
-        //                    Double callAskPrice = codeToAskMap.get(callFutu);
-        //                    Double putBidPrice = codeToBidMap.get(putFutu);
-        //                    Double putAskPrice = codeToAskMap.get(putFutu);
-        //
-        //                    // 如果已经有iv但是没有摆盘，则不交易该股票
-        //                    if (callIv != null && putIv != null && (callBidPrice == null || callAskPrice == null || putBidPrice == null || putAskPrice == null)) {
-        //                        log.info("there is iv but no quote. call and put={}", callAndPut);
-        //                        invalidTradeStock(stock);
-        //                        tempInvalid.add(stock);
-        //                        continue;
-        //                    }
-        //
-        //                    if ((callBidPrice == null || callAskPrice == null || putBidPrice == null || putAskPrice == null)) {
-        //                    }
-        //                    double callMidPrice = BigDecimal.valueOf((callBidPrice + callAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
-        //                    double putMidPrice = BigDecimal.valueOf((putBidPrice + putAskPrice) / 2).setScale(2, RoundingMode.UP).doubleValue();
-        //                    if (100 * (callMidPrice + putMidPrice) < avgFund) {
-        //                        tempCanTradeStock.add(stock);
-        //                    }
-        //                }
-        //                sortedCanTradeStock.removeAll(tempInvalid);
-        //                if (tempCanTradeStock.size() >= size || size < 2) {
-        //                    break;
-        //                } else {
-        //                    tempCanTradeStock.clear();
-        //                    size--;
-        //                }
-        //            }
-        //            log.info("after calucate by size {}, sortedCanTrade={}\ttempCanTrade={}", size, sortedCanTradeStock, tempCanTradeStock);
-        //            for (Iterator<String> iter = sortedCanTradeStock.iterator(); iter.hasNext(); ) {
-        //                String next = iter.next();
-        //                if (!tempCanTradeStock.contains(next)) {
-        //                    invalidTradeStock(next);
-        //                    iter.remove();
-        //                }
-        //            }
-        //        }
-
-        //        if (sortedCanTradeStock.size() > size) {
-        //            canTradeStocks = Sets.newHashSet(sortedCanTradeStock.subList(0, size));
-        //            List<String> inteceptStock = sortedCanTradeStock.subList(size, sortedCanTradeStock.size());
-        //            inteceptStock.forEach(s -> invalidTradeStock(s));
-        //            log.info("can trade stock size > {}. after intercept, the stocks are {}", size, canTradeStocks);
-        //        } else {
-        //            canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
-        //            log.info("can trade stock size <= {}. don't intercept, the stocks are {}", size, canTradeStocks);
-        //        }
-
-        //        int actualSize = canTradeStocks.size();
-        //        for (String stock : canTradeStocks) {
-        //            String callAndPut = canTradeOptionForRtIVMap.get(stock);
-        //            String[] split = callAndPut.split("\\|");
-        //            String callRt = split[0];
-        //            String putRt = split[1];
-        //            Double callIv = optionRtIvMap.get(callRt);
-        //            Double putIv = optionRtIvMap.get(putRt);
-        //            if (callIv == null || putIv == null) {
-        //                continue;
-        //            }
-        //
-        //            String callFutu = optionCodeMap.get(callRt);
-        //            String putFutu = optionCodeMap.get(putRt);
-        //            boolean hasNoDeep = checkHasNoDeep(callFutu, putFutu);
-        //            if (hasNoDeep) {
-        //                invalidTradeStock(stock);
-        //                actualSize--;
-        //                log.info("before trade, check no option quote. stock={}", stock);
-        //            }
-        //        }
-
-        // 均分账户资金
-        //        double funds = tradeApi.getFunds();
-        //        int actualSize = canTradeStocks.size() - invalidStocks.size();
-        //        if (actualSize == 0) {
-        //            log.info("all stock has been sold. exit");
-        //            return;
-        //        } else if (actualSize < 0) {
-        //            log.info("can trade stock size is illegal. exit");
-        //            return;
-        //        } else {
-        //            avgFund = (int) funds / actualSize;
-        //        }
-        //        log.info("stock size: {}, funds: {}, avgFund: {}", actualSize, funds, avgFund);
 
         /**
          * 2.循环判断canTradeStocks：
@@ -1619,19 +1506,8 @@ public class OptionTradeExecutor2 {
         ReadWriteOptionTradeInfo.writeHasSoldOrder(stock);
         ReadWriteOptionTradeInfo.writeHasSoldSuccess(stock);
         invalidStocks.add(stock);
-        //        unmonitorPolygonQuote(stock);
 
         log.info("invalid stock: {}", stock);
-        //        Set<String> hasBoughtOrderStocks = hasBoughtOrderMap.entrySet().stream().filter(e -> e.getValue().intValue() == EXIST).map(e -> e.getKey()).collect(Collectors.toSet());
-        //        if (CollectionUtils.subtract(hasBoughtOrderStocks, invalidStocks).isEmpty()) {
-        //            int size = canTradeStocks.size() - invalidStocks.size();
-        //            if (size == 0) {
-        //                avgFund = funds;
-        //            } else {
-        //                avgFund = (int) funds / size;
-        //            }
-        //            log.info("change avg fund. avgFund={}", avgFund);
-        //        }
 
         delayUnsubscribeIv(stock);
         delayUnsubscribeQuote(stock);
