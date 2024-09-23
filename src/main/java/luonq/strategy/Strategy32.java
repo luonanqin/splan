@@ -1129,6 +1129,8 @@ public class Strategy32 {
         List<String> list = Lists.newArrayList();
         String result = "";
         if (stopLoss) {
+            int continueGain = 1;
+            double continueRatio = 0d;
             for (int i = sec; i < dayAllSeconds.size() - 60; i++) {
                 Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
                 Double callClose = callTradePriceMap.get(seconds);
@@ -1152,81 +1154,28 @@ public class Strategy32 {
                 }
                 if (i <= 10800 && i >= 120) {
                     if (diffRatio >= 20) {
-                        //                    if (false
-                        //                      || (open <= 0.3 && diffRatio >= 4.14)
-                        //                      || (open > 0.3 && open <= 0.4 && diffRatio >= 7.7)
-                        //                      || (open > 0.4 && open <= 0.5 && diffRatio >= 9.95)
-                        //                      || (open > 0.5 && open <= 0.6 && diffRatio >= 11.51)
-                        //                      || (open > 0.6 && open <= 0.7 && diffRatio >= 12.64)
-                        //                      || (open > 0.7 && open <= 0.8 && diffRatio >= 13.51)
-                        ////                      || ( open <= 0.8 && diffRatio >= 15)
-                        //                      || (open > 0.8 && open <= 0.9 && diffRatio >= 14.2)
-                        //                      || (open > 0.9 && open <= 1.0 && diffRatio >= 14.75)
-                        //                      || (open > 1.0 && open <= 1.1 && diffRatio >= 15.21)
-                        //                      || (open > 1.1 && open <= 1.2 && diffRatio >= 15.6)
-                        //                      || (open > 1.2 && open <= 1.3 && diffRatio >= 15.92)
-                        //                      || (open > 1.3 && open <= 1.4 && diffRatio >= 16.2)
-                        //                      || (open > 1.4 && open <= 1.5 && diffRatio >= 16.45)
-                        //                      || (open > 1.5 && open <= 1.6 && diffRatio >= 16.67)
-                        //                      || (open > 1.6 && open <= 1.7 && diffRatio >= 16.86)
-                        //                      || (open > 1.7 && open <= 1.8 && diffRatio >= 17.03)
-                        //                      || (open > 1.8 && open <= 1.9 && diffRatio >= 17.18)
-                        //                      || (open > 1.9 && open <= 2 && diffRatio >= 17.32)
-                        //                      || (open > 2 && diffRatio > 17.4)
-                        //                    ) { // 开盘价和小于0.5的止盈是30%，大于0.5的止盈是20%
                         result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
                         return result;
+                        //                        if (continueGain == 1) {
+                        //                            continueRatio = diffRatio;
+                        //                            continueGain = 2;
+                        //                        } else if (continueGain == 2) {
+                        //                            if (diffRatio - continueRatio > 2) {
+                        //                                continueRatio = continueRatio + 2;
+                        //                            } else if (diffRatio < continueRatio) {
+                        //                                result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                        //                                return result;
+                        //                            }
+                        //                        }
+                        //                    } else if (continueGain == 2) {
+                        //                        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
+                        //                        return result;
                     } else if (diffRatio < -20) {
-                        //                    } else if (false
-                        //                      || (open <= 0.3 && diffRatio <= -7.8)
-                        //                      || (open > 0.3 && open <= 0.4 && diffRatio <= -10.88)
-                        //                      || (open > 0.4 && open <= 0.5 && diffRatio <= -12.72)
-                        //                      || (open > 0.5 && open <= 0.6 && diffRatio <= -13.92)
-                        //                      || (open > 0.6 && open <= 0.7 && diffRatio <= -14.8)
-                        //                      || (open > 0.7 && open <= 0.8 && diffRatio <= -15.44)
-                        //                      || (open <= 0.8 && diffRatio <= -16)
-                        //                      || (open > 0.8 && open <= 0.9 && diffRatio <= -16)
-                        //                      || (open > 0.9 && open <= 1.0 && diffRatio <= -16.4)
-                        //                      || (open > 1.0 && open <= 1.1 && diffRatio <= -16.7)
-                        //                      || (open > 1.1 && open <= 1.2 && diffRatio <= -16.96)
-                        //                      || (open > 1.2 && open <= 1.3 && diffRatio <= -17.2)
-                        //                      || (open > 1.3 && open <= 1.4 && diffRatio <= -17.44)
-                        //                      || (open > 1.4 && open <= 1.5 && diffRatio <= -17.6)
-                        //                      || (open > 1.5 && open <= 1.6 && diffRatio <= -17.76)
-                        //                      || (open > 1.6 && open <= 1.7 && diffRatio <= -17.84)
-                        //                      || (open > 1.7 && open <= 1.8 && diffRatio <= -18)
-                        //                      || (open > 1.8 && open <= 1.9 && diffRatio <= -18.08)
-                        //                      || (open > 1.9 && open <= 2 && diffRatio <= -18.16)
-                        //                      || (open > 2 && diffRatio <= -19)
-                        //                    ) {
                         result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
                         return result;
                     }
                 } else if (i > 10800) {
                     if (diffRatio < -20 || diffRatio > 10) {
-                        //                    if (false
-                        //                      || (open <= 0.3 && diffRatio <= -7.8)
-                        //                      || (open > 0.3 && open <= 0.4 && diffRatio <= -10.88)
-                        //                      || (open > 0.4 && open <= 0.5 && diffRatio <= -12.72)
-                        //                      || (open > 0.5 && open <= 0.6 && diffRatio <= -13.92)
-                        //                      || (open > 0.6 && open <= 0.7 && diffRatio <= -14.8)
-                        //                      || (open > 0.7 && open <= 0.8 && diffRatio <= -15.44)
-                        //                      || (open <= 0.8 && diffRatio <= -16)
-                        //                      || (open > 0.8 && open <= 0.9 && diffRatio <= -16)
-                        //                      || (open > 0.9 && open <= 1.0 && diffRatio <= -16.4)
-                        //                      || (open > 1.0 && open <= 1.1 && diffRatio <= -16.7)
-                        //                      || (open > 1.1 && open <= 1.2 && diffRatio <= -16.96)
-                        //                      || (open > 1.2 && open <= 1.3 && diffRatio <= -17.2)
-                        //                      || (open > 1.3 && open <= 1.4 && diffRatio <= -17.44)
-                        //                      || (open > 1.4 && open <= 1.5 && diffRatio <= -17.6)
-                        //                      || (open > 1.5 && open <= 1.6 && diffRatio <= -17.76)
-                        //                      || (open > 1.6 && open <= 1.7 && diffRatio <= -17.84)
-                        //                      || (open > 1.7 && open <= 1.8 && diffRatio <= -18)
-                        //                      || (open > 1.8 && open <= 1.9 && diffRatio <= -18.08)
-                        //                      || (open > 1.9 && open <= 2 && diffRatio <= -18.16)
-                        //                      || (open > 2 && diffRatio <= -19)
-                        //                      || diffRatio > 10
-                        //                    ) {
                         result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio;
                         return result;
                     }

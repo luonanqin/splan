@@ -2,7 +2,6 @@ package luonq.polygon;
 
 import bean.BOLL;
 import bean.FrontReinstatement;
-import bean.Node;
 import bean.NodeList;
 import bean.RatioBean;
 import bean.SplitStockInfo;
@@ -112,10 +111,12 @@ public class RealTimeDataWS_DB2 {
 
     public static Set<String> stockSet = Sets.newHashSet();
     public Set<String> allStockSet = Sets.newHashSet();
+    public Set<String> filterStockSet = Sets.newHashSet();
     private static Set<String> unsubcribeStockSet = Sets.newHashSet();
     private AsyncEventBus tradeEventBus;
     private Session userSession = null;
     private boolean testOption = true;
+    private boolean unsubscribe = false;
 
     private List<String> optionStockSet;
     private OptionTradeExecutor2 optionTradeExecutor2;
@@ -171,7 +172,10 @@ public class RealTimeDataWS_DB2 {
                 //                    optionTradeExecutor.restart();
                 //                } else {
                 subcribeStock();
-                sendToTradeDataListener();
+//                sendToTradeDataListener();
+
+                executor.execute(() -> sendToOptionListener());
+                beginTrade();
                 //                }
             } else {
                 if (MapUtils.isNotEmpty(tradeExecutor.getAllPosition())) {
@@ -210,7 +214,9 @@ public class RealTimeDataWS_DB2 {
         list = new NodeList(10);
         hasAuth = new AtomicBoolean(false);
         unsubcribeStockSet = Sets.newHashSet();
+        filterStockSet = Sets.newHashSet();
         tradeEventBus = asyncEventBus();
+        unsubscribe = false;
         optionStockListener2 = new OptionStockListener2();
         //        optionStockListener3 = new OptionStockListener3();
     }
@@ -662,6 +668,82 @@ public class RealTimeDataWS_DB2 {
         this.userSession.getAsyncRemote().sendText(message);
     }
 
+    public void sendToOptionListener() {
+        try {
+            while (true) {
+                String msg = subscribeBQ.poll(2, TimeUnit.SECONDS);
+                if (listenEnd) {
+                    return;
+                }
+                long currentTime = System.currentTimeMillis();
+                if (StringUtils.isBlank(msg)) {
+                    log.info("there is no msg. continue");
+                    continue;
+                }
+
+                //                log.info(msg);
+                List<Map> maps = JSON.parseArray(msg, Map.class);
+                for (Map map : maps) {
+                    String stock = MapUtils.getString(map, "sym", "");
+
+                    if (StringUtils.isBlank(stock)) {
+                        continue;
+                    }
+                    Double price = MapUtils.getDouble(map, "p");
+                    Long time = MapUtils.getLong(map, "t");
+                    Integer size = MapUtils.getInteger(map, "s");
+                    if (size < 100) {
+                        continue;
+                    }
+                    if (time < openTime) {
+                        if (time % 100 == 0) {
+                            log.info("time is early. " + map);
+                        }
+                        continue;
+                    }
+
+                    realtimeQuoteForOptionMap.put(stock, price);
+                    if (filterStockSet.contains(stock)) {
+                        continue;
+                    } else {
+                        // 发出事件待交易
+                        tradeEventBus.post(new StockEvent(stock, price, time));
+                        filterStockSet.add(stock);
+                    }
+                }
+
+                // 监听时间到达后1秒，反订阅不能交易的股票。反订阅只执行一次，所以要有标记位
+                if (!unsubscribe && currentTime > listenEndTime + 1000) {
+                    log.info("now time is over! listen end!");
+                    Set<String> canTradeStocks = optionStockListener2.getCanTradeStocks();
+                    for (String s : allStockSet) {
+                        if (!canTradeStocks.contains(s)) {
+                            unsubscribe(s);
+                        }
+                    }
+                    unsubscribe = true;
+                }
+            }
+        } catch (Exception e) {
+            log.info("sendToOptionListener error. ", e);
+        }
+    }
+
+    public void beginTrade() throws Exception {
+        log.info("begin wait trade");
+        while (System.currentTimeMillis() < listenEndTime) {
+            TimeUnit.SECONDS.sleep(1);
+            log.info("waiting trade......");
+        }
+
+        ReadWriteOptionTradeInfo.writeStockOpenPrice();
+        optionTradeExecutor2.beginTrade();
+    }
+
+    public void stopListen(){
+        listenEnd = true;
+    }
+
     public void sendToTradeDataListener() {
         try {
             while (true) {
@@ -776,67 +858,6 @@ public class RealTimeDataWS_DB2 {
     //            }
     //        });
     //    }
-
-    // 成交前获取实时报价
-    public void getRealtimeQuote() throws InterruptedException {
-        getRealtimeQuote = true;
-        Set<String> stockSet = list.getNodes().stream().map(Node::getName).collect(Collectors.toSet());
-        if (CollectionUtils.isEmpty(stockSet)) {
-            log.info("there is no stock to get real-time quote");
-            return;
-        }
-        log.info("get real-time quote: " + stockSet);
-        for (String stock : stockSet) {
-            sendMessage("{\"action\":\"subscribe\", \"params\":\"Q." + stock + "\"}");
-        }
-
-        executor.execute(() -> {
-            try {
-                while (getRealtimeQuote) {
-                    String msg = realtimeQuoteBQ.poll(1, TimeUnit.SECONDS);
-                    if (StringUtils.isBlank(msg)) {
-                        continue;
-                    }
-
-                    List<Map> maps = JSON.parseArray(msg, Map.class);
-                    for (Map map : maps) {
-                        String stock = MapUtils.getString(map, "sym", "");
-                        if (StringUtils.isBlank(stock) || !stockSet.contains(stock)) {
-                            continue;
-                        }
-
-                        Double askPrice = MapUtils.getDouble(map, "ap");
-                        Double bidPrice = MapUtils.getDouble(map, "bp");
-                        Double tradePrice;
-                        if (bidPrice == null && askPrice == null) { // 非报价数据
-                            continue;
-                        }
-                        if (bidPrice == null) {
-                            tradePrice = askPrice;
-                        } else {
-                            tradePrice = (askPrice + bidPrice) / 2;
-                        }
-                        if (tradePrice != null) {
-                            realtimeQuoteMap.put(stock, tradePrice);
-                        }
-                    }
-                    long current = System.currentTimeMillis();
-                    if ((current / 1000) % 1 == 0) {
-                        log.info("quote price(time={}): {}", current, realtimeQuoteMap);
-                    }
-                }
-
-                // 退出前反订阅
-                for (String stock : stockSet) {
-                    sendMessage("{\"action\":\"unsubscribe\", \"params\":\"Q." + stock + "\"}");
-                }
-                log.info("unsubscribe real-time quote");
-            } catch (Exception e) {
-                log.info("getRealtimeQuote error. " + e.getMessage());
-            }
-        });
-        Thread.sleep(1000);
-    }
 
     public void getRealtimeQuoteForOption(Set<String> stockSet) throws InterruptedException {
         getRealtimeQuoteForOption = true;

@@ -458,8 +458,8 @@ public class Strategy33 {
                 expirationDate = LocalDate.parse(expirationDate, DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2024-09-13")) {
-                                continue;
+            if (!date.equals("2024-09-19")) {
+//                                continue;
             }
 
             List<String> earningStocks = earningForEveryDay.get(date);

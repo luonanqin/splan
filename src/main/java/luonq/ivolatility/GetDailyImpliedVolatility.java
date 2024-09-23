@@ -391,6 +391,9 @@ public class GetDailyImpliedVolatility {
         List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionId");
         for (String line : lines) {
             String[] split = line.split("\t");
+            if (split.length < 2) {
+                log.info("getOptionIdMap error. {}", line);
+            }
             optionIdMap.put(split[0], split[1]);
         }
 
@@ -401,6 +404,9 @@ public class GetDailyImpliedVolatility {
         List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionId");
         for (String line : lines) {
             String[] split = line.split("\t");
+            if (split.length < 2) {
+                log.info("refreshOptionIdMap error. {}", line);
+            }
             optionIdMap.put(split[0], split[1]);
         }
 

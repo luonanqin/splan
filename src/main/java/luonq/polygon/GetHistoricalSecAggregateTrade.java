@@ -101,7 +101,7 @@ public class GetHistoricalSecAggregateTrade {
                     long closeTS = close.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
                     // https://api.polygon.io/v2/aggs/ticker/TSLA/range/1/minute/1709908200000/1709908200000?adjusted=true&sort=asc&limit=120&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
-                    String url = api + stock + "/range/1/second/" + openTS + "/" + closeTS + "?adjusted=true&sort=asc&limit=60" + apiKey;
+                    String url = api + stock + "/range/1/second/" + openTS + "/" + closeTS + "?adjusted=true&sort=asc&limit=5000" + apiKey;
                     while (true) {
                         AggregateTradeResp tradeResp = getTradeResp(url, httpClient);
                         if (tradeResp == null) {
@@ -182,7 +182,7 @@ public class GetHistoricalSecAggregateTrade {
                 long closeTS = close.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
                 // https://api.polygon.io/v2/aggs/ticker/TSLA/range/1/minute/1709908200000/1709908200000?adjusted=true&sort=asc&limit=120&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
-                String url = api + stock + "/range/1/second/" + openTS + "/" + closeTS + "?adjusted=true&sort=asc&limit=60" + apiKey;
+                String url = api + stock + "/range/1/second/" + openTS + "/" + closeTS + "?adjusted=true&sort=asc&limit=5000" + apiKey;
                 while (true) {
                     AggregateTradeResp tradeResp = getTradeResp(url, httpClient);
                     if (tradeResp == null) {
@@ -264,7 +264,7 @@ public class GetHistoricalSecAggregateTrade {
             }
 
             for (String date : dateList) {
-                getData(stock, date, 120);
+                getData(stock, date, 1800);
             }
             long end = System.currentTimeMillis();
             long cost = (end - begin) / 1000;

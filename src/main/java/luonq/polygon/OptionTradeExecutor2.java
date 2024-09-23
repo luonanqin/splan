@@ -189,6 +189,7 @@ public class OptionTradeExecutor2 {
         if (CollectionUtils.isEmpty(canTradeStocks)) {
             log.info("there is no stock can be traded");
             hasFinishBuying = true;
+            client.stopListen();
             return;
         }
         log.info("there are stock can be traded. stock: {}", canTradeStocks);
@@ -199,6 +200,7 @@ public class OptionTradeExecutor2 {
         if (CollectionUtils.isEmpty(sortedCanTradeStock)) {
             log.info("except invalid stock, there is no stock can be traded");
             hasFinishBuying = true;
+            client.stopListen();
             return;
         }
 
@@ -942,6 +944,7 @@ public class OptionTradeExecutor2 {
                 log.info("all stock has bought success: {}. stop monitor buy order", canTradeStocks);
                 hasFinishBuying = true;
                 RealTimeDataWS_DB2.getRealtimeQuoteForOption = false;
+                client.stopListen();
                 return;
             }
         }
@@ -1632,6 +1635,7 @@ public class OptionTradeExecutor2 {
 
         delayUnsubscribeIv(stock);
         delayUnsubscribeQuote(stock);
+        client.unsubscribe(stock);
     }
 
     public void monitorFutuDeep(String optionCode) {

@@ -285,7 +285,7 @@ public class GrabOptionTradeData {
                     getMethod.releaseConnection();
                     queue.offer(httpClient);
                     cdl.countDown();
-//                    System.out.println("option chain cdl:" + cdl.getCount());
+                    //                    System.out.println("option chain cdl:" + cdl.getCount());
                 }
             });
         }
@@ -392,6 +392,9 @@ public class GrabOptionTradeData {
                 optionCodeDateMap.put(optionCode, currentTradeDate);
             }
             if (MapUtils.isNotEmpty(optionCodeDateMap)) {
+//                for (String s : optionCodeDateMap.keySet()) {
+//                    System.out.println("grab iv:" + s);
+//                }
                 GetDailyImpliedVolatility.getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap, lastTradeDate);
             }
 
