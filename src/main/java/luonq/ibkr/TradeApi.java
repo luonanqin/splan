@@ -15,6 +15,7 @@ import util.Constants;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class TradeApi {
@@ -276,10 +277,50 @@ public class TradeApi {
         return cash;
     }
 
+    public double getPnl() {
+        Map<Integer, Double> conIdValueMap = Maps.newHashMap();
+        conIdValueMap.put(51529211, 8979d); // GLD
+        conIdValueMap.put(320227571, 8723d); // QQQ
+        conIdValueMap.put(15547844, 5998d); // IEF
+        double allCost = conIdValueMap.values().stream().collect(Collectors.summingDouble(Double::new));
+        double allPnl = 0;
+
+        for (Integer conId : conIdValueMap.keySet()) {
+            PnLSingleHandlerImpl iPnLSingleHandler = new PnLSingleHandlerImpl();
+            client.reqPnLSingle("U18653989", "", conId, iPnLSingleHandler); // GLD
+            double value = 0d;
+            for (int i = 0; i < 10; i++) {
+                value = iPnLSingleHandler.getValue();
+                if (value == 0d) {
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (value == 0d) {
+                value = conIdValueMap.get(conId);
+            }
+            allPnl += value;
+            log.info("{} pnl is {}, cost is {}", conId, value, conIdValueMap.get(conId));
+            client.cancelPnLSingle(iPnLSingleHandler);
+        }
+
+        int diff = (int) (allPnl - allCost);
+        log.info("all pnl is {}, all cost is {}, diff is {}", allPnl, allCost, diff);
+        return diff;
+    }
+
     public static void main(String[] args) {
         TradeApi tradeApi = new TradeApi();
         tradeApi.reqPosition();
         double accountCash = tradeApi.getAccountCash();
+        System.out.println(accountCash);
+        double pnl = tradeApi.getPnl();
+        accountCash = accountCash - pnl;
         System.out.println(accountCash);
         int count = 1;
         //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);

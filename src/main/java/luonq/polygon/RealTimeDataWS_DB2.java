@@ -277,7 +277,9 @@ public class RealTimeDataWS_DB2 {
         try {
             tradeApi = new TradeApi();
             TimeUnit.SECONDS.sleep(5);
+            double pnl = tradeApi.getPnl();
             funds = tradeApi.getAccountCash();
+            funds = funds - pnl;
             log.info("funds is {}", funds);
 
             FTAPI.init();
