@@ -37,6 +37,7 @@ public class LoadOptionTradeData {
 
     public static Map<String/* date */, Double/* rate */> riskFreeRateMap = Maps.newHashMap();
     public static List<String> stocks = Lists.newArrayList();
+    public static List<String> invalidStocks = Lists.newArrayList("JD", "LI"); // 历史经验得出的不适合交易的股票，候选还有BABA XPEV BIDU PDD BILI FUTU
     public static Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
     public static Map<String/* optionCode */, List<Double>/* historical iv */> optionToIvListMap = Maps.newHashMap();
     public static Map<String/* stock */, List<String>/* call and put optioncode */> stockToOptionCodeMap = Maps.newHashMap();

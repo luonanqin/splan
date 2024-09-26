@@ -261,6 +261,7 @@ public class RealTimeDataWS_DB2 {
 
             allStockSet.addAll(stockSet);
             allStockSet.addAll(optionStockSet);
+            allStockSet.removeAll(LoadOptionTradeData.invalidStocks);
             //            stockSet.clear();
             //            stockSet.add("RNST");
 
