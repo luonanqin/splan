@@ -37,6 +37,9 @@ import java.util.stream.Collectors;
 
 import static util.Constants.*;
 
+/**
+ * 宽跨式策略
+ */
 public class Strategy33 {
 
     public static BlockingQueue<HttpClient> queue;
@@ -458,8 +461,8 @@ public class Strategy33 {
                 expirationDate = LocalDate.parse(expirationDate, DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2024-09-19")) {
-//                                continue;
+            if (!date.equals("2024-09-27")) {
+                                continue;
             }
 
             List<String> earningStocks = earningForEveryDay.get(date);

@@ -43,6 +43,7 @@ import static util.Constants.TRADE_ERROR_CODE;
 import static util.Constants.TRADE_PROHIBT_CODE;
 
 /**
+ * 裸卖空宽跨式策略
  * Created by Luonanqin on 2023/5/9.
  */
 @Component

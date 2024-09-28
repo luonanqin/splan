@@ -38,6 +38,9 @@ import java.util.stream.Collectors;
 
 import static util.Constants.*;
 
+/**
+ * 裸卖空宽跨式策略
+ */
 public class Strategy34 {
 
     public static BlockingQueue<HttpClient> queue;
@@ -512,7 +515,7 @@ public class Strategy34 {
                 expirationDate = LocalDate.parse(expirationDate, DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2024-09-18")) {
+            if (!date.equals("2024-09-24")) {
                                 continue;
             }
 

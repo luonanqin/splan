@@ -264,7 +264,7 @@ public class GetHistoricalSecAggregateTrade {
             }
 
             for (String date : dateList) {
-                getData(stock, date, 1800);
+                getData(stock, date, 300);
             }
             long end = System.currentTimeMillis();
             long cost = (end - begin) / 1000;
