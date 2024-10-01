@@ -142,7 +142,7 @@ public class OptionTradeExecutor2 {
     // 平均到每个股票的交易金额
     private double avgFund;
     private double funds = Constants.INIT_CASH;
-    private int limitCount = 3; // 限制股票数量
+    private int limitCount = 2; // 限制股票数量
     private long openTime;
     private long closeTime;
     private long invalidTime;
@@ -1255,8 +1255,9 @@ public class OptionTradeExecutor2 {
                             } else if ((currentTime < stopGainTime && diffRatio > STOP_GAIN_RATIO_1) || (currentTime > stopGainTime && diffRatio > STOP_GAIN_RATIO_2)) { // 止盈先卖出上涨的期权，卖完后再卖下跌的期权，尽量保证盈利不减少
                                 log.info("stop gain order. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
                                   callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
+                                // todo 止盈先卖出下跌的期权，卖完后再卖上涨的期权，因为上涨的会有短时间的动能继续上涨，下跌的也会有短时间的下跌动能，下跌比上涨更难卖，也就说明下跌的必须贱卖才能卖出，造成收益损失
                                 // 如果止盈卖出下单失败，则重新判断重新下单
-                                if (callDiff > 0) {
+                                if (callDiff < 0) {
                                     double tradePrice = calGainSellPrice(callBidPrice, callAskPrice);
                                     long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, tradePrice);
                                     if (sellCallOrderId == -1) {
@@ -1271,7 +1272,7 @@ public class OptionTradeExecutor2 {
                                     gainSellStatusMap.put(stock, GAIN_SELLING);
                                     gainSellOption.add(callIkbr);
                                     log.info("gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellCallOrderId, callFutu, tradePrice, callCount);
-                                } else if (putDiff > 0) {
+                                } else if (putDiff < 0) {
                                     double tradePrice = calGainSellPrice(putBidPrice, putAskPrice);
                                     long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, tradePrice);
                                     if (sellPutOrderId == -1) {

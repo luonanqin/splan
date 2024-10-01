@@ -154,7 +154,7 @@ public class Test2 {
         double init = 10000;
         for (String date : dateToLine.keySet()) {
             if (!date.equals("2023-09-05")) {
-//                continue;
+                //                continue;
             }
             List<String> l = dateToLine.get(date);
             if (l.size() == 1) {
@@ -209,58 +209,147 @@ public class Test2 {
         }
     }
 
+    public static void calSpreadWithHandleFee() throws Exception {
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/价差双开带手续费");
+        Map<String, Map<String, Integer>> dateToVolume = Maps.newHashMap();
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = split[0];
+            int lastVolume = Integer.valueOf(split[9]);
+
+            if (!dateToVolume.containsKey(date)) {
+                dateToVolume.put(date, Maps.newHashMap());
+            }
+            dateToVolume.get(date).put(line, lastVolume);
+        }
+
+        Map<String, List<String>> dateToLine = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
+        dateToVolume.forEach((k, v) -> {
+            //            if (v.size() > 5) {
+            List<String> sorted = v.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).map(s -> s.getKey()).collect(Collectors.toList());
+            dateToLine.put(k, sorted);
+            //            } else {
+            //            dateToLine.put(k, Lists.newArrayList(v.keySet()));
+            //            }
+        });
+
+        double init = 10000;
+        for (String date : dateToLine.keySet()) {
+            List<String> l = dateToLine.get(date);
+            if (l.size() == 1) {
+                //                continue;
+            }
+            double avgFund = init / l.size();
+            init = 0;
+            for (String line : l) {
+                String[] split = line.split("\t");
+                double callBuy = Double.parseDouble(split[1]);
+                double callSell = Double.parseDouble(split[2]);
+                double putBuy = Double.parseDouble(split[3]);
+                double putSell = Double.parseDouble(split[4]);
+                double call2Buy = Double.parseDouble(split[5]);
+                double call2Sell = Double.parseDouble(split[6]);
+                double put2Buy = Double.parseDouble(split[7]);
+                double put2Sell = Double.parseDouble(split[8]);
+                int upOrDown = Integer.parseInt(split[9]);
+                int count = (int) (avgFund / 100 / (callBuy + call2Buy));
+                if (upOrDown > 0) {
+                    count = (int) (avgFund / 100 / call2Buy);
+                }else{
+                    count = (int) (avgFund / 100 / put2Buy);
+                }
+
+                double fee = ibkrFee(callBuy, callSell, putBuy, putSell, count);
+                double spreadFee = ibkrFee(call2Buy, call2Sell, put2Buy, put2Sell, count);
+                double spreadGainOrLoss = 0;
+                double gainOrLoss;
+                if (upOrDown > 0) {
+                    spreadGainOrLoss += (call2Sell - call2Buy);
+                    gainOrLoss = count * (callBuy - callSell + spreadGainOrLoss) * 100;
+                } else {
+                    spreadGainOrLoss += (put2Sell - put2Buy);
+                    gainOrLoss = count * (putBuy - putSell + spreadGainOrLoss) * 100;
+                }
+
+                double actualGainOrLoss = gainOrLoss - fee - spreadFee;
+                init += (avgFund + actualGainOrLoss);
+            }
+            System.out.println(date + "\t" + (int) init);
+        }
+    }
+
+
     public static double ibkrFee(double callBuy, double callSell, double putBuy, double putSell, int count) {
-        // 买入call佣金
-        double buyCallCommission;
-        if (callBuy < 0.05) {
-            buyCallCommission = 0.25 * count;
-        } else if (callBuy >= 0.05 && callBuy < 0.1) {
-            buyCallCommission = 0.5;
-        } else {
-            buyCallCommission = 0.65;
-        }
-        // 买入put佣金
-        double buyPutCommission;
-        if (putBuy < 0.05) {
-            buyPutCommission = 0.25 * count;
-        } else if (putBuy >= 0.05 && putBuy < 0.1) {
-            buyPutCommission = 0.5;
-        } else {
-            buyPutCommission = 0.65;
-        }
-        // 买入期权监管费
-        double buyMonitor = count * 0.02685 * 2;
-        // 买入期权清算费
-        double buyClear = (count * 0.02 > 55 ? 55 : count * 0.02) * 2;
+        double callFee = 0;
+        if (callBuy > 0) {
+            // 买入call佣金
+            double buyCallCommission;
+            if (callBuy < 0.05) {
+                buyCallCommission = 0.25 * count;
+            } else if (callBuy >= 0.05 && callBuy < 0.1) {
+                buyCallCommission = 0.5;
+            } else {
+                buyCallCommission = 0.65;
+            }
+            // 卖出call佣金
+            double sellCallCommission;
+            if (callSell < 0.05) {
+                sellCallCommission = 0.25 * count;
+            } else if (callSell >= 0.05 && callSell < 0.1) {
+                sellCallCommission = 0.5;
+            } else {
+                sellCallCommission = 0.65;
+            }
 
-        // 卖出call佣金
-        double sellCallCommission;
-        if (callSell < 0.05) {
-            sellCallCommission = 0.25 * count;
-        } else if (callSell >= 0.05 && callSell < 0.1) {
-            sellCallCommission = 0.5;
-        } else {
-            sellCallCommission = 0.65;
+            // 买入期权监管费
+            double buyCallMonitor = count * 0.02685;
+            // 买入期权清算费
+            double buyCallClear = count * 0.02 > 55 ? 55 : count * 0.02;
+            // 卖出期权监管费
+            double sellCallMonitor = count * 0.02685;
+            // 卖出期权清算费
+            double sellCallClear = count * 0.02 > 55 ? 55 : count * 0.02;
+            // 交易活动费
+            double sellCallActivity = 0.00279 * count;
+            callFee = buyCallCommission + sellCallCommission + buyCallMonitor + buyCallClear + sellCallMonitor + sellCallClear + sellCallActivity;
         }
-        // 卖出put佣金
-        double sellPutCommission;
-        if (putSell < 0.05) {
-            sellPutCommission = 0.25 * count;
-        } else if (putSell >= 0.05 && putSell < 0.1) {
-            sellPutCommission = 0.5;
-        } else {
-            sellPutCommission = 0.65;
-        }
-        // 卖出期权监管费
-        double sellMonitor = count * 0.02685 * 2;
-        // 卖出期权清算费
-        double sellClear = (count * 0.02 > 55 ? 55 : count * 0.02) * 2;
-        // 证监会规费
-        double sellSRC = 0.0000278 * count * callSell * 100 + 0.0000278 * count * putSell * 100;
-        // 交易活动费
-        double sellActivity = 0.00279 * count * 2;
 
-        double fee = buyCallCommission + buyPutCommission + buyMonitor + buyClear + sellCallCommission + sellPutCommission + sellMonitor + sellClear + sellSRC + sellActivity;
+        double putFee = 0;
+        if (putBuy > 0) {
+            // 买入put佣金
+            double buyPutCommission;
+            if (putBuy < 0.05) {
+                buyPutCommission = 0.25 * count;
+            } else if (putBuy >= 0.05 && putBuy < 0.1) {
+                buyPutCommission = 0.5;
+            } else {
+                buyPutCommission = 0.65;
+            }
+            // 卖出put佣金
+            double sellPutCommission;
+            if (putSell < 0.05) {
+                sellPutCommission = 0.25 * count;
+            } else if (putSell >= 0.05 && putSell < 0.1) {
+                sellPutCommission = 0.5;
+            } else {
+                sellPutCommission = 0.65;
+            }
+            // 买入期权监管费
+            double buyPutMonitor = count * 0.02685;
+            // 买入期权清算费
+            double buyPutClear = count * 0.02 > 55 ? 55 : count * 0.02;
+            // 卖出期权监管费
+            double sellPutMonitor = count * 0.02685;
+            // 卖出期权清算费
+            double sellPutClear = count * 0.02 > 55 ? 55 : count * 0.02;
+            // 证监会规费
+            double sellSRC = 0.0000278 * count * callSell * 100 + 0.0000278 * count * putSell * 100;
+            // 交易活动费
+            double sellPutActivity = 0.00279 * count;
+            putFee = buyPutCommission + buyPutMonitor + buyPutClear + sellPutCommission + sellPutMonitor + sellPutClear + sellSRC + sellPutActivity;
+        }
+
+        double fee = callFee + putFee;
         return fee;
     }
 
@@ -304,40 +393,7 @@ public class Test2 {
         //        calCallWithProtect();
         //        System.out.println();
         //        calGainWithHandleFee();
-        calSellStraddleWithHandleFee();
-
-        int week = 12;
-        double iit = 10000;
-        for (int i = 0; i < week; i++) {
-            iit = iit * 1.1;
-            //            System.out.println(i + 1 + "\t" + iit);
-        }
-
-        List<Double> list = Lists.newArrayList();
-        list.add(16.06557377);
-        list.add(9.016393443);
-        list.add(54.85714286);
-        list.add(-3.276955603);
-        list.add(1.111111111);
-        list.add(-18.71921182);
-        list.add(-12.69035533);
-        list.add(7.5);
-        list.add(181.4285714);
-        list.add(12.24489796);
-        list.add(-22.33009709);
-        double init = 10000;
-        int i = 1;
-        for (Double l : list) {
-            l = l / 100;
-            //            double lossRatio = -0.01;
-            //            if (l < lossRatio) {
-            //                l = lossRatio;
-            //            }
-            //            init = init * 0.1 * (1 + l) + init * 0.9;
-            init = init * (1 + l);
-            //            System.out.println(i++ + "\t" + init);
-        }
-        //        System.out.println(init);
+        calSpreadWithHandleFee();
+        //        calSellStraddleWithHandleFee();
     }
-
 }
