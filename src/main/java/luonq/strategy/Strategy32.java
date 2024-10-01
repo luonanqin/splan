@@ -338,57 +338,9 @@ public class Strategy32 {
     }
 
     public static NearlyOptionData calOpenStrikePrice(String date, String stock, double open) throws Exception {
-        String expirationDate = "";
-        LocalDate day = LocalDate.parse(date, DB_DATE_FORMATTER);
-        for (int i = 0; i < weekStrArray.length; i++) {
-            String week = weekStrArray[i];
-            LocalDate weekDay = LocalDate.parse(week, DB_DATE_FORMATTER);
-            if (weekDay.isAfter(day)) {
-                expirationDate = week;
-                break;
-            }
-        }
-        if (StringUtils.isBlank(expirationDate)) {
-            return null;
-        }
-
-        String chainDir = USER_PATH + "optionData/optionChain/" + stock + "/";
-        String filePath = chainDir + date;
-        List<String> callAndPuts = BaseUtils.readFile(filePath);
-
+        List<String> callAndPuts = getCallAndPuts(date, stock);
         if (CollectionUtils.isEmpty(callAndPuts)) {
-            CloseableHttpClient httpClient = queue.take();
-            String url = String.format("https://api.polygon.io/v3/reference/options/contracts?contract_type=call&"
-              + "underlying_ticker=%s&expired=%s&expiration_date=%s&order=asc&limit=100&sort=strike_price"
-              + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", stock, true, expirationDate);
-            HttpGet getMethod = new HttpGet(url);
-            try {
-                while (true) {
-                    CloseableHttpResponse execute = httpClient.execute(getMethod);
-                    InputStream content = execute.getEntity().getContent();
-                    OptionContractsResp resp = JSON.parseObject(content, OptionContractsResp.class);
-                    for (OptionContracts chain : resp.getResults()) {
-                        String callCode = chain.getTicker();
-                        String putCode = BaseUtils.getOptionPutCode(callCode);
-                        callAndPuts.add(callCode + "|" + putCode);
-                    }
-                    String nextUrl = resp.getNext_url();
-                    if (StringUtils.isBlank(nextUrl)) {
-                        break;
-                    } else {
-                        getMethod.releaseConnection();
-                        getMethod = new HttpGet(nextUrl + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY");
-                    }
-                }
-
-                BaseUtils.createDirectory(chainDir);
-                BaseUtils.writeFile(filePath, callAndPuts);
-            } catch (Exception e) {
-                System.out.println("grabOptionChain error. url=" + url);
-            } finally {
-                getMethod.releaseConnection();
-                queue.offer(httpClient);
-            }
+            return null;
         }
 
         // 开盘价附近的call和put
@@ -485,6 +437,104 @@ public class Strategy32 {
         nearlyOptionData.setOutPriceCallOptionCode_1(call);
         nearlyOptionData.setOutPricePutOptionCode_1(put);
         return nearlyOptionData;
+    }
+
+    public static List<String> getCallAndPutsWithoutFix(String date, String stock) throws Exception {
+        String chainDir = USER_PATH + "optionData/optionChain/" + stock + "/";
+        String filePath = chainDir + date + "_1";
+        List<String> callAndPuts = BaseUtils.readFile(filePath);
+
+        if (CollectionUtils.isEmpty(callAndPuts)) {
+            CloseableHttpClient httpClient = queue.take();
+            String url = String.format("https://api.polygon.io/v3/reference/options/contracts?contract_type=call&"
+              + "underlying_ticker=%s&expired=%s&expiration_date=%s&order=asc&limit=100&sort=strike_price"
+              + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", stock, true, date);
+            HttpGet getMethod = new HttpGet(url);
+            try {
+                while (true) {
+                    CloseableHttpResponse execute = httpClient.execute(getMethod);
+                    InputStream content = execute.getEntity().getContent();
+                    OptionContractsResp resp = JSON.parseObject(content, OptionContractsResp.class);
+                    for (OptionContracts chain : resp.getResults()) {
+                        String callCode = chain.getTicker();
+                        String putCode = BaseUtils.getOptionPutCode(callCode);
+                        callAndPuts.add(callCode + "|" + putCode);
+                    }
+                    String nextUrl = resp.getNext_url();
+                    if (StringUtils.isBlank(nextUrl)) {
+                        break;
+                    } else {
+                        getMethod.releaseConnection();
+                        getMethod = new HttpGet(nextUrl + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY");
+                    }
+                }
+
+                BaseUtils.createDirectory(chainDir);
+                BaseUtils.writeFile(filePath, callAndPuts);
+            } catch (Exception e) {
+                System.out.println("grabOptionChain error. url=" + url);
+            } finally {
+                getMethod.releaseConnection();
+                queue.offer(httpClient);
+            }
+        }
+        return callAndPuts;
+    }
+
+    public static List<String> getCallAndPuts(String date, String stock) throws Exception {
+        String expirationDate = "";
+        LocalDate day = LocalDate.parse(date, DB_DATE_FORMATTER);
+        for (int i = 0; i < weekStrArray.length; i++) {
+            String week = weekStrArray[i];
+            LocalDate weekDay = LocalDate.parse(week, DB_DATE_FORMATTER);
+            if (weekDay.isAfter(day)) {
+                expirationDate = week;
+                break;
+            }
+        }
+        if (StringUtils.isBlank(expirationDate)) {
+            return null;
+        }
+
+        String chainDir = USER_PATH + "optionData/optionChain/" + stock + "/";
+        String filePath = chainDir + date;
+        List<String> callAndPuts = BaseUtils.readFile(filePath);
+
+        if (CollectionUtils.isEmpty(callAndPuts)) {
+            CloseableHttpClient httpClient = queue.take();
+            String url = String.format("https://api.polygon.io/v3/reference/options/contracts?contract_type=call&"
+              + "underlying_ticker=%s&expired=%s&expiration_date=%s&order=asc&limit=100&sort=strike_price"
+              + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", stock, true, expirationDate);
+            HttpGet getMethod = new HttpGet(url);
+            try {
+                while (true) {
+                    CloseableHttpResponse execute = httpClient.execute(getMethod);
+                    InputStream content = execute.getEntity().getContent();
+                    OptionContractsResp resp = JSON.parseObject(content, OptionContractsResp.class);
+                    for (OptionContracts chain : resp.getResults()) {
+                        String callCode = chain.getTicker();
+                        String putCode = BaseUtils.getOptionPutCode(callCode);
+                        callAndPuts.add(callCode + "|" + putCode);
+                    }
+                    String nextUrl = resp.getNext_url();
+                    if (StringUtils.isBlank(nextUrl)) {
+                        break;
+                    } else {
+                        getMethod.releaseConnection();
+                        getMethod = new HttpGet(nextUrl + "&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY");
+                    }
+                }
+
+                BaseUtils.createDirectory(chainDir);
+                BaseUtils.writeFile(filePath, callAndPuts);
+            } catch (Exception e) {
+                System.out.println("grabOptionChain error. url=" + url);
+            } finally {
+                getMethod.releaseConnection();
+                queue.offer(httpClient);
+            }
+        }
+        return callAndPuts;
     }
 
     public static Map<String/* date */, List<NearlyOptionData>> calOpenStrikePriceRatioMap() throws Exception {
@@ -635,8 +685,9 @@ public class Strategy32 {
             InputStream stream = execute.getEntity().getContent();
             OptionDaily resp = JSON.parseObject(stream, OptionDaily.class);
             String status = resp.getStatus();
-            if (!StringUtils.equalsIgnoreCase(status, "OK")) {
-                //                System.out.println("get failed. " + url);
+            if (StringUtils.equalsIgnoreCase(status, "NOT_FOUND")) {
+                return OptionDaily.EMPTY(date, code);
+            } else if (!StringUtils.equalsIgnoreCase(status, "OK")) {
                 return null;
             }
 
@@ -727,7 +778,8 @@ public class Strategy32 {
 
     public static void writeOptionDaily(OptionDaily optionDaily, String optionCode, String date) throws Exception {
         if (optionDaily == null) {
-            optionDaily = OptionDaily.EMPTY(date, optionCode);
+            //            optionDaily = OptionDaily.EMPTY(date, optionCode);
+            return; // 如果没有daily数据则不存储，避免请求失败导致的错误写入
         }
 
         int _2_index = optionCode.indexOf("2");
