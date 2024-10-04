@@ -138,6 +138,8 @@ public class OptionTradeExecutor2 {
     private Map<String, String> allCodeToQuoteMap = Maps.newHashMap();
     // 成交数据
     private Map<String, Double> codeToTradeMap = Maps.newHashMap();
+    // 最新亏损比例
+    private Map<String/* stock */, Double/* ration */> lastLossRatioMap = Maps.newHashMap();
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
@@ -1257,7 +1259,7 @@ public class OptionTradeExecutor2 {
                                   callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
                                 // todo 止盈先卖出下跌的期权，卖完后再卖上涨的期权，因为上涨的会有短时间的动能继续上涨，下跌的也会有短时间的下跌动能，下跌比上涨更难卖，也就说明下跌的必须贱卖才能卖出，造成收益损失
                                 // 如果止盈卖出下单失败，则重新判断重新下单
-                                if (callDiff < 0) {
+                                if (callDiff < putDiff) {
                                     double tradePrice = calGainSellPrice(callBidPrice, callAskPrice);
                                     long sellCallOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, tradePrice);
                                     if (sellCallOrderId == -1) {
@@ -1272,7 +1274,7 @@ public class OptionTradeExecutor2 {
                                     gainSellStatusMap.put(stock, GAIN_SELLING);
                                     gainSellOption.add(callIkbr);
                                     log.info("gain sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}", sellCallOrderId, callFutu, tradePrice, callCount);
-                                } else if (putDiff < 0) {
+                                } else if (putDiff < callDiff) {
                                     double tradePrice = calGainSellPrice(putBidPrice, putAskPrice);
                                     long sellPutOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, tradePrice);
                                     if (sellPutOrderId == -1) {
