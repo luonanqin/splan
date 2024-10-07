@@ -99,6 +99,7 @@ public class OptionTradeExecutor2 {
     private Map<String/* ikbr option */, Double/* sell price */> lastSellPriceMap = Maps.newHashMap(); // 最新一次卖出挂单价
     private Map<String/* futu option */, Double/* sell price */> adjustSellInitPriceMap = Maps.newHashMap(); // 卖出调价的原始挂单价，用于调价计算
     private Map<String/* futu option */, Double/* buy price */> adjustBuyInitPriceMap = Maps.newHashMap(); // 买入调价的原始挂单价，用于调价计算
+    private Map<String/* futu option */, Integer/* over buy price times */> overBuyPriceTimesMap = Maps.newHashMap(); // bid超过买入价的次数
 
     public ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 10, 3600, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
@@ -139,7 +140,7 @@ public class OptionTradeExecutor2 {
     // 成交数据
     private Map<String, Double> codeToTradeMap = Maps.newHashMap();
     // 最新亏损比例
-    private Map<String/* stock */, Double/* ration */> lastLossRatioMap = Maps.newHashMap();
+    private Map<String/* stock */, Double/* ratio */> lastDiffRatioMap = Maps.newHashMap();
     // 无风险利率
     // 平均到每个股票的交易金额
     private double avgFund;
@@ -499,6 +500,16 @@ public class OptionTradeExecutor2 {
         if (bidPrice == null || askPrice == null) {
             return Double.MIN_VALUE;
         }
+
+        // 如果买一价大于调价的计数大于等于3，则用新的中间价作为初始价返回，后续使用新的初始价进行调价，计数重置
+        Integer overBuyPriceTimes = MapUtils.getInteger(overBuyPriceTimesMap, futu, 0);
+        if (overBuyPriceTimes >= 3) {
+            double newBuyInitPrice = calculateMidPrice(futu);
+            adjustBuyInitPriceMap.put(futu, newBuyInitPrice);
+            overBuyPriceTimesMap.put(futu, 0);
+            return newBuyInitPrice;
+        }
+
         Double buyInitPrice = adjustBuyInitPriceMap.get(futu);
         BigDecimal buyInitPriceDecimal = BigDecimal.valueOf(buyInitPrice);
 
@@ -532,6 +543,11 @@ public class OptionTradeExecutor2 {
         // 但是如果调价大于卖一价，则最多调至卖一价，不能超过
         if (askPrice.compareTo(adjustPrice) <= 0) {
             adjustPrice = askPrice;
+        }
+        // 如果当前买一大于调价，则调价次数+1
+        if (bidPrice > adjustPrice) {
+            overBuyPriceTimes++;
+            overBuyPriceTimesMap.put(futu, overBuyPriceTimes);
         }
 
         log.info("adjust buy price: option={}\tinitPrice={}\tbidPrice={}\taskPrice={}\tadjustTimes={}\tadjustPrice={}", futu, buyInitPrice, bidPrice, askPrice, adjustTimes, adjustPrice);
@@ -1180,6 +1196,18 @@ public class OptionTradeExecutor2 {
                         if (showCount == showtimes) {
                             log.info("monitor loss and gain. call={}\tcallOpen={}\tcallBid={}\tcallAsk={}\tcallMid={}\tput={}\tputOpen={}\tputBid={}\tputAsk={}\tputMid={}\tcallDiff={}\tputDiff={}\tallDiff={}\tdiffRatio={}",
                               callFutu, callOpen, callBidPrice, callAskPrice, callMidPrice, putFutu, putOpen, putBidPrice, putAskPrice, putMidPrice, callDiff, putDiff, allDiff, diffRatio);
+                        }
+                        // 如果最新diffRatio大于止损线时，和上一次diffRatio比较超过0.05，则认为是抖动，不需止损
+                        // todo 需要设置一个计数器，如果连续多次触发，则还是认为需要止损
+                        if (!lastDiffRatioMap.containsKey(stock)) {
+                            lastDiffRatioMap.put(stock, diffRatio);
+                        } else {
+                            Double lastDiffRatio = lastDiffRatioMap.get(stock);
+                            if (diffRatio < STOP_LOSS_RATIO && Math.abs(diffRatio - lastDiffRatio) > 0.05) {
+                                diffRatio = lastDiffRatioMap.get(stock);
+                            } else {
+                                lastDiffRatioMap.put(stock, diffRatio);
+                            }
                         }
 
                         long curTime = System.currentTimeMillis();

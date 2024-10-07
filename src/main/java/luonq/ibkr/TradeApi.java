@@ -60,9 +60,10 @@ public class TradeApi {
     public long placeNormalBuyOrder(String code, double count, double price) {
         long orderId = placeNormalOrder(code, price, count, Types.SecType.OPT, Types.Action.BUY);
         log.info("place buy order. code={}\tcount={}\tprice={}\torderId={}", code, count, price, orderId);
-        while (true) {
+        for (int i = 0; i < 10; i++) {
             bean.Order buyCallOrder = getOrder(orderId);
             if (buyCallOrder == null) {
+                log.info("order is null. orderId={}", orderId);
                 continue;
             }
 
@@ -78,6 +79,16 @@ public class TradeApi {
             } catch (InterruptedException e) {
             }
             log.info("waiting buy option. code={}", code);
+        }
+        bean.Order buyCallOrder = getOrder(orderId);
+        if (buyCallOrder != null) {
+            int orderStatus = buyCallOrder.getOrderStatus();
+            if (orderStatus == 0 || orderStatus == TrdCommon.OrderStatus.OrderStatus_WaitingSubmit_VALUE) {
+                cancelOrder(orderId);
+            }
+        } else {
+            log.info("there is no leagl order. code={}, orderId={}", code, orderId);
+            return -1;
         }
         return orderId;
     }
@@ -324,10 +335,10 @@ public class TradeApi {
         System.out.println(accountCash);
         int count = 1;
         //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
-        String code = "TSLA  240802P00205000";
-        //        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
+        String code = "NVDA  241011P00125000";
+        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
         //        long orderId = tradeApi.placeNormalBuyOrderForStock("AAPL", 1, 224.6);
-        //        System.out.println("orderId: " + orderId);
+        System.out.println("orderId: " + orderId);
         //        bean.Order order = tradeApi.getOrder(orderId);
         //        tradeApi.setPositionAvgCost(code, order.getAvgPrice());
 
