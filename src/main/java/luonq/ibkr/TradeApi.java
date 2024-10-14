@@ -156,7 +156,7 @@ public class TradeApi {
     // modify order
     public long upOrderPrice(long orderId, double count, double price) {
         modifyOrder((int) orderId, price, count);
-        while (true) {
+        for (int i = 0; i < 4; i++) {
             bean.Order order = getOrder(orderId);
             if (order == null) {
                 continue;
@@ -175,6 +175,12 @@ public class TradeApi {
             }
             log.info("waiting modify option. orderId={}", orderId);
         }
+        bean.Order order = getOrder(orderId);
+        if (order.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Cancelled_All_VALUE) {
+            log.info("modify order failed. orderId={}", orderId);
+            return -1;
+        }
+
         return orderId;
     }
 
@@ -191,7 +197,7 @@ public class TradeApi {
 
         OrderHandlerImpl orderHandler = orderIdToHandlerMap.get(orderId);
         client.placeOrModifyOrder(contract, order, orderHandler);
-        System.out.println("modify order: action=" + order.action() + " price=" + price + " count=" + count);
+        log.info("modify order: orderId={}, action={}, price={}, count={}", orderId, order.action(), price, count);
     }
 
     public long cancelOrder(long orderId) {

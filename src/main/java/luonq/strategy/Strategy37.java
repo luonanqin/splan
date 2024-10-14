@@ -356,14 +356,21 @@ public class Strategy37 {
         return nearlyOptionData;
     }
 
-    public static String calTrade(OptionDaily call, OptionDaily put, String call2Symbol, String put2Symbol) throws Exception {
+    public static String calTrade(OptionDaily call, OptionDaily put, NearlyOptionData nearlyOptionData) throws Exception {
         String date = call.getFrom();
+
+        double call1StrikePrice = nearlyOptionData.getOutCall1StrikePrice();
+        double put1StrikePrice = nearlyOptionData.getOutPut1StrikePrice();
+        double call2StrikePrice = nearlyOptionData.getOutCall2StrikePrice();
+        double put2StrikePrice = nearlyOptionData.getOutPut2StrikePrice();
 
         String callSymbol = call.getSymbol();
         String putSymbol = put.getSymbol();
         String callCode = callSymbol.substring(2);
         String putCode = putSymbol.substring(2);
 
+        String call2Symbol = nearlyOptionData.getOutPriceCallOptionCode_2();
+        String put2Symbol = nearlyOptionData.getOutPricePutOptionCode_2();
         String call2Code = call2Symbol.substring(2);
         String put2Code = put2Symbol.substring(2);
 
@@ -475,7 +482,10 @@ public class Strategy37 {
         double call2Open = call2TradePriceMap.get(openSeconds), put2Open = put2TradePriceMap.get(openSeconds);
         Integer stockUpDown = secStockUpDownMap.get(date).get(stock);
         double lowestRatio = Double.MAX_VALUE, highestRatio = Double.MIN_VALUE;
-        if (callOpen == call2Open || putOpen== put2Open) {
+        if (callOpen == call2Open || putOpen == put2Open) {
+            return "empty";
+        }
+        if ((stockUpDown > 0 && callOpen < call2Open) || (stockUpDown < 0 && put2Open < put2Open)) {
             return "empty";
         }
         for (int i = sec + 60; i < dayAllSeconds.size() - 60; i++) {
@@ -559,7 +569,18 @@ public class Strategy37 {
         } else {
             allDiffRatio = putDiffRatio;
         }
-        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio + "\t" + lowestRatio + "\t" + highestRatio;
+        //        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio + "\t" + lowestRatio + "\t" + highestRatio;
+        if (stockUpDown > 0) {
+            double strikeDiff = call2StrikePrice - call1StrikePrice;
+            double callBuyDiff = callOpen - call2Open;
+            double priceDiffRatio = BigDecimal.valueOf(callBuyDiff / strikeDiff * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+            result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + call2Open + "\t" + call2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + priceDiffRatio;
+        } else {
+            double strikeDiff = put1StrikePrice - put2StrikePrice;
+            double putBuyDiff = putOpen - put2Open;
+            double priceDiffRatio = BigDecimal.valueOf(putBuyDiff / strikeDiff * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+            result = buyTime + "\t" + sellTime + "\t" + putOpen + "\t" + putClose + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + priceDiffRatio;
+        }
 
         return result;
     }
@@ -738,12 +759,12 @@ public class Strategy37 {
             return false;
         }
 
-//        if (ivList.get(0) < 0.4) {
+//        if (ivList.get(0) < 0.6) {
 //            return true;
 //        } else {
 //            return false;
 //        }
-        return true;
+                return true;
     }
 
     public static void main(String[] args) throws Exception {
@@ -782,7 +803,34 @@ public class Strategy37 {
             //            Map<String, NearlyOptionData> stockToNearlyOption = nearlyOptionDataList.stream().collect(Collectors.toMap(NearlyOptionData::getStock, v -> v));
             //            Set<String> stockSet = earningStocks.stream().collect(Collectors.toSet());
             Set<String> stockSet = stockKLineMap.keySet();
+            Map<Double/* open strike diff */, String/* stock */> stockToOpenStrikeDiffMap = Maps.newTreeMap((o1, o2) -> o1.compareTo(o2));
+            Map<String, Integer> stockUpDownMap = secStockUpDownMap.get(date);
             for (String stock : stockSet) {
+                if (!stock.equals("KSS")) {
+                    //                    continue;
+                }
+                if (stockKLineMap.containsKey(stock)) {
+                    StockKLine stockKLine = stockKLineMap.get(stock);
+                    double open = stockKLine.getOpen();
+                    NearlyOptionData nearlyOptionData = calOpenStrikePrice(date, stock, open);
+                    if (nearlyOptionData == null) {
+                        continue;
+                    }
+                    Double outCall1StrikePrice = nearlyOptionData.getOutCall1StrikePrice();
+                    Double outPut1StrikePrice = nearlyOptionData.getOutPut1StrikePrice();
+
+                    Integer upOrDown = stockUpDownMap.get(stock);
+                    double diff;
+                    if (upOrDown > 0) {
+                        diff = BigDecimal.valueOf(open / outCall1StrikePrice * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    } else {
+                        diff = BigDecimal.valueOf(outPut1StrikePrice / open * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    }
+                    stockToOpenStrikeDiffMap.put(diff, stock);
+                }
+            }
+            int count = 0;
+            for (String stock : stockToOpenStrikeDiffMap.values()) {
                 if (!stock.equals("KSS")) {
                     //                    continue;
                 }
@@ -809,6 +857,10 @@ public class Strategy37 {
                     String outPricePutOptionCode_1 = nearlyOptionData.getOutPricePutOptionCode_1();
                     String outPriceCallOptionCode_2 = nearlyOptionData.getOutPriceCallOptionCode_2();
                     String outPricePutOptionCode_2 = nearlyOptionData.getOutPricePutOptionCode_2();
+                    Double outCall1StrikePrice = nearlyOptionData.getOutCall1StrikePrice();
+                    Double outCall2StrikePrice = nearlyOptionData.getOutCall2StrikePrice();
+                    Double outPut1StrikePrice = nearlyOptionData.getOutPut1StrikePrice();
+                    Double outPut2StrikePrice = nearlyOptionData.getOutPut2StrikePrice();
                     //                    if (!StringUtils.equals(outPriceCallOptionCode_1, nearlyOptionData2.getOutPriceCallOptionCode_1()) || !StringUtils.equals(outPricePutOptionCode_1, nearlyOptionData2.getOutPricePutOptionCode_1())) {
                     //                        System.out.println();
                     //                    }
@@ -848,7 +900,7 @@ public class Strategy37 {
                     boolean callCanTrade = canTradeForIv(callIvList);
                     boolean putCanTrade = canTradeForIv(putIvList);
                     if (!callCanTrade || !putCanTrade) {
-                                                continue;
+                        continue;
                     }
 
                     // 计算理论call和put的买入价
@@ -859,15 +911,19 @@ public class Strategy37 {
 
                     String simulateTrade = "";
                     String ivInfo = "";
-                    simulateTrade = calTrade(callDaily, putDaily, outPriceCallOptionCode_2, outPricePutOptionCode_2);
+                    simulateTrade = calTrade(callDaily, putDaily, nearlyOptionData);
                     if (StringUtils.equalsAnyIgnoreCase(simulateTrade, "noData", "empty")) {
                         continue;
                     }
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
                     String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
                     ivInfo = callIvInfo + "\t" + putIvInfo;
-                    String optionList = outPriceCallOptionCode_1 + "\t" + outPricePutOptionCode_1 + "\t" + outPriceCallOptionCode_2 + "\t" + outPricePutOptionCode_2;
+                    String optionList = outPriceCallOptionCode_1 + "\t" + outCall1StrikePrice + "\t" + outPricePutOptionCode_1 + "\t" + outPut1StrikePrice + "\t" + outPriceCallOptionCode_2 + "\t" + outCall2StrikePrice + "\t" + outPricePutOptionCode_2 + "\t" + outPut2StrikePrice;
                     System.out.println(stock + "\t" + open + "\t" + totalLastVolume + "\t" + date + "\t" + optionList + "\t" + ivInfo + "\t" + simulateTrade);
+                    count++;
+                    if (count == 3) {
+                        break;
+                    }
                 }
             }
         }
