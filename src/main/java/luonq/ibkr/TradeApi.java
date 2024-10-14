@@ -1,8 +1,11 @@
 package luonq.ibkr;
 
 import com.futu.openapi.pb.TrdCommon;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.ib.client.ComboLeg;
 import com.ib.client.Contract;
+import com.ib.client.ContractDetails;
 import com.ib.client.Decimal;
 import com.ib.client.Order;
 import com.ib.client.OrderStatus;
@@ -11,9 +14,12 @@ import com.ib.client.Types;
 import com.ib.controller.AccountSummaryTag;
 import com.ib.controller.ApiController;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import util.Constants;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -329,6 +335,114 @@ public class TradeApi {
         int diff = (int) (allPnl - allCost);
         log.info("all pnl is {}, all cost is {}, diff is {}", allPnl, allCost, diff);
         return diff;
+    }
+
+    public Contract buildSpread(String stock, int buyConId, int sellConId) {
+        Contract contract = new Contract();
+        contract.symbol(stock);
+        contract.secType(Types.SecType.BAG);
+        contract.exchange("SMART");
+        contract.currency("USD");
+
+        ComboLeg leg1 = new ComboLeg();
+        ComboLeg leg2 = new ComboLeg();
+        List<ComboLeg> addAllLegs = Lists.newArrayList();
+        leg1.conid(buyConId);
+        leg1.ratio(1);
+        leg1.action(Types.Action.BUY);
+        leg1.exchange("SMART");
+
+        leg2.conid(sellConId);
+        leg2.ratio(1);
+        leg2.action(Types.Action.SELL);
+        leg2.exchange("SMART");
+        addAllLegs.add(leg1);
+        addAllLegs.add(leg2);
+
+        contract.comboLegs(addAllLegs);
+
+        return contract;
+    }
+
+    public int buySpread(String stock, int buyConId, int sellConId, double count) {
+        Contract contract = buildSpread(stock, buyConId, sellConId);
+
+        Order order = new Order();
+        order.action(Types.Action.BUY);
+        order.orderType(OrderType.MKT);
+        order.totalQuantity(Decimal.get(count));
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        client.placeOrModifyOrder(contract, order, orderHandler);
+        int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
+        log.info("buy spread place order. orderId={}\tstock={}\tbuyConId={}\tsellConId={}\tcount={}", orderId, stock, buyConId, sellConId, count);
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
+        while (true) {
+            OrderStatus status = orderHandler.getStatus();
+            if (status == OrderStatus.Filled) {
+                log.info("buy spread place order success. orderId={}", orderId);
+                break;
+            } else {
+                log.info("waiting trade. orderId={}", orderId);
+            }
+        }
+        return orderId;
+    }
+
+    public void stopLossForBuySpread(String stock, int buyConId, int sellConId, int count, double stopLossPrice) {
+        Contract contract = buildSpread(stock, buyConId, sellConId);
+
+        Order order = new Order();
+        order.action(Types.Action.SELL);
+        order.auxPrice(stopLossPrice);
+        order.orderType(OrderType.STP);
+        order.totalQuantity(Decimal.get(count));
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        client.placeOrModifyOrder(contract, order, orderHandler);
+    }
+
+    public void stopLossForBuySpread(int orderId, double stopLossPrice) {
+        Contract contract = orderIdToContractMap.get(orderId);
+        Order buyOrder = orderIdToOrderMap.get(orderId);
+
+        Order order = new Order();
+        order.action(Types.Action.SELL);
+        order.auxPrice(stopLossPrice);
+        order.orderType(OrderType.STP);
+        order.totalQuantity(buyOrder.totalQuantity());
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        client.placeOrModifyOrder(contract, order, orderHandler);
+    }
+
+    public int getOptionConId(String code) throws InterruptedException {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.OPT);
+        contract.exchange("SMART");
+        CountDownLatch cdl = new CountDownLatch(1);
+        client.reqContractDetails(contract, list -> {
+            try {
+                if (CollectionUtils.isEmpty(list)) {
+                    log.info("{} can't get conId", code);
+                    return;
+                }
+                ContractDetails contractDetails = list.get(0);
+                contract.conid(contractDetails.conid());
+            } catch (Exception e) {
+                log.error("get option conId error. code={}", code, e);
+            } finally {
+                cdl.countDown();
+            }
+        });
+        cdl.await(2, TimeUnit.SECONDS);
+        return contract.conid();
     }
 
     public static void main(String[] args) {

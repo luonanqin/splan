@@ -30,17 +30,20 @@ import java.util.Set;
 public class OptionStockListener5 {
 
     public Map<String/* stock */, String/* call and put*/> canTradeOptionMap = Maps.newHashMap();
+    public Map<String/* stock */, String/* call and put*/> canTradeOption2Map = Maps.newHashMap();
     public Map<String/* stock */, String/* call and put*/> canTradeOptionForFutuMap = Maps.newHashMap();
-    public Map<String/* stock */, String/* call and put*/> canTradeOptionForRtIVMap = Maps.newHashMap();
+    public Map<String/* stock */, String/* call and put*/> canTradeOptionForFutu2Map = Maps.newHashMap();
+    //    public Map<String/* stock */, String/* call and put*/> canTradeOptionForRtIVMap = Maps.newHashMap();
     public Set<String> canTradeStocks = Sets.newHashSet();
     public Map<String/* stock */, Long/* all last option volume */> stockLastOptionVolMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* futu code */> optionCodeMap = Maps.newHashMap();
     public Map<String/* polygon code */, String/* futu code */> polygonForFutuMap = Maps.newHashMap();
     public Map<String/* rt iv code */, Double/* strike price */> optionStrikePriceMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* expire date */> optionExpireDateMap = Maps.newHashMap();
-    public Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
+    //    public Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
     public Map<String/* futu code */, String/* ikbr code */> futuForIkbrMap = Maps.newHashMap();
     public Map<Double/* open strike diff */, String/* stock */> stockToOpenStrikeDiffMap = Maps.newTreeMap((o1, o2) -> o1.compareTo(o2));
+    public Map<String/* stock */, Integer/* 1=up -1=down */> secStockUpDownMap = Maps.newHashMap();
 
     private OptionTradeExecutor3 optionTradeExecutor;
 
@@ -89,7 +92,9 @@ public class OptionStockListener5 {
         }
         String call = nearlyOptionData.getOutPriceCallOptionCode_1();
         String put = nearlyOptionData.getOutPricePutOptionCode_1();
-        log.info("{} open={}\tcall={}\tput={}", stock, open, call, put);
+        String call2 = nearlyOptionData.getOutPriceCallOptionCode_2();
+        String put2 = nearlyOptionData.getOutPricePutOptionCode_2();
+        log.info("{} open={}\tcall={}\tput={}\tcall2={}\tput2={}", stock, open, call, put, call2, put2);
 
         List<Double> callIvList = LoadOptionTradeData.optionToIvListMap.get(call);
         List<Double> putIvList = LoadOptionTradeData.optionToIvListMap.get(put);
@@ -110,7 +115,7 @@ public class OptionStockListener5 {
             log.warn("{}\t{} last volume is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
             return;
         }
-        long totalLastDailyVolume = callLastDaily.getVolume() + putLastDaily.getVolume();
+        //        long totalLastDailyVolume = callLastDaily.getVolume() + putLastDaily.getVolume();
         Double totalLastClose = BigDecimal.valueOf(callLastDaily.getClose() + putLastDaily.getClose()).setScale(2, RoundingMode.HALF_UP).doubleValue();
         if (totalLastClose.compareTo(0.5) <= 0) {
             log.warn("{}\t{} last total close is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
@@ -127,12 +132,16 @@ public class OptionStockListener5 {
         } else {
             diff = BigDecimal.valueOf(outPut1StrikePrice / open * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
         }
+        secStockUpDownMap.put(stock, upOrDown);
         stockToOpenStrikeDiffMap.put(diff, stock);
 
         log.info("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{} can trade", stock, open, call, callIvList, put, putIvList, callLastDaily, putLastDaily);
         String callCode = call.substring(2);
         String putCode = put.substring(2);
+        String call2Code = call2.substring(2);
+        String put2Code = put2.substring(2);
         canTradeOptionMap.put(stock, call + "|" + put);
+        canTradeOption2Map.put(stock, call2 + "|" + put2);
 
         optionStrikePriceMap.put(callCode, BigDecimal.valueOf(Double.valueOf(call.substring(call.length() - 8)) / 1000).setScale(1, RoundingMode.DOWN).doubleValue());
         optionStrikePriceMap.put(putCode, BigDecimal.valueOf(Double.valueOf(put.substring(put.length() - 8)) / 1000).setScale(1, RoundingMode.DOWN).doubleValue());
@@ -141,40 +150,52 @@ public class OptionStockListener5 {
 
         String callSuffix = callCode.substring(callCode.length() - 15);
         String putSuffix = putCode.substring(putCode.length() - 15);
+        String call2Suffix = call2Code.substring(call2Code.length() - 15);
+        String put2Suffix = put2Code.substring(put2Code.length() - 15);
         int plusTimes = 6 - stock.length();
-        String plus = "";
+        String blank = "";
         for (int i = 0; i < plusTimes; i++) {
-            plus += "+";
+            blank += " ";
         }
-        String rtCall = stock + plus + callSuffix;
-        String rtPut = stock + plus + putSuffix;
+        String ibkrCall = stock + blank + callSuffix;
+        String ibkrPut = stock + blank + putSuffix;
+        String ibkrCall2 = stock + blank + call2Suffix;
+        String ibkrPut2 = stock + blank + put2Suffix;
 
         String callFutuSuffix = callCode.substring(0, callCode.length() - 8);
         String putFutuSuffix = putCode.substring(0, putCode.length() - 8);
+        String call2FutuSuffix = call2Code.substring(0, call2Code.length() - 8);
+        String put2FutuSuffix = put2Code.substring(0, put2Code.length() - 8);
         String futuCall = callFutuSuffix + Integer.valueOf(callCode.substring(callCode.length() - 8));
         String futuPut = putFutuSuffix + Integer.valueOf(putCode.substring(putCode.length() - 8));
+        String futuCall2 = call2FutuSuffix + Integer.valueOf(call2Code.substring(call2Code.length() - 8));
+        String futuPut2 = put2FutuSuffix + Integer.valueOf(put2Code.substring(put2Code.length() - 8));
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
-//        optionTradeExecutor.monitorFutuDeep(futuCall);
-//        optionTradeExecutor.monitorFutuDeep(futuPut);
+        //        optionTradeExecutor.monitorFutuDeep(futuCall);
+        //        optionTradeExecutor.monitorFutuDeep(futuPut);
         polygonForFutuMap.put(call, futuCall);
         polygonForFutuMap.put(put, futuPut);
+        polygonForFutuMap.put(call2, futuCall2);
+        polygonForFutuMap.put(put2, futuPut2);
         //        optionTradeExecutor.monitorPolygonDeep(call);
         //        optionTradeExecutor.monitorPolygonDeep(put);
-//        optionTradeExecutor.monitorIV(futuCall);
-//        optionTradeExecutor.monitorIV(futuPut);
+        //        optionTradeExecutor.monitorIV(futuCall);
+        //        optionTradeExecutor.monitorIV(futuPut);
 
-        optionCodeMap.put(rtCall, futuCall);
-        optionCodeMap.put(rtPut, futuPut);
-        rtForIkbrMap.put(rtCall, rtCall.replaceAll("\\+", " "));
-        rtForIkbrMap.put(rtPut, rtPut.replaceAll("\\+", " "));
-        futuForIkbrMap.put(futuCall, rtCall.replaceAll("\\+", " "));
-        futuForIkbrMap.put(futuPut, rtPut.replaceAll("\\+", " "));
+        optionCodeMap.put(ibkrCall, futuCall);
+        optionCodeMap.put(ibkrPut, futuPut);
+        optionCodeMap.put(ibkrCall2, futuCall2);
+        optionCodeMap.put(ibkrPut2, futuPut2);
+        futuForIkbrMap.put(futuCall, ibkrCall);
+        futuForIkbrMap.put(futuPut, ibkrPut);
+        futuForIkbrMap.put(futuCall2, ibkrCall2);
+        futuForIkbrMap.put(futuPut2, ibkrPut2);
 
         canTradeStocks.add(stock); // 这里一定要先确定可交易的股票再开始rt的监听
-//        stockLastOptionVolMap.put(stock, totalLastDailyVolume);
+        //        stockLastOptionVolMap.put(stock, totalLastDailyVolume);
         optionTradeExecutor.addBuyOrder(stock);
         optionTradeExecutor.addSellOrder(stock);
-//        canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);
+        //        canTradeOptionForRtIVMap.put(stock, ibkrCall + "|" + ibkrPut);
     }
 
 
