@@ -3,7 +3,6 @@ package luonq.listener;
 import bean.NearlyOptionData;
 import bean.OptionDaily;
 import bean.StockEvent;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
@@ -11,24 +10,20 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
 import luonq.polygon.OptionTradeExecutor3;
-import luonq.strategy.Strategy34;
 import luonq.strategy.Strategy37;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * 末日期权价差
+ * 末日期权价差策略
  */
 @Slf4j
 @Data
@@ -45,6 +40,7 @@ public class OptionStockListener5 {
     public Map<String/* rt iv code */, String/* expire date */> optionExpireDateMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
     public Map<String/* futu code */, String/* ikbr code */> futuForIkbrMap = Maps.newHashMap();
+    public Map<Double/* open strike diff */, String/* stock */> stockToOpenStrikeDiffMap = Maps.newTreeMap((o1, o2) -> o1.compareTo(o2));
 
     private OptionTradeExecutor3 optionTradeExecutor;
 
@@ -121,6 +117,18 @@ public class OptionStockListener5 {
             return;
         }
 
+        Double outCall1StrikePrice = nearlyOptionData.getOutCall1StrikePrice();
+        Double outPut1StrikePrice = nearlyOptionData.getOutPut1StrikePrice();
+
+        Integer upOrDown = open > lastClose ? 1 : -1;
+        double diff;
+        if (upOrDown > 0) {
+            diff = BigDecimal.valueOf(open / outCall1StrikePrice * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+        } else {
+            diff = BigDecimal.valueOf(outPut1StrikePrice / open * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+        }
+        stockToOpenStrikeDiffMap.put(diff, stock);
+
         log.info("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{} can trade", stock, open, call, callIvList, put, putIvList, callLastDaily, putLastDaily);
         String callCode = call.substring(2);
         String putCode = put.substring(2);
@@ -146,14 +154,14 @@ public class OptionStockListener5 {
         String futuCall = callFutuSuffix + Integer.valueOf(callCode.substring(callCode.length() - 8));
         String futuPut = putFutuSuffix + Integer.valueOf(putCode.substring(putCode.length() - 8));
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
-        optionTradeExecutor.monitorFutuDeep(futuCall);
-        optionTradeExecutor.monitorFutuDeep(futuPut);
+//        optionTradeExecutor.monitorFutuDeep(futuCall);
+//        optionTradeExecutor.monitorFutuDeep(futuPut);
         polygonForFutuMap.put(call, futuCall);
         polygonForFutuMap.put(put, futuPut);
         //        optionTradeExecutor.monitorPolygonDeep(call);
         //        optionTradeExecutor.monitorPolygonDeep(put);
-        optionTradeExecutor.monitorIV(futuCall);
-        optionTradeExecutor.monitorIV(futuPut);
+//        optionTradeExecutor.monitorIV(futuCall);
+//        optionTradeExecutor.monitorIV(futuPut);
 
         optionCodeMap.put(rtCall, futuCall);
         optionCodeMap.put(rtPut, futuPut);
@@ -163,10 +171,10 @@ public class OptionStockListener5 {
         futuForIkbrMap.put(futuPut, rtPut.replaceAll("\\+", " "));
 
         canTradeStocks.add(stock); // 这里一定要先确定可交易的股票再开始rt的监听
-        stockLastOptionVolMap.put(stock, totalLastDailyVolume);
+//        stockLastOptionVolMap.put(stock, totalLastDailyVolume);
         optionTradeExecutor.addBuyOrder(stock);
         optionTradeExecutor.addSellOrder(stock);
-        canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);
+//        canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);
     }
 
 
