@@ -41,6 +41,7 @@ public class LoadOptionTradeData {
     public static Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
     public static Map<String/* optionCode */, List<Double>/* historical iv */> optionToIvListMap = Maps.newHashMap();
     public static Map<String/* stock */, List<String>/* call and put optioncode */> stockToOptionCodeMap = Maps.newHashMap();
+    public static Map<String/* stock */, List<String>/* call and put optioncode */> stockToPrevOptionCodeMap = Maps.newHashMap();
     public static Map<String/* optionCode */, OptionDaily> optionToLastDailyMap = Maps.newHashMap();
     public static Double riskFreeRate = 0d;
     public static String lastTradeDate;
@@ -55,6 +56,7 @@ public class LoadOptionTradeData {
             loadPennyStock();
             loadLastdayClose();
             loadOptionChain();
+            loadPrevOptionChain();
             loadHistoricalIv();
             loadLastdayOHLC();
         } catch (Exception e) {
@@ -174,6 +176,19 @@ public class LoadOptionTradeData {
             stockToOptionCodeMap.put(stock, lines);
         }
         log.info("finish load option chain");
+    }
+
+    // 加载股票对应的当周call和put期权链，用于当周到期交易
+    public void loadPrevOptionChain() throws Exception {
+        if (CollectionUtils.isEmpty(stocks)) {
+            return;
+        }
+
+        for (String stock : stocks) {
+            List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionChain/" + stock + "/" + lastTradeDate);
+            stockToPrevOptionCodeMap.put(stock, lines);
+        }
+        log.info("finish load prev option chain");
     }
 
     // 加载期权链的历史5天IV

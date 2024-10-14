@@ -241,6 +241,10 @@ public class Strategy37 {
 
     public static NearlyOptionData calOpenStrikePrice(String date, String stock, double open) throws Exception {
         List<String> callAndPuts = Strategy32.getCallAndPutsWithoutFix(date, stock);
+        return calOpenStrikePrice(date, stock, open, callAndPuts);
+    }
+
+    public static NearlyOptionData calOpenStrikePrice(String date, String stock, double open, List<String> callAndPuts) {
         if (CollectionUtils.isEmpty(callAndPuts)) {
             return null;
         }
@@ -759,12 +763,12 @@ public class Strategy37 {
             return false;
         }
 
-//        if (ivList.get(0) < 0.6) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-                return true;
+        //        if (ivList.get(0) < 0.6) {
+        //            return true;
+        //        } else {
+        //            return false;
+        //        }
+        return true;
     }
 
     public static void main(String[] args) throws Exception {
