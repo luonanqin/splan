@@ -492,6 +492,8 @@ public class Strategy37 {
         if ((stockUpDown > 0 && callOpen < call2Open) || (stockUpDown < 0 && put2Open < put2Open)) {
             return "empty";
         }
+        double callCost = call2Open - callOpen;
+        double putCost = put2Open - putOpen;
         for (int i = sec + 60; i < dayAllSeconds.size() - 60; i++) {
             Long seconds = Long.valueOf(dayAllSeconds.get(i)) / 1000000000;
             Double callClose = callTradePriceMap.get(seconds);
@@ -501,17 +503,10 @@ public class Strategy37 {
             if (callClose == 0 || putClose == 0) {
                 continue;
             }
-            double callDiff = BigDecimal.valueOf(callOpen - callClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
-            double putDiff = BigDecimal.valueOf(putOpen - putClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
-            double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(5, RoundingMode.HALF_UP).doubleValue();
-            double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
-            double call2Diff = BigDecimal.valueOf(call2Close - call2Open).setScale(5, RoundingMode.HALF_UP).doubleValue();
-            double put2Diff = BigDecimal.valueOf(put2Close - put2Open).setScale(5, RoundingMode.HALF_UP).doubleValue();
-            double all2Diff = BigDecimal.valueOf(call2Diff + put2Diff).setScale(5, RoundingMode.HALF_UP).doubleValue();
-            double totalCallDiff = callDiff + call2Diff;
-            double totalPutDiff = putDiff + put2Diff;
-            double callDiffRatio = BigDecimal.valueOf(totalCallDiff / (callOpen - call2Open) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
-            double putDiffRatio = BigDecimal.valueOf(totalPutDiff / (putOpen - put2Open) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double callDiff = BigDecimal.valueOf(call2Close - callClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+            double putDiff = BigDecimal.valueOf(put2Close - putClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+            double callDiffRatio = BigDecimal.valueOf((callCost - callDiff) / callCost * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double putDiffRatio = BigDecimal.valueOf((putCost - putDiff) / putCost * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
             double allDiffRatio = 0;
             if (stockUpDown > 0) {
                 allDiffRatio = callDiffRatio;
@@ -519,26 +514,26 @@ public class Strategy37 {
                 allDiffRatio = putDiffRatio;
             }
 
-            //            String sellTime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            //            String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String sellTime = LocalDateTime.ofEpochSecond(seconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             //            if (allDiffRatio < -40) {
             //                result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio;
             //                return result;
             //            }
-            //            if (i <= 10800 && i >= 120) {
-            //                if (allDiffRatio >= 20) {
-            //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio;
-            //                    return result;
-            //                } else if (allDiffRatio < -20) {
-            //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio;
-            //                    return result;
-            //                }
-            //            } else if (i > 10800) {
-            //                if (allDiffRatio < -20 || allDiffRatio > 20) {
-            //                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio;
-            //                    return result;
-            //                }
-            //            }
+            if (allDiffRatio > 50 || allDiffRatio < -100) {
+                if (stockUpDown > 0) {
+                    double strikeDiff = call2StrikePrice - call1StrikePrice;
+                    double callBuyDiff = callOpen - call2Open;
+                    double priceDiffRatio = BigDecimal.valueOf(callBuyDiff / strikeDiff * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + call2Open + "\t" + call2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + priceDiffRatio;
+                } else {
+                    double strikeDiff = put1StrikePrice - put2StrikePrice;
+                    double putBuyDiff = putOpen - put2Open;
+                    double priceDiffRatio = BigDecimal.valueOf(putBuyDiff / strikeDiff * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    result = buyTime + "\t" + sellTime + "\t" + putOpen + "\t" + putClose + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + priceDiffRatio;
+                }
+                //                return result;
+            }
             if (lowestRatio > allDiffRatio) {
                 lowestRatio = allDiffRatio;
             }
@@ -546,47 +541,57 @@ public class Strategy37 {
                 highestRatio = allDiffRatio;
             }
         }
-        //                System.out.println(result);
-        //        BaseUtils.writeFile(USER_PATH + "optionData/trade/" + year + "/" + date + "_" + stock, list);
         Long sellSeconds = Long.valueOf(dayAllSeconds.get(dayAllSeconds.size() - 60)) / 1000000000;
         Double callClose = callTradePriceMap.get(sellSeconds);
         Double putClose = putTradePriceMap.get(sellSeconds);
         Double call2Close = call2TradePriceMap.get(sellSeconds);
         Double put2Close = put2TradePriceMap.get(sellSeconds);
-        double callDiff = BigDecimal.valueOf(callOpen - callClose).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        double putDiff = BigDecimal.valueOf(putOpen - putClose).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        double callDiff = BigDecimal.valueOf(call2Close - callClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+        double putDiff = BigDecimal.valueOf(put2Close - putClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+        double callDiffRatio = BigDecimal.valueOf((callCost - callDiff) / callCost * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        double putDiffRatio = BigDecimal.valueOf((putCost - putDiff) / putCost * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
         String buyTime = LocalDateTime.ofEpochSecond(buySeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String sellTime = LocalDateTime.ofEpochSecond(sellSeconds, 0, ZoneOffset.of("+8")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        double call2Diff = BigDecimal.valueOf(call2Close - call2Open).setScale(5, RoundingMode.HALF_UP).doubleValue();
-        double put2Diff = BigDecimal.valueOf(put2Close - put2Open).setScale(5, RoundingMode.HALF_UP).doubleValue();
-        double all2Diff = BigDecimal.valueOf(call2Diff + put2Diff).setScale(5, RoundingMode.HALF_UP).doubleValue();
-        double totalCallDiff = callDiff + call2Diff;
-        double totalPutDiff = putDiff + put2Diff;
-        double callDiffRatio = BigDecimal.valueOf(totalCallDiff / (callOpen - call2Open) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        double putDiffRatio = BigDecimal.valueOf(totalPutDiff / (putOpen - put2Open) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        double allDiffRatio = 0;
-        if (stockUpDown > 0) {
-            allDiffRatio = callDiffRatio;
-        } else {
-            allDiffRatio = putDiffRatio;
-        }
-        //        result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio + "\t" + lowestRatio + "\t" + highestRatio;
+        double halfHourDiffRatio = calDiffRatio(dayAllSeconds, 1800, stockUpDown, callTradePriceMap, putTradePriceMap, call2TradePriceMap, put2TradePriceMap, callCost, putCost);
+        double oneHourDiffRatio = calDiffRatio(dayAllSeconds, 3600, stockUpDown, callTradePriceMap, putTradePriceMap, call2TradePriceMap, put2TradePriceMap, callCost, putCost);
+        double twoHourDiffRatio = calDiffRatio(dayAllSeconds, 7200, stockUpDown, callTradePriceMap, putTradePriceMap, call2TradePriceMap, put2TradePriceMap, callClose, putCost);
+        double threeHourDiffRatio = calDiffRatio(dayAllSeconds, 10800, stockUpDown, callTradePriceMap, putTradePriceMap, call2TradePriceMap, put2TradePriceMap, callCost, putCost);
+        double fourHourDiffRatio = calDiffRatio(dayAllSeconds, 14400, stockUpDown, callTradePriceMap, putTradePriceMap, call2TradePriceMap, put2TradePriceMap, callCost, putCost);
+        double fiveHourDiffRatio = calDiffRatio(dayAllSeconds, 18000, stockUpDown, callTradePriceMap, putTradePriceMap, call2TradePriceMap, put2TradePriceMap, callCost, putCost);
+        double sixHourDiffRatio = calDiffRatio(dayAllSeconds, 21600, stockUpDown, callTradePriceMap, putTradePriceMap, call2TradePriceMap, put2TradePriceMap, callCost, putCost);
+        String diffRatioInfo = "";
+        diffRatioInfo = halfHourDiffRatio + "\t" + oneHourDiffRatio + "\t" + twoHourDiffRatio + "\t" + threeHourDiffRatio + "\t" + fourHourDiffRatio + "\t" + fiveHourDiffRatio + "\t" + sixHourDiffRatio;
         if (stockUpDown > 0) {
             double strikeDiff = call2StrikePrice - call1StrikePrice;
             double callBuyDiff = callOpen - call2Open;
             double priceDiffRatio = BigDecimal.valueOf(callBuyDiff / strikeDiff * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-            result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + call2Open + "\t" + call2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + priceDiffRatio;
+            result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + call2Open + "\t" + call2Close + "\t" + stockUpDown + "\t" + callDiffRatio + "\t" + priceDiffRatio + "\t" + diffRatioInfo;
         } else {
             double strikeDiff = put1StrikePrice - put2StrikePrice;
             double putBuyDiff = putOpen - put2Open;
             double priceDiffRatio = BigDecimal.valueOf(putBuyDiff / strikeDiff * 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-            result = buyTime + "\t" + sellTime + "\t" + putOpen + "\t" + putClose + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + priceDiffRatio;
+            result = buyTime + "\t" + sellTime + "\t" + putOpen + "\t" + putClose + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + putDiffRatio + "\t" + priceDiffRatio + "\t" + diffRatioInfo;
         }
 
         return result;
+    }
+
+    public static double calDiffRatio(List<String> dayAllSeconds, int sec, int callOrPut, Map<Long, Double> callTradePriceMap, Map<Long, Double> putTradePriceMap, Map<Long, Double> call2TradePriceMap, Map<Long, Double> put2TradePriceMap, double callCost, double putCost) {
+        Long sellSeconds = Long.valueOf(dayAllSeconds.get(sec)) / 1000000000;
+        double diffRatio;
+        if (callOrPut == 1) { // call
+            Double callClose = callTradePriceMap.get(sellSeconds);
+            Double call2Close = call2TradePriceMap.get(sellSeconds);
+            double callDiff = BigDecimal.valueOf(call2Close - callClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+            diffRatio = BigDecimal.valueOf((callCost - callDiff) / callCost * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        } else {
+            Double putClose = putTradePriceMap.get(sellSeconds);
+            Double put2Close = put2TradePriceMap.get(sellSeconds);
+            double putDiff = BigDecimal.valueOf(put2Close - putClose).setScale(5, RoundingMode.HALF_UP).doubleValue();
+            diffRatio = BigDecimal.valueOf((putCost - putDiff) / putCost * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        }
+        return diffRatio;
     }
 
     public static OptionDaily requestOptionDaily(String code, String date) throws Exception {
@@ -631,131 +636,6 @@ public class Strategy37 {
         Map<String, Double> ivValueMap = ivMap.get(code);
         List<Double> ivList = last5Days.stream().filter(d -> ivValueMap.containsKey(d) && ivValueMap.get(d) != -2).map(d -> ivValueMap.get(d)).collect(Collectors.toList());
         return ivList;
-    }
-
-    public static double calOpen(Map<String, Map<String, Double>> secToStockPriceMap, String optionCode, String date) throws Exception {
-        String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
-        String expireDay = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyMMdd")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        String type = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
-        String priceStr = optionCode.substring(optionCode.length() - 8);
-        int priceInt = Integer.valueOf(priceStr);
-        String strikePrice = BigDecimal.valueOf(priceInt).divide(BigDecimal.valueOf(1000)).setScale(1, RoundingMode.DOWN).toString();
-        if (strikePrice.contains(".0")) {
-            strikePrice = strikePrice.substring(0, strikePrice.length() - 2);
-        }
-        double strikePriceD = Double.valueOf(strikePrice);
-        Double dateIV = GetAggregateImpliedVolatility.getAggregateIv(optionCode.substring(2), date);
-        if (dateIV <= 0) {
-            return 0;
-        }
-
-        int _2_index = optionCode.indexOf("2");
-        String stock = optionCode.substring(2, _2_index);
-        Double stockPrice = 0d;
-        Map<String, String> optionToFirstMap = GetAggregateImpliedVolatility.dateToFirstIvTimeMap.get(date);
-        if (MapUtils.isNotEmpty(optionToFirstMap)) {
-            String firstDatetime = optionToFirstMap.get(optionCode.substring(2));
-            if (StringUtils.isNotBlank(firstDatetime)) {
-                int hour;
-                LocalDateTime day = LocalDate.parse(date, DB_DATE_FORMATTER).atTime(0, 0);
-                if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
-                    hour = 21;
-                } else {
-                    hour = 22;
-                }
-                firstDatetime = firstDatetime.replaceFirst("09:", hour + ":");
-                stockPrice = secToStockPriceMap.get(stock).get(firstDatetime);
-                if (stockPrice == null) {
-                    //                    System.out.println(optionCode + " " + firstDatetime + " has no trade");
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
-        } else {
-            List<Double> priceList = secToStockPriceMap.get(stock).values().stream().collect(Collectors.toList());
-            stockPrice = priceList.get(priceList.size() - 1);
-        }
-
-        Double rate = riskFreeRateMap.get(date);
-        if (rate == null) {
-            rate = 0.0526;
-        }
-        if (type.equalsIgnoreCase("C")) {
-            return BaseUtils.getCallPredictedValue(stockPrice, strikePriceD, rate, dateIV, date, expireDay);
-        } else {
-            return BaseUtils.getPutPredictedValue(stockPrice, strikePriceD, rate, dateIV, date, expireDay);
-        }
-    }
-
-    public static double calOpen(Map<String, Map<String, Double>> secToStockPriceMap, String optionCode, String date, int seconds) throws Exception {
-        String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
-        String expireDay = LocalDate.parse(expireDate, DateTimeFormatter.ofPattern("yyMMdd")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        String type = optionCode.substring(optionCode.length() - 9, optionCode.length() - 8);
-        String priceStr = optionCode.substring(optionCode.length() - 8);
-        int priceInt = Integer.valueOf(priceStr);
-        String strikePrice = BigDecimal.valueOf(priceInt).divide(BigDecimal.valueOf(1000)).setScale(1, RoundingMode.DOWN).toString();
-        if (strikePrice.contains(".0")) {
-            strikePrice = strikePrice.substring(0, strikePrice.length() - 2);
-        }
-        double strikePriceD = Double.valueOf(strikePrice);
-
-        // 根据计算的可交易时间，选择时间对应的iv及股票报价
-        String code = optionCode.substring(2);
-        List<Double> ivList = GetAggregateImpliedVolatility.getAggregateIvList(code, date);
-        if (CollectionUtils.isEmpty(ivList)) {
-            return 0;
-        }
-
-        int _2_index = optionCode.indexOf("2");
-        String stock = optionCode.substring(2, _2_index);
-        Double stockPrice = 0d;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Map<String, List<String>> optionToFirstMap = GetAggregateImpliedVolatility.dateToFirstIvTimeListMap.get(date);
-        List<String> ivTimeList = optionToFirstMap.get(code);
-        LocalDateTime canTradeTime = LocalDateTime.parse(date + " 00:00:00", formatter).withHour(9).withMinute(30).withSecond(0).plusSeconds(seconds);
-
-        double iv = 0;
-        for (int i = 0; i < ivTimeList.size(); i++) {
-            LocalDateTime dateTime = LocalDateTime.parse(ivTimeList.get(i), formatter);
-            if (dateTime.isAfter(canTradeTime)) {
-                if (i == 0) {
-                    iv = ivList.get(i);
-                } else {
-                    iv = ivList.get(i - 1);
-                }
-                break;
-            }
-        }
-
-        int hour;
-        LocalDateTime day = LocalDate.parse(date, DB_DATE_FORMATTER).atTime(0, 0);
-        if (day.isAfter(summerTime) && day.isBefore(winterTime)) {
-            hour = 21;
-        } else {
-            hour = 22;
-        }
-        Map<String, Double> stockPriceMap = secToStockPriceMap.get(stock);
-        String canTradeTimeFormat = canTradeTime.format(formatter);
-        canTradeTimeFormat = canTradeTimeFormat.replace("09", String.valueOf(hour));
-        stockPrice = stockPriceMap.get(canTradeTimeFormat);
-
-        if (stockPrice == null) {
-            List<Double> priceList = secToStockPriceMap.get(stock).values().stream().collect(Collectors.toList());
-            stockPrice = priceList.get(priceList.size() - 1);
-        }
-
-        Double rate = riskFreeRateMap.get(date);
-        if (rate == null) {
-            rate = 0.0526;
-        }
-        if (type.equalsIgnoreCase("C")) {
-            return BaseUtils.getCallPredictedValue(stockPrice, strikePriceD, rate, iv, date, expireDay);
-        } else {
-            return BaseUtils.getPutPredictedValue(stockPrice, strikePriceD, rate, iv, date, expireDay);
-        }
     }
 
     public static boolean canTradeForIv(List<Double> ivList) {
@@ -926,7 +806,7 @@ public class Strategy37 {
                     System.out.println(stock + "\t" + open + "\t" + totalLastVolume + "\t" + date + "\t" + optionList + "\t" + ivInfo + "\t" + simulateTrade);
                     count++;
                     if (count == 3) {
-                        break;
+                        //                        break;
                     }
                 }
             }
