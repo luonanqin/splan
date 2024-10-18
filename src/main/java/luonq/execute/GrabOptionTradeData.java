@@ -474,12 +474,12 @@ public class GrabOptionTradeData {
             threadPool.execute(() -> {
                 try {
                     for (String code : optionCodeList) {
-                        if (Strategy32.getOptionDaily(code, lastTradeDate) != null) {
+                        if (Strategy32.getOptionDaily(code, last2TradeDate) != null) {
                             continue;
                         }
                         //                        Strategy33.requestOptionDaily(code, lastTradeDate);
-                        OptionDaily optionDaily = Strategy32.requestOptionDailyList(httpClient, lastTradeDate, code);
-                        Strategy32.writeOptionDaily(optionDaily, code, lastTradeDate);
+                        OptionDaily optionDaily = Strategy32.requestOptionDailyList(httpClient, last2TradeDate, code);
+                        Strategy32.writeOptionDaily(optionDaily, code, last2TradeDate);
                     }
                     log.info("finish grab lastday OHLC: {}", stock);
                 } catch (Exception e) {
