@@ -454,7 +454,7 @@ public class GrabOptionTradeData {
         log.info("finish grab lastday OHLC");
     }
 
-    // 抓取期权链前日的OHLC
+    // 抓取前日期权链前日的OHLC
     public void grabPrevLastdayOHLC() throws Exception {
         CountDownLatch cdl = new CountDownLatch(stockToSingleOptionCodeMap.size());
         for (String stock : stockToSingleOptionCodeMap.keySet()) {
@@ -465,7 +465,7 @@ public class GrabOptionTradeData {
             }
 
             String chainDir = USER_PATH + "optionData/optionChain/" + stock + "/";
-            String filePath = chainDir + lastTradeDate;
+            String filePath = chainDir + last2TradeDate;
             List<String> callAndPuts = BaseUtils.readFile(filePath);
 
             List<String> optionCodeList = callAndPuts.stream().flatMap(s -> Arrays.stream(s.split("\\|"))).collect(Collectors.toList());
