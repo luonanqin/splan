@@ -3,7 +3,6 @@ package luonq.polygon;
 import bean.NodeList;
 import bean.Order;
 import bean.StockEvent;
-import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -15,23 +14,15 @@ import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.futu.BasicQuote;
 import luonq.futu.GetOptionChain;
 import luonq.ibkr.TradeApi;
-import luonq.listener.OptionStockListener2;
 import luonq.listener.OptionStockListener5;
-import luonq.strategy.Strategy37;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import util.BaseUtils;
 import util.Constants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,9 +32,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static util.Constants.TRADE_ERROR_CODE;
-import static util.Constants.TRADE_PROHIBT_CODE;
 
 /**
  * 末日期权价差策略
@@ -71,6 +59,7 @@ public class OptionTradeExecutor5 {
     private static long ORDER_INTERVAL_TIME_MILLI = 1 * 1000; // 下单后检查间隔时间
     private static String CALL_TYPE = "C";
     private static String PUT_TYPE = "P";
+    public static Set<String> piorityStocks = Sets.newHashSet("AAPL", "TSM", "GOOG");
     public static final double STOP_LOSS_RATIO = 0.5d; // 全交易时段的止损比例
     public static final double STOP_GAIN_RATIO_1 = 0.2d; // 三小时前的止盈比例
     public static final double STOP_GAIN_RATIO_2 = 0.1d; // 三小时后的止盈比例
@@ -124,6 +113,10 @@ public class OptionTradeExecutor5 {
     // 股票对应富途code
     private Map<String, String> canTradeOptionForFutuMap = Maps.newHashMap();
     private Map<String, String> canTradeOptionForFutu2Map = Maps.newHashMap();
+    // poloygon对应futu code
+    private Map<String, String> optionForFutuMap = Maps.newHashMap();
+    // poloygon对应ibkr code
+    private Map<String, String> optionForIbkrMap = Maps.newHashMap();
     // 实时iv code对应ikbr code
     private Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
     // 富途code对应ikbr code
@@ -156,6 +149,7 @@ public class OptionTradeExecutor5 {
     private long openTime;
     private long closeTime;
     private long invalidTime;
+    private long buyTime; // 开始交易时间
     private long stopBuyTime; // 停止交易时间为开盘后一分钟，但是如果其中一个已经交易则不终止
 
     public void init() {
@@ -186,10 +180,13 @@ public class OptionTradeExecutor5 {
         codeToAskMap = futuQuote.getCodeToAskMap();
         canTradeOptionMap = optionStockListener.getCanTradeOptionMap();
         canTradeOption2Map = optionStockListener.getCanTradeOption2Map();
+        optionForFutuMap = optionStockListener.getOptionForFutuMap();
+        optionForIbkrMap = optionStockListener.getOptionForIbkrMap();
         closeTime = client.getCloseCheckTime().getTime();
         openTime = client.getOpenTime();
         //        rtForIkbrMap = optionStockListener.getRtForIkbrMap();
-        futuForIkbrMap = optionStockListener.getFutuForIkbrMap();
+        futuForIkbrMap = optionStockListener.getFutuForIbkrMap();
+        buyTime = openTime + 6000;
         invalidTime = openTime + 15000;
         stopBuyTime = openTime + 60000;
         funds = client.getFunds();
@@ -207,29 +204,97 @@ public class OptionTradeExecutor5 {
         }
         log.info("there are stock can be traded. stock: {}", canTradeStocks);
 
+        Map<Double, String> strikePriceDiffSortedMap = Maps.newTreeMap((o1, o2) -> o1.compareTo(o2));
+        while (true) {
+            if (System.currentTimeMillis() > buyTime) {
+                break;
+            }
+
+            for (String stock : canTradeStocks) {
+                Integer upDown = secStockUpDownMap.get(stock);
+                if (upDown > 0) { // todo 因为现金账户不能对call进行熊市价差，所以暂时过滤，等回复保证金账户后再放开
+                    continue;
+                }
+
+                String callAndPut = canTradeOptionMap.get(stock);
+                String callAndPut2 = canTradeOption2Map.get(stock);
+                String[] split = callAndPut.split("\\|");
+                String[] split2 = callAndPut2.split("\\|");
+                String call = split[0];
+                String put = split[1];
+                String call2 = split2[0];
+                String put2 = split2[1];
+                Double callStrikePrice = optionStrikePriceMap.get(call);
+                Double putStrikePrice = optionStrikePriceMap.get(put);
+                Double callStrikePrice2 = optionStrikePriceMap.get(call2);
+                Double putStrikePrice2 = optionStrikePriceMap.get(put2);
+                String futuCall = optionForFutuMap.get(call);
+                String futuPut = optionForFutuMap.get(put);
+                String futuCall2 = optionForFutuMap.get(call2);
+                String futuPut2 = optionForFutuMap.get(put2);
+                double callMid = calculateMidPrice(futuCall);
+                double putMid = calculateMidPrice(futuPut);
+                double call2Mid = calculateMidPrice(futuCall2);
+                double put2Mid = calculateMidPrice(futuPut2);
+
+                // 如果任何一个期权当前摆盘=0，或者二档期权大于一档期权的，都认为数据无效
+                if (putMid == 0d || put2Mid == 0d || put2Mid > putMid) {
+                    invalidStocks.add(stock);
+                    continue;
+                } else {
+                    invalidStocks.remove(stock);
+                }
+
+                double midDiff = putMid - put2Mid;
+                double strikePriceDiff = putStrikePrice - putStrikePrice2;
+                double diffRatio = BigDecimal.valueOf(midDiff / strikePriceDiff * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                strikePriceDiffSortedMap.put(diffRatio, stock);
+            }
+        }
+
         // 按前日的总成交量倒排，并过滤掉无效stock
         //        List<String> sortedCanTradeStock = stockLastOptionVolMap.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue())).map(kv -> kv.getKey()).collect(Collectors.toList());
         List<String> cutCanTradeStock = Lists.newArrayList(stockToOpenStrikeDiffMap.values()).subList(0, 3);
-        List<String> sortedCanTradeStock = Lists.newArrayList();
-        for (String stock : cutCanTradeStock) {
-            String callAndPut = canTradeOptionMap.get(stock);
-            String[] split = callAndPut.split("\\|");
-            String call = split[0];
-            String put = split[1];
 
-            boolean canTrade;
-            Integer upDown = secStockUpDownMap.get(stock);
-            if (upDown > 0) {
-                List<Double> callIvList = LoadOptionTradeData.optionToIvListMap.get(call);
-                canTrade = callIvList.get(0) < 0.6;
-            } else {
-                List<Double> putIvList = LoadOptionTradeData.optionToIvListMap.get(put);
-                canTrade = putIvList.get(0) < 0.6;
+        int tradeCount = 0;
+        List<String> sortedCanTradeStock = Lists.newArrayList();
+
+        for (String stock : strikePriceDiffSortedMap.values()) {
+            if (invalidStocks.contains(stock)) {
+                continue;
             }
-            if (canTrade) {
-                sortedCanTradeStock.add(stock);
+
+            if (placeOrder(stock)) {
+                tradeCount++;
+            } else {
+                continue;
+            }
+
+            if (tradeCount == 3) {
+                break;
             }
         }
+        // todo 暂时不需要用历史波动率进行筛选
+
+        //        for (String stock : cutCanTradeStock) {
+        //            String callAndPut = canTradeOptionMap.get(stock);
+        //            String[] split = callAndPut.split("\\|");
+        //            String call = split[0];
+        //            String put = split[1];
+        //
+        //            boolean canTrade;
+        //            Integer upDown = secStockUpDownMap.get(stock);
+        //            if (upDown > 0) {
+        //                List<Double> callIvList = LoadOptionTradeData.optionToIvListMap.get(call);
+        //                canTrade = callIvList.get(0) < 0.6;
+        //            } else {
+        //                List<Double> putIvList = LoadOptionTradeData.optionToIvListMap.get(put);
+        //                canTrade = putIvList.get(0) < 0.6;
+        //            }
+        //            if (canTrade) {
+        //                sortedCanTradeStock.add(stock);
+        //            }
+        //        }
 
         if (CollectionUtils.isEmpty(sortedCanTradeStock)) {
             log.info("except invalid stock, there is no stock can be traded");
@@ -238,12 +303,6 @@ public class OptionTradeExecutor5 {
             return;
         }
 
-        threadPool.execute(() -> monitorBuyOrder());
-        threadPool.execute(() -> monitorSellOrder());
-        threadPool.execute(() -> checkCancel());
-        stopLossAndGain();
-
-        //        canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
         int size = sortedCanTradeStock.size() > limitCount ? limitCount : sortedCanTradeStock.size();
         avgFund = (int) funds / size / 2; // 该策略每次只用一半资金
         log.info("init avgFund is {}", avgFund);
@@ -295,12 +354,6 @@ public class OptionTradeExecutor5 {
                 //                }
                 // 测试阶段用预定限额控制下单股票
 
-                // 2.1.没有iv的 和 有iv没有摆盘的 继续循环判断
-                String callAndPut = canTradeOptionMap.get(stock);
-                String[] split = callAndPut.split("\\|");
-                String call = split[0];
-                String put = split[1];
-
                 String callAndPutFutu = canTradeOptionForFutuMap.get(stock);
                 String[] splitFutu = callAndPutFutu.split("\\|");
                 String callFutu = splitFutu[0];
@@ -350,25 +403,11 @@ public class OptionTradeExecutor5 {
                 // 2.2.判断摆盘数据即callTrade+putTrade是否大于avgFund，如果大于则过滤。
                 if (countDouble < 1) {
                     invalidTradeStock(stock);
-                    log.info("the price is greater than avgFund. callAndPut={}", callAndPut);
+                    log.info("the price is greater than avgFund. callAndPut={}", callAndPutFutu);
                     tempInvalidStocks.add(stock);
                     continue;
                 }
 
-                // （勿删！！！！）仅在满仓投入时才使用以下逻辑：如果下单数量小数位小于等于0.5，取整要减一，如果小数位大于0.5，则不变。目的是为了后面如果改价避免成交数量超过限制。但是如果count=1则不减一
-                //                String countStr = String.valueOf(countDouble);
-                //                int dotIndex = countStr.indexOf(".");
-                //                String dotStr = countStr.substring(dotIndex + 1, dotIndex + 2);
-                //                double count = (int) countDouble;
-                //                if (Integer.valueOf(dotStr) <= 5 && count > 1) {
-                //                    count = (int) countDouble - 1;
-                //                }
-                //                if (count <= 0) {
-                //                    invalidTradeStock(stock);
-                //                    log.info("count is illegal. stock={}, count={}", stock, count);
-                //                    tempInvalidStocks.add(stock);
-                //                    continue;
-                //                }
                 double count = (int) countDouble;
                 // todo 价差交易提交，然后确认交易成功后，提交止损单
                 if (upDown > 0) {
@@ -379,7 +418,12 @@ public class OptionTradeExecutor5 {
                     double avgPrice = order.getAvgPrice();
                     double stopLossPrice = BigDecimal.valueOf(avgPrice * (1 + STOP_LOSS_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     tradeApi.stopLossForBuySpread(orderId, stopLossPrice);
-                }else{
+
+                    futuQuote.addUserSecurity(callFutu);
+                    futuQuote.addUserSecurity(call2Futu);
+                    log.info("finish trade: buyCallOrder={}\tcall={}\tcall2={}\tcount={}", orderId, callFutu, call2Futu, count);
+                    ReadWriteOptionTradeInfo.writeBuyOrderId(callIkbr, (long) orderId);
+                } else {
                     int putConId = tradeApi.getOptionConId(putIkbr);
                     int put2ConId = tradeApi.getOptionConId(put2Ikbr);
                     int orderId = tradeApi.buySpread(stock, put2ConId, putConId, count);
@@ -387,56 +431,56 @@ public class OptionTradeExecutor5 {
                     double avgPrice = order.getAvgPrice();
                     double stopLossPrice = BigDecimal.valueOf(avgPrice * (1 + STOP_LOSS_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     tradeApi.stopLossForBuySpread(orderId, stopLossPrice);
-                }
 
-                if (upDown > 0) {
-                    futuQuote.addUserSecurity(callFutu);
-                    futuQuote.addUserSecurity(call2Futu);
-                } else {
                     futuQuote.addUserSecurity(putFutu);
                     futuQuote.addUserSecurity(put2Futu);
+                    log.info("finish trade: buyPutOrder={}\tput={}\tput2={}\tcount={}", orderId, putFutu, put2Futu, count);
+                    ReadWriteOptionTradeInfo.writeBuyOrderId(putIkbr, (long) orderId);
                 }
                 futuQuote.addUserSecurity(stock);
-                log.info("begin trade: buyCallOrder={}\tcall={}\tcallPrice={}\tbuyPutOrder={}\tput={}\tputPrice={}\tcount={}", buyCallOrderId, call, callMidPrice, buyPutOrderId, put, putMidPrice, count);
 
-                // 测试阶段用预定限额控制下单股票
-                //                funds = funds - tradeTotal * 100;
-                // 测试阶段用预定限额控制下单股票
-
-                lastBuyPriceMap.put(callIkbr, callMidPrice);
-                lastBuyPriceMap.put(putIkbr, putMidPrice);
-                orderCountMap.put(stock, count);
-                buyOrderTimeMap.put(stock, curTime);
-                buyOrderIdMap.put(callIkbr, buyCallOrderId);
-                buyOrderIdMap.put(putIkbr, buyPutOrderId);
-                adjustBuyInitPriceMap.put(callFutu, callMidPrice);
-                adjustBuyInitPriceMap.put(putFutu, putMidPrice);
-                adjustBuyPriceTimesMap.put(callFutu, 0);
-                adjustBuyPriceTimesMap.put(putFutu, 0);
-                adjustBuyPriceTimestampMap.put(callFutu, curTime);
-                adjustBuyPriceTimestampMap.put(putFutu, curTime);
                 ReadWriteOptionTradeInfo.writeOrderCount(stock, count);
                 ReadWriteOptionTradeInfo.writeBuyOrderTime(stock, curTime);
-                ReadWriteOptionTradeInfo.writeBuyOrderId(callIkbr, buyCallOrderId);
-                ReadWriteOptionTradeInfo.writeBuyOrderId(putIkbr, buyPutOrderId);
                 ReadWriteOptionTradeInfo.writeHasBoughtOrder(stock);
                 hasBoughtOrderMap.put(stock, EXIST);
             }
-            Set<String> hasBoughtOrderStocks = hasBoughtOrderMap.entrySet().stream().filter(e -> e.getValue().intValue() == EXIST).map(e -> e.getKey()).collect(Collectors.toSet());
-            if (CollectionUtils.intersection(canTradeStocks, hasBoughtOrderStocks).size() == canTradeStocks.size()) {
-                log.info("all stock has bought order: {}. stop buy order", canTradeStocks);
-                break;
-            }
+        }
+    }
+
+    private boolean placeOrder(String stock) throws InterruptedException {
+        String callAndPut = canTradeOptionMap.get(stock);
+        String callAndPut2 = canTradeOption2Map.get(stock);
+        String[] split = callAndPut.split("\\|");
+        String[] split2 = callAndPut2.split("\\|");
+        String call = split[0];
+        String put = split[1];
+        String call2 = split2[0];
+        String put2 = split2[1];
+        String ibkrPut = optionForIbkrMap.get(put);
+        String ibkrPut2 = optionForIbkrMap.get(put);
+        String futuPut = optionForFutuMap.get(put);
+        String futuPut2 = optionForFutuMap.get(put2);
+        double putMid = calculateMidPrice(futuPut);
+        double put2Mid = calculateMidPrice(futuPut2);
+        double midDiff = putMid - put2Mid;
+        if (midDiff < 0) {
+            return false;
         }
 
-        while (true) {
-            if (hasFinishBuying && CollectionUtils.intersection(hasBoughtSuccess, hasSoldSuccess).size() == hasBoughtSuccess.size()) {
-                log.info("all stock have finished trading. End!");
-                Thread.sleep(5000);
-                return;
-            }
-            Thread.sleep(10000);
-        }
+        double count = avgFund / midDiff / 100;
+        int putConId = tradeApi.getOptionConId(ibkrPut);
+        int put2ConId = tradeApi.getOptionConId(ibkrPut2);
+        int orderId = tradeApi.buySpread(stock, put2ConId, putConId, count);
+        Order order = tradeApi.getOrder(orderId);
+        double avgPrice = order.getAvgPrice();
+        double stopLossPrice = BigDecimal.valueOf(avgPrice * (1 + STOP_LOSS_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        tradeApi.stopLossForBuySpread(orderId, stopLossPrice);
+
+        futuQuote.addUserSecurity(futuPut);
+        futuQuote.addUserSecurity(futuPut2);
+        log.info("finish trade: buyPutOrder={}\tput={}\tput2={}\tcount={}", orderId, futuPut, futuPut2, count);
+        ReadWriteOptionTradeInfo.writeBuyOrderId(ibkrPut, (long) orderId);
+        return true;
     }
 
     public void reSendOpenPrice() {
@@ -605,8 +649,12 @@ public class OptionTradeExecutor5 {
     }
 
     public double calculateMidPrice(String futu) {
-        double bidPrice = codeToBidMap.get(futu);
-        double askPrice = codeToAskMap.get(futu);
+        double bidPrice = MapUtils.getDouble(codeToBidMap, futu, 0d);
+        double askPrice = MapUtils.getDouble(codeToAskMap, futu, 0d);
+        if (bidPrice == 0d || askPrice == 0) {
+            return 0d;
+        }
+
         double midPrice = BigDecimal.valueOf((bidPrice + askPrice) / 2).setScale(2, RoundingMode.DOWN).doubleValue();
         return midPrice;
     }
