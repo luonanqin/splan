@@ -44,6 +44,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static util.Constants.USER_PATH;
+
 @Slf4j
 @Component
 public class GrabOptionTradeData {
@@ -85,6 +87,7 @@ public class GrabOptionTradeData {
             loadLastdayClose();
             grabOptionChain();
             grabLastdayOHLC();
+            grabPrevLastdayOHLC();
             grabOptionId();
             grabHistoricalIv();
         } catch (Exception e) {
@@ -392,9 +395,9 @@ public class GrabOptionTradeData {
                 optionCodeDateMap.put(optionCode, currentTradeDate);
             }
             if (MapUtils.isNotEmpty(optionCodeDateMap)) {
-//                for (String s : optionCodeDateMap.keySet()) {
-//                    System.out.println("grab iv:" + s);
-//                }
+                //                for (String s : optionCodeDateMap.keySet()) {
+                //                    System.out.println("grab iv:" + s);
+                //                }
                 GetDailyImpliedVolatility.getHistoricalIV(optionCodeDateMap, last5DaysMap, nextDayMap, lastTradeDate);
             }
 
@@ -413,6 +416,47 @@ public class GrabOptionTradeData {
             }
 
             List<String> optionCodeList = stockToSingleOptionCodeMap.get(stock);
+
+            CloseableHttpClient httpClient = queue.take();
+            threadPool.execute(() -> {
+                try {
+                    for (String code : optionCodeList) {
+                        if (Strategy32.getOptionDaily(code, lastTradeDate) != null) {
+                            continue;
+                        }
+                        //                        Strategy33.requestOptionDaily(code, lastTradeDate);
+                        OptionDaily optionDaily = Strategy32.requestOptionDailyList(httpClient, lastTradeDate, code);
+                        Strategy32.writeOptionDaily(optionDaily, code, lastTradeDate);
+                    }
+                    log.info("finish grab lastday OHLC: {}", stock);
+                } catch (Exception e) {
+                    log.info("grabLastdayOHLC error. stock={}", stock, e);
+                } finally {
+                    queue.offer(httpClient);
+                    cdl.countDown();
+                    System.out.println("lastday OHLC cdl:" + cdl.getCount());
+                }
+            });
+        }
+        cdl.await();
+        log.info("finish grab lastday OHLC");
+    }
+
+    // 抓取期权链前日的OHLC
+    public void grabPrevLastdayOHLC() throws Exception {
+        CountDownLatch cdl = new CountDownLatch(stockToSingleOptionCodeMap.size());
+        for (String stock : stockToSingleOptionCodeMap.keySet()) {
+
+            if (CollectionUtils.isNotEmpty(testStocks) && !testStocks.contains(stock)) {
+                cdl.countDown();
+                continue;
+            }
+
+            String chainDir = USER_PATH + "optionData/optionChain/" + stock + "/";
+            String filePath = chainDir + lastTradeDate;
+            List<String> callAndPuts = BaseUtils.readFile(filePath);
+
+            List<String> optionCodeList = callAndPuts.stream().flatMap(s -> Arrays.stream(s.split("\\|"))).collect(Collectors.toList());
 
             CloseableHttpClient httpClient = queue.take();
             threadPool.execute(() -> {
