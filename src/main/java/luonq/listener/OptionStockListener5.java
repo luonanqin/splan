@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
 import luonq.polygon.OptionTradeExecutor3;
+import luonq.polygon.OptionTradeExecutor5;
 import luonq.strategy.Strategy37;
 import org.apache.commons.collections4.CollectionUtils;
 import util.Constants;
@@ -46,9 +47,9 @@ public class OptionStockListener5 {
     public Map<Double/* open strike diff */, String/* stock */> stockToOpenStrikeDiffMap = Maps.newTreeMap((o1, o2) -> o1.compareTo(o2));
     public Map<String/* stock */, Integer/* 1=up -1=down */> secStockUpDownMap = Maps.newHashMap();
 
-    private OptionTradeExecutor3 optionTradeExecutor;
+    private OptionTradeExecutor5 optionTradeExecutor;
 
-    public void setOptionTradeExecutor(OptionTradeExecutor3 optionTradeExecutor) {
+    public void setOptionTradeExecutor(OptionTradeExecutor5 optionTradeExecutor) {
         this.optionTradeExecutor = optionTradeExecutor;
     }
 
