@@ -58,6 +58,7 @@ public class GrabOptionTradeData {
     public Map<String/* stock */, List<String>/* call or put optioncode */> stockToSingleOptionCodeMap = Maps.newHashMap();
     public static Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
     public String lastTradeDate;
+    public String last2TradeDate;
     public static String currentTradeDate;
     public BlockingQueue<CloseableHttpClient> queue;
     public ThreadPoolExecutor threadPool;
@@ -110,6 +111,17 @@ public class GrabOptionTradeData {
                 lastTradeDate = last2TradeCalendar.getDate();
             } else if (now.isAfter(preMarketOpen)) {
                 lastTradeDate = lastTradeCalendar.getDate();
+            }
+        }
+
+        TradeCalendar last3TradeCalendar = readFromDB.getLastTradeCalendar(last2TradeCalendar.getDate());
+        if (tradeCalendar == null) {
+            last2TradeDate = last3TradeCalendar.getDate();
+        } else {
+            if (now.isBefore(preMarketOpen)) {
+                last2TradeDate = last3TradeCalendar.getDate();
+            } else if (now.isAfter(preMarketOpen)) {
+                last2TradeDate = last2TradeCalendar.getDate();
             }
         }
     }
