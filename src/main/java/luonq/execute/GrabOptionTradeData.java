@@ -58,7 +58,6 @@ public class GrabOptionTradeData {
     public Map<String/* stock */, List<String>/* call or put optioncode */> stockToSingleOptionCodeMap = Maps.newHashMap();
     public static Map<String/* stock */, Double/* lastClose */> stockToLastdayCloseMap = Maps.newHashMap();
     public String lastTradeDate;
-    public String last2TradeDate;
     public static String currentTradeDate;
     public BlockingQueue<CloseableHttpClient> queue;
     public ThreadPoolExecutor threadPool;
@@ -111,17 +110,6 @@ public class GrabOptionTradeData {
                 lastTradeDate = last2TradeCalendar.getDate();
             } else if (now.isAfter(preMarketOpen)) {
                 lastTradeDate = lastTradeCalendar.getDate();
-            }
-        }
-
-        TradeCalendar last3TradeCalendar = readFromDB.getLastTradeCalendar(last2TradeCalendar.getDate());
-        if (tradeCalendar == null) {
-            last2TradeDate = last3TradeCalendar.getDate();
-        } else {
-            if (now.isBefore(preMarketOpen)) {
-                last2TradeDate = last3TradeCalendar.getDate();
-            } else if (now.isAfter(preMarketOpen)) {
-                last2TradeDate = last2TradeCalendar.getDate();
             }
         }
     }
@@ -439,6 +427,7 @@ public class GrabOptionTradeData {
                         //                        Strategy33.requestOptionDaily(code, lastTradeDate);
                         OptionDaily optionDaily = Strategy32.requestOptionDailyList(httpClient, lastTradeDate, code);
                         Strategy32.writeOptionDaily(optionDaily, code, lastTradeDate);
+                        Strategy32.refreshOptionDailyMap(optionDaily, code, lastTradeDate);
                     }
                     log.info("finish grab lastday OHLC: {}", stock);
                 } catch (Exception e) {
@@ -465,7 +454,7 @@ public class GrabOptionTradeData {
             }
 
             String chainDir = USER_PATH + "optionData/optionChain/" + stock + "/";
-            String filePath = chainDir + last2TradeDate;
+            String filePath = chainDir + lastTradeDate;
             List<String> callAndPuts = BaseUtils.readFile(filePath);
 
             List<String> optionCodeList = callAndPuts.stream().flatMap(s -> Arrays.stream(s.split("\\|"))).collect(Collectors.toList());
@@ -474,12 +463,12 @@ public class GrabOptionTradeData {
             threadPool.execute(() -> {
                 try {
                     for (String code : optionCodeList) {
-                        if (Strategy32.getOptionDaily(code, last2TradeDate) != null) {
+                        if (Strategy32.getOptionDaily(code, lastTradeDate) != null) {
                             continue;
                         }
                         //                        Strategy33.requestOptionDaily(code, lastTradeDate);
-                        OptionDaily optionDaily = Strategy32.requestOptionDailyList(httpClient, last2TradeDate, code);
-                        Strategy32.writeOptionDaily(optionDaily, code, last2TradeDate);
+                        OptionDaily optionDaily = Strategy32.requestOptionDailyList(httpClient, lastTradeDate, code);
+                        Strategy32.writeOptionDaily(optionDaily, code, lastTradeDate);
                     }
                     log.info("finish grab lastday OHLC: {}", stock);
                 } catch (Exception e) {
@@ -492,6 +481,6 @@ public class GrabOptionTradeData {
             });
         }
         cdl.await();
-        log.info("finish grab lastday OHLC");
+        log.info("finish grab prev lastday OHLC");
     }
 }

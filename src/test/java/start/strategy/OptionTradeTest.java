@@ -36,7 +36,8 @@ public class OptionTradeTest extends BaseTest {
     @Test
     public void test_getOptionChain() throws Exception {
         grabOptionTradeData.init();
-        grabOptionTradeData.lastTradeDate = "2024-10-18";
+//        grabOptionTradeData.lastTradeDate = "2024-10-18";
+        grabOptionTradeData.calLastTradeDate();
         grabOptionTradeData.calCurrentTradeDate();
         grabOptionTradeData.stocks.add("AAPL");
         grabOptionTradeData.grabOptionChain();

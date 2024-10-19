@@ -1,13 +1,11 @@
 package start.strategy;
 
+import com.futu.openapi.FTAPI;
 import com.google.common.collect.Maps;
-import luonq.execute.GrabOptionTradeData;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
-import luonq.listener.OptionStockListener;
-import luonq.listener.OptionStockListener2;
+import luonq.futu.BasicQuote;
 import luonq.listener.OptionStockListener5;
-import luonq.polygon.OptionTradeExecutor2;
 import luonq.polygon.OptionTradeExecutor5;
 import luonq.polygon.RealTimeDataWS_DB2;
 import org.junit.Test;
@@ -17,7 +15,6 @@ import start.BaseTest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class OptionTradeTest5 extends BaseTest {
@@ -31,7 +28,19 @@ public class OptionTradeTest5 extends BaseTest {
     @Test
     public void test_optionStockListener() throws Exception {
         loadOptionTradeData.load();
+        FTAPI.init();
+        BasicQuote futuQuote = new BasicQuote();
+        futuQuote.start();
+        RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
+        client.setOpenTime(1723469400000l);
+        client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
+
         OptionStockListener5 optionStockListener = new OptionStockListener5();
+        optionTradeExecutor.setClient(client);
+        optionTradeExecutor.setOptionStockListener(optionStockListener);
+        optionTradeExecutor.setFutuQuote(futuQuote);
+        optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
+        optionTradeExecutor.init();
                 optionStockListener.cal("AAPL", 232.15); // 股价波动被过滤
 //        optionStockListener.cal("NKLA", 11.38); // 股价波动超过2%
     }

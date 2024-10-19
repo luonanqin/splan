@@ -489,7 +489,7 @@ public class Strategy37 {
         if (callOpen == call2Open || putOpen == put2Open) {
             return "empty";
         }
-        if ((stockUpDown > 0 && callOpen < call2Open) || (stockUpDown < 0 && put2Open < put2Open)) {
+        if ((stockUpDown > 0 && (callOpen < call2Open || call2Open == 0)) || (stockUpDown < 0 && (put2Open < put2Open || put2Open == 0))) {
             return "empty";
         }
         double callCost = call2Open - callOpen;
@@ -806,7 +806,7 @@ public class Strategy37 {
                     System.out.println(stock + "\t" + open + "\t" + totalLastVolume + "\t" + date + "\t" + optionList + "\t" + ivInfo + "\t" + simulateTrade);
                     count++;
                     if (count == 3) {
-                        //                        break;
+                        break;
                     }
                 }
             }

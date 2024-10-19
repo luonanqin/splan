@@ -9,7 +9,6 @@ import com.google.common.eventbus.Subscribe;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import luonq.execute.LoadOptionTradeData;
-import luonq.polygon.OptionTradeExecutor3;
 import luonq.polygon.OptionTradeExecutor5;
 import luonq.strategy.Strategy37;
 import org.apache.commons.collections4.CollectionUtils;
@@ -118,11 +117,11 @@ public class OptionStockListener5 {
             return;
         }
         //        long totalLastDailyVolume = callLastDaily.getVolume() + putLastDaily.getVolume();
-        Double totalLastClose = BigDecimal.valueOf(callLastDaily.getClose() + putLastDaily.getClose()).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        if (totalLastClose.compareTo(0.5) <= 0) {
-            log.warn("{}\t{} last total close is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
-            return;
-        }
+        //        Double totalLastClose = BigDecimal.valueOf(callLastDaily.getClose() + putLastDaily.getClose()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        //        if (totalLastClose.compareTo(0.5) <= 0) {
+        //            log.warn("{}\t{} last total close is illegal. callLastDaily={}\tputLastDaily={}", call, put, callLastDaily, putLastDaily);
+        //            return;
+        //        }
 
         Double outCall1StrikePrice = nearlyOptionData.getOutCall1StrikePrice();
         Double outPut1StrikePrice = nearlyOptionData.getOutPut1StrikePrice();
