@@ -48,7 +48,7 @@ public class OptionTradeExecutor5 {
     private GetOptionChain getOptionChain;
     private int cut = 990000;
     private List<String> tradeStock = Lists.newArrayList();
-    private RealTimeDataWS_DB2 client;
+    private RealTimeDataWS_DB5 client;
     private boolean realTrade = true;
     private OptionStockListener5 optionStockListener;
     private TradeApi tradeApi;
@@ -62,14 +62,14 @@ public class OptionTradeExecutor5 {
     private static String PUT_TYPE = "P";
     public static Set<String> piorityStocks = Sets.newHashSet("AAPL", "TSM", "GOOG");
     public static Map<String, Double> piorityStocksWithStrikeDiff = Maps.newHashMap();
-    public static final double STOP_LOSS_RATIO = 0.5d; // 全交易时段的止损比例
+    public static final double STOP_LOSS_RATIO = 1d; // 全交易时段的止损比例
     public static final double STOP_GAIN_RATIO = 1d; // 三小时前的止盈比例
     public static final long STOP_GAIN_INTERVAL_TIME_LINE = 3 * 60 * 60 * 1000L; // 三小时止盈时间点
     public static final int ADJUST_SELL_TRADE_PRICE_TIMES = 10; // 卖出挂单价调价次数上限
     public static final int ADJUST_BUY_TRADE_PRICE_TIMES = 5; // 买入挂单价调价次数上限
     public static final long ADJUST_SELL_PRICE_TIME_INTERVAL = 4 * 1000L; // 卖出挂单价调价间隔4秒
     public static final long ADJUST_BUY_PRICE_TIME_INTERVAL = 3 * 1000L; // 买入挂单价调价间隔2秒
-    public static final List<Long> checkPoints = Lists.newArrayList(1800L, 3600L, 7200L, 10800L, 14400L, 18000L, 21600L);
+    public static final List<Long> checkPoints = Lists.newArrayList(1800000L, 3600000L, 7200000L, 10800000L, 14400000L, 18000000L, 21600000L);
 
     private static Integer EXIST = 1;
     private static Integer NOT_EXIST = 0;
@@ -275,7 +275,7 @@ public class OptionTradeExecutor5 {
                 tradeCount++;
                 hasBoughtSuccess.add(stock);
                 invalidStocks.add(stock);
-            } else{
+            } else {
                 continue;
             }
             if (tradeCount == 2) {
@@ -302,8 +302,15 @@ public class OptionTradeExecutor5 {
 
         int index = 0;
         while (true) {
+            if (hasSoldSuccess.containsAll(hasBoughtSuccess) || index >= checkPoints.size()) {
+                break;
+            }
             if (System.currentTimeMillis() >= openTime + checkPoints.get(index)) {
                 for (String stock : hasBoughtSuccess) {
+                    if (hasSoldSuccess.contains(stock)) {
+                        continue;
+                    }
+
                     String callAndPut = canTradeOptionMap.get(stock);
                     String callAndPut2 = canTradeOption2Map.get(stock);
                     String[] split = callAndPut.split("\\|");
@@ -311,18 +318,23 @@ public class OptionTradeExecutor5 {
                     String put = split[1];
                     String put2 = split2[1];
                     String ibkrPut = optionForIbkrMap.get(put);
-                    String ibkrPut2 = optionForIbkrMap.get(put);
                     String futuPut = optionForFutuMap.get(put);
                     String futuPut2 = optionForFutuMap.get(put2);
                     double putMidPrice = calculateMidPrice(futuPut);
                     double put2MidPrice = calculateMidPrice(futuPut2);
+                    double diffPrice = putMidPrice - put2MidPrice;
 
                     Integer orderId = buyOrderIdMap.get(ibkrPut);
                     Order order = tradeApi.getOrder((long) orderId);
                     double avgPrice = order.getAvgPrice();
-                    double stopLossPrice = BigDecimal.valueOf(avgPrice * (1 - STOP_LOSS_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
-
+                    double diffRatio = BigDecimal.valueOf((avgPrice - diffPrice) / avgPrice * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    double stopLossPrice = BigDecimal.valueOf(avgPrice * (1 + STOP_LOSS_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    if (diffPrice > stopLossPrice) {
+                        tradeApi.stopForBuySpread_mkt(orderId);
+                        hasSoldSuccess.add(stock);
+                    }
                 }
+                index++;
             } else {
                 TimeUnit.SECONDS.sleep(1);
             }
@@ -520,6 +532,7 @@ public class OptionTradeExecutor5 {
         }
 
         double count = avgFund / midDiff / 100;
+        count = 1d; // todo 模拟盘线尝试1张期权
         int putConId = tradeApi.getOptionConId(ibkrPut);
         int put2ConId = tradeApi.getOptionConId(ibkrPut2);
         int orderId = tradeApi.buySpread(stock, put2ConId, putConId, count);
@@ -527,7 +540,7 @@ public class OptionTradeExecutor5 {
         double avgPrice = order.getAvgPrice();
         double stopGainPrice = BigDecimal.valueOf(avgPrice * (1 + STOP_GAIN_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
         tradeApi.stopForBuySpread(orderId, stopGainPrice);
-        log.info("finish trade: buyPutOrder={}\tput={}\tput2={}\tcount={}", orderId, futuPut, futuPut2, count);
+        log.info("finish trade: buyPutOrder={}\tput={}\tput2={}\tcount={}\tcost={}", orderId, futuPut, futuPut2, count, avgPrice);
 
         futuQuote.addUserSecurity(futuPut);
         futuQuote.addUserSecurity(futuPut2);
@@ -571,8 +584,8 @@ public class OptionTradeExecutor5 {
         }
         hasBoughtSuccess = ReadWriteOptionTradeInfo.readHasBoughtSuccess();
         hasSoldSuccess = ReadWriteOptionTradeInfo.readHasSoldSuccess();
-//        buyOrderIdMap = ReadWriteOptionTradeInfo.readBuyOrderId();
-//        sellOrderIdMap = ReadWriteOptionTradeInfo.readSellOrderId();
+        //        buyOrderIdMap = ReadWriteOptionTradeInfo.readBuyOrderId();
+        //        sellOrderIdMap = ReadWriteOptionTradeInfo.readSellOrderId();
         buyOrderTimeMap = ReadWriteOptionTradeInfo.readBuyOrderTime();
         sellOrderTimeMap = ReadWriteOptionTradeInfo.readSellOrderTime();
         orderCountMap = ReadWriteOptionTradeInfo.readOrderCount();
