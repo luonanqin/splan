@@ -394,7 +394,7 @@ public class TradeApi {
         return orderId;
     }
 
-    public void stopLossForBuySpread(String stock, int buyConId, int sellConId, int count, double stopLossPrice) {
+    public void stopForBuySpread(String stock, int buyConId, int sellConId, int count, double stopLossPrice) {
         Contract contract = buildSpread(stock, buyConId, sellConId);
 
         Order order = new Order();
@@ -407,7 +407,7 @@ public class TradeApi {
         client.placeOrModifyOrder(contract, order, orderHandler);
     }
 
-    public void stopLossForBuySpread(int orderId, double stopLossPrice) {
+    public void stopForBuySpread(int orderId, double stopLossPrice) {
         Contract contract = orderIdToContractMap.get(orderId);
         Order buyOrder = orderIdToOrderMap.get(orderId);
 

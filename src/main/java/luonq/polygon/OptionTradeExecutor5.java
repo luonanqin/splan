@@ -63,8 +63,7 @@ public class OptionTradeExecutor5 {
     public static Set<String> piorityStocks = Sets.newHashSet("AAPL", "TSM", "GOOG");
     public static Map<String, Double> piorityStocksWithStrikeDiff = Maps.newHashMap();
     public static final double STOP_LOSS_RATIO = 0.5d; // 全交易时段的止损比例
-    public static final double STOP_GAIN_RATIO_1 = 0.2d; // 三小时前的止盈比例
-    public static final double STOP_GAIN_RATIO_2 = 0.1d; // 三小时后的止盈比例
+    public static final double STOP_GAIN_RATIO = 1d; // 三小时前的止盈比例
     public static final long STOP_GAIN_INTERVAL_TIME_LINE = 3 * 60 * 60 * 1000L; // 三小时止盈时间点
     public static final int ADJUST_SELL_TRADE_PRICE_TIMES = 10; // 卖出挂单价调价次数上限
     public static final int ADJUST_BUY_TRADE_PRICE_TIMES = 5; // 买入挂单价调价次数上限
@@ -526,8 +525,8 @@ public class OptionTradeExecutor5 {
         int orderId = tradeApi.buySpread(stock, put2ConId, putConId, count);
         Order order = tradeApi.getOrder(orderId);
         double avgPrice = order.getAvgPrice();
-        double stopLossPrice = BigDecimal.valueOf(avgPrice * (1 + STOP_LOSS_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        tradeApi.stopLossForBuySpread(orderId, stopLossPrice);
+        double stopGainPrice = BigDecimal.valueOf(avgPrice * (1 + STOP_GAIN_RATIO)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        tradeApi.stopForBuySpread(orderId, stopGainPrice);
         log.info("finish trade: buyPutOrder={}\tput={}\tput2={}\tcount={}", orderId, futuPut, futuPut2, count);
 
         futuQuote.addUserSecurity(futuPut);
