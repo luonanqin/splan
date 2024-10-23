@@ -26,16 +26,27 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TradeApi {
 
-    public static long simulateUsOptionAccountId = 1;
+    public static String simulateAccount = "DUA100430";
+    public static String realAccount = "U18653989";
     private PositionHandlerImpl positionHandler = new PositionHandlerImpl();
     private Map<Integer/* orderId */, OrderHandlerImpl> orderIdToHandlerMap = Maps.newHashMap();
     private Map<Integer/* orderId */, Contract> orderIdToContractMap = Maps.newHashMap();
     private Map<Integer/* orderId */, Order> orderIdToOrderMap = Maps.newHashMap();
     private int port;
     private ApiController client;
+    private boolean real = true;
 
     public TradeApi() {
-        useRealEnv();
+        this(false);
+    }
+
+    public TradeApi(boolean simulate) {
+        real = !simulate;
+        if (!real) {
+            useSimulateEnv();
+        } else {
+            useRealEnv();
+        }
         start();
     }
 
@@ -300,6 +311,29 @@ public class TradeApi {
         return cash;
     }
 
+    public double getAvailableCash() {
+        double cash = Constants.INIT_CASH;
+        AvailableCashHandlerImpl accountSummaryHandler = new AvailableCashHandlerImpl();
+        for (int i = 0; i < 3; i++) {
+            log.info("getAccountCash");
+            client.reqAccountSummary("All", new AccountSummaryTag[] { AccountSummaryTag.SettledCash }, accountSummaryHandler);
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+            }
+            client.cancelAccountSummary(accountSummaryHandler);
+            double accountCash = accountSummaryHandler.getCash();
+
+            if (accountCash == 0) {
+                continue;
+            } else {
+                cash = accountCash;
+                break;
+            }
+        }
+        return cash;
+    }
+
     public double getPnl() {
         Map<Integer, Double> conIdValueMap = Maps.newHashMap();
         conIdValueMap.put(51529211, 8979d); // GLD
@@ -308,9 +342,10 @@ public class TradeApi {
         double allCost = conIdValueMap.values().stream().collect(Collectors.summingDouble(Double::new));
         double allPnl = 0;
 
+        String account = real ? realAccount : simulateAccount;
         for (Integer conId : conIdValueMap.keySet()) {
             PnLSingleHandlerImpl iPnLSingleHandler = new PnLSingleHandlerImpl();
-            client.reqPnLSingle("U18653989", "", conId, iPnLSingleHandler); // GLD
+            client.reqPnLSingle(account, "", conId, iPnLSingleHandler); // GLD
             double value = 0d;
             for (int i = 0; i < 10; i++) {
                 value = iPnLSingleHandler.getValue();
@@ -364,7 +399,7 @@ public class TradeApi {
         return contract;
     }
 
-    public int buySpread(String stock, int buyConId, int sellConId, double count) {
+    public int buySpread(String stock, int buyConId, int sellConId, double count) throws Exception {
         Contract contract = buildSpread(stock, buyConId, sellConId);
 
         Order order = new Order();
@@ -378,23 +413,28 @@ public class TradeApi {
         orderHandler.setOrderId(orderId);
         log.info("buy spread place order. orderId={}\tstock={}\tbuyConId={}\tsellConId={}\tcount={}", orderId, stock, buyConId, sellConId, count);
 
-        orderIdToContractMap.put(orderId, contract);
-        orderIdToOrderMap.put(orderId, order);
-        orderIdToHandlerMap.put(orderId, orderHandler);
-
         while (true) {
             OrderStatus status = orderHandler.getStatus();
             if (status == OrderStatus.Filled) {
                 log.info("buy spread place order success. orderId={}", orderId);
                 break;
+            } else if (orderHandler.getErrorCode() == 201) {
+                log.info("buy spread place order has been cancelled. orderId={}\tstock={}\tbuyConId={}\tsellConId={}\tcount={}", orderId, stock, buyConId, sellConId, count);
+                return -1;
             } else {
                 log.info("waiting trade. orderId={}", orderId);
+                TimeUnit.SECONDS.sleep(1);
             }
         }
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
         return orderId;
     }
 
-    public void stopForBuySpread(String stock, int buyConId, int sellConId, int count, double stopLossPrice) {
+    public void stopForBuySpread_lmt(String stock, int buyConId, int sellConId, int count, double stopLossPrice) {
         Contract contract = buildSpread(stock, buyConId, sellConId);
 
         Order order = new Order();
@@ -407,14 +447,27 @@ public class TradeApi {
         client.placeOrModifyOrder(contract, order, orderHandler);
     }
 
-    public void stopForBuySpread(int orderId, double stopLossPrice) {
+    public void stopForBuySpread_lmt(int orderId, double stopLossPrice) {
         Contract contract = orderIdToContractMap.get(orderId);
         Order buyOrder = orderIdToOrderMap.get(orderId);
 
         Order order = new Order();
         order.action(Types.Action.SELL);
-        order.auxPrice(stopLossPrice);
-        order.orderType(OrderType.STP);
+        order.lmtPrice(stopLossPrice);
+        order.orderType(OrderType.LMT);
+        order.totalQuantity(buyOrder.totalQuantity());
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        client.placeOrModifyOrder(contract, order, orderHandler);
+    }
+
+    public void stopForBuySpread_mkt(long orderId) {
+        Contract contract = orderIdToContractMap.get(orderId);
+        Order buyOrder = orderIdToOrderMap.get(orderId);
+
+        Order order = new Order();
+        order.action(Types.Action.SELL);
+        order.orderType(OrderType.MKT);
         order.totalQuantity(buyOrder.totalQuantity());
 
         OrderHandlerImpl orderHandler = new OrderHandlerImpl();
@@ -434,7 +487,9 @@ public class TradeApi {
                     return;
                 }
                 ContractDetails contractDetails = list.get(0);
-                contract.conid(contractDetails.conid());
+                int conid = contractDetails.conid();
+                contract.conid(conid);
+                log.info("{} conId={}", code, conid);
             } catch (Exception e) {
                 log.error("get option conId error. code={}", code, e);
             } finally {
@@ -446,7 +501,7 @@ public class TradeApi {
     }
 
     public static void main(String[] args) {
-        TradeApi tradeApi = new TradeApi();
+        TradeApi tradeApi = new TradeApi(true);
         tradeApi.reqPosition();
         double accountCash = tradeApi.getAccountCash();
         System.out.println(accountCash);

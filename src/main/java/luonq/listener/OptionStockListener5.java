@@ -63,6 +63,9 @@ public class OptionStockListener5 {
 
     // 计算开盘价波动、计算call和put、计算期权是否可交易
     public void cal(String stock, double open) throws Exception {
+        if (!stock.equals("GOOG")) {
+//            return;
+        }
         if (!LoadOptionTradeData.stocks.contains(stock)) {
             return;
         }
@@ -175,10 +178,13 @@ public class OptionStockListener5 {
         String futuPut2 = put2FutuSuffix + Integer.valueOf(put2Code.substring(put2Code.length() - 8));
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
         canTradeOptionForFutu2Map.put(stock, futuCall2 + "|" + futuPut2);
-        optionTradeExecutor.monitorFutuDeep(futuCall);
-        optionTradeExecutor.monitorFutuDeep(futuPut);
-        optionTradeExecutor.monitorFutuDeep(futuCall2);
-        optionTradeExecutor.monitorFutuDeep(futuPut2);
+//        if (upOrDown > 0) {
+//            optionTradeExecutor.monitorFutuDeep(futuCall);
+//            optionTradeExecutor.monitorFutuDeep(futuCall2);
+//        } else {
+//            optionTradeExecutor.monitorFutuDeep(futuPut);
+//            optionTradeExecutor.monitorFutuDeep(futuPut2);
+//        }
         optionForFutuMap.put(call, futuCall);
         optionForFutuMap.put(put, futuPut);
         optionForFutuMap.put(call2, futuCall2);

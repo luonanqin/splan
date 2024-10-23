@@ -17,6 +17,7 @@ public class OrderHandlerImpl implements ApiController.IOrderHandler {
     private double count;
     private double avgPrice = 0;
     private int orderId = 0;
+    private int errorCode;
 
     @Override
     public void orderState(OrderState orderState) {
@@ -37,5 +38,6 @@ public class OrderHandlerImpl implements ApiController.IOrderHandler {
     @Override
     public void handle(int errorCode, String errorMsg) {
         log.error("order error: code={}\torderId={}\tpermId={}\terrorCode={}\terrorMsg={}", code, orderId, permId, errorCode, errorMsg);
+        this.errorCode = errorCode;
     }
 }
