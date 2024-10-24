@@ -1,13 +1,13 @@
 package start.strategy;
 
 import com.futu.openapi.FTAPI;
-import com.google.common.collect.Maps;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.futu.BasicQuote;
+import luonq.ibkr.TradeApi;
 import luonq.listener.OptionStockListener5;
 import luonq.polygon.OptionTradeExecutor5;
-import luonq.polygon.RealTimeDataWS_DB2;
+import luonq.polygon.RealTimeDataWS_DB5;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import start.BaseTest;
@@ -31,7 +31,7 @@ public class OptionTradeTest5 extends BaseTest {
         FTAPI.init();
         BasicQuote futuQuote = new BasicQuote();
         futuQuote.start();
-        RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
+        RealTimeDataWS_DB5 client = new RealTimeDataWS_DB5();
         client.setOpenTime(1723469400000l);
         client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
 
@@ -49,12 +49,12 @@ public class OptionTradeTest5 extends BaseTest {
     public void test_begintrade() throws Exception {
         loadOptionTradeData.load();
         ReadWriteOptionTradeInfo.init();
-        RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
+        RealTimeDataWS_DB5 client = new RealTimeDataWS_DB5();
         client.setOpenTime(1723469400000l);
         client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
         String stock = "BEKE";
         double open = 15.7;
-        RealTimeDataWS_DB2.realtimeQuoteForOptionMap.put(stock, open);
+        RealTimeDataWS_DB5.realtimeQuoteForOptionMap.put(stock, open);
 
         OptionStockListener5 optionStockListener = new OptionStockListener5();
         optionTradeExecutor.setClient(client);
@@ -82,7 +82,7 @@ public class OptionTradeTest5 extends BaseTest {
         OptionStockListener5 optionStockListener = new OptionStockListener5();
         optionTradeExecutor.setOptionStockListener(optionStockListener);
 
-        RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
+        RealTimeDataWS_DB5 client = new RealTimeDataWS_DB5();
         client.setOpenTime(1723469400000l);
         client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
         optionTradeExecutor.setClient(client);
@@ -92,41 +92,29 @@ public class OptionTradeTest5 extends BaseTest {
     }
 
     @Test
-    public void test_calQuoteMidPrice() throws InterruptedException {
-        String futuCode = "AAPL240726C120000";
-        optionTradeExecutor.setCloseTime(1721419140000l);
-        Map<String, Double> codeToAskMap = Maps.newHashMap();
-        Map<String, Double> codeToBidMap = Maps.newHashMap();
-        codeToAskMap.put(futuCode, 1.01);
-        codeToBidMap.put(futuCode, 0.98);
-        optionTradeExecutor.setCodeToAskMap(codeToAskMap);
-        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
-        optionTradeExecutor.calculateMidPrice(futuCode);
+    public void test_calQuoteMidPrice() throws Exception {
+        OptionTradeExecutor5 optionTradeExecutor5 = new OptionTradeExecutor5();
+        TradeApi tradeApi = new TradeApi(true);
+        FTAPI.init();
+        BasicQuote futuQuote = new BasicQuote();
+        futuQuote.start();
+        RealTimeDataWS_DB5 client = new RealTimeDataWS_DB5();
+        client.setOpenTime(System.currentTimeMillis());
+        client.setCloseCheckTime(new Date());
+        optionTradeExecutor5.setClient(client);
+        optionTradeExecutor5.setFutuQuote(futuQuote);
+        optionTradeExecutor5.setTradeApi(tradeApi);
+        optionTradeExecutor5.monitorFutuDeep("GOOG241025P160000");
+        optionTradeExecutor5.monitorFutuDeep("GOOG241025P155000");
+        optionTradeExecutor5.setOptionStockListener(new OptionStockListener5());
+        optionTradeExecutor5.init();
 
-        Thread.sleep(5000);
-        codeToAskMap.put(futuCode, 1.01);
-        codeToBidMap.put(futuCode, 0.98);
-        optionTradeExecutor.calculateMidPrice(futuCode);
-        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
-
-        Thread.sleep(5000);
-        codeToAskMap.put(futuCode, 0.99);
-        codeToBidMap.put(futuCode, 0.96);
-        optionTradeExecutor.calculateMidPrice(futuCode);
-        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
-
-        Thread.sleep(5000);
-        codeToAskMap.put(futuCode, 1.6);
-        codeToBidMap.put(futuCode, 1.0);
-        optionTradeExecutor.calculateMidPrice(futuCode);
-        optionTradeExecutor.setCodeToBidMap(codeToBidMap);
-
-        for (int i = 0; i < 7; i++) {
-            Thread.sleep(5000);
-            codeToAskMap.put(futuCode, 1.0);
-            codeToBidMap.put(futuCode, 0.5);
-            optionTradeExecutor.calculateMidPrice(futuCode);
-            optionTradeExecutor.setCodeToBidMap(codeToBidMap);
-        }
+        optionTradeExecutor5.getCanTradeOptionMap().put("GOOG", "O:GOOG241025C00170000|O:GOOG241025P00160000");
+        optionTradeExecutor5.getCanTradeOption2Map().put("GOOG", "O:GOOG241025C00175000|O:GOOG241025P00155000");
+        optionTradeExecutor5.getOptionForIbkrMap().put("O:GOOG241025P00160000", "GOOG  241025P00160000");
+        optionTradeExecutor5.getOptionForIbkrMap().put("O:GOOG241025P00155000", "GOOG  241025P00155000");
+        optionTradeExecutor5.getOptionForFutuMap().put("O:GOOG241025P00160000", "GOOG241025P160000");
+        optionTradeExecutor5.getOptionForFutuMap().put("O:GOOG241025P00155000", "GOOG241025P155000");
+        optionTradeExecutor5.placeOrder("GOOG");
     }
 }
