@@ -355,9 +355,9 @@ public class RealTimeDataWS_DB5 {
 
         long checkOpenTime = 0;
         LocalDateTime checkPre, checkOpen;
-        int openHour, closeHour, preMin = 19 + DELAY_MINUTE, openMin = 20;
+        int openHour, closeHour, preMin = 21 + DELAY_MINUTE, openMin = 23;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            openHour = 23;
+            openHour = 22;
             closeHour = 3;
             checkPre = now.withHour(21).withMinute(22).withSecond(0).withNano(0);
             checkOpen = now.withHour(21).withMinute(30).withSecond(0).withNano(0);

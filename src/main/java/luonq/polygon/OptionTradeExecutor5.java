@@ -23,7 +23,6 @@ import util.Constants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -235,8 +234,8 @@ public class OptionTradeExecutor5 {
             String ibkrCall2 = optionForIbkrMap.get(call2);
             int callConId = tradeApi.getOptionConId(ibkrCall);
             int call2ConId = tradeApi.getOptionConId(ibkrCall2);
-            ibkrForConIdMap.put(call, callConId);
-            ibkrForConIdMap.put(call2, call2ConId);
+            ibkrForConIdMap.put(ibkrCall, callConId);
+            ibkrForConIdMap.put(ibkrCall2, call2ConId);
 
             size++;
             if (size == limitWaitTradeCount) {
@@ -272,10 +271,8 @@ public class OptionTradeExecutor5 {
 
                 // 如果任何一个期权当前摆盘=0，或者二档期权大于一档期权的，都认为数据无效
                 if (callMid == 0d || call2Mid == 0d || call2Mid > callMid) {
-                    invalidStocks.add(stock);
+                    strikePriceDiffSortedMap.remove(stock);
                     continue;
-                } else {
-                    invalidStocks.remove(stock);
                 }
 
                 double midDiff = callMid - call2Mid;
