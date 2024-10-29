@@ -1,9 +1,12 @@
 package start.strategy;
 
+import com.futu.openapi.FTAPI;
 import com.google.common.collect.Maps;
 import luonq.execute.GrabOptionTradeData;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
+import luonq.futu.BasicQuote;
+import luonq.ibkr.TradeApi;
 import luonq.listener.OptionStockListener;
 import luonq.listener.OptionStockListener2;
 import luonq.polygon.OptionTradeExecutor2;
@@ -140,14 +143,24 @@ public class OptionTradeTest2 extends BaseTest {
         loadOptionTradeData.load();
         ReadWriteOptionTradeInfo.init();
 
+        FTAPI.init();
+        BasicQuote futuQuote = new BasicQuote();
+        futuQuote.start();
+        optionTradeExecutor.setFutuQuote(futuQuote);
+
+        TradeApi tradeApi = new TradeApi();
+        optionTradeExecutor.setTradeApi(tradeApi);
+
         OptionStockListener2 optionStockListener = new OptionStockListener2();
+        optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
         optionTradeExecutor.setOptionStockListener(optionStockListener);
 
         RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
-        client.setOpenTime(1723469400000l);
+        client.setOpenTime(1730122200000l);
         client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
         optionTradeExecutor.setClient(client);
 
+        optionTradeExecutor.reSendOpenPrice();
         optionTradeExecutor.init();
         optionTradeExecutor.restart();
     }

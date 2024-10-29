@@ -461,7 +461,7 @@ public class TradeApi {
         client.placeOrModifyOrder(contract, order, orderHandler);
     }
 
-    public void stopForBuySpread_mkt(long orderId) {
+    public void stopForBuySpread_mkt(int orderId) {
         Contract contract = orderIdToContractMap.get(orderId);
         Order buyOrder = orderIdToOrderMap.get(orderId);
 
