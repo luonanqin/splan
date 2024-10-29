@@ -2,6 +2,7 @@ package luonq.stock;
 
 import bean.BOLL;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 import util.Constants;
 
@@ -21,41 +22,54 @@ public class MergeOpenBollingerForYear {
     public static void calculate() throws Exception {
         LocalDate today = LocalDate.now();
         int curYear = today.getYear();
+        LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
+        int year = today.getYear(), beforeYear = year;
+        int bollYear;
+        String bollPath;
+        if (today.isAfter(firstWorkDay)) {
+            bollYear = year;
+        } else {
+            bollYear = year - 1;
+        }
+        bollPath = Constants.HIS_BASE_PATH + bollYear + "/openBOLL/";
 
         String mergePath = Constants.HIS_BASE_PATH + "bollWithOpen/";
-        Map<String, String> bollMap = BaseUtils.getFileMap(mergePath);
+        Map<String, String> bollMap = BaseUtils.getFileMap(bollPath);
         for (String stock : bollMap.keySet()) {
-            if (!stock.equals("AAPL")) {
+            if (!stock.equals("DJT")) {
                 //                continue;
             }
 
             List<BOLL> curBolls = BaseUtils.readBollFile(mergePath + stock, curYear);
-            List<String> curBollLines = curBolls.stream().map(BOLL::toString).collect(Collectors.toList());
-            int originSize = curBollLines.size();
-            BOLL boll = curBolls.get(0);
-            String date = boll.getDate();
-            int bollYear = Integer.parseInt(date.substring(6));
-
-            String bollPath = Constants.HIS_BASE_PATH + bollYear + "/openBOLL/";
             List<BOLL> bolls = BaseUtils.readBollFile(bollPath + stock, bollYear);
-            int index = 0;
-            for (; index < bolls.size(); index++) {
-                if (bolls.get(index).getDate().equals(date)) {
-                    break;
-                }
-            }
-            if (index != 0) {
-                bolls = bolls.subList(0, index);
-                curBollLines.addAll(0, bolls.stream().map(BOLL::toString).collect(Collectors.toList()));
-            }
+            if (CollectionUtils.isNotEmpty(curBolls)) {
+                List<String> curBollLines = curBolls.stream().map(BOLL::toString).collect(Collectors.toList());
+                int originSize = curBollLines.size();
+                BOLL boll = curBolls.get(0);
+                String date = boll.getDate();
 
-            for (int i = bollYear + 1; i <= curYear; i++) {
-                List<String> bollLines = BaseUtils.readFile(Constants.HIS_BASE_PATH + i + "/openBOLL/" + stock);
-                curBollLines.addAll(0, bollLines);
-            }
-            if (curBollLines.size() > originSize) {
-                BaseUtils.writeFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, curBollLines);
-                //                log.info("finish " + stock);
+                int index = 0;
+                for (; index < bolls.size(); index++) {
+                    if (bolls.get(index).getDate().equals(date)) {
+                        break;
+                    }
+                }
+                if (index != 0) {
+                    bolls = bolls.subList(0, index);
+                    curBollLines.addAll(0, bolls.stream().map(BOLL::toString).collect(Collectors.toList()));
+                }
+
+                for (int i = bollYear + 1; i <= curYear; i++) {
+                    List<String> bollLines = BaseUtils.readFile(Constants.HIS_BASE_PATH + i + "/openBOLL/" + stock);
+                    curBollLines.addAll(0, bollLines);
+                }
+                if (curBollLines.size() > originSize) {
+                    BaseUtils.writeFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, curBollLines);
+                    //                log.info("finish " + stock);
+                }
+            } else {
+                List<String> list = bolls.stream().map(BOLL::toString).collect(Collectors.toList());
+                BaseUtils.writeFile(Constants.HIS_BASE_PATH + "bollWithOpen/" + stock, list);
             }
         }
     }

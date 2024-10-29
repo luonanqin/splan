@@ -37,6 +37,7 @@ public class GetHistoricalDaily {
 
     public static String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
     public static String api = "https://api.polygon.io/v1/open-close/";
+    public static Set<String> newStocks = Sets.newHashSet("DJT");
     public static Set<String> invalidStock = Sets.newHashSet(
       "SCOB", "NVCN", "STOR", "MBAC", "DHHC", "MSAC", "STRE", "HLBZ", "MSDA", "GIAC", "WPCA",
       "SJI", "WPCB", "LGTO", "CNCE", "NVSA", "GRAY", "LHCG", "RACY", "KMPH", "PTOC", "LHDX", "TPBA",
@@ -167,6 +168,9 @@ public class GetHistoricalDaily {
         String dirPath = getHistoryDirPath(today);
         LocalDate firstWorkDay = BaseUtils.getFirstWorkDay();
         Map<String, String> stockMap = BaseUtils.getFileMap(dirPath);
+        for (String newStock : newStocks) {
+            stockMap.put(newStock, dirPath + "/" + newStock);
+        }
         int fileYear = 2023;
         if (year != 2023) {
             if (today.isAfter(firstWorkDay)) {
@@ -180,7 +184,7 @@ public class GetHistoricalDaily {
                 //                log.info("invalid stock: " + stock);
                 continue;
             }
-            if (!stock.equals("AAPL")) {
+            if (!stock.equals("DJT")) {
                 //                continue;
             }
             String file = stockMap.get(stock);

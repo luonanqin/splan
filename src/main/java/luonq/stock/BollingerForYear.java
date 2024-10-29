@@ -61,7 +61,7 @@ public class BollingerForYear {
         }
 
         for (String stock : stockToKLineMap.keySet()) {
-            if (!stock.equals("AAIC")) {
+            if (!stock.equals("AAPL")) {
                 //                continue;
             }
 
@@ -83,7 +83,7 @@ public class BollingerForYear {
                 if (!klineDateList.get(0).contains(String.valueOf(curYear))) {
                     continue;
                 }
-                index = 1;
+                index = curKLines.size() - 19;
             } else {
                 for (; index < kLines.size(); index++) {
                     String klineDate = klineDateList.get(index);

@@ -82,8 +82,8 @@ public class GetHistoricalTrade2 {
         Map<String, String> openMap = BaseUtils.getFileMap(openTradePath);
         Map<String, String> stockMap = BaseUtils.getFileMap(kLinePath);
         for (String stock : stockMap.keySet()) {
-            if (!stock.equals("AAPL")) {
-//                continue;
+            if (!stock.equals("DJT")) {
+                //                continue;
             }
             String stockFile = stockMap.get(stock);
             String openFile = openMap.get(stock);
@@ -96,7 +96,7 @@ public class GetHistoricalTrade2 {
             List<String> openLines;
             if (StringUtils.isBlank(openFile)) {
                 openLines = Lists.newArrayListWithExpectedSize(0);
-            }else{
+            } else {
                 openLines = BaseUtils.readFile(openFile);
             }
 
@@ -180,7 +180,7 @@ public class GetHistoricalTrade2 {
                         fw.write(str + "\n");
                     }
                     fw.close();
-//                    log.info("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
+                    //                    log.info("stock: " + stock + ", cost: " + ((System.currentTimeMillis() - begin) / 1000) + "s");
                 } catch (Exception e) {
                     log.error("error: " + result);
                 }

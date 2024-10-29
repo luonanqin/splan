@@ -81,7 +81,7 @@ public class OpenBollingerForYear {
                 if (!klineDateList.get(0).contains(String.valueOf(curYear))) {
                     continue;
                 }
-                index = 1;
+                index = curKLines.size() - 19;
             } else {
                 for (; index < kLines.size(); index++) {
                     String klineDate = klineDateList.get(index);

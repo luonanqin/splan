@@ -46,34 +46,35 @@ public class MergeKline {
         }
 
         Map<String, String> stockKLineMap = BaseUtils.getFileMap(stockKLinePath);
-        for (String stock : stockList) {
-            if (!stockKLineMap.containsKey(stock)) {
-                continue;
+        for (String stock : stockKLineMap.keySet()) {
+            if (!stock.equals("AAPL")) {
+                //                continue;
             }
             String mergedFile = hasMergeMap.get(stock);
-            if (StringUtils.isBlank(mergedFile)) {
+            if (StringUtils.isBlank(mergedFile) && stockList.contains(stock)) {
                 String dailyFilePath = dailyFileMap.get(stock);
                 List<StockKLine> dailyStockKLines = BaseUtils.loadDataToKline(dailyFilePath, 2022);
                 mergedFile = mergePath + stock;
                 BaseUtils.writeStockKLine(mergedFile, dailyStockKLines);
             }
-            StockKLine latestKLine = BaseUtils.getLatestKLine(mergedFile);
 
             String filePath = stockKLineMap.get(stock);
             List<StockKLine> hisStockKLines = BaseUtils.loadDataToKline(filePath, beforeYear);
-
-            int index = 0;
-            for (; index < hisStockKLines.size(); index++) {
-                if (StringUtils.equals(latestKLine.toString(), hisStockKLines.get(index).toString())) {
-                    break;
+            if (StringUtils.isNotBlank(mergedFile)) {
+                StockKLine latestKLine = BaseUtils.getLatestKLine(mergedFile);
+                int index = 0;
+                for (; index < hisStockKLines.size(); index++) {
+                    if (StringUtils.equals(latestKLine.toString(), hisStockKLines.get(index).toString())) {
+                        break;
+                    }
                 }
+                if (index == 0) {
+                    continue;
+                }
+                hisStockKLines = hisStockKLines.subList(0, index);
+                List<StockKLine> stockKLines = BaseUtils.loadDataToKline(mergedFile, beforeYear);
+                hisStockKLines.addAll(stockKLines);
             }
-            if (index == 0) {
-                continue;
-            }
-            hisStockKLines = hisStockKLines.subList(0, index);
-            List<StockKLine> stockKLines = BaseUtils.loadDataToKline(mergedFile, beforeYear);
-            hisStockKLines.addAll(stockKLines);
 
             BaseUtils.writeStockKLine(mergePath + stock, hisStockKLines);
             //            log.info("finish " + stock);

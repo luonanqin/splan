@@ -5,7 +5,6 @@ import ch.qos.logback.classic.LoggerContext;
 import lombok.extern.slf4j.Slf4j;
 import luonq.futu.GetRehab;
 import luonq.polygon.GetHistoricalDaily;
-import luonq.polygon.GetHistoricalOpenFirstTrade;
 import luonq.polygon.GetHistoricalTrade2;
 import luonq.polygon.GrabEarning;
 import org.slf4j.LoggerFactory;
@@ -48,7 +47,7 @@ public class Processor {
 
         log.info("GetHistoricalOpenFirstTrade.getData start");
         long s6 = System.currentTimeMillis();
-        GetHistoricalOpenFirstTrade.getData();
+//        GetHistoricalOpenFirstTrade.getData();
         long e6 = System.currentTimeMillis();
         log.info("GetHistoricalOpenFirstTrade.getData end. cost: " + (e6 - s6) / 1000 + "s\n");
 

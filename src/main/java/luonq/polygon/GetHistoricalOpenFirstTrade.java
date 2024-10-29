@@ -86,7 +86,7 @@ public class GetHistoricalOpenFirstTrade {
         for (String stock : stockMap.keySet()) {
             try {
                 if (!stock.equals("AAPL")) {
-//                    continue;
+                    //                    continue;
                 }
 
                 String stockFile = stockMap.get(stock);
@@ -163,7 +163,7 @@ public class GetHistoricalOpenFirstTrade {
                             String preUrl = api + stock + "?order=asc&" + timeGte + startTime + "&" + timeLte + openFirstLteTS + "000000&limit=" + limit + "&sort=timestamp&" + apiKey;
                             String preTrade = getTrade(preUrl, httpClient, startTime);
                             if (!preTrade.contains(",")) {
-//                                log.warn(stock + " " + preTrade);
+                                //                                log.warn(stock + " " + preTrade);
                                 continue;
                             }
                             String str = date + "," + preTrade;
