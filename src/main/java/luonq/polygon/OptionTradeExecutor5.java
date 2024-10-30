@@ -150,7 +150,7 @@ public class OptionTradeExecutor5 {
     private double avgFund;
     private double funds = Constants.INIT_CASH;
     private int limitCount = 5; // 限制股票数量
-    private int limitWaitTradeCount = 50;
+    private int limitWaitTradeCount = 20;
     private long openTime;
     private long closeTime;
     private long invalidTime;
