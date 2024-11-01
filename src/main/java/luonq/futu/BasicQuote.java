@@ -130,13 +130,17 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 QotCommon.OptionBasicQotExData optionExData = basicQot.getOptionExData();
                 if (optionExData != null) {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double delta = BigDecimal.valueOf(optionExData.getDelta() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double gamma = BigDecimal.valueOf(optionExData.getGamma() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double theta = BigDecimal.valueOf(optionExData.getTheta() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double vega = BigDecimal.valueOf(optionExData.getVega() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     optionIvTimeMap.put(code, impliedVolatility + "|" + updateTime);
                     optionTradeMap.put(code, curPrice);
                     boolean showTradePrice = MapUtils.getBoolean(showTradePriceMap, code, false);
                     if (showTradePrice) {
                         log.info("option cur price: code={}\tprice={}", code, curPrice);
                     } else {
-                        log.info("update futu iv and curPrice: code={}\tiv={}\tprice={}\ttime={}", code, impliedVolatility, curPrice, updateTime);
+                        log.info("update futu iv and curPrice: code={}\tiv={}\tdelta={}\tgamma={}\ttheta={}\tvega={}\tprice={}\ttime={}", code, impliedVolatility, delta, gamma, theta, vega, curPrice, updateTime);
                     }
                 }
             }

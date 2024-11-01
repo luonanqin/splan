@@ -141,13 +141,17 @@ public class GetAggregateImpliedVolatility {
                         continue;
                     }
                     double optionIv = iv.getOptionIv();
+                    double optionDelta = iv.getOptionDelta();
+                    double optionGamma = iv.getOptionGamma();
+                    double optionVega = iv.getOptionVega();
+                    double optionTheta = iv.getOptionTheta();
                     if (optionIv == -1) {
                         continue;
                     }
                     if (optionIv == 0) {
                         optionIv = -2d;
                     }
-                    lines.add(timestamp + "\t" + calcTimestamp + "\t" + optionIv);
+                    lines.add(timestamp + "\t" + calcTimestamp + "\t" + optionIv + "\t" + optionDelta + "\t" + optionGamma + "\t" + optionTheta + "\t" + optionVega);
                 }
             }
         } catch (Exception e) {
@@ -236,13 +240,17 @@ public class GetAggregateImpliedVolatility {
                         continue;
                     }
                     double optionIv = iv.getOptionIv();
+                    double optionDelta = iv.getOptionDelta();
+                    double optionGamma = iv.getOptionGamma();
+                    double optionVega = iv.getOptionVega();
+                    double optionTheta = iv.getOptionTheta();
                     if (optionIv == -1) {
                         continue;
                     }
                     if (optionIv == 0) {
                         optionIv = -2d;
                     }
-                    lines.add(timestamp + "\t" + calcTimestamp + "\t" + optionIv);
+                    lines.add(timestamp + "\t" + calcTimestamp + "\t" + optionIv + "\t" + optionDelta + "\t" + optionGamma + "\t" + optionTheta + "\t" + optionVega);
                     timeList.add(calcTimestamp);
                     ivList.add(optionIv);
                 }
