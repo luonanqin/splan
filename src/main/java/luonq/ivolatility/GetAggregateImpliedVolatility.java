@@ -27,6 +27,7 @@ public class GetAggregateImpliedVolatility {
     public static Map<String/* data */, Map<String/* optionCode */, String/* firstIvTime */>> dateToFirstIvTimeMap = Maps.newHashMap();
     public static Map<String/* data */, Map<String/* optionCode */, List<Double>/* IV */>> dateToIvListMap = Maps.newHashMap();
     public static Map<String/* data */, Map<String/* optionCode */, List<String>/* firstIvTime */>> dateToFirstIvTimeListMap = Maps.newHashMap();
+    public static Map<String/* data */, Map<String/* optionCode */, AggregateOptionIV/* greek info */>> dateToGreekMap = Maps.newHashMap();
     public static HttpClient httpClient = new HttpClient();
 
     public static void init() throws Exception {
@@ -69,6 +70,25 @@ public class GetAggregateImpliedVolatility {
                             dateToFirstIvTimeMap.put(date, Maps.newHashMap());
                         }
                         dateToFirstIvTimeMap.get(date).put(optionCode, split[1]);
+
+                        if (split.length >= 7) {
+                            double iv = Double.parseDouble(split[2]);
+                            double delta = Double.parseDouble(split[3]);
+                            double gamma = Double.parseDouble(split[4]);
+                            double theta = Double.parseDouble(split[5]);
+                            double vega = Double.parseDouble(split[6]);
+                            AggregateOptionIV aggregateOptionIV = new AggregateOptionIV();
+                            aggregateOptionIV.setOptionIv(iv);
+                            aggregateOptionIV.setOptionDelta(delta);
+                            aggregateOptionIV.setOptionGamma(gamma);
+                            aggregateOptionIV.setOptionTheta(theta);
+                            aggregateOptionIV.setOptionVega(vega);
+
+                            if (!dateToGreekMap.containsKey(date)) {
+                                dateToGreekMap.put(date, Maps.newHashMap());
+                            }
+                            dateToGreekMap.get(date).put(optionCode, aggregateOptionIV);
+                        }
                         break;
                     }
 
@@ -282,5 +302,6 @@ public class GetAggregateImpliedVolatility {
         //        getAggregateIv("BB220408P00006500", "2022-04-01");
         //        getAggregateIv("SOFI230623C00009500", "2023-06-16");
         init();
+        System.out.println();
     }
 }

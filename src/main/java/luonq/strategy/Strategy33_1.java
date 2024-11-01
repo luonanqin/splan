@@ -651,9 +651,9 @@ public class Strategy33_1 {
         int digitalPrice = Integer.valueOf(priceStr) * (int) Math.pow(10, lastCount);
 
         // 计算开盘价和行权价的差值
-        int priceDiff = Integer.MAX_VALUE;
         String callOption = "";
         List<String> callList = Lists.newArrayList();
+        int diff = Integer.MAX_VALUE;
         for (int i = 0; i < callAndPuts.size(); i++) {
             String callAndPut = callAndPuts.get(i);
             String code = callAndPut.split("\\|")[0];
@@ -661,9 +661,8 @@ public class Strategy33_1 {
             callList.add(code);
 
             int tempDiff = strikePrice - digitalPrice;
-            if (tempDiff < 0) {
-                break;
-            } else {
+            if (tempDiff > 0 && diff > tempDiff) {
+                diff = tempDiff;
                 callOption = code;
             }
         }
@@ -677,57 +676,40 @@ public class Strategy33_1 {
             int strikePrice2 = Integer.parseInt(o2.substring(o2.length() - 8));
             return strikePrice1 - strikePrice2;
         });
-        String lower = "", higher = "";
+        String lower1 = "", higher1 = "";
         String lower2 = "", higher2 = "";
+        String lower3 = "", higher3 = "";
+        //        String lower4 = "", higher4 = "";
         for (int i = 2; i < callList.size() - 2; i++) {
             if (StringUtils.equalsIgnoreCase(callList.get(i), callOption)) {
-                lower = callList.get(i - 1);
-                higher = callList.get(i-1);
-                lower = callList.get(i - 1);
+                higher1 = callList.get(i - 1);
                 higher2 = callList.get(i);
+                higher3 = callList.get(i + 1);
+                lower1 = callList.get(i);
+                lower2 = callList.get(i - 1);
+                lower3 = callList.get(i - 2);
             }
         }
-        if (StringUtils.isAnyBlank(higher, lower)) {
-            //            System.out.println("there is no higher and lower option to calculate option. stock=" + stock);
+        if (StringUtils.isAnyBlank(higher1, lower1, higher2, lower2, higher3, lower3)) {
+            //            System.out.println("there is no higher1 and lower1 option to calculate option. stock=" + stock);
             return null;
         }
 
-        int lowerPrice = Integer.valueOf(lower.substring(lower.length() - 8));
-        int higherPrice = Integer.valueOf(higher.substring(higher.length() - 8));
-
-        int strikePrice = Integer.parseInt(callOption.substring(callOption.length() - 8));
-        String upStrike = "";
-        String downStrike = "";
-        if (digitalPrice != strikePrice) {
-            if (digitalPrice < strikePrice) {
-                upStrike = callOption;
-                downStrike = lower;
-                double downDiffRatio = (double) (strikePrice - digitalPrice) / (double) (strikePrice - lowerPrice);
-                if (downDiffRatio < 0.25) {
-                    upStrike = higher;
-                }
-            } else {
-                upStrike = higher;
-                downStrike = callOption;
-                double downDiffRatio = (double) (digitalPrice - strikePrice) / (double) (higherPrice - strikePrice);
-                if (downDiffRatio < 0.25) {
-                    downStrike = lower;
-                }
-            }
-        } else if (digitalPrice == strikePrice) {
-            upStrike = higher;
-            downStrike = lower;
-        }
-
-        String call = upStrike;
-        String put = BaseUtils.getOptionPutCode(downStrike);
+        String put1 = BaseUtils.getOptionPutCode(lower1);
+        String put2 = BaseUtils.getOptionPutCode(lower2);
+        String put3 = BaseUtils.getOptionPutCode(lower3);
 
         NearlyOptionData nearlyOptionData = new NearlyOptionData();
         nearlyOptionData.setOpenPrice(open);
         nearlyOptionData.setDate(date);
         nearlyOptionData.setStock(stock);
-        nearlyOptionData.setOutPriceCallOptionCode_1(call);
-        nearlyOptionData.setOutPricePutOptionCode_1(put);
+        nearlyOptionData.setOutPriceCallOptionCode_1(higher1);
+        nearlyOptionData.setOutPriceCallOptionCode_2(higher2);
+        nearlyOptionData.setOutPriceCallOptionCode_3(higher3);
+        nearlyOptionData.setOutPricePutOptionCode_1(put1);
+        nearlyOptionData.setOutPricePutOptionCode_2(put2);
+        nearlyOptionData.setOutPricePutOptionCode_3(put3);
+
         return nearlyOptionData;
     }
 
@@ -817,22 +799,42 @@ public class Strategy33_1 {
                     //                        continue;
                     //                    }
                     String outPriceCallOptionCode_1 = nearlyOptionData.getOutPriceCallOptionCode_1();
+                    String outPriceCallOptionCode_2 = nearlyOptionData.getOutPriceCallOptionCode_2();
+                    String outPriceCallOptionCode_3 = nearlyOptionData.getOutPriceCallOptionCode_3();
                     String outPricePutOptionCode_1 = nearlyOptionData.getOutPricePutOptionCode_1();
+                    String outPricePutOptionCode_2 = nearlyOptionData.getOutPricePutOptionCode_2();
+                    String outPricePutOptionCode_3 = nearlyOptionData.getOutPricePutOptionCode_3();
                     if (StringUtils.isNotBlank(expirationDate)) {
-                        StringBuffer callSb = new StringBuffer(outPriceCallOptionCode_1);
-                        callSb.replace(callSb.length() - 15, callSb.length() - 9, expirationDate);
-                        outPriceCallOptionCode_1 = callSb.toString();
-                        StringBuffer putSb = new StringBuffer(outPricePutOptionCode_1);
-                        putSb.replace(putSb.length() - 15, putSb.length() - 9, expirationDate);
-                        outPricePutOptionCode_1 = putSb.toString();
+                        StringBuffer callSb1 = new StringBuffer(outPriceCallOptionCode_1);
+                        callSb1.replace(callSb1.length() - 15, callSb1.length() - 9, expirationDate);
+                        outPriceCallOptionCode_1 = callSb1.toString();
+                        StringBuffer callSb2 = new StringBuffer(outPriceCallOptionCode_2);
+                        callSb2.replace(callSb2.length() - 15, callSb2.length() - 9, expirationDate);
+                        outPriceCallOptionCode_2 = callSb2.toString();
+                        StringBuffer callSb3 = new StringBuffer(outPriceCallOptionCode_3);
+                        callSb3.replace(callSb3.length() - 15, callSb3.length() - 9, expirationDate);
+                        outPriceCallOptionCode_3 = callSb3.toString();
+                        StringBuffer putSb1 = new StringBuffer(outPricePutOptionCode_1);
+                        putSb1.replace(putSb1.length() - 15, putSb1.length() - 9, expirationDate);
+                        outPricePutOptionCode_1 = putSb1.toString();
+                        StringBuffer putSb2 = new StringBuffer(outPricePutOptionCode_2);
+                        putSb2.replace(putSb2.length() - 15, putSb2.length() - 9, expirationDate);
+                        outPricePutOptionCode_2 = putSb2.toString();
+                        StringBuffer putSb3 = new StringBuffer(outPricePutOptionCode_3);
+                        putSb3.replace(putSb3.length() - 15, putSb3.length() - 9, expirationDate);
+                        outPricePutOptionCode_3 = putSb3.toString();
                     }
                     //                    if (!StringUtils.equals(outPriceCallOptionCode_1, nearlyOptionData2.getOutPriceCallOptionCode_1()) || !StringUtils.equals(outPricePutOptionCode_1, nearlyOptionData2.getOutPricePutOptionCode_1())) {
                     //                        System.out.println();
                     //                    }
 
-                    OptionDaily callDaily = requestOptionDaily(outPriceCallOptionCode_1, formatDate);
-                    OptionDaily putDaily = requestOptionDaily(outPricePutOptionCode_1, formatDate);
-                    if (callDaily == null || putDaily == null) {
+                    OptionDaily callDaily1 = requestOptionDaily(outPriceCallOptionCode_1, formatDate);
+                    OptionDaily callDaily2 = requestOptionDaily(outPriceCallOptionCode_2, formatDate);
+                    OptionDaily callDaily3 = requestOptionDaily(outPriceCallOptionCode_3, formatDate);
+                    OptionDaily putDaily1 = requestOptionDaily(outPricePutOptionCode_1, formatDate);
+                    OptionDaily putDaily2 = requestOptionDaily(outPricePutOptionCode_2, formatDate);
+                    OptionDaily putDaily3 = requestOptionDaily(outPricePutOptionCode_3, formatDate);
+                    if (callDaily1 == null || putDaily1 == null || callDaily2 == null || putDaily2 == null || callDaily3 == null || putDaily3 == null) {
                         System.out.println(stock + " " + date + " option daily is null");
                         continue;
                     }
@@ -841,11 +843,21 @@ public class Strategy33_1 {
                     if (StringUtils.isBlank(lastDate)) {
                         continue;
                     }
-                    //                    OptionDaily last_call_1 = Strategy32.getOptionDaily(callDaily.getSymbol(), lastDate);
-                    //                    OptionDaily last_put_1 = Strategy32.getOptionDaily(putDaily.getSymbol(), lastDate);
-                    OptionDaily last_call_1 = requestOptionDaily(callDaily.getSymbol(), lastDate);
-                    OptionDaily last_put_1 = requestOptionDaily(putDaily.getSymbol(), lastDate);
+                    //                    OptionDaily last_call_1 = Strategy32.getOptionDaily(callDaily1.getSymbol(), lastDate);
+                    //                    OptionDaily last_put_1 = Strategy32.getOptionDaily(putDaily1.getSymbol(), lastDate);
+                    OptionDaily last_call_1 = requestOptionDaily(callDaily1.getSymbol(), lastDate);
+                    OptionDaily last_call_2 = requestOptionDaily(callDaily2.getSymbol(), lastDate);
+                    OptionDaily last_call_3 = requestOptionDaily(callDaily3.getSymbol(), lastDate);
+                    OptionDaily last_put_1 = requestOptionDaily(putDaily1.getSymbol(), lastDate);
+                    OptionDaily last_put_2 = requestOptionDaily(putDaily2.getSymbol(), lastDate);
+                    OptionDaily last_put_3 = requestOptionDaily(putDaily3.getSymbol(), lastDate);
                     if (last_call_1 == null || last_put_1 == null || (last_call_1.getVolume() < 100 || last_put_1.getVolume() < 100)) {
+                        continue;
+                    }
+                    if (last_call_2 == null || last_put_2 == null || (last_call_2.getVolume() < 100 || last_put_2.getVolume() < 100)) {
+                        continue;
+                    }
+                    if (last_call_3 == null || last_put_3 == null || (last_call_3.getVolume() < 100 || last_put_3.getVolume() < 100)) {
                         continue;
                     }
                     long totalLastVolume = last_call_1.getVolume() + last_put_1.getVolume();
@@ -854,17 +866,15 @@ public class Strategy33_1 {
                         continue;
                     }
 
-                    double callOpen = callDaily.getOpen();
-                    double putOpen = putDaily.getOpen();
-                    if (callOpen == 0 || putOpen == 0) {
-                        //                    if (callOpen == 0 || putOpen == 0 || callOpen < 0.1 || putOpen < 0.1) {
-                        //                        System.out.println(stock + " " + date + " option open is 0");
+                    double callOpen1 = callDaily1.getOpen();
+                    double callOpen2 = callDaily2.getOpen();
+                    double callOpen3 = callDaily3.getOpen();
+                    double putOpen1 = putDaily1.getOpen();
+                    double putOpen2 = putDaily2.getOpen();
+                    double putOpen3 = putDaily3.getOpen();
+                    if (callOpen1 == 0 || putOpen1 == 0 || callOpen2 == 0 || putOpen2 == 0 || callOpen3 == 0 || putOpen3 == 0) {
                         continue;
                     }
-                    double callDiff = BigDecimal.valueOf(callDaily.getClose() - callOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                    double putDiff = BigDecimal.valueOf(putDaily.getClose() - putOpen).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                    double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
-                    double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
                     List<Double> callIvList = getIvList(outPriceCallOptionCode_1, date);
                     List<Double> putIvList = getIvList(outPricePutOptionCode_1, date);
@@ -892,14 +902,14 @@ public class Strategy33_1 {
 
                     String simulateTrade = "";
                     String ivInfo = "";
-                    simulateTrade = calStraddleSimulateTrade(callDaily, putDaily, calCallOpen, calPutOpen);
+                    simulateTrade = calStraddleSimulateTrade(callDaily1, putDaily1, calCallOpen, calPutOpen);
                     if (StringUtils.equalsAnyIgnoreCase(simulateTrade, "noData", "empty")) {
                         continue;
                     }
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
                     String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
                     ivInfo = callIvInfo + "\t" + putIvInfo;
-                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + callDaily + "\t" + putDaily + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio + "\t" + ivInfo + "\t" + simulateTrade);
+                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + ivInfo + "\t" + simulateTrade);
                 }
             }
         }

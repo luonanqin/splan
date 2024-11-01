@@ -17,8 +17,10 @@ public class NearlyOptionData {
 
     private String outPriceCallOptionCode_1; // 价外1档call
     private String outPriceCallOptionCode_2; // 价外2档call
+    private String outPriceCallOptionCode_3; // 价外3档call
     private String outPricePutOptionCode_1; // 价外1档put
     private String outPricePutOptionCode_2; // 价外2档put
+    private String outPricePutOptionCode_3; // 价外3档put
 
     private double outCall1StrikePrice; // 价外1档call行权价
     private double outCall2StrikePrice; // 价外2档call行权价
