@@ -1,5 +1,6 @@
 package luonq.strategy;
 
+import bean.AggregateOptionIV;
 import bean.EarningDate;
 import bean.NearlyOptionData;
 import bean.OptionCode;
@@ -713,6 +714,12 @@ public class Strategy33_1 {
         return nearlyOptionData;
     }
 
+    public static String calMidDelta(String call1, String call2, String call3, String put1, String put2, String put3, String date) {
+        Map<String, AggregateOptionIV> map = GetAggregateImpliedVolatility.dateToGreekMap.get(date);
+        if (MapUtils.isNotEmpty(map)) {
+            GetAggregateImpliedVolatility.getAggregateIvList()
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.http").setLevel(Level.INFO);
