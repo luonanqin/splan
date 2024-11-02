@@ -103,6 +103,7 @@ public class GetAggregateImpliedVolatility {
                             double theta = Double.parseDouble(split[5]);
                             double vega = Double.parseDouble(split[6]);
                             AggregateOptionIV aggregateOptionIV = new AggregateOptionIV();
+                            aggregateOptionIV.setOptionSymbol(optionCode);
                             aggregateOptionIV.setOptionIv(iv);
                             aggregateOptionIV.setOptionDelta(delta);
                             aggregateOptionIV.setOptionGamma(gamma);
@@ -292,6 +293,7 @@ public class GetAggregateImpliedVolatility {
                     tempIvList.add(optionIv);
 
                     AggregateOptionIV aggregateOptionIV = new AggregateOptionIV();
+                    aggregateOptionIV.setOptionSymbol(optionCode);
                     aggregateOptionIV.setOptionIv(optionIv);
                     aggregateOptionIV.setOptionDelta(optionDelta);
                     aggregateOptionIV.setOptionGamma(optionGamma);

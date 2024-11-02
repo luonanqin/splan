@@ -716,34 +716,73 @@ public class Strategy33_1 {
 
     public static String calMidDelta(String call1, String call2, String call3, String put1, String put2, String put3, String date) throws Exception {
         Map<String, List<AggregateOptionIV>> map = GetAggregateImpliedVolatility.dateToGreekListMap.get(date);
+        List<AggregateOptionIV> callGreekList1 = null;
+        List<AggregateOptionIV> callGreekList2 = null;
+        List<AggregateOptionIV> callGreekList3 = null;
+        List<AggregateOptionIV> putGreekList1 = null;
+        List<AggregateOptionIV> putGreekList2 = null;
+        List<AggregateOptionIV> putGreekList3 = null;
         if (MapUtils.isEmpty(map)) {
-            GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
-            GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
-            GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
-            GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
-            GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
-            GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
+            callGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
+            callGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
+            callGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
+            putGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
+            putGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
+            putGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
         } else {
             if (!map.containsKey(call1)) {
-                GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
+                callGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
             }
             if (!map.containsKey(call2)) {
-                GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
+                callGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
             }
             if (!map.containsKey(call3)) {
-                GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
+                callGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
             }
             if (!map.containsKey(put1)) {
-                GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
+                putGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
             }
             if (!map.containsKey(put2)) {
-                GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
+                putGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
             }
             if (!map.containsKey(put3)) {
-                GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
+                putGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
             }
         }
-        return null;
+
+        if (CollectionUtils.isEmpty(callGreekList1) ||
+          CollectionUtils.isEmpty(callGreekList2) ||
+          CollectionUtils.isEmpty(callGreekList3) ||
+          CollectionUtils.isEmpty(putGreekList1) ||
+          CollectionUtils.isEmpty(putGreekList2) ||
+          CollectionUtils.isEmpty(putGreekList3)
+        ) {
+            System.out.println(call1 + " greek data is null");
+            return null;
+        }
+
+        AggregateOptionIV callGreek1 = callGreekList1.get(0);
+        AggregateOptionIV callGreek2 = callGreekList2.get(0);
+        AggregateOptionIV callGreek3 = callGreekList3.get(0);
+        AggregateOptionIV putGreek1 = putGreekList1.get(0);
+        AggregateOptionIV putGreek2 = putGreekList2.get(0);
+        AggregateOptionIV putGreek3 = putGreekList3.get(0);
+
+        List<AggregateOptionIV> callGreekList = Lists.newArrayList(callGreek1, callGreek2, callGreek3);
+        List<AggregateOptionIV> putGreekList = Lists.newArrayList(putGreek1, putGreek2, putGreek3);
+
+        double sum = Double.MAX_VALUE;
+        String result = "";
+        for (AggregateOptionIV callGreek : callGreekList) {
+            for (AggregateOptionIV putGreek : putGreekList) {
+                double temp = callGreek.getOptionDelta() + putGreek.getOptionDelta();
+                if (sum > temp) {
+                    sum = temp;
+                    result = callGreek.getOptionSymbol() + "|" + putGreek.getOptionSymbol();
+                }
+            }
+        }
+        return result;
     }
 
     public static void main(String[] args) throws Exception {
@@ -805,7 +844,7 @@ public class Strategy33_1 {
             Set<String> stockSet = stockKLineMap.keySet();
             for (String stock : stockSet) {
                 if (!stock.equals("ZIM")) {
-//                    continue;
+                    //                    continue;
                 }
                 // 财报日不交易收益不符合预期，所以不限制
                 if (CollectionUtils.isNotEmpty(earningTodayStocks) && earningTodayStocks.contains(stock)) {
@@ -876,27 +915,6 @@ public class Strategy33_1 {
                         continue;
                     }
 
-//                    OptionDaily last_call_1 = requestOptionDaily(callDaily1.getSymbol(), lastDate);
-//                    OptionDaily last_call_2 = requestOptionDaily(callDaily2.getSymbol(), lastDate);
-//                    OptionDaily last_call_3 = requestOptionDaily(callDaily3.getSymbol(), lastDate);
-//                    OptionDaily last_put_1 = requestOptionDaily(putDaily1.getSymbol(), lastDate);
-//                    OptionDaily last_put_2 = requestOptionDaily(putDaily2.getSymbol(), lastDate);
-//                    OptionDaily last_put_3 = requestOptionDaily(putDaily3.getSymbol(), lastDate);
-//                    if (last_call_1 == null || last_put_1 == null || (last_call_1.getVolume() < 100 || last_put_1.getVolume() < 100)) {
-//                        continue;
-//                    }
-//                    if (last_call_2 == null || last_put_2 == null || (last_call_2.getVolume() < 100 || last_put_2.getVolume() < 100)) {
-//                        continue;
-//                    }
-//                    if (last_call_3 == null || last_put_3 == null || (last_call_3.getVolume() < 100 || last_put_3.getVolume() < 100)) {
-//                        continue;
-//                    }
-//                    long totalLastVolume = last_call_1.getVolume() + last_put_1.getVolume();
-//                    double totalLastClose = BigDecimal.valueOf(last_call_1.getClose() + last_put_1.getClose()).setScale(2, RoundingMode.HALF_UP).doubleValue();
-//                    if (totalLastClose <= 0.5) {
-//                        continue;
-//                    }
-
                     double callOpen1 = callDaily1.getOpen();
                     double callOpen2 = callDaily2.getOpen();
                     double callOpen3 = callDaily3.getOpen();
@@ -907,7 +925,7 @@ public class Strategy33_1 {
                         continue;
                     }
 
-                    calMidDelta(
+                    String deltaResult = calMidDelta(
                       outPriceCallOptionCode_1.substring(2),
                       outPriceCallOptionCode_2.substring(2),
                       outPriceCallOptionCode_3.substring(2),
@@ -916,28 +934,47 @@ public class Strategy33_1 {
                       outPricePutOptionCode_3.substring(2),
                       date
                     );
-                    //                    List<Double> callIvList = getIvList(outPriceCallOptionCode_1, date);
-                    //                    List<Double> putIvList = getIvList(outPricePutOptionCode_1, date);
-                    //                    boolean callCanTrade = Strategy32.canTradeForIv(callIvList);
-                    //                    boolean putCanTrade = Strategy32.canTradeForIv(putIvList);
-                    //                    if (!callCanTrade || !putCanTrade) {
-                    //                        continue;
-                    //                    }
-                    //
-                    //                    // 计算理论call和put的买入价
-                    //                    Double calCallOpen = calOpen(secToStockPriceMap, outPriceCallOptionCode_1, date);
-                    //                    Double calPutOpen = calOpen(secToStockPriceMap, outPricePutOptionCode_1, date);
-                    //
-                    //                    String simulateTrade = "";
-                    //                    String ivInfo = "";
-                    //                    simulateTrade = calStraddleSimulateTrade(callDaily1, putDaily1, calCallOpen, calPutOpen);
-                    //                    if (StringUtils.equalsAnyIgnoreCase(simulateTrade, "noData", "empty")) {
-                    //                        continue;
-                    //                    }
-                    //                    String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
-                    //                    String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
-                    //                    ivInfo = callIvInfo + "\t" + putIvInfo;
-                    //                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + ivInfo + "\t" + simulateTrade);
+
+                    if (StringUtils.isBlank(deltaResult)) {
+                        continue;
+                    }
+                    String[] deltaSplit = deltaResult.split("\\|");
+                    String call = "O:" + deltaSplit[0];
+                    String put = "O:" + deltaSplit[1];
+
+                    OptionDaily last_call_1 = requestOptionDaily(call, lastDate);
+                    OptionDaily last_put_1 = requestOptionDaily(put, lastDate);
+                    if (last_call_1 == null || last_put_1 == null || (last_call_1.getVolume() < 100 || last_put_1.getVolume() < 100)) {
+                        continue;
+                    }
+                    long totalLastVolume = last_call_1.getVolume() + last_put_1.getVolume();
+                    double totalLastClose = BigDecimal.valueOf(last_call_1.getClose() + last_put_1.getClose()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    if (totalLastClose <= 0.5) {
+                        continue;
+                    }
+
+                    List<Double> callIvList = getIvList(call, date);
+                    List<Double> putIvList = getIvList(put, date);
+                    boolean callCanTrade = Strategy32.canTradeForIv(callIvList);
+                    boolean putCanTrade = Strategy32.canTradeForIv(putIvList);
+                    if (!callCanTrade || !putCanTrade) {
+                        continue;
+                    }
+
+                    // 计算理论call和put的买入价
+                    Double calCallOpen = calOpen(secToStockPriceMap, call, date);
+                    Double calPutOpen = calOpen(secToStockPriceMap, put, date);
+
+                    String simulateTrade = "";
+                    String ivInfo = "";
+                    simulateTrade = calStraddleSimulateTrade(callDaily1, putDaily1, calCallOpen, calPutOpen);
+                    if (StringUtils.equalsAnyIgnoreCase(simulateTrade, "noData", "empty")) {
+                        continue;
+                    }
+                    String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
+                    String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
+                    ivInfo = callIvInfo + "\t" + putIvInfo;
+                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + call + "\t" + put + "\t" + ivInfo + "\t" + simulateTrade);
                 }
             }
         }
