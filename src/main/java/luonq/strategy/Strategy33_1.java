@@ -775,7 +775,7 @@ public class Strategy33_1 {
         String result = "";
         for (AggregateOptionIV callGreek : callGreekList) {
             for (AggregateOptionIV putGreek : putGreekList) {
-                double temp = callGreek.getOptionDelta() + putGreek.getOptionDelta();
+                double temp = Math.abs(callGreek.getOptionDelta() + putGreek.getOptionDelta());
                 if (sum > temp) {
                     sum = temp;
                     result = callGreek.getOptionSymbol() + "|" + putGreek.getOptionSymbol();
