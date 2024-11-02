@@ -130,10 +130,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 QotCommon.OptionBasicQotExData optionExData = basicQot.getOptionExData();
                 if (optionExData != null) {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double delta = BigDecimal.valueOf(optionExData.getDelta() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double gamma = BigDecimal.valueOf(optionExData.getGamma() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double theta = BigDecimal.valueOf(optionExData.getTheta() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double vega = BigDecimal.valueOf(optionExData.getVega() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double delta = BigDecimal.valueOf(optionExData.getDelta()).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double gamma = BigDecimal.valueOf(optionExData.getGamma()).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double theta = BigDecimal.valueOf(optionExData.getTheta()).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double vega = BigDecimal.valueOf(optionExData.getVega()).setScale(4, RoundingMode.HALF_UP).doubleValue();
                     optionIvTimeMap.put(code, impliedVolatility + "|" + updateTime);
                     optionTradeMap.put(code, curPrice);
                     boolean showTradePrice = MapUtils.getBoolean(showTradePriceMap, code, false);

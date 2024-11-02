@@ -27,7 +27,7 @@ public class GetAggregateImpliedVolatility {
     public static Map<String/* data */, Map<String/* optionCode */, String/* firstIvTime */>> dateToFirstIvTimeMap = Maps.newHashMap();
     public static Map<String/* data */, Map<String/* optionCode */, List<Double>/* IV */>> dateToIvListMap = Maps.newHashMap();
     public static Map<String/* data */, Map<String/* optionCode */, List<String>/* firstIvTime */>> dateToFirstIvTimeListMap = Maps.newHashMap();
-    public static Map<String/* data */, Map<String/* optionCode */, AggregateOptionIV/* greek info */>> dateToGreekMap = Maps.newHashMap();
+    public static Map<String/* data */, Map<String/* optionCode */, List<AggregateOptionIV>/* greek info */>> dateToGreekListMap = Maps.newHashMap();
     public static HttpClient httpClient = new HttpClient();
 
     public static void init() throws Exception {
@@ -71,24 +71,6 @@ public class GetAggregateImpliedVolatility {
                         }
                         dateToFirstIvTimeMap.get(date).put(optionCode, split[1]);
 
-                        if (split.length >= 7) {
-                            double iv = Double.parseDouble(split[2]);
-                            double delta = Double.parseDouble(split[3]);
-                            double gamma = Double.parseDouble(split[4]);
-                            double theta = Double.parseDouble(split[5]);
-                            double vega = Double.parseDouble(split[6]);
-                            AggregateOptionIV aggregateOptionIV = new AggregateOptionIV();
-                            aggregateOptionIV.setOptionIv(iv);
-                            aggregateOptionIV.setOptionDelta(delta);
-                            aggregateOptionIV.setOptionGamma(gamma);
-                            aggregateOptionIV.setOptionTheta(theta);
-                            aggregateOptionIV.setOptionVega(vega);
-
-                            if (!dateToGreekMap.containsKey(date)) {
-                                dateToGreekMap.put(date, Maps.newHashMap());
-                            }
-                            dateToGreekMap.get(date).put(optionCode, aggregateOptionIV);
-                        }
                         break;
                     }
 
@@ -113,6 +95,28 @@ public class GetAggregateImpliedVolatility {
                             dateToFirstIvTimeListMap.get(date).put(optionCode, Lists.newArrayList());
                         }
                         dateToFirstIvTimeListMap.get(date).get(optionCode).add(split[1]);
+
+                        if (split.length >= 7) {
+                            double iv = Double.parseDouble(split[2]);
+                            double delta = Double.parseDouble(split[3]);
+                            double gamma = Double.parseDouble(split[4]);
+                            double theta = Double.parseDouble(split[5]);
+                            double vega = Double.parseDouble(split[6]);
+                            AggregateOptionIV aggregateOptionIV = new AggregateOptionIV();
+                            aggregateOptionIV.setOptionIv(iv);
+                            aggregateOptionIV.setOptionDelta(delta);
+                            aggregateOptionIV.setOptionGamma(gamma);
+                            aggregateOptionIV.setOptionTheta(theta);
+                            aggregateOptionIV.setOptionVega(vega);
+
+                            if (!dateToGreekListMap.containsKey(date)) {
+                                dateToGreekListMap.put(date, Maps.newHashMap());
+                            }
+                            if (!dateToGreekListMap.get(date).containsKey(optionCode)) {
+                                dateToGreekListMap.get(date).put(optionCode, Lists.newArrayList());
+                            }
+                            dateToGreekListMap.get(date).get(optionCode).add(aggregateOptionIV);
+                        }
                     }
                 }
             }
@@ -205,9 +209,9 @@ public class GetAggregateImpliedVolatility {
     }
 
     public static List<Double> getAggregateIvList(String optionCode, String date) throws Exception {
-        if (dateToIvListMap.containsKey(date) && dateToIvListMap.get(date).containsKey(optionCode)) {
-            return dateToIvListMap.get(date).get(optionCode);
-        }
+        //        if (dateToIvListMap.containsKey(date) && dateToIvListMap.get(date).containsKey(optionCode)) {
+        //            return dateToIvListMap.get(date).get(optionCode);
+        //        }
 
         String stock = optionCode.substring(0, optionCode.length() - 15);
         String expireDate = optionCode.substring(optionCode.length() - 15, optionCode.length() - 9);
@@ -238,6 +242,7 @@ public class GetAggregateImpliedVolatility {
             dateToFirstIvTimeListMap.get(date).put(optionCode, Lists.newArrayList());
         }
         List<String> timeList = dateToFirstIvTimeListMap.get(date).get(optionCode);
+        List<String> tempTimeList = Lists.newArrayList();
 
         if (!dateToIvListMap.containsKey(date)) {
             dateToIvListMap.put(date, Maps.newHashMap());
@@ -246,6 +251,16 @@ public class GetAggregateImpliedVolatility {
             dateToIvListMap.get(date).put(optionCode, Lists.newArrayList());
         }
         List<Double> ivList = dateToIvListMap.get(date).get(optionCode);
+        List<Double> tempIvList = Lists.newArrayList();
+
+        if (!dateToGreekListMap.containsKey(date)) {
+            dateToGreekListMap.put(date, Maps.newHashMap());
+        }
+        if (!dateToGreekListMap.get(date).containsKey(optionCode)) {
+            dateToGreekListMap.get(date).put(optionCode, Lists.newArrayList());
+        }
+        List<AggregateOptionIV> aggrIVList = dateToGreekListMap.get(date).get(optionCode);
+        List<AggregateOptionIV> tempAggrIVList = Lists.newArrayList();
         try {
             httpClient.executeMethod(get);
             InputStream content = get.getResponseBodyAsStream();
@@ -264,15 +279,25 @@ public class GetAggregateImpliedVolatility {
                     double optionGamma = iv.getOptionGamma();
                     double optionVega = iv.getOptionVega();
                     double optionTheta = iv.getOptionTheta();
-                    if (optionIv == -1) {
-                        continue;
+                    if (optionIv == -1 || optionDelta == 0 || optionGamma == 0 || optionTheta == 0 || optionVega == 0) {
+                        //                        continue;
+                        System.out.println("getAggregateIv empty for" + optionCode);
+                        return Lists.newArrayListWithExpectedSize(0);
                     }
                     if (optionIv == 0) {
                         optionIv = -2d;
                     }
                     lines.add(timestamp + "\t" + calcTimestamp + "\t" + optionIv + "\t" + optionDelta + "\t" + optionGamma + "\t" + optionTheta + "\t" + optionVega);
-                    timeList.add(calcTimestamp);
-                    ivList.add(optionIv);
+                    tempTimeList.add(calcTimestamp);
+                    tempIvList.add(optionIv);
+
+                    AggregateOptionIV aggregateOptionIV = new AggregateOptionIV();
+                    aggregateOptionIV.setOptionIv(optionIv);
+                    aggregateOptionIV.setOptionDelta(optionDelta);
+                    aggregateOptionIV.setOptionGamma(optionGamma);
+                    aggregateOptionIV.setOptionTheta(optionTheta);
+                    aggregateOptionIV.setOptionVega(optionVega);
+                    tempAggrIVList.add(aggregateOptionIV);
                 }
             }
         } catch (Exception e) {
@@ -282,10 +307,15 @@ public class GetAggregateImpliedVolatility {
             get.releaseConnection();
         }
 
+        ivList.addAll(tempIvList);
+        timeList.addAll(tempTimeList);
+        aggrIVList.addAll(tempAggrIVList);
+
         System.out.println("getAggregateIv " + optionCode);
         if (CollectionUtils.isEmpty(lines)) {
             return Lists.newArrayList(hisIv);
         }
+
         BaseUtils.createDirectory(optionFileDir);
         Collections.sort(lines, (o1, o2) -> {
             Integer time1 = Integer.valueOf(o1.split("\t")[0].substring(11).replaceAll(":", ""));
@@ -295,6 +325,19 @@ public class GetAggregateImpliedVolatility {
         BaseUtils.writeFile(optionFilePath, lines);
 
         return ivList;
+    }
+
+    public static List<AggregateOptionIV> getAggregateGreekList(String optionCode, String date) throws Exception {
+        if (dateToGreekListMap.containsKey(date) && dateToGreekListMap.get(date).containsKey(optionCode)) {
+            return dateToGreekListMap.get(date).get(optionCode);
+        }
+
+        List<Double> aggregateIvList = getAggregateIvList(optionCode, date);
+        if (CollectionUtils.isEmpty(aggregateIvList)) {
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+
+        return dateToGreekListMap.get(date).get(optionCode);
     }
 
     public static void main(String[] args) throws Exception {
