@@ -967,7 +967,9 @@ public class Strategy33_1 {
 
                     String simulateTrade = "";
                     String ivInfo = "";
-                    simulateTrade = calStraddleSimulateTrade(callDaily1, putDaily1, calCallOpen, calPutOpen);
+                    OptionDaily callDaily = requestOptionDaily(call, date);
+                    OptionDaily putDaily = requestOptionDaily(put, date);
+                    simulateTrade = calStraddleSimulateTrade(callDaily, putDaily, calCallOpen, calPutOpen);
                     if (StringUtils.equalsAnyIgnoreCase(simulateTrade, "noData", "empty")) {
                         continue;
                     }
