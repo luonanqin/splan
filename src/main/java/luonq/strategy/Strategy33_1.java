@@ -716,39 +716,39 @@ public class Strategy33_1 {
 
     public static String calMidDelta(String call1, String call2, String call3, String put1, String put2, String put3, String date) throws Exception {
         Map<String, List<AggregateOptionIV>> map = GetAggregateImpliedVolatility.dateToGreekListMap.get(date);
-        List<AggregateOptionIV> callGreekList1 = null;
-        List<AggregateOptionIV> callGreekList2 = null;
-        List<AggregateOptionIV> callGreekList3 = null;
-        List<AggregateOptionIV> putGreekList1 = null;
-        List<AggregateOptionIV> putGreekList2 = null;
-        List<AggregateOptionIV> putGreekList3 = null;
         if (MapUtils.isEmpty(map)) {
-            callGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
-            callGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
-            callGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
-            putGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
-            putGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
-            putGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
+            GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
+            GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
+            GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
+            GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
+            GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
+            GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
         } else {
             if (!map.containsKey(call1)) {
-                callGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
+                GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
             }
             if (!map.containsKey(call2)) {
-                callGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
+                GetAggregateImpliedVolatility.getAggregateGreekList(call2, date);
             }
             if (!map.containsKey(call3)) {
-                callGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
+                GetAggregateImpliedVolatility.getAggregateGreekList(call3, date);
             }
             if (!map.containsKey(put1)) {
-                putGreekList1 = GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
+                GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
             }
             if (!map.containsKey(put2)) {
-                putGreekList2 = GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
+                GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
             }
             if (!map.containsKey(put3)) {
-                putGreekList3 = GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
+                GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
             }
         }
+        List<AggregateOptionIV> callGreekList1 = map.get(call1);
+        List<AggregateOptionIV> callGreekList2 = map.get(call2);
+        List<AggregateOptionIV> callGreekList3 = map.get(call3);
+        List<AggregateOptionIV> putGreekList1 = map.get(put1);
+        List<AggregateOptionIV> putGreekList2 = map.get(put2);
+        List<AggregateOptionIV> putGreekList3 = map.get(put3);
 
         if (CollectionUtils.isEmpty(callGreekList1) ||
           CollectionUtils.isEmpty(callGreekList2) ||
