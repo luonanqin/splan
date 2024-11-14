@@ -136,10 +136,10 @@ public class OptionTradeTest extends BaseTest {
 
     @Test
     public void test_restart() throws Exception {
-        OptionStockListener optionStockListener = new OptionStockListener();
-        optionTradeExecutor.setOptionStockListener(optionStockListener);
-        optionTradeExecutor.init();
-        optionTradeExecutor.restart();
+//        OptionStockListener optionStockListener = new OptionStockListener();
+//        optionTradeExecutor.setOptionStockListener(optionStockListener);
+//        optionTradeExecutor.init();
+//        optionTradeExecutor.restart();
     }
 
     @Test

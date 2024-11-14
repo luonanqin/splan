@@ -80,6 +80,7 @@ public class OptionTradeTest2 extends BaseTest {
         loadOptionTradeData.load();
         ReadWriteOptionTradeInfo.init();
         RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
+        client.setSeason(-4);
         client.setOpenTime(1723469400000l);
         client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
         String stock = "BEKE";
@@ -92,6 +93,12 @@ public class OptionTradeTest2 extends BaseTest {
         optionTradeExecutor.setClient(client);
         optionTradeExecutor.setOptionStockListener(optionStockListener);
         optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
+
+        FTAPI.init();
+        BasicQuote futuQuote = new BasicQuote();
+        futuQuote.start();
+        optionTradeExecutor.setFutuQuote(futuQuote);
+
         optionTradeExecutor.init();
         optionTradeExecutor.getFutuRealTimeIV();
 
@@ -156,8 +163,7 @@ public class OptionTradeTest2 extends BaseTest {
         optionTradeExecutor.setOptionStockListener(optionStockListener);
 
         RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
-        client.setOpenTime(1730122200000l);
-        client.setCloseCheckTime(Date.from(LocalDateTime.now().plusDays(1).withHour(3).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))));
+        client.initManyTime();
         optionTradeExecutor.setClient(client);
 
         optionTradeExecutor.reSendOpenPrice();
