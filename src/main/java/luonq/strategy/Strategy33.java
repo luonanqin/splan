@@ -35,6 +35,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static luonq.strategy.Strategy32.calOpenStrikePrice;
+import static luonq.strategy.Strategy32.calStraddleSimulateTrade;
 import static util.Constants.*;
 
 /**
@@ -461,8 +463,12 @@ public class Strategy33 {
                 expirationDate = LocalDate.parse(expirationDate, DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2024-09-27")) {
-                                continue;
+            LocalDate localDate = LocalDate.parse(date, DB_DATE_FORMATTER);
+            if (localDate.isAfter(LocalDate.parse("2024-10-08", DB_DATE_FORMATTER))) {
+//                continue;
+            }
+            if (!date.equals("2024-11-15")) {
+                                                continue;
             }
 
             List<String> earningStocks = earningForEveryDay.get(date);
@@ -494,7 +500,7 @@ public class Strategy33 {
                     String formatDate = stockKLine.getFormatDate();
 
                     //                    NearlyOptionData nearlyOptionData = stockToNearlyOption.get(stock);
-                    NearlyOptionData nearlyOptionData = Strategy32.calOpenStrikePrice(date, stock, open);
+                    NearlyOptionData nearlyOptionData = calOpenStrikePrice(date, stock, open);
                     if (nearlyOptionData == null) {
                         continue;
                     }
@@ -578,7 +584,7 @@ public class Strategy33 {
 
                     String simulateTrade = "";
                     String ivInfo = "";
-                    simulateTrade = Strategy32.calStraddleSimulateTrade(callDaily, putDaily, calCallOpen, calPutOpen);
+                    simulateTrade = calStraddleSimulateTrade(callDaily, putDaily, calCallOpen, calPutOpen);
                     if (StringUtils.equalsAnyIgnoreCase(simulateTrade, "noData", "empty")) {
                         continue;
                     }
