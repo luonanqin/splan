@@ -4,6 +4,7 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class NearlyOptionData {
@@ -37,6 +38,9 @@ public class NearlyOptionData {
     private double outCall2StrikePrice; // 价外2档call行权价
     private double outPut1StrikePrice; // 价外1档put行权价
     private double outPut2StrikePrice; // 价外2档put行权价
+
+    private List<String> callList;
+    private List<String> putList;
 
     public double getOutCall1StrikePrice() {
         return getStrikePrice(outPriceCallOptionCode_1);
