@@ -534,12 +534,15 @@ public class Strategy33_3 {
         int startIndex = downIndex - 3;
         startIndex = startIndex < 0 ? 0 : startIndex;
         int endIndex = upIndex + 3;
+        endIndex = endIndex >= callAndPuts.size() ? callAndPuts.size() - 1 : endIndex;
 
         List<String> greekCallList = Lists.newArrayList();
         List<String> greekPutList = Lists.newArrayList();
-        for (int i = startIndex; i < endIndex; i++) {
-            greekCallList.add(callList.get(i));
-            greekPutList.add(BaseUtils.getOptionPutCode(callList.get(i)));
+        for (int i = startIndex; i <= endIndex; i++) {
+            String callAndPut = callAndPuts.get(i);
+            String code = callAndPut.split("\\|")[0];
+            greekCallList.add(code);
+            greekPutList.add(BaseUtils.getOptionPutCode(code));
         }
         nearlyOptionData.setCallList(greekCallList);
         nearlyOptionData.setPutList(greekPutList);
