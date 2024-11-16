@@ -593,7 +593,7 @@ public class Strategy33_3 {
             if (localDate.isAfter(LocalDate.parse("2024-10-08", DB_DATE_FORMATTER))) {
                 //                continue;
             }
-            if (!date.equals("2024-11-15")) {
+            if (!date.equals("2024-11-14")) {
                 continue;
             }
 
@@ -718,10 +718,10 @@ public class Strategy33_3 {
                     List<String> greekCallList = nearlyOptionData.getCallList();
                     List<String> greekPutList = nearlyOptionData.getPutList();
                     for (String call : greekCallList) {
-                        GetAggregateImpliedVolatility.getAggregateGreekList(call, date);
+                        GetAggregateImpliedVolatility.getAggregateGreekList(call.substring(2), date);
                     }
                     for (String put : greekPutList) {
-                        GetAggregateImpliedVolatility.getAggregateGreekList(put, date);
+                        GetAggregateImpliedVolatility.getAggregateGreekList(put.substring(2), date);
                     }
 
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
