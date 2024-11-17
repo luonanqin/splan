@@ -1,5 +1,6 @@
 package luonq.strategy;
 
+import bean.AggregateOptionIV;
 import bean.EarningDate;
 import bean.NearlyOptionData;
 import bean.OptionDaily;
@@ -594,7 +595,7 @@ public class Strategy33_3 {
                 //                continue;
             }
             if (!date.equals("2024-11-14")) {
-                continue;
+                //                continue;
             }
 
             List<String> earningStocks = earningForEveryDay.get(date);
@@ -717,17 +718,56 @@ public class Strategy33_3 {
 
                     List<String> greekCallList = nearlyOptionData.getCallList();
                     List<String> greekPutList = nearlyOptionData.getPutList();
+                    String callDelta = "", putDelta = "";
+                    Map<Double, String> gammaMap = Maps.newTreeMap(Double::compareTo);
                     for (String call : greekCallList) {
-                        GetAggregateImpliedVolatility.getAggregateGreekList(call.substring(2), date);
+                        if (StringUtils.isNotBlank(expirationDate)) {
+                            StringBuffer callSb = new StringBuffer(call);
+                            callSb.replace(callSb.length() - 15, callSb.length() - 9, expirationDate);
+                            call = callSb.toString();
+                        }
+                        List<AggregateOptionIV> aggregateGreekList = GetAggregateImpliedVolatility.getAggregateGreekList(call.substring(2), date);
+                        double strikePrice = NearlyOptionData.getStrikePrice(call);
+                        if (CollectionUtils.isEmpty(aggregateGreekList)) {
+                            gammaMap.put(strikePrice, "0");
+                            continue;
+                        }
+                        AggregateOptionIV aggregateOptionIV = aggregateGreekList.get(0);
+                        gammaMap.put(strikePrice, String.valueOf(aggregateOptionIV.getOptionGamma()));
+                        if (call.equals(outPriceCallOptionCode_1)) {
+                            callDelta = String.valueOf(aggregateOptionIV.getOptionDelta());
+                        }
                     }
                     for (String put : greekPutList) {
-                        GetAggregateImpliedVolatility.getAggregateGreekList(put.substring(2), date);
+                        if (StringUtils.isNotBlank(expirationDate)) {
+                            StringBuffer putSb = new StringBuffer(put);
+                            putSb.replace(putSb.length() - 15, putSb.length() - 9, expirationDate);
+                            put = putSb.toString();
+                        }
+
+                        List<AggregateOptionIV> aggregateGreekList = GetAggregateImpliedVolatility.getAggregateGreekList(put.substring(2), date);
+                        double strikePrice = NearlyOptionData.getStrikePrice(put);
+                        if (CollectionUtils.isEmpty(aggregateGreekList)) {
+                            gammaMap.put(strikePrice, "0");
+                            continue;
+                        }
+                        AggregateOptionIV aggregateOptionIV = aggregateGreekList.get(0);
+                        String str = gammaMap.get(strikePrice) + "\t" + aggregateOptionIV.getOptionGamma();
+                        gammaMap.put(strikePrice, str);
+                        if (put.equals(outPricePutOptionCode_1)) {
+                            putDelta = String.valueOf(aggregateOptionIV.getOptionDelta());
+                        }
                     }
 
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
                     String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
                     ivInfo = callIvInfo + "\t" + putIvInfo;
                     System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + callDaily + "\t" + putDaily + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio + "\t" + ivInfo + "\t" + simulateTrade);
+
+                    for (Double price : gammaMap.keySet()) {
+                        System.out.println(price + "\t" + gammaMap.get(price));
+                    }
+                    System.out.println("delta\t" + callDelta + "\t" + putDelta);
                 }
             }
         }

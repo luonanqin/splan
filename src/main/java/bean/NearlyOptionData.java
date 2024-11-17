@@ -106,7 +106,7 @@ public class NearlyOptionData {
         return getStrikePrice(inPricePutOptionCode_4);
     }
 
-    private double getStrikePrice(String optionCode) {
+    public static double getStrikePrice(String optionCode) {
         if (StringUtils.isBlank(optionCode)) {
             return 0;
         }
