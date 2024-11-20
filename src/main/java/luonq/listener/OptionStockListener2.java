@@ -42,6 +42,7 @@ public class OptionStockListener2 {
     public Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
     public Map<String/* futu code */, String/* ikbr code */> futuForIkbrMap = Maps.newHashMap();
     public Map<String/* stock */, Integer/* 1=up -1=down */> openUpDownMap = Maps.newHashMap();
+    public Map<String/* stock */, List<String>/* up down option */> upDownOptionMap = Maps.newHashMap();
 
     private OptionTradeExecutor2 optionTradeExecutor;
 
@@ -235,10 +236,14 @@ public class OptionStockListener2 {
         Integer upOrDown = open > lastClose ? 1 : -1;
         openUpDownMap.put(stock, upOrDown);
 
-        monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
+        List<String> greekList = monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
+        if (CollectionUtils.isNotEmpty(greekList)) {
+            upDownOptionMap.put(stock, greekList);
+        }
     }
 
-    private void monitorUpDownOption(List<String> callList, String upStrike, String downStrike, List<String> callAndPuts, String call) {
+    private List<String> monitorUpDownOption(List<String> callList, String upStrike, String downStrike, List<String> callAndPuts, String call) {
+        List<String> greekList = Lists.newArrayList();
         try {
             Map<String, Integer> optionIndexMap = Maps.newHashMap();
             for (int i = 0; i < callList.size(); i++) {
@@ -252,8 +257,6 @@ public class OptionStockListener2 {
             int endIndex = upIndex + 3;
             endIndex = endIndex >= callAndPuts.size() ? callAndPuts.size() - 1 : endIndex;
 
-            List<String> greekCallList = Lists.newArrayList();
-            List<String> greekPutList = Lists.newArrayList();
             for (int i = startIndex; i <= endIndex; i++) {
                 String callAndPut = callAndPuts.get(i);
                 String code = callAndPut.split("\\|")[0];
@@ -264,12 +267,13 @@ public class OptionStockListener2 {
                 String futuPut = convertToFutu(BaseUtils.getOptionPutCode(code));
                 optionTradeExecutor.monitorIV(futuCall);
                 optionTradeExecutor.monitorIV(futuPut);
-                greekCallList.add(futuCall);
-                greekPutList.add(futuPut);
+                greekList.add(futuCall);
+                greekList.add(futuPut);
             }
         } catch (Exception e) {
-            log.error("monitorUpDownOption error", e);
+            log.error("monitorUpDownOption error. callList={}", callList, e);
         }
+        return greekList;
     }
 
     private String convertToFutu(String code) {
