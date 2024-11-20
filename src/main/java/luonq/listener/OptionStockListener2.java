@@ -41,6 +41,7 @@ public class OptionStockListener2 {
     public Map<String/* rt iv code */, String/* expire date */> optionExpireDateMap = Maps.newHashMap();
     public Map<String/* rt iv code */, String/* ikbr code */> rtForIkbrMap = Maps.newHashMap();
     public Map<String/* futu code */, String/* ikbr code */> futuForIkbrMap = Maps.newHashMap();
+    public Map<String/* stock */, Integer/* 1=up -1=down */> openUpDownMap = Maps.newHashMap();
 
     private OptionTradeExecutor2 optionTradeExecutor;
 
@@ -206,10 +207,8 @@ public class OptionStockListener2 {
         String rtCall = stock + plus + callSuffix;
         String rtPut = stock + plus + putSuffix;
 
-        String callFutuSuffix = callCode.substring(0, callCode.length() - 8);
-        String putFutuSuffix = putCode.substring(0, putCode.length() - 8);
-        String futuCall = callFutuSuffix + Integer.valueOf(callCode.substring(callCode.length() - 8));
-        String futuPut = putFutuSuffix + Integer.valueOf(putCode.substring(putCode.length() - 8));
+        String futuCall = convertToFutu(call);
+        String futuPut = convertToFutu(put);
         canTradeOptionForFutuMap.put(stock, futuCall + "|" + futuPut);
         optionTradeExecutor.monitorFutuDeep(futuCall);
         optionTradeExecutor.monitorFutuDeep(futuPut);
@@ -232,7 +231,52 @@ public class OptionStockListener2 {
         optionTradeExecutor.addBuyOrder(stock);
         optionTradeExecutor.addSellOrder(stock);
         canTradeOptionForRtIVMap.put(stock, rtCall + "|" + rtPut);
+
+        Integer upOrDown = open > lastClose ? 1 : -1;
+        openUpDownMap.put(stock, upOrDown);
+
+        monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
     }
 
+    private void monitorUpDownOption(List<String> callList, String upStrike, String downStrike, List<String> callAndPuts, String call) {
+        try {
+            Map<String, Integer> optionIndexMap = Maps.newHashMap();
+            for (int i = 0; i < callList.size(); i++) {
+                optionIndexMap.put(callList.get(i), i);
+            }
+            Integer upIndex = optionIndexMap.get(upStrike);
+            Integer downIndex = optionIndexMap.get(downStrike);
+
+            int startIndex = downIndex - 3;
+            startIndex = startIndex < 0 ? 0 : startIndex;
+            int endIndex = upIndex + 3;
+            endIndex = endIndex >= callAndPuts.size() ? callAndPuts.size() - 1 : endIndex;
+
+            List<String> greekCallList = Lists.newArrayList();
+            List<String> greekPutList = Lists.newArrayList();
+            for (int i = startIndex; i <= endIndex; i++) {
+                String callAndPut = callAndPuts.get(i);
+                String code = callAndPut.split("\\|")[0];
+                if (StringUtils.equalsAnyIgnoreCase(call, code)) {
+                    continue;
+                }
+                String futuCall = convertToFutu(code);
+                String futuPut = convertToFutu(BaseUtils.getOptionPutCode(code));
+                optionTradeExecutor.monitorIV(futuCall);
+                optionTradeExecutor.monitorIV(futuPut);
+                greekCallList.add(futuCall);
+                greekPutList.add(futuPut);
+            }
+        } catch (Exception e) {
+            log.error("monitorUpDownOption error", e);
+        }
+    }
+
+    private String convertToFutu(String code) {
+        String option = code.substring(2);
+        String futuSuffix = option.substring(0, option.length() - 8);
+        String futu = futuSuffix + Integer.valueOf(option.substring(option.length() - 8));
+        return futu;
+    }
 
 }
