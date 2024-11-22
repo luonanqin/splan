@@ -15,13 +15,13 @@ public class CalculateIVTest {
         settings.setEvaluationDate(new Date(1, 1, 2022));
         OptionFundamentals optionIndex = OptionCalcUtils.calcOptionIndex(
           Right.CALL,
-          23.252, //对应标的资产的价格
-          23.5,  //期权行权价格
+          250, //对应标的资产的价格
+          275,  //期权行权价格
           0.0526,  //无风险利率，这里是取的美国国债利率
           0,  //股息率，大部分标的为0
-          2.3252, // 隐含波动率
-          LocalDate.of(2024, 2, 13), //对应预测价格的日期，要小于期权到期日
-          LocalDate.of(2024, 2, 16));  //期权到期日
+          1.019, // 隐含波动率
+          LocalDate.of(2024, 10, 22), //对应预测价格的日期，要小于期权到期日
+          LocalDate.of(2024, 10, 25));  //期权到期日
         System.out.println("value: " + optionIndex.getPredictedValue()); //计算出的期权预测价格
     }
 }

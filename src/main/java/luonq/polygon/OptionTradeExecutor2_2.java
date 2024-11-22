@@ -792,7 +792,7 @@ public class OptionTradeExecutor2_2 {
                     }
 
                     List<String> optionList = upDownOptionMap.get(stock);
-                    String options = StringUtils.join(optionList);
+                    String options = StringUtils.join(optionList, ",");
                     String url = String.format("https://api.polygon.io/v3/snapshot?ticker.any_of=%s&order=asc&limit=10&sort=ticker&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", options);
                     GetMethod get = new GetMethod(url);
                     try {
@@ -804,11 +804,12 @@ public class OptionTradeExecutor2_2 {
                             OptionGreek greeks = snapshot.getGreeks();
                             String ticker = snapshot.getTicker();
                             long last_updated = snapshot.getLast_quote().getLast_updated();
+                            String quoteTime = LocalDateTime.ofEpochSecond(last_updated / 1000000000, 0, ZoneOffset.of("+8")).format(formatter);
                             OptionLastTrade optionLastTrade = snapshot.getLast_trade();
                             double price = optionLastTrade.getPrice();
                             int size = optionLastTrade.getSize();
                             String tradeTime = LocalDateTime.ofEpochSecond(optionLastTrade.getSip_timestamp() / 1000000000, 0, ZoneOffset.of("+8")).format(formatter);
-                            log.info("ticker={}\tlastQuote={}\ttradeTime={}\ttradePrice={}\ttradeSize={}\tiv={}\t{}", ticker, last_updated, tradeTime, price, size, impliedVolatility, greeks);
+                            log.info("ticker={}\tlastQuote={}\ttradeTime={}\ttradePrice={}\ttradeSize={}\tiv={}\t{}", ticker, quoteTime, tradeTime, price, size, impliedVolatility, greeks);
                         }
                     } catch (Exception e) {
                         log.error("getFutuRealTimeIV error. callAndPut={}", options, e);
@@ -1832,7 +1833,7 @@ public class OptionTradeExecutor2_2 {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(1732222500l, 0, ZoneOffset.of("+8"));
+        LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(1732222500L, 0, ZoneOffset.of("+8"));
         System.out.println(localDateTime);
     }
 }
