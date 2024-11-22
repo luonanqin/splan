@@ -238,11 +238,9 @@ public class OptionStockListener2_2 {
         Integer upOrDown = open > lastClose ? 1 : -1;
         openUpDownMap.put(stock, upOrDown);
 
-        if (upDownOptionMap.size() < 5) {
-            List<String> greekList = monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
-            if (CollectionUtils.isNotEmpty(greekList)) {
-                upDownOptionMap.put(stock, greekList);
-            }
+        List<String> greekList = monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
+        if (CollectionUtils.isNotEmpty(greekList)) {
+            upDownOptionMap.put(stock, greekList);
         }
     }
 
@@ -263,16 +261,10 @@ public class OptionStockListener2_2 {
 
             for (int i = startIndex; i <= endIndex; i++) {
                 String callAndPut = callAndPuts.get(i);
-                String code = callAndPut.split("\\|")[0];
-                if (StringUtils.equalsAnyIgnoreCase(call, code)) {
-                    continue;
-                }
-                String futuCall = convertToFutu(code);
-                String futuPut = convertToFutu(BaseUtils.getOptionPutCode(code));
-                optionTradeExecutor.monitorIV(futuCall);
-                optionTradeExecutor.monitorIV(futuPut);
-                greekList.add(futuCall);
-                greekList.add(futuPut);
+                String call_1 = callAndPut.split("\\|")[0];
+                String put_1 = (BaseUtils.getOptionPutCode(call_1));
+                greekList.add(call_1);
+                greekList.add(put_1);
             }
         } catch (Exception e) {
             log.error("monitorUpDownOption error. callList={}", callList, e);

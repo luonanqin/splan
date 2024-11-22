@@ -2,8 +2,10 @@ package bean;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class OptionSnapshotResp {
 
-    private OptionSnapshot results;
+    private List<OptionSnapshot> results;
 }

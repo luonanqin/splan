@@ -98,7 +98,7 @@ public class OptionIVCalculate2 {
                         return;
                     }
                     double impliedVolatility = ivMap.get(optionCode);
-                    double price = snap.getResults().getUnderlying_asset().getPrice();
+                    double price = snap.getResults().get(0).getUnderlying_asset().getPrice();
                     double putPredictedValue = BaseUtils.getPutPredictedValue(price, strikePriced, 0.0526, impliedVolatility, "2024-06-17", "2024-06-21");
                     System.out.printf("%.2f\t%.2f\t%.5f\n", price, putPredictedValue, impliedVolatility);
                 } catch (IOException e) {

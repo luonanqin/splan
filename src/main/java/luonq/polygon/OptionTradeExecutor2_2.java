@@ -1,8 +1,13 @@
 package luonq.polygon;
 
 import bean.NodeList;
+import bean.OptionGreek;
+import bean.OptionLastTrade;
+import bean.OptionSnapshot;
+import bean.OptionSnapshotResp;
 import bean.Order;
 import bean.StockEvent;
+import com.alibaba.fastjson.JSON;
 import com.futu.openapi.pb.TrdCommon;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -19,12 +24,14 @@ import luonq.listener.OptionStockListener2_2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -58,7 +65,7 @@ public class OptionTradeExecutor2_2 {
     private GetOptionChain getOptionChain;
     private int cut = 990000;
     private List<String> tradeStock = Lists.newArrayList();
-    private RealTimeDataWS_DB2 client;
+    private RealTimeDataWS_DB2_2 client;
     private boolean realTrade = true;
     private OptionStockListener2_2 optionStockListener;
     private TradeApi tradeApi;
@@ -685,10 +692,10 @@ public class OptionTradeExecutor2_2 {
         String pattern = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 
-        HttpClient httpClient = new HttpClient();
-        HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
-        httpConnectionManagerParams.setSoTimeout(5000);
-        httpClient.getHttpConnectionManager().setParams(httpConnectionManagerParams);
+        //        HttpClient httpClient = new HttpClient();
+        //        HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
+        //        httpConnectionManagerParams.setSoTimeout(5000);
+        //        httpClient.getHttpConnectionManager().setParams(httpConnectionManagerParams);
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -752,6 +759,67 @@ public class OptionTradeExecutor2_2 {
                 }
             }
         }, 0, 1500);
+    }
+
+    public void getPolygonRealTimeGreeks() {
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
+        HttpClient httpClient = new HttpClient();
+        HttpConnectionManagerParams httpConnectionManagerParams = new HttpConnectionManagerParams();
+        httpConnectionManagerParams.setSoTimeout(5000);
+        httpClient.getHttpConnectionManager().setParams(httpConnectionManagerParams);
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                if (MapUtils.isEmpty(upDownOptionMap) && !hasFinishBuying) {
+                    log.info("get realtime greeks. but there is no option to get. waiting......");
+                    return;
+                }
+
+                if (hasFinishBuying) {
+                    log.info("all stock don't need get realtime greeks");
+                    timer.cancel();
+                    return;
+                }
+
+                for (String stock : upDownOptionMap.keySet()) {
+                    if (hasBoughtSuccess.contains(stock)) {
+                        continue;
+                    }
+
+                    List<String> optionList = upDownOptionMap.get(stock);
+                    String options = StringUtils.join(optionList);
+                    String url = String.format("https://api.polygon.io/v3/snapshot?ticker.any_of=%s&order=asc&limit=10&sort=ticker&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY", options);
+                    GetMethod get = new GetMethod(url);
+                    try {
+                        httpClient.executeMethod(get);
+                        InputStream resp = get.getResponseBodyAsStream();
+                        OptionSnapshotResp snap = JSON.parseObject(resp, OptionSnapshotResp.class);
+                        for (OptionSnapshot snapshot : snap.getResults()) {
+                            double impliedVolatility = snapshot.getImplied_volatility();
+                            OptionGreek greeks = snapshot.getGreeks();
+                            String ticker = snapshot.getTicker();
+                            long last_updated = snapshot.getLast_quote().getLast_updated();
+                            OptionLastTrade optionLastTrade = snapshot.getLast_trade();
+                            double price = optionLastTrade.getPrice();
+                            int size = optionLastTrade.getSize();
+                            String tradeTime = LocalDateTime.ofEpochSecond(optionLastTrade.getSip_timestamp() / 1000000000, 0, ZoneOffset.of("+8")).format(formatter);
+                            log.info("ticker={}\tlastQuote={}\ttradeTime={}\ttradePrice={}\ttradeSize={}\tiv={}\t{}", ticker, last_updated, tradeTime, price, size, impliedVolatility, greeks);
+                        }
+                    } catch (Exception e) {
+                        log.error("getFutuRealTimeIV error. callAndPut={}", options, e);
+                    }
+                }
+                long current = System.currentTimeMillis();
+                if (current > (openTime + 60000)) {
+                    timer.cancel();
+                }
+            }
+        }, 0, 1000);
     }
 
     public void monitorBuyOrder() {
@@ -1764,5 +1832,7 @@ public class OptionTradeExecutor2_2 {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(1732222500l, 0, ZoneOffset.of("+8"));
+        System.out.println(localDateTime);
     }
 }
