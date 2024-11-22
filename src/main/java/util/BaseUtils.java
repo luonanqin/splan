@@ -968,7 +968,7 @@ public class BaseUtils {
         BufferedReader br = null;
         Set<String> result = Sets.newHashSet();
         try {
-            br = new BufferedReader(new FileReader(Constants.USER_PATH + "optionData/weekOption"));
+            br = new BufferedReader(new FileReader(Constants.USER_PATH + "optionData/weekOption2"));
             String line;
             while (StringUtils.isNotBlank(line = br.readLine())) {
                 result.add(line);
@@ -990,7 +990,7 @@ public class BaseUtils {
         BufferedReader br = null;
         Set<String> result = Sets.newHashSet();
         try {
-            br = new BufferedReader(new FileReader(Constants.USER_PATH + "optionData/pennyprogram"));
+            br = new BufferedReader(new FileReader(Constants.USER_PATH + "optionData/pennyprogram2"));
             String line;
             while (StringUtils.isNotBlank(line = br.readLine())) {
                 result.add(line);

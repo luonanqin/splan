@@ -236,9 +236,11 @@ public class OptionStockListener2 {
         Integer upOrDown = open > lastClose ? 1 : -1;
         openUpDownMap.put(stock, upOrDown);
 
-        List<String> greekList = monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
-        if (CollectionUtils.isNotEmpty(greekList)) {
-            upDownOptionMap.put(stock, greekList);
+        if (upDownOptionMap.size() < 5) {
+            List<String> greekList = monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
+            if (CollectionUtils.isNotEmpty(greekList)) {
+                upDownOptionMap.put(stock, greekList);
+            }
         }
     }
 

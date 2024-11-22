@@ -8,6 +8,7 @@ import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
@@ -252,19 +253,31 @@ public class GetHistoricalSecAggregateTrade {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
+        Set<String> weekOptionStock = BaseUtils.getWeekOptionStock();
+        Set<String> pennyOptionStock = BaseUtils.getPennyOptionStock();
+        Set<String> stocks = Sets.newHashSet();
+//        stocks.addAll(weekOptionStock);
+        stocks.addAll(pennyOptionStock);
+        stocks.removeAll(Sets.newHashSet("FFIE", "AMC", "GME"));
+
         init();
         List<StockKLine> stockKLines = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "merge/AAPL", 2024, 2021);
         List<String> dateList = stockKLines.stream().map(StockKLine::getFormatDate).collect(Collectors.toList());
-        Set<String> weekOptionStock = BaseUtils.getPennyOptionStock();
-        for (String stock : weekOptionStock) {
+        Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "sec23400Aggregate/");
+        for (String s : fileMap.keySet()) {
+            if (!stocks.contains(s)) {
+                //                System.out.println(s);
+            }
+        }
+        for (String stock : stocks) {
             long begin = System.currentTimeMillis();
             System.out.println("begin " + stock);
-            if (!stock.equals("AAPL")) {
-                //                continue;
+            if (!stock.equals("ASML")) {
+                //                                continue;
             }
 
             for (String date : dateList) {
-                getData(stock, date, 300);
+                getData(stock, date, 23400);
             }
             long end = System.currentTimeMillis();
             long cost = (end - begin) / 1000;

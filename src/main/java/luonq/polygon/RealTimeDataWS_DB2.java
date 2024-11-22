@@ -18,6 +18,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import luonq.execute.LoadOptionTradeData;
@@ -103,6 +105,9 @@ public class RealTimeDataWS_DB2 {
     private long preTradeTime;
     private long openTime;
     private long listenEndTime;
+    @Getter
+    @Setter
+    private int season;
     private Date closeCheckTime;
     private boolean listenEnd = false;
     private NodeList list = new NodeList(10);
@@ -172,7 +177,7 @@ public class RealTimeDataWS_DB2 {
                 //                    optionTradeExecutor.restart();
                 //                } else {
                 subcribeStock();
-//                sendToTradeDataListener();
+                //                sendToTradeDataListener();
 
                 executor.execute(() -> sendToOptionListener());
                 beginTrade();
@@ -265,8 +270,8 @@ public class RealTimeDataWS_DB2 {
             //            stockSet.clear();
             //            stockSet.add("RNST");
 
-            loadLastDn();
-            loadLatestMA20();
+//            loadLastDn();
+//            loadLatestMA20();
 
             log.info("finish init historical data");
         } catch (Exception e) {
@@ -278,10 +283,16 @@ public class RealTimeDataWS_DB2 {
         try {
             tradeApi = new TradeApi();
             TimeUnit.SECONDS.sleep(5);
-            double pnl = tradeApi.getPnl();
-            funds = tradeApi.getAccountCash();
-            funds = funds - pnl;
-            log.info("funds is {}", funds);
+            //            double pnl = tradeApi.getPnl();
+            //            funds = tradeApi.getAccountCash();
+            //            funds = funds - pnl;
+            //            if (funds < 200) {
+            //                funds = 1000;
+            //                log.info("funds is less than 200, init {}", funds);
+            //            } else {
+            //                log.info("funds is {}", funds);
+            //            }
+            funds = tradeApi.getAvailableCash() * 0.92;
 
             FTAPI.init();
             BasicQuote futuQuote = new BasicQuote();
@@ -339,7 +350,7 @@ public class RealTimeDataWS_DB2 {
         originRatioMap = strategy.computeHisOverBollingerRatio();
     }
 
-    private void initManyTime() {
+    public void initManyTime() {
         LocalDateTime now = LocalDateTime.now();
         boolean beforeDawn = now.getHour() < 10; // 小于10则表示新的一天凌晨
         LocalDateTime closeCheck = now;
@@ -360,12 +371,14 @@ public class RealTimeDataWS_DB2 {
             checkPre = now.withHour(21).withMinute(22).withSecond(0).withNano(0);
             checkOpen = now.withHour(21).withMinute(30).withSecond(0).withNano(0);
             checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            season = -4;
         } else {
             openHour = 22;
             closeHour = 4;
             checkPre = now.withHour(22).withMinute(22).withSecond(0).withNano(0);
             checkOpen = now.withHour(22).withMinute(30).withSecond(0).withNano(0);
             checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            season = -5;
         }
         Instant preTradeTimeInst = preTrade.withHour(openHour).withMinute(preMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"));
         preTradeTime = preTradeTimeInst.toEpochMilli();
@@ -743,7 +756,7 @@ public class RealTimeDataWS_DB2 {
         optionTradeExecutor2.beginTrade();
     }
 
-    public void stopListen(){
+    public void stopListen() {
         listenEnd = true;
     }
 
@@ -1094,6 +1107,8 @@ public class RealTimeDataWS_DB2 {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        long time = Date.from(LocalDateTime.now().plusDays(1).withHour(4).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"))).getTime();
+        System.out.println(time);
         RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
         client.init();
         //        client.sendToTradeDataListener();
