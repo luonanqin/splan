@@ -1294,14 +1294,43 @@ public class Strategy32 {
         Map<Long, Double> secondsPriceMap = Maps.newHashMap();
         long latestTime = 0;
         List<Double> priceList = Lists.newArrayList();
-        for (String callQuote : quoteList) {
-            String[] split = callQuote.split("\t"); // 1706126148133253376	2.02	18	1.97	13
+        for (String quote : quoteList) {
+            String[] split = quote.split("\t"); // 1706126148133253376	2.02	18	1.97	13
             Long timestamp = Long.valueOf(split[0]) / 1000000000;
             int askSize = Integer.parseInt(split[2]);
             int bidSize = Integer.parseInt(split[4]);
             double askPrice = Double.parseDouble(split[1]);
             double bidPrice = Double.parseDouble(split[3]);
             double price = askPrice > bidPrice ? bidPrice : askPrice;
+            if ((askSize < 5 && bidSize < 5) || price == 0) {
+                continue;
+            }
+
+            if (timestamp != latestTime) {
+                Double avgPrice = priceList.stream().collect(Collectors.averagingDouble(a -> a));
+                secondsPriceMap.put(latestTime, avgPrice);
+                latestTime = timestamp;
+                priceList.clear();
+                priceList.add(price);
+            } else {
+                priceList.add(price);
+            }
+        }
+        return secondsPriceMap;
+    }
+
+    public static Map<Long, Double> calQuoteAskForSeconds(List<String> quoteList) {
+        Map<Long, Double> secondsPriceMap = Maps.newHashMap();
+        long latestTime = 0;
+        List<Double> priceList = Lists.newArrayList();
+        for (String quote : quoteList) {
+            String[] split = quote.split("\t"); // 1706126148133253376	2.02	18	1.97	13
+            Long timestamp = Long.valueOf(split[0]) / 1000000000;
+            int askSize = Integer.parseInt(split[2]);
+            int bidSize = Integer.parseInt(split[4]);
+            double askPrice = Double.parseDouble(split[1]);
+            double bidPrice = Double.parseDouble(split[3]);
+            double price = askPrice > bidPrice ? askPrice : bidPrice;
             if ((askSize < 5 && bidSize < 5) || price == 0) {
                 continue;
             }
