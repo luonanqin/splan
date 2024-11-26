@@ -284,6 +284,13 @@ public class GrabOptionTradeData {
                     log.info("finish grab option chain: {}, size: {}", stock, callAndPut.size());
                 } catch (Exception e) {
                     log.error("grabOptionChain error. url={}", url, e);
+                    try {
+                        List<String> lines = BaseUtils.readFile(USER_PATH + "optionData/optionChain/" + stock + "/");
+                        stockToOptionCodeMap.put(stock, lines);
+                        stockToSingleOptionCodeMap.put(stock, lines.stream().flatMap(cp -> Arrays.stream(cp.split("\\|"))).collect(Collectors.toList()));
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 } finally {
                     getMethod.releaseConnection();
                     queue.offer(httpClient);
