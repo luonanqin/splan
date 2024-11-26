@@ -26,7 +26,6 @@ import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.futu.BasicQuote;
 import luonq.ibkr.TradeApi;
-import luonq.listener.OptionStockListener2;
 import luonq.listener.OptionStockListener2_2;
 import luonq.strategy.backup.Strategy_DB;
 import org.apache.commons.collections4.CollectionUtils;
@@ -294,7 +293,8 @@ public class RealTimeDataWS_DB2_2 {
             //            } else {
             //                log.info("funds is {}", funds);
             //            }
-            funds = tradeApi.getAvailableCash() * 0.92;
+//            funds = tradeApi.getAvailableCash() * 0.92;
+            funds = 4000d;
 
             FTAPI.init();
             BasicQuote futuQuote = new BasicQuote();
@@ -362,6 +362,7 @@ public class RealTimeDataWS_DB2_2 {
         }
         if (beforeDawn) {
             preTrade = now.minusDays(1);
+            now = preTrade;
         }
 
         long checkOpenTime = 0;

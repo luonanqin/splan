@@ -351,6 +351,7 @@ public class RealTimeDataWS_DB5 {
         }
         if (beforeDawn) {
             preTrade = now.minusDays(1);
+            now = preTrade;
         }
 
         long checkOpenTime = 0;

@@ -360,6 +360,7 @@ public class RealTimeDataWS_DB2 {
         }
         if (beforeDawn) {
             preTrade = now.minusDays(1);
+            now = preTrade;
         }
 
         long checkOpenTime = 0;
