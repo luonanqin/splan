@@ -186,10 +186,12 @@ public class GetAggregateImpliedVolatility {
             get.releaseConnection();
         }
 
-        System.out.println("getAggregateIv " + optionCode);
         if (CollectionUtils.isEmpty(lines)) {
+            System.out.println("getAggregateIv is empty " + optionCode);
             return hisIv;
         }
+        System.out.println("getAggregateIv " + optionCode);
+
         BaseUtils.createDirectory(optionFileDir);
         Collections.sort(lines, (o1, o2) -> {
             Integer time1 = Integer.valueOf(o1.split("\t")[0].substring(11).replaceAll(":", ""));
@@ -313,10 +315,11 @@ public class GetAggregateImpliedVolatility {
         timeList.addAll(tempTimeList);
         aggrIVList.addAll(tempAggrIVList);
 
-        System.out.println("getAggregateIv " + optionCode);
         if (CollectionUtils.isEmpty(lines)) {
+            System.out.println("getAggregateIv is empty " + optionCode);
             return Lists.newArrayList(hisIv);
         }
+        System.out.println("getAggregateIv " + optionCode);
 
         BaseUtils.createDirectory(optionFileDir);
         Collections.sort(lines, (o1, o2) -> {

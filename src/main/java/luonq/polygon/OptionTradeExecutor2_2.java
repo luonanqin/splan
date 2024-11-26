@@ -157,7 +157,7 @@ public class OptionTradeExecutor2_2 {
     // 平均到每个股票的交易金额
     private double avgFund;
     private double funds = Constants.INIT_CASH;
-    private int limitCount = 3; // 限制股票数量
+    private int limitCount = 4; // 限制股票数量
     private String season;
     private long openTime;
     private long closeTime;
@@ -170,7 +170,7 @@ public class OptionTradeExecutor2_2 {
         optionExpireDateMap = optionStockListener.getOptionExpireDateMap();
         optionCodeMap = optionStockListener.getOptionCodeMap();
         canTradeOptionForRtIVMap = optionStockListener.getCanTradeOptionForRtIVMap();
-        realtimeQuoteForOptionMap = RealTimeDataWS_DB2.realtimeQuoteForOptionMap;
+        realtimeQuoteForOptionMap = RealTimeDataWS_DB2_2.realtimeQuoteForOptionMap;
         riskFreeRate = LoadOptionTradeData.riskFreeRate;
         currentTradeDate = LoadOptionTradeData.currentTradeDate;
         canTradeStocks = optionStockListener.getCanTradeStocks();
@@ -456,16 +456,16 @@ public class OptionTradeExecutor2_2 {
             if (CollectionUtils.intersection(canTradeStocks, hasBoughtOrderStocks).size() == canTradeStocks.size()) {
                 log.info("all stock has bought order: {}. stop buy order", canTradeStocks);
 
-                try {
-                    for (String stock : upDownOptionMap.keySet()) {
-                        List<String> greekList = upDownOptionMap.get(stock);
-                        for (String option : greekList) {
-                            delayUnsubscribeIvForOption(option);
-                        }
-                    }
-                } catch (Exception e) {
-                    log.error("delayUnsubscribeIv error. upDownOptionMap={}", upDownOptionMap, e);
-                }
+                //                try {
+                //                    for (String stock : upDownOptionMap.keySet()) {
+                //                        List<String> greekList = upDownOptionMap.get(stock);
+                //                        for (String option : greekList) {
+                //                            delayUnsubscribeIvForOption(option);
+                //                        }
+                //                    }
+                //                } catch (Exception e) {
+                //                    log.error("delayUnsubscribeIv error. upDownOptionMap={}", upDownOptionMap, e);
+                //                }
                 break;
             }
         }
@@ -897,6 +897,8 @@ public class OptionTradeExecutor2_2 {
                              */
                             Double openPrice = openPriceMap.get(stock);
                             while (!callSuccess || !putSuccess) {
+                                buyCallOrder = tradeApi.getOrder(buyCallOrderId);
+                                buyPutOrder = tradeApi.getOrder(buyPutOrderId);
                                 callSuccess = buyCallOrder != null && buyCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                                 putSuccess = buyPutOrder != null && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
 
@@ -935,7 +937,7 @@ public class OptionTradeExecutor2_2 {
             if (CollectionUtils.intersection(canTradeStocks, hasBoughtSuccess).size() == canTradeStocks.size()) {
                 log.info("all stock has bought success: {}. stop monitor buy order", canTradeStocks);
                 hasFinishBuying = true;
-                RealTimeDataWS_DB2.getRealtimeQuoteForOption = false;
+                RealTimeDataWS_DB2_2.getRealtimeQuoteForOption = false;
                 client.stopListen();
                 return;
             }

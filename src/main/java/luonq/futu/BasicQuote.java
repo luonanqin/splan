@@ -149,54 +149,58 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
 
     @Override
     public void onPush_UpdateOrderBook(FTAPI_Conn client, QotUpdateOrderBook.Response rsp) {
-        if (rsp.getRetType() != 0) {
-            System.out.printf("QotUpdateOrderBook failed: %s\n", rsp.getRetMsg());
-        } else {
-            QotUpdateOrderBook.S2C s2C = rsp.getS2C();
-            String code = s2C.getSecurity().getCode();
-            List<QotCommon.OrderBook> orderBookAskListList = s2C.getOrderBookAskListList();
-            List<QotCommon.OrderBook> orderBookBidListList = s2C.getOrderBookBidListList();
-            Double bidPrice = null, askPrice = null;
-            if (CollectionUtils.isNotEmpty(orderBookBidListList)) {
-                QotCommon.OrderBook orderBook = orderBookBidListList.get(0);
-                double price = orderBook.getPrice();
-                long volume = orderBook.getVolume();
-                //                System.out.print(code + " bid price=" + bidPrice + "\tvolume=" + volume);
-                //                log.info("futu quote. code={}\tbidPrice={}\tbidVol={}", code, bidPrice, volume);
-                if (volume >= 5 && price != 0) {
-                    bidPrice = price;
-                }
-            }
-            if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
-                QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
-                double price = orderBook.getPrice();
-                long volume = orderBook.getVolume();
-                //                System.out.print(code + " ask price=" + askPrice + "\tvolume=" + volume);
-                //                log.info("futu quote. code={}\taskPrice={}\taskVol={}", code, askPrice, volume);
-                if (volume >= 5 && price != 0) {
-                    askPrice = price;
-                }
-            }
-            Double lastBid = codeToBidMap.get(code);
-            Double lastAsk = codeToAskMap.get(code);
-            if (bidPrice != null && askPrice != null) {
-                if (lastBid == null || lastAsk == null) { // 如果没有最新摆盘，则put
-                    codeToBidMap.put(code, bidPrice);
-                    codeToAskMap.put(code, askPrice);
-                } else {
-                    if (!(bidPrice.compareTo(lastBid) < 0 && askPrice.compareTo(lastAsk) > 0)) { // 如果bid小于最新bid，且ask大于最新ask，则认为是无效摆盘
-                        codeToBidMap.put(code, bidPrice);
-                        codeToAskMap.put(code, askPrice);
+        try {
+            if (rsp.getRetType() != 0) {
+                System.out.printf("QotUpdateOrderBook failed: %s\n", rsp.getRetMsg());
+            } else {
+                QotUpdateOrderBook.S2C s2C = rsp.getS2C();
+                String code = s2C.getSecurity().getCode();
+                List<QotCommon.OrderBook> orderBookAskListList = s2C.getOrderBookAskListList();
+                List<QotCommon.OrderBook> orderBookBidListList = s2C.getOrderBookBidListList();
+                Double bidPrice = null, askPrice = null;
+                if (CollectionUtils.isNotEmpty(orderBookBidListList)) {
+                    QotCommon.OrderBook orderBook = orderBookBidListList.get(0);
+                    double price = orderBook.getPrice();
+                    long volume = orderBook.getVolume();
+                    //                System.out.print(code + " bid price=" + bidPrice + "\tvolume=" + volume);
+                    //                log.info("futu quote. code={}\tbidPrice={}\tbidVol={}", code, bidPrice, volume);
+                    if (volume >= 5 && price != 0) {
+                        bidPrice = price;
                     }
                 }
-            } else if (bidPrice != null) {
-                codeToBidMap.put(code, bidPrice);
-            } else if (askPrice != null) {
-                codeToAskMap.put(code, askPrice);
+                if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
+                    QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
+                    double price = orderBook.getPrice();
+                    long volume = orderBook.getVolume();
+                    //                System.out.print(code + " ask price=" + askPrice + "\tvolume=" + volume);
+                    //                log.info("futu quote. code={}\taskPrice={}\taskVol={}", code, askPrice, volume);
+                    if (volume >= 5 && price != 0) {
+                        askPrice = price;
+                    }
+                }
+                Double lastBid = codeToBidMap.get(code);
+                Double lastAsk = codeToAskMap.get(code);
+                if (bidPrice != null && askPrice != null) {
+                    if (lastBid == null || lastAsk == null) { // 如果没有最新摆盘，则put
+                        codeToBidMap.put(code, bidPrice);
+                        codeToAskMap.put(code, askPrice);
+                    } else {
+                        if (!(bidPrice.compareTo(lastBid) < 0 && askPrice.compareTo(lastAsk) > 0)) { // 如果bid小于最新bid，且ask大于最新ask，则认为是无效摆盘
+                            codeToBidMap.put(code, bidPrice);
+                            codeToAskMap.put(code, askPrice);
+                        }
+                    }
+                } else if (bidPrice != null) {
+                    codeToBidMap.put(code, bidPrice);
+                } else if (askPrice != null) {
+                    codeToAskMap.put(code, askPrice);
+                }
+                log.info("futu quote. code={}\tbidPrice={}\taskPrice={}", code, codeToBidMap.get(code), codeToAskMap.get(code));
+                //            String data = String.format("%.2f|%.2f", bidPrice, askPrice);
+                //            System.out.println(code + "\t" + data);
             }
-            log.info("futu quote. code={}\tbidPrice={}\taskPrice={}", code, codeToBidMap.get(code), codeToAskMap.get(code));
-            //            String data = String.format("%.2f|%.2f", bidPrice, askPrice);
-            //            System.out.println(code + "\t" + data);
+        } catch (Exception e) {
+            log.error("onPush_UpdateOrderBook error.", e);
         }
     }
 

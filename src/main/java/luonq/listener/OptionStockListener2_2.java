@@ -241,6 +241,7 @@ public class OptionStockListener2_2 {
         List<String> greekList = monitorUpDownOption(callList, upStrike, downStrike, callAndPuts, call);
         if (CollectionUtils.isNotEmpty(greekList)) {
             upDownOptionMap.put(stock, greekList);
+            log.info("monitorUpDownOption={}", greekList);
         }
     }
 
