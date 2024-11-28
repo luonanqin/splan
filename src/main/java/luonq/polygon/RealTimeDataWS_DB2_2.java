@@ -271,8 +271,8 @@ public class RealTimeDataWS_DB2_2 {
             //            stockSet.clear();
             //            stockSet.add("RNST");
 
-//            loadLastDn();
-//            loadLatestMA20();
+            //            loadLastDn();
+            //            loadLatestMA20();
 
             log.info("finish init historical data");
         } catch (Exception e) {
@@ -293,8 +293,8 @@ public class RealTimeDataWS_DB2_2 {
             //            } else {
             //                log.info("funds is {}", funds);
             //            }
-//            funds = tradeApi.getAvailableCash() * 0.92;
-            funds = 4000d;
+            //            funds = tradeApi.getAvailableCash() * 0.92;
+            funds = 4177d * 0.92;
 
             FTAPI.init();
             BasicQuote futuQuote = new BasicQuote();
@@ -360,14 +360,10 @@ public class RealTimeDataWS_DB2_2 {
         if (!beforeDawn) {
             closeCheck = now.plusDays(1);
         }
-        if (beforeDawn) {
-            preTrade = now.minusDays(1);
-            now = preTrade;
-        }
 
         long checkOpenTime = 0;
         LocalDateTime checkPre, checkOpen;
-        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
+        int openHour, closeHour, preMin = 2 + DELAY_MINUTE, openMin = 3;
         if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
             openHour = 21;
             closeHour = 3;
@@ -376,7 +372,7 @@ public class RealTimeDataWS_DB2_2 {
             checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
             season = -4;
         } else {
-            openHour = 22;
+            openHour = 1;
             closeHour = 4;
             checkPre = now.withHour(22).withMinute(22).withSecond(0).withNano(0);
             checkOpen = now.withHour(22).withMinute(30).withSecond(0).withNano(0);

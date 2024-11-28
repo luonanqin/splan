@@ -157,7 +157,7 @@ public class OptionTradeExecutor2_2 {
     // 平均到每个股票的交易金额
     private double avgFund;
     private double funds = Constants.INIT_CASH;
-    private int limitCount = 4; // 限制股票数量
+    private int limitCount = 3; // 限制股票数量
     private String season;
     private long openTime;
     private long closeTime;
@@ -896,24 +896,27 @@ public class OptionTradeExecutor2_2 {
                              * 每次根据当前价决定调整call还是put，当put和call都成交后退出调价
                              */
                             Double openPrice = openPriceMap.get(stock);
-                            while (!callSuccess || !putSuccess) {
+                            while (true) {
                                 buyCallOrder = tradeApi.getOrder(buyCallOrderId);
                                 buyPutOrder = tradeApi.getOrder(buyPutOrderId);
                                 callSuccess = buyCallOrder != null && buyCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                                 putSuccess = buyPutOrder != null && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
+                                if (callSuccess && putSuccess) {
+                                    break;
+                                }
 
                                 Double curPrice = realtimeQuoteForOptionMap.get(stock);
 
                                 if (curPrice.compareTo(openPrice) > 0) { // 当前价大于开盘价，且call未成交，优先快速成交call
                                     if (!callSuccess && buyCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                                         adjustBuyCall(stock, count, callRt, callIkbr, callFutu, buyCallOrderId, buyCallOrder);
-                                    } else { // 如果call成交了，就快速成交put
+                                    } else if (!putSuccess && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) { // 如果call成交了，就快速成交put
                                         adjustBuyPut(stock, count, putRt, putIkbr, putFutu, buyPutOrderId, buyPutOrder);
                                     }
                                 } else {// 当前价小于开盘价，且put未成交，优先快速成交put
                                     if (!putSuccess && buyPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                                         adjustBuyPut(stock, count, putRt, putIkbr, putFutu, buyPutOrderId, buyPutOrder);
-                                    } else { // 如果put成交了，就快速成交call
+                                    } else if (!callSuccess && buyCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) { // 如果put成交了，就快速成交call
                                         adjustBuyCall(stock, count, callRt, callIkbr, callFutu, buyCallOrderId, buyCallOrder);
                                     }
                                 }
@@ -921,6 +924,12 @@ public class OptionTradeExecutor2_2 {
                             long curTime = System.currentTimeMillis();
                             buyOrderTimeMap.put(stock, curTime);
                             ReadWriteOptionTradeInfo.writeBuyOrderTime(stock, curTime);
+                            ReadWriteOptionTradeInfo.writeBuyOrderCost(callIkbr, buyCallOrder.getAvgPrice());
+                            ReadWriteOptionTradeInfo.writeBuyOrderCost(putIkbr, buyPutOrder.getAvgPrice());
+                            ReadWriteOptionTradeInfo.writeHasBoughtSuccess(stock);
+                            hasBoughtSuccess.add(stock);
+                            log.info("{} buy trade success. call={}\torderId={}\tput={}\torderId={}\tcount={}", stock, callIkbr, buyCallOrderId, putIkbr, buyPutOrderId, count);
+                            disableShowIv(callFutu, putFutu);
                         }
                     } catch (Exception e) {
                         log.error("monitor buy and adjust error. stock={}", stock, e);
@@ -1034,16 +1043,16 @@ public class OptionTradeExecutor2_2 {
                 String callIkbr = futuForIkbrMap.get(callFutu);
                 String putIkbr = futuForIkbrMap.get(putFutu);
 
-                Double callCount = tradeApi.getCanSellQty(callIkbr);
-                Double putCount = tradeApi.getCanSellQty(putIkbr);
+                Double callCanSellCount = tradeApi.getCanSellQty(callIkbr);
+                Double putCanSellCount = tradeApi.getCanSellQty(putIkbr);
 
                 Long sellCallOrderId = sellOrderIdMap.get(callIkbr);
                 Long sellPutOrderId = sellOrderIdMap.get(putIkbr);
                 Order sellCallOrder = tradeApi.getOrder(sellCallOrderId);
                 Order sellPutOrder = tradeApi.getOrder(sellPutOrderId);
 
-                boolean callSuccess = callCount == 0 || sellCallOrder != null && sellCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
-                boolean putSuccess = putCount == 0 || sellPutOrder != null && sellPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
+                boolean callSuccess = callCanSellCount == 0 || sellCallOrder != null && sellCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
+                boolean putSuccess = putCanSellCount == 0 || sellPutOrder != null && sellPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Filled_All_VALUE;
                 if (callSuccess && putSuccess) {
                     ReadWriteOptionTradeInfo.writeHasSoldSuccess(stock);
                     hasSoldSuccess.add(stock);
@@ -1056,57 +1065,59 @@ public class OptionTradeExecutor2_2 {
                      */
                     if (!callSuccess && sellCallOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                         double hasTradeCount = 0;
+                        double totalCount = sellCallOrder.getTradeCount();
                         if (sellCallOrder != null) {
-                            hasTradeCount = sellCallOrder.getTradeCount() - callCount;
+                            hasTradeCount = totalCount - callCanSellCount;
                         }
 
                         double tradePrice = calQuickSellPrice(callFutu, lastSellPriceMap.get(callIkbr));
                         if (!lastSellPriceMap.containsKey(callIkbr) || lastSellPriceMap.get(callIkbr).compareTo(tradePrice) > 0) {
-                            long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, callCount, tradePrice);
+                            long modifyOrderId = tradeApi.upOrderPrice(sellCallOrderId, totalCount, tradePrice);
                             while (true) {
                                 if (modifyOrderId != -1) {
                                     break;
                                 } else {
-                                    callCount = tradeApi.getCanSellQty(callIkbr);
+                                    callCanSellCount = tradeApi.getCanSellQty(callIkbr);
                                     tradePrice = calculateMidPrice(callFutu);
                                     adjustSellInitPriceMap.put(callFutu, tradePrice);
                                     adjustSellPriceTimesMap.put(callFutu, 0);
                                     adjustSellPriceTimestampMap.put(callFutu, System.currentTimeMillis());
-                                    modifyOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCount, tradePrice);
+                                    modifyOrderId = tradeApi.placeNormalSellOrder(callIkbr, callCanSellCount, tradePrice);
                                     log.info("retry modify sell call order: call={}\ttradePrice={}\torderId={}", callIkbr, tradePrice, modifyOrderId);
                                 }
                             }
 
                             ReadWriteOptionTradeInfo.writeSellOrderId(callIkbr, sellCallOrderId);
                             lastSellPriceMap.put(callIkbr, tradePrice);
-                            log.info("modify sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callFutu, tradePrice, callCount, hasTradeCount);
+                            log.info("modify sell call order: orderId={}\tcall={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, callFutu, tradePrice, callCanSellCount, hasTradeCount);
                         }
                     }
                     if (!putSuccess && sellPutOrder.getOrderStatus() == TrdCommon.OrderStatus.OrderStatus_Submitted_VALUE) {
                         double hasTradeCount = 0;
+                        double totalCount = sellPutOrder.getTradeCount();
                         if (sellPutOrder != null) {
-                            hasTradeCount = sellPutOrder.getTradeCount() - putCount;
+                            hasTradeCount = totalCount - putCanSellCount;
                         }
 
                         double tradePrice = calQuickSellPrice(putFutu, lastSellPriceMap.get(putIkbr));
                         if (!lastSellPriceMap.containsKey(putIkbr) || lastSellPriceMap.get(putIkbr).compareTo(tradePrice) > 0) {
-                            long modifyOrderId = tradeApi.upOrderPrice(sellPutOrderId, putCount, tradePrice);
+                            long modifyOrderId = tradeApi.upOrderPrice(sellPutOrderId, totalCount, tradePrice);
                             while (true) {
                                 if (modifyOrderId != -1) {
                                     break;
                                 } else {
-                                    putCount = tradeApi.getCanSellQty(putIkbr);
+                                    putCanSellCount = tradeApi.getCanSellQty(putIkbr);
                                     tradePrice = calculateMidPrice(putFutu);
                                     adjustSellInitPriceMap.put(putFutu, tradePrice);
                                     adjustSellPriceTimesMap.put(putFutu, 0);
                                     adjustSellPriceTimestampMap.put(putFutu, System.currentTimeMillis());
-                                    modifyOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCount, tradePrice);
+                                    modifyOrderId = tradeApi.placeNormalSellOrder(putIkbr, putCanSellCount, tradePrice);
                                     log.info("retry modify sell put order: put={}\ttradePrice={}\torderId={}", putIkbr, tradePrice, modifyOrderId);
                                 }
                             }
 
                             ReadWriteOptionTradeInfo.writeSellOrderId(putIkbr, sellPutOrderId);
-                            log.info("modify sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putFutu, tradePrice, putCount, hasTradeCount);
+                            log.info("modify sell put order: orderId={}\tput={}\ttradePrice={}\tcount={}\thasTradeCount={}", modifyOrderId, putFutu, tradePrice, putCanSellCount, hasTradeCount);
                             lastSellPriceMap.put(putIkbr, tradePrice);
                         }
                     }
