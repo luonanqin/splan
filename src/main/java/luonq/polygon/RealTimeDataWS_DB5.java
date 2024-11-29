@@ -12,12 +12,15 @@ import bean.StockRatio;
 import bean.StockRehab;
 import bean.StopLoss;
 import bean.Total;
+import bean.TradeCalendar;
 import com.alibaba.fastjson.JSON;
 import com.futu.openapi.FTAPI;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.AsyncEventBus;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import luonq.execute.LoadOptionTradeData;
@@ -103,6 +106,9 @@ public class RealTimeDataWS_DB5 {
     private long preTradeTime;
     private long openTime;
     private long listenEndTime;
+    @Getter
+    @Setter
+    private int season;
     private Date closeCheckTime;
     private boolean listenEnd = false;
     private NodeList list = new NodeList(10);
@@ -341,44 +347,56 @@ public class RealTimeDataWS_DB5 {
         originRatioMap = strategy.computeHisOverBollingerRatio();
     }
 
-    private void initManyTime() {
+    public void initManyTime() {
         LocalDateTime now = LocalDateTime.now();
         boolean beforeDawn = now.getHour() < 10; // 小于10则表示新的一天凌晨
-        LocalDateTime closeCheck = now;
-        LocalDateTime preTrade = now;
+        LocalDateTime preTrade;
+        LocalDateTime openTrade;
+        LocalDateTime closeCheck;
         if (!beforeDawn) {
+            preTrade = now;
+            openTrade = now;
             closeCheck = now.plusDays(1);
-        }
-        if (beforeDawn) {
+        } else {
             preTrade = now.minusDays(1);
-            now = preTrade;
+            openTrade = now.minusDays(1);
+            closeCheck = now;
         }
 
         long checkOpenTime = 0;
         LocalDateTime checkPre, checkOpen;
-        int openHour, closeHour, preMin = 21 + DELAY_MINUTE, openMin = 23;
-        if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
-            openHour = 22;
+        int openHour, closeHour, preMin = 28 + DELAY_MINUTE, openMin = 30;
+        TradeCalendar tradeCalendar = readFromDB.getTradeCalendar(closeCheck.minusDays(1).format(Constants.DB_DATE_FORMATTER));
+        if (openTrade.isAfter(summerTime) && openTrade.isBefore(winterTime)) {
+            openHour = 21;
             closeHour = 3;
-            checkPre = now.withHour(21).withMinute(22).withSecond(0).withNano(0);
-            checkOpen = now.withHour(21).withMinute(30).withSecond(0).withNano(0);
+            if (tradeCalendar != null && tradeCalendar.getType() == 1) {
+                closeHour = closeHour - 3;
+            }
+            checkPre = preTrade.withHour(21).withMinute(22).withSecond(0).withNano(0);
+            checkOpen = openTrade.withHour(21).withMinute(30).withSecond(0).withNano(0);
             checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            season = -4;
         } else {
             openHour = 22;
             closeHour = 4;
-            checkPre = now.withHour(22).withMinute(22).withSecond(0).withNano(0);
-            checkOpen = now.withHour(22).withMinute(30).withSecond(0).withNano(0);
+            if (tradeCalendar != null && tradeCalendar.getType() == 1) {
+                closeHour = closeHour - 3;
+            }
+            checkPre = preTrade.withHour(22).withMinute(22).withSecond(0).withNano(0);
+            checkOpen = openTrade.withHour(22).withMinute(30).withSecond(0).withNano(0);
             checkOpenTime = checkOpen.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            season = -5;
         }
         Instant preTradeTimeInst = preTrade.withHour(openHour).withMinute(preMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"));
         preTradeTime = preTradeTimeInst.toEpochMilli();
-        Instant openTimeInst = now.withHour(openHour).withMinute(openMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"));
+        Instant openTimeInst = openTrade.withHour(openHour).withMinute(openMin).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8"));
         openTime = openTimeInst.toEpochMilli();
         closeCheckTime = Date.from(closeCheck.withHour(closeHour).withMinute(59).withSecond(0).withNano(0).toInstant(ZoneOffset.of("+8")));
         listenEndTime = openTime + LISTENING_TIME;
 
         // check the open time
-        if (now.isAfter(checkPre) && now.isBefore(checkOpen) && openTime != checkOpenTime) {
+        if (openTrade.isAfter(checkPre) && openTrade.isBefore(checkOpen) && openTime != checkOpenTime) {
             log.error("open time is illegal!!! please change it");
             System.exit(0);
         }

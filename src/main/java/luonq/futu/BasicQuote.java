@@ -130,10 +130,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 QotCommon.OptionBasicQotExData optionExData = basicQot.getOptionExData();
                 if (optionExData != null) {
                     double impliedVolatility = BigDecimal.valueOf(optionExData.getImpliedVolatility() / 100).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double delta = BigDecimal.valueOf(optionExData.getDelta()).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double gamma = BigDecimal.valueOf(optionExData.getGamma()).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double theta = BigDecimal.valueOf(optionExData.getTheta()).setScale(4, RoundingMode.HALF_UP).doubleValue();
-                    double vega = BigDecimal.valueOf(optionExData.getVega()).setScale(4, RoundingMode.HALF_UP).doubleValue();
+                    double delta = optionExData.getDelta();
+                    double gamma = optionExData.getGamma();
+                    double theta = optionExData.getTheta();
+                    double vega = optionExData.getVega();
                     optionIvTimeMap.put(code, impliedVolatility + "|" + updateTime);
                     optionTradeMap.put(code, curPrice);
                     boolean showTradePrice = MapUtils.getBoolean(showTradePriceMap, code, false);
@@ -472,7 +472,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         //        quote.subBasicQuote("HUT240719P18000");
         //        quote.subBasicQuote("NVDA240719C121000");
         //        quote.unSubBasicQuote("TSLA240719C252500");
-        quote.subBasicQuote("TSLA240816P207500");
+        quote.subBasicQuote("TSLA241129P335000");
         //        System.out.println(quote.getOptionIvTimeMap("TSLA240719C257500"));
         //        quote.getBasicQot("TSLA240719P255000");
         //                quote.getBasicQot("TSLA240719P255000");
