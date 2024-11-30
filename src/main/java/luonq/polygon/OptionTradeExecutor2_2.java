@@ -145,8 +145,10 @@ public class OptionTradeExecutor2_2 {
     private String currentTradeDate;
     // futu bid price
     private Map<String, Double> codeToBidMap = Maps.newHashMap();
+    private Map<String, Double> oriCodeToBidMap = Maps.newHashMap();
     // futu ask price
     private Map<String, Double> codeToAskMap = Maps.newHashMap();
+    private Map<String, Double> oriCodeToAskMap = Maps.newHashMap();
     // 全部报价
     private Map<String, String> allCodeToQuoteMap = Maps.newHashMap();
     // 成交数据
@@ -176,7 +178,9 @@ public class OptionTradeExecutor2_2 {
         canTradeStocks = optionStockListener.getCanTradeStocks();
         stockLastOptionVolMap = optionStockListener.getStockLastOptionVolMap();
         codeToBidMap = futuQuote.getCodeToBidMap();
+        oriCodeToBidMap = futuQuote.getOriCodeToBidMap();
         codeToAskMap = futuQuote.getCodeToAskMap();
+        oriCodeToAskMap = futuQuote.getOriCodeToAskMap();
         canTradeOptionMap = optionStockListener.getCanTradeOptionMap();
         closeTime = client.getCloseCheckTime().getTime();
         openTime = client.getOpenTime();
@@ -643,6 +647,10 @@ public class OptionTradeExecutor2_2 {
         Double askPrice = codeToAskMap.get(futu);
         if (bidPrice == null || askPrice == null) {
             return Double.MAX_VALUE;
+        }
+        if (current > closeTime) { // 如果是收盘卖出，则使用原始摆盘，尽快成交
+            bidPrice = oriCodeToBidMap.get(futu);
+            askPrice = oriCodeToAskMap.get(futu);
         }
         bidPrice = askPrice > bidPrice ? bidPrice : askPrice; // 兼容错误数据，选最小的作为买一
         Double sellInitPrice = adjustSellInitPriceMap.get(futu);

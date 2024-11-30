@@ -46,6 +46,8 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     private Map<String, Double> stockToCurrPriceMap = Maps.newHashMap();
     private Map<String/* code */, Double/* bid price */> codeToBidMap = Maps.newHashMap();
     private Map<String/* code */, Double/* ask price */> codeToAskMap = Maps.newHashMap();
+    private Map<String/* code */, Double/* bid price */> oriCodeToBidMap = Maps.newHashMap(); // 原始摆盘未过滤
+    private Map<String/* code */, Double/* ask price */> oriCodeToAskMap = Maps.newHashMap(); // 原始摆盘未过滤
     private Map<String/* code */, Integer/* 1=call, 2=put */> optionTypeMap = Maps.newHashMap();
     private Map<String/* code */, String/* iv|updatetime */> optionIvTimeMap = Maps.newHashMap();
     private Map<String/* code */, Double/* trade */> optionTradeMap = Maps.newHashMap();
@@ -167,6 +169,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                     if (volume >= 5 && price != 0) {
                         bidPrice = price;
                     }
+                    oriCodeToBidMap.put(code, bidPrice);
                 }
                 if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
                     QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
@@ -177,6 +180,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                     if (volume >= 5 && price != 0) {
                         askPrice = price;
                     }
+                    oriCodeToAskMap.put(code, askPrice);
                 }
                 Double lastBid = codeToBidMap.get(code);
                 Double lastAsk = codeToAskMap.get(code);
@@ -195,7 +199,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 } else if (askPrice != null) {
                     codeToAskMap.put(code, askPrice);
                 }
-                log.info("futu quote. code={}\tbidPrice={}\taskPrice={}", code, codeToBidMap.get(code), codeToAskMap.get(code));
+                log.info("futu quote. code={}\tbidPrice={}\taskPrice={}\toriBidPrice={}\toriAksPrice={}", code, codeToBidMap.get(code), codeToAskMap.get(code), oriCodeToBidMap.get(code), oriCodeToAskMap.get(code));
                 //            String data = String.format("%.2f|%.2f", bidPrice, askPrice);
                 //            System.out.println(code + "\t" + data);
             }
