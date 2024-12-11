@@ -7,6 +7,7 @@ import luonq.execute.GrabOptionTradeData;
 import luonq.execute.LoadOptionTradeData;
 import luonq.execute.ReadWriteOptionTradeInfo;
 import luonq.futu.BasicQuote;
+import luonq.ibkr.TradeApi;
 import luonq.listener.OptionStockListener;
 import luonq.listener.OptionStockListener2_2;
 import luonq.polygon.OptionTradeExecutor2_2;
@@ -32,6 +33,9 @@ public class OptionTradeTest2_2 extends BaseTest {
 
     @Autowired
     private OptionTradeExecutor2_2 optionTradeExecutor;
+
+    @Autowired
+    private RealTimeDataWS_DB2_2 client;
 
     @Test
     public void test_grabOptionTradeData() {
@@ -193,5 +197,30 @@ public class OptionTradeTest2_2 extends BaseTest {
             optionTradeExecutor.calculateMidPrice(futuCode);
             optionTradeExecutor.setCodeToBidMap(codeToBidMap);
         }
+    }
+
+    @Test
+    public void test_restart() throws Exception {
+        loadOptionTradeData.load();
+        ReadWriteOptionTradeInfo.init();
+
+        FTAPI.init();
+        BasicQuote futuQuote = new BasicQuote();
+        futuQuote.start();
+        optionTradeExecutor.setFutuQuote(futuQuote);
+
+        TradeApi tradeApi = new TradeApi();
+        optionTradeExecutor.setTradeApi(tradeApi);
+
+        OptionStockListener2_2 optionStockListener = new OptionStockListener2_2();
+        optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
+        optionTradeExecutor.setOptionStockListener(optionStockListener);
+
+        client.initManyTime();
+        optionTradeExecutor.setClient(client);
+
+        optionTradeExecutor.reSendOpenPrice();
+        optionTradeExecutor.init();
+        optionTradeExecutor.restart();
     }
 }

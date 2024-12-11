@@ -159,7 +159,7 @@ public class OptionTradeExecutor2_2 {
     // 平均到每个股票的交易金额
     private double avgFund;
     private double funds = Constants.INIT_CASH;
-    private int limitCount = 3; // 限制股票数量
+    private int limitCount = 2; // 限制股票数量
     private String season;
     private long openTime;
     private long closeTime;
@@ -223,6 +223,10 @@ public class OptionTradeExecutor2_2 {
         stopLossAndGain();
 
         canTradeStocks = Sets.newHashSet(sortedCanTradeStock);
+        // 如果本金大于2k，则按照每1k一只股票确定买入股票的最大数量，小于2k则固定买入2只
+        if (funds > 2000) {
+            limitCount = (int) (funds / 1000d);
+        }
         int size = canTradeStocks.size() > limitCount ? limitCount : canTradeStocks.size();
         avgFund = (int) funds / size;
         log.info("init avgFund is {}", avgFund); // 先按照初始待交易股票计算avgFund
@@ -649,10 +653,13 @@ public class OptionTradeExecutor2_2 {
             return Double.MAX_VALUE;
         }
         if (current > closeTime) { // 如果是收盘卖出，则使用原始摆盘，尽快成交
-            bidPrice = oriCodeToBidMap.get(futu);
-            askPrice = oriCodeToAskMap.get(futu);
+            bidPrice = MapUtils.getDouble(oriCodeToBidMap, futu, bidPrice);
+            askPrice = MapUtils.getDouble(oriCodeToAskMap, futu, askPrice);
         }
         bidPrice = askPrice > bidPrice ? bidPrice : askPrice; // 兼容错误数据，选最小的作为买一
+        if (bidPrice.compareTo(askPrice) == 0) { // 如果卖一和买一还是一样，则手动降低卖一0.1作为买一，底线为0.01
+            bidPrice = askPrice - 0.1 > 0 ? askPrice - 0.1 : 0.01;
+        }
         Double sellInitPrice = adjustSellInitPriceMap.get(futu);
         BigDecimal sellInitPriceDecimal = BigDecimal.valueOf(sellInitPrice);
 

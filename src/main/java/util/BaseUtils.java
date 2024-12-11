@@ -1085,27 +1085,31 @@ public class BaseUtils {
         }
         // 2024-01-02	O:AR240105P00022500	0.33	0.35	0.3	0.34	135
         for (String line : lines) {
-            String[] split = line.split("\t");
-            String date = split[0];
-            String code = split[1];
-            double open = Double.parseDouble(split[2]);
-            double high = Double.parseDouble(split[3]);
-            double low = Double.parseDouble(split[4]);
-            double close = Double.parseDouble(split[5]);
-            long volume = Long.parseLong(split[6]);
-            OptionDaily optionDaily = new OptionDaily();
-            optionDaily.setFrom(date);
-            optionDaily.setSymbol(code);
-            optionDaily.setOpen(open);
-            optionDaily.setClose(close);
-            optionDaily.setHigh(high);
-            optionDaily.setLow(low);
-            optionDaily.setVolume(volume);
+            try {
+                String[] split = line.split("\t");
+                String date = split[0];
+                String code = split[1];
+                double open = Double.parseDouble(split[2]);
+                double high = Double.parseDouble(split[3]);
+                double low = Double.parseDouble(split[4]);
+                double close = Double.parseDouble(split[5]);
+                long volume = Long.parseLong(split[6]);
+                OptionDaily optionDaily = new OptionDaily();
+                optionDaily.setFrom(date);
+                optionDaily.setSymbol(code);
+                optionDaily.setOpen(open);
+                optionDaily.setClose(close);
+                optionDaily.setHigh(high);
+                optionDaily.setLow(low);
+                optionDaily.setVolume(volume);
 
-            if (!dateToOptionDailyMap.containsKey(date)) {
-                dateToOptionDailyMap.put(date, Maps.newHashMap());
+                if (!dateToOptionDailyMap.containsKey(date)) {
+                    dateToOptionDailyMap.put(date, Maps.newHashMap());
+                }
+                dateToOptionDailyMap.get(date).put(code, optionDaily);
+            } catch (Exception e) {
+                log.error("loadOptionDailyMap error. line={}", line, e);
             }
-            dateToOptionDailyMap.get(date).put(code, optionDaily);
         }
 
         return dateToOptionDailyMap;
