@@ -15,7 +15,7 @@ public class Trade {
     private String id;
     private long participant_timestamp;
     private double price;
-    private int sequence_number;
+    private long sequence_number;
     private long sip_timestamp;
     private int size;
     private int tape;

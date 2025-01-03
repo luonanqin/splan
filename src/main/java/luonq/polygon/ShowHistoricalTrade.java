@@ -140,7 +140,7 @@ public class ShowHistoricalTrade {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
-        getData("O:TSLA241206C00380000", "2024-12-02");
+        getData("O:M241213P00014500", "2024-12-11");
         log.info("============ end ============");
     }
 }
