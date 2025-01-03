@@ -244,6 +244,7 @@ public class GetDailyImpliedVolatility {
             String last5Day = last5DaysMap.get(date).get(4);
             String url = String.format("https://restapi.ivolatility.com/equities/eod/single-stock-option-raw-iv?apiKey=S3j7pBefWG0J0glb&optionId=%s&from=%s&to=%s",
               optionId, last5Day, expireDay);
+            log.info("getHistoricalIV: {}", url);
 
             GetMethod get = new GetMethod(url);
             String content = null;
