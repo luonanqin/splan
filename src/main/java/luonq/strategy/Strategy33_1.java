@@ -45,6 +45,8 @@ import static util.Constants.*;
 
 /**
  * 宽跨式策略
+ * 原方案人为设定call与put的行权价，未特别考虑他们是否delta中性，该方案会计算开盘价附近的call和put的delta总和绝对值，取最小进行交易
+ * 初步测试2024-10-08	363721
  */
 public class Strategy33_1 {
 
@@ -723,6 +725,7 @@ public class Strategy33_1 {
             GetAggregateImpliedVolatility.getAggregateGreekList(put1, date);
             GetAggregateImpliedVolatility.getAggregateGreekList(put2, date);
             GetAggregateImpliedVolatility.getAggregateGreekList(put3, date);
+            map = GetAggregateImpliedVolatility.dateToGreekListMap.get(date);
         } else {
             if (!map.containsKey(call1)) {
                 GetAggregateImpliedVolatility.getAggregateGreekList(call1, date);
@@ -976,7 +979,7 @@ public class Strategy33_1 {
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
                     String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
                     ivInfo = callIvInfo + "\t" + putIvInfo;
-                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + call + "\t" + put + "\t" + ivInfo + "\t" + simulateTrade);
+                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + date + "\t" + call + "\t" + put + "\t" + ivInfo + "\t" + simulateTrade);
                 }
             }
         }
