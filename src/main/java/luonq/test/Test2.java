@@ -255,7 +255,7 @@ public class Test2 {
                 int count = (int) (avgFund / 100 / (callBuy + call2Buy));
                 if (upOrDown > 0) {
                     count = (int) (avgFund / 100 / call2Buy);
-                }else{
+                } else {
                     count = (int) (avgFund / 100 / put2Buy);
                 }
 
@@ -392,8 +392,8 @@ public class Test2 {
         //        deleteFile();
         //        calCallWithProtect();
         //        System.out.println();
-        //        calGainWithHandleFee();
-        calSpreadWithHandleFee();
+        calGainWithHandleFee();
+        //        calSpreadWithHandleFee();
         //        calSellStraddleWithHandleFee();
     }
 }
