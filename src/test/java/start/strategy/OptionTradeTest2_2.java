@@ -216,6 +216,7 @@ public class OptionTradeTest2_2 extends BaseTest {
         optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
         optionTradeExecutor.setOptionStockListener(optionStockListener);
 
+        client.initThreadExecutor();
         client.initManyTime();
         optionTradeExecutor.setClient(client);
 

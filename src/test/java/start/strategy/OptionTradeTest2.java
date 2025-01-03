@@ -32,6 +32,9 @@ public class OptionTradeTest2 extends BaseTest {
     @Autowired
     private OptionTradeExecutor2 optionTradeExecutor;
 
+    @Autowired
+    private RealTimeDataWS_DB2 client;
+
     @Test
     public void test_grabOptionTradeData() {
         grabOptionTradeData.grab();
@@ -162,7 +165,7 @@ public class OptionTradeTest2 extends BaseTest {
         optionStockListener.setOptionTradeExecutor(optionTradeExecutor);
         optionTradeExecutor.setOptionStockListener(optionStockListener);
 
-        RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
+//        RealTimeDataWS_DB2 client = new RealTimeDataWS_DB2();
         client.initManyTime();
         optionTradeExecutor.setClient(client);
 

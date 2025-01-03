@@ -251,6 +251,10 @@ public class OptionTradeExecutor2_2 {
             }
             // 重新计算可交易的股票
             size = canTradeStocks.size() > limitCount ? limitCount : canTradeStocks.size();
+            if (size == 0) {
+                log.info("there is no stock can be traded. size=0");
+                return;
+            }
             avgFund = (int) funds / size;
             log.info("after cal option mid price, avgFund is {}", avgFund);
         }
