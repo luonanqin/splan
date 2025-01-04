@@ -7,6 +7,7 @@ import bean.Total;
 import bean.TradeCalendar;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import luonq.data.ReadFromDB;
 import luonq.mapper.EarningDataMapper;
@@ -156,5 +157,61 @@ public class ReadFromDBTest extends BaseTest {
             get.releaseConnection();
         }
 
+    }
+
+    @Test
+    public void getPrevGainOver5() {
+        List<Total> aaplData = readFromDB.getCodeDate("2024", "AAPL", "asc");
+        List<String> allStock = readFromDB.getAllStock(2024, "2024-12-31");
+        Map<String, Map<String, Total>> dataMap = Maps.newHashMap();
+        for (int i = 0; i < aaplData.size() - 2; i++) {
+            Total _1 = aaplData.get(i);
+            Total _2 = aaplData.get(i + 1);
+            Total _3 = aaplData.get(i + 2);
+            String _1_date = _1.getDate();
+            String _2_date = _2.getDate();
+            String _3_date = _3.getDate();
+
+            Map<String, Total> _1_map = dataMap.get(_1_date);
+            Map<String, Total> _2_map = dataMap.get(_2_date);
+            Map<String, Total> _3_map = dataMap.get(_3_date);
+            if (MapUtils.isEmpty(_1_map)) {
+                List<Total> data = readFromDB.batchGetStockData(2024, _1_date, allStock);
+                _1_map = data.stream().collect(Collectors.toMap(Total::getCode, Function.identity()));
+                dataMap.put(_1_date, _1_map);
+            }
+            if (MapUtils.isEmpty(_2_map)) {
+                List<Total> data = readFromDB.batchGetStockData(2024, _2_date, allStock);
+                _2_map = data.stream().collect(Collectors.toMap(Total::getCode, Function.identity()));
+                dataMap.put(_2_date, _2_map);
+            }
+            if (MapUtils.isEmpty(_3_map)) {
+                List<Total> data = readFromDB.batchGetStockData(2024, _3_date, allStock);
+                _3_map = data.stream().collect(Collectors.toMap(Total::getCode, Function.identity()));
+                dataMap.put(_3_date, _3_map);
+            }
+
+            for (String stock : allStock) {
+                Total _1_t = _1_map.get(stock);
+                Total _2_t = _2_map.get(stock);
+                Total _3_t = _3_map.get(stock);
+                if (_1_t == null || _2_t == null || _3_t == null) {
+                    continue;
+                }
+                double _1_c = _1_t.getClose();
+                double _2_c = _2_t.getClose();
+                double _3_c = _3_t.getClose();
+                double _2_o = _2_t.getOpen();
+                double _3_l = _3_t.getLow();
+                double gainRatio = _2_c / _1_c - 1;
+                if (gainRatio > 0.05
+                  && _1_c > 3
+                  && _3_c < _2_c
+                  && _3_l > _2_o
+                ) {
+                    System.out.println(_2_date + " " + stock);
+                }
+            }
+        }
     }
 }
