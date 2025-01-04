@@ -24,6 +24,7 @@ import start.BaseTest;
 import util.Constants;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -164,17 +165,23 @@ public class ReadFromDBTest extends BaseTest {
         List<Total> aaplData = readFromDB.getCodeDate("2024", "AAPL", "asc");
         List<String> allStock = readFromDB.getAllStock(2024, "2024-12-31");
         Map<String, Map<String, Total>> dataMap = Maps.newHashMap();
-        for (int i = 0; i < aaplData.size() - 2; i++) {
+        for (int i = 0; i < aaplData.size() - 4; i++) {
             Total _1 = aaplData.get(i);
             Total _2 = aaplData.get(i + 1);
             Total _3 = aaplData.get(i + 2);
+            Total _4 = aaplData.get(i + 3);
+            Total _5 = aaplData.get(i + 4);
             String _1_date = _1.getDate();
             String _2_date = _2.getDate();
             String _3_date = _3.getDate();
+            String _4_date = _4.getDate();
+            String _5_date = _5.getDate();
 
             Map<String, Total> _1_map = dataMap.get(_1_date);
             Map<String, Total> _2_map = dataMap.get(_2_date);
             Map<String, Total> _3_map = dataMap.get(_3_date);
+            Map<String, Total> _4_map = dataMap.get(_4_date);
+            Map<String, Total> _5_map = dataMap.get(_5_date);
             if (MapUtils.isEmpty(_1_map)) {
                 List<Total> data = readFromDB.batchGetStockData(2024, _1_date, allStock);
                 _1_map = data.stream().collect(Collectors.toMap(Total::getCode, Function.identity()));
@@ -190,12 +197,24 @@ public class ReadFromDBTest extends BaseTest {
                 _3_map = data.stream().collect(Collectors.toMap(Total::getCode, Function.identity()));
                 dataMap.put(_3_date, _3_map);
             }
+            if (MapUtils.isEmpty(_4_map)) {
+                List<Total> data = readFromDB.batchGetStockData(2024, _4_date, allStock);
+                _4_map = data.stream().collect(Collectors.toMap(Total::getCode, Function.identity()));
+                dataMap.put(_4_date, _4_map);
+            }
+            if (MapUtils.isEmpty(_5_map)) {
+                List<Total> data = readFromDB.batchGetStockData(2024, _5_date, allStock);
+                _5_map = data.stream().collect(Collectors.toMap(Total::getCode, Function.identity()));
+                dataMap.put(_5_date, _5_map);
+            }
 
             for (String stock : allStock) {
                 Total _1_t = _1_map.get(stock);
                 Total _2_t = _2_map.get(stock);
                 Total _3_t = _3_map.get(stock);
-                if (_1_t == null || _2_t == null || _3_t == null) {
+                Total _4_t = _4_map.get(stock);
+                Total _5_t = _5_map.get(stock);
+                if (_1_t == null || _2_t == null || _3_t == null || _4_t == null || _5_t == null) {
                     continue;
                 }
                 double _1_c = _1_t.getClose();
@@ -203,13 +222,21 @@ public class ReadFromDBTest extends BaseTest {
                 double _3_c = _3_t.getClose();
                 double _2_o = _2_t.getOpen();
                 double _3_l = _3_t.getLow();
+                double _3_o = _3_t.getOpen();
+                BigDecimal _3_v = _3_t.getVolume();
+                double _4_c = _4_t.getClose();
+                double _4_o = _4_t.getOpen();
+                double _5_c = _5_t.getClose();
+
+                double tradeRatio = _4_c / _4_o - 1;
+                double trade2Ratio = _5_c / _4_o - 1;
                 double gainRatio = _2_c / _1_c - 1;
                 if (gainRatio > 0.05
                   && _1_c > 3
                   && _3_c < _2_c
                   && _3_l > _2_o
                 ) {
-                    System.out.println(_2_date + " " + stock);
+                    System.out.println(_2_date + "\t" + stock + "\t" + _3_o + "\t" + _3_v + "\t" + tradeRatio + "\t" + trade2Ratio);
                 }
             }
         }
