@@ -2,6 +2,7 @@ package luonq.test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
 import util.BaseUtils;
 import util.Constants;
 
@@ -386,6 +387,21 @@ public class Test2 {
 
         double fee = buyCallCommission + buyPutCommission + buyPlatform + buyMonitor + buyClear + buyDelivery + sellCallCommission + sellPutCommission + sellPlatform + sellMonitor + sellClear + sellDelivery + sellSRC + sellActivity;
         return fee;
+    }
+
+    public static void buyStock() throws Exception {
+        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "historicalData/买股票");
+        Map<String, List<Double>> map = Maps.newHashMap();
+        for (String line : lines) {
+            String[] split = line.split("\t");
+            String date = split[0];
+            Double ratio = Double.valueOf(split[1]);
+            List<Double> ratioList = map.get(date);
+            if (CollectionUtils.isEmpty(ratioList)) {
+                map.put(date, Lists.newArrayList());
+            }
+            map.get(date).add(ratio)
+        }
     }
 
     public static void main(String[] args) throws Exception {
