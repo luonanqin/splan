@@ -25,6 +25,7 @@ import util.Constants;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -228,8 +229,8 @@ public class ReadFromDBTest extends BaseTest {
                 double _4_o = _4_t.getOpen();
                 double _5_c = _5_t.getClose();
 
-                double tradeRatio = _4_c / _4_o - 1;
-                double trade2Ratio = _5_c / _4_o - 1;
+                double tradeRatio = BigDecimal.valueOf((_4_c / _4_o - 1)*100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double trade2Ratio = BigDecimal.valueOf((_5_c / _4_o - 1) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 double gainRatio = _2_c / _1_c - 1;
                 if (gainRatio > 0.05
                   && _1_c > 3
