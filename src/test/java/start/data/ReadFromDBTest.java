@@ -224,18 +224,20 @@ public class ReadFromDBTest extends BaseTest {
                 double _2_o = _2_t.getOpen();
                 double _3_l = _3_t.getLow();
                 double _3_o = _3_t.getOpen();
+                BigDecimal _2_v = _2_t.getVolume();
                 BigDecimal _3_v = _3_t.getVolume();
                 double _4_c = _4_t.getClose();
                 double _4_o = _4_t.getOpen();
                 double _5_c = _5_t.getClose();
 
-                double tradeRatio = BigDecimal.valueOf((_4_c / _4_o - 1)*100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double tradeRatio = BigDecimal.valueOf((_4_c / _4_o - 1) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 double trade2Ratio = BigDecimal.valueOf((_5_c / _4_o - 1) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
                 double gainRatio = _2_c / _1_c - 1;
                 if (gainRatio > 0.05
                   && _1_c > 3
                   && _3_c < _2_c
                   && _3_l > _2_o
+                  && _3_v.compareTo(_2_v) < 0
                 ) {
                     System.out.println(_2_date + "\t" + stock + "\t" + _3_o + "\t" + _3_v + "\t" + tradeRatio + "\t" + trade2Ratio);
                 }
