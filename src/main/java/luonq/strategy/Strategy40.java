@@ -85,9 +85,18 @@ public class Strategy40 {
                     lastClose = list.get(j).getClose();
                 }
 
+                // 每周前几天的标准差
                 StandardDeviation stdev = new StandardDeviation();
                 double stdevV = stdev.evaluate(dataArray);
-                System.out.println(stdevV);
+
+                // 每周最后一天的开盘涨跌幅
+                lastClose = list.get(list.size() - 2).getClose();
+                StockKLine stockKLine = list.get(list.size() - 1);
+                double finalOpen = stockKLine.getOpen();
+                double finalDiff = Math.abs((finalOpen - lastClose) / lastClose);
+
+                // 每周最后一天的波幅，(最高-最低)/前日收盘
+
             }
         }
     }
