@@ -161,6 +161,7 @@ public class ReadFromDBTest extends BaseTest {
 
     }
 
+    // 第一天大幅上涨第二天小幅回调，第三天继续上涨，也可能第四天才上涨
     @Test
     public void getPrevGainOver5() {
         List<Total> aaplData = readFromDB.getCodeDate("2024", "AAPL", "asc");
@@ -238,6 +239,7 @@ public class ReadFromDBTest extends BaseTest {
                   && _3_c < _2_c
                   && _3_l > _2_o
                   && _3_v.compareTo(_2_v) < 0
+                  && _3_t.getHigh() < _2_t.getHigh()
                 ) {
                     System.out.println(_2_date + "\t" + stock + "\t" + _3_o + "\t" + _3_v + "\t" + tradeRatio + "\t" + trade2Ratio);
                 }
