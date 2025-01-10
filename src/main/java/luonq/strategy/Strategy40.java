@@ -1,6 +1,5 @@
 package luonq.strategy;
 
-import bean.OptionDaily;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
@@ -52,9 +51,9 @@ public class Strategy40 {
                 int next = nextLd.getDayOfWeek().getValue();
 
                 if (next < cur) {
-                    i++;
-                    startDate = nextDate;
                     lastClose = stockKLines.get(i).getClose();
+                    startDate = nextDate;
+                    i++;
                     break;
                 }
             }
@@ -68,10 +67,12 @@ public class Strategy40 {
                 String _1 = start.format(DB_DATE_FORMATTER);
                 while (true) {
                     if (start.getDayOfWeek().getValue() >= 7) {
+                        start = start.plusDays(1);
                         break;
                     }
                     StockKLine kLine = stockMap.get(_1);
                     start = start.plusDays(1);
+                    _1 = start.format(DB_DATE_FORMATTER);
                     if (kLine != null) {
                         list.add(kLine);
                     }
@@ -79,7 +80,7 @@ public class Strategy40 {
 
                 double[] dataArray = new double[list.size() - 1];
 
-                for (int j = 0; j < list.size(); j++) {
+                for (int j = 0; j < list.size() - 1; j++) {
                     double diff = (list.get(j).getOpen() - lastClose) / lastClose;
                     dataArray[j] = Math.abs(diff);
                     lastClose = list.get(j).getClose();
