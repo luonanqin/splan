@@ -1079,12 +1079,14 @@ public class BaseUtils {
     public static Map<String, Map<String, OptionDaily>> loadOptionDailyMap(String stock) throws Exception {
         Map<String/* date */, Map<String/* optionCode */, OptionDaily>> dateToOptionDailyMap = Maps.newHashMap();
 
-        List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "optionData/optionDaily/" + stock);
+        String filePath = Constants.USER_PATH + "optionData/optionDaily/" + stock;
+        List<String> lines = BaseUtils.readFile(filePath);
         if (CollectionUtils.isEmpty(lines)) {
             return Maps.newHashMap();
         }
         // 2024-01-02	O:AR240105P00022500	0.33	0.35	0.3	0.34	135
-        for (String line : lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
             try {
                 String[] split = line.split("\t");
                 String date = split[0];
@@ -1108,7 +1110,7 @@ public class BaseUtils {
                 }
                 dateToOptionDailyMap.get(date).put(code, optionDaily);
             } catch (Exception e) {
-                log.error("loadOptionDailyMap error. line={}", line, e);
+                log.error("loadOptionDailyMap error. filePath={},line={}, lineNo={}", filePath, line, i, e);
             }
         }
 
