@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import static util.Constants.DB_DATE_FORMATTER;
 
 /**
-// * 1.获取每周最后一天的开盘涨幅绝对值，计算其值有几个标准差，从大到小倒排并取前十
-// * 2.获取每周前3或4天的期权成交量，计算其标准差
+ * // * 1.获取每周最后一天的开盘涨幅绝对值，计算其值有几个标准差，从大到小倒排并取前十
+ * // * 2.获取每周前3或4天的期权成交量，计算其标准差
  * 3.获取每周前3或4天的振幅，计算其标准差
  */
 public class Strategy40 {
@@ -100,14 +100,16 @@ public class Strategy40 {
                 lastClose = kLineList.get(kLineList.size() - 2).getClose();
                 StockKLine curKLine = kLineList.get(kLineList.size() - 1);
                 double finalOpen = curKLine.getOpen();
-                double finalDiff = Math.abs((finalOpen - lastClose) / lastClose);
+                double finalOpenDiff = Math.abs((finalOpen - lastClose) / lastClose);
 
                 // 每周最后一天的波幅，(最高-最低)/前日收盘
                 double high = curKLine.getHigh();
                 double low = curKLine.getLow();
                 double swing = (high - low) / lastClose;
 
-                System.out.println(stock + "\t" + curKLine.getFormatDate() + "\t" + stdevValue + "\t" + finalDiff + "\t" + swing);
+                if (stdevValue < 0.01 && finalOpenDiff > 0.01) {
+                    System.out.println(stock + "\t" + curKLine.getFormatDate() + "\t" + stdevValue + "\t" + finalOpenDiff + "\t" + swing);
+                }
             }
         }
     }
