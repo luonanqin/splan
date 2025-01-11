@@ -85,16 +85,20 @@ public class Strategy40 {
                     }
                 }
 
-                double[] dataArray = new double[kLineList.size() - 1];
+                double[] openDiffArray = new double[kLineList.size() - 1];
+                double[] swingArray = new double[kLineList.size() - 1];
 
                 for (int j = 0; j < kLineList.size() - 1; j++) {
-                    dataArray[j] = swingList.get(j);
+                    openDiffArray[j] = Math.abs((kLineList.get(j).getOpen() - lastClose) / lastClose);
+                    swingArray[j] = swingList.get(j);
                     lastClose = kLineList.get(j).getClose();
                 }
 
-                // 每周前几天的标准差
                 StandardDeviation stdev = new StandardDeviation();
-                double stdevValue = stdev.evaluate(dataArray);
+                // 每周前几天开盘价的标准差
+                double openDiffStd = stdev.evaluate(openDiffArray);
+                // 每周前几天振幅的标准差
+                double swingStd = stdev.evaluate(swingArray);
 
                 // 每周最后一天的开盘涨跌幅
                 lastClose = kLineList.get(kLineList.size() - 2).getClose();
@@ -107,8 +111,8 @@ public class Strategy40 {
                 double low = curKLine.getLow();
                 double swing = (high - low) / lastClose;
 
-                if (stdevValue < 0.01 && finalOpenDiff > 0.01) {
-                    System.out.println(stock + "\t" + curKLine.getFormatDate() + "\t" + stdevValue + "\t" + finalOpenDiff + "\t" + swing);
+                if (swing < 0.01 && finalOpenDiff > 0.01) {
+                    System.out.println(stock + "\t" + curKLine.getFormatDate() + "\t" + openDiffStd + "\t" + swingStd + "\t" + finalOpenDiff + "\t" + swing);
                 }
             }
         }
