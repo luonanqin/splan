@@ -88,16 +88,20 @@ public class Strategy40 {
 
                 // 每周前几天的标准差
                 StandardDeviation stdev = new StandardDeviation();
-                double stdevV = stdev.evaluate(dataArray);
+                double stdevValue = stdev.evaluate(dataArray);
 
                 // 每周最后一天的开盘涨跌幅
                 lastClose = list.get(list.size() - 2).getClose();
-                StockKLine stockKLine = list.get(list.size() - 1);
-                double finalOpen = stockKLine.getOpen();
+                StockKLine curKLine = list.get(list.size() - 1);
+                double finalOpen = curKLine.getOpen();
                 double finalDiff = Math.abs((finalOpen - lastClose) / lastClose);
 
                 // 每周最后一天的波幅，(最高-最低)/前日收盘
+                double high = curKLine.getHigh();
+                double low = curKLine.getLow();
+                double swing = (high - low) / lastClose;
 
+                System.out.println(stock + "\t" + curKLine.getFormatDate() + "\t" + stdevValue + "\t" + finalDiff + "\t" + swing);
             }
         }
     }
