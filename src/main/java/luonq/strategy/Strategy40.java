@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 import static util.Constants.DB_DATE_FORMATTER;
 
 /**
- * 1.获取每周最后一天的开盘涨幅绝对值，计算其值有几个标准差，从大到小倒排并取前十
- * 2.获取每周前3或4天的期权成交量，计算其标准差
- * 3.获取每周前3或4天的开盘涨跌幅，计算其绝对值的标准差
+// * 1.获取每周最后一天的开盘涨幅绝对值，计算其值有几个标准差，从大到小倒排并取前十
+// * 2.获取每周前3或4天的期权成交量，计算其标准差
+ * 3.获取每周前3或4天的振幅，计算其标准差
  */
 public class Strategy40 {
 
@@ -63,8 +63,10 @@ public class Strategy40 {
                 if (start.getYear() > 2024) {
                     break;
                 }
-                List<StockKLine> list = Lists.newArrayList();
+                List<StockKLine> kLineList = Lists.newArrayList();
+                List<Double> swingList = Lists.newArrayList();
                 String _1 = start.format(DB_DATE_FORMATTER);
+                double lastClose2 = lastClose;
                 while (true) {
                     if (start.getDayOfWeek().getValue() >= 7) {
                         start = start.plusDays(1);
@@ -74,16 +76,20 @@ public class Strategy40 {
                     start = start.plusDays(1);
                     _1 = start.format(DB_DATE_FORMATTER);
                     if (kLine != null) {
-                        list.add(kLine);
+                        kLineList.add(kLine);
+                        double high = kLine.getHigh();
+                        double low = kLine.getLow();
+                        double swing = (high - low) / lastClose2;
+                        swingList.add(swing);
+                        lastClose2 = kLine.getClose();
                     }
                 }
 
-                double[] dataArray = new double[list.size() - 1];
+                double[] dataArray = new double[kLineList.size() - 1];
 
-                for (int j = 0; j < list.size() - 1; j++) {
-                    double diff = (list.get(j).getOpen() - lastClose) / lastClose;
-                    dataArray[j] = Math.abs(diff);
-                    lastClose = list.get(j).getClose();
+                for (int j = 0; j < kLineList.size() - 1; j++) {
+                    dataArray[j] = swingList.get(j);
+                    lastClose = kLineList.get(j).getClose();
                 }
 
                 // 每周前几天的标准差
@@ -91,8 +97,8 @@ public class Strategy40 {
                 double stdevValue = stdev.evaluate(dataArray);
 
                 // 每周最后一天的开盘涨跌幅
-                lastClose = list.get(list.size() - 2).getClose();
-                StockKLine curKLine = list.get(list.size() - 1);
+                lastClose = kLineList.get(kLineList.size() - 2).getClose();
+                StockKLine curKLine = kLineList.get(kLineList.size() - 1);
                 double finalOpen = curKLine.getOpen();
                 double finalDiff = Math.abs((finalOpen - lastClose) / lastClose);
 
