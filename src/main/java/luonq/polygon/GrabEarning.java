@@ -34,7 +34,7 @@ public class GrabEarning implements PageProcessor {
         Html html = page.getHtml();
 
         if (!hasInit) {
-            String resultCountText = html.xpath("//span[@class='Mstart(15px) Fw(500) Fz(s)']/span/text()").get();
+            String resultCountText = html.xpath("//*[@id='nimbus-app']/section/section/section/article/main/main/div[1]/div/div/p/text()").get().trim();
             int ofIndex = resultCountText.indexOf("of");
             int resultCount = Integer.valueOf(resultCountText.substring(ofIndex + 3, resultCountText.length() - 8));
             pageNo = (resultCount + 99) / 100;
@@ -59,11 +59,11 @@ public class GrabEarning implements PageProcessor {
     private static List<String> print(Html html) {
         List<String> res = Lists.newArrayList();
 
-        List<Selectable> symbolList = html.xpath("//td[@aria-label='Symbol']").nodes();
-        List<Selectable> timeList = html.xpath("//td[@aria-label='Earnings Call Time']").nodes();
+        List<Selectable> symbolList = html.xpath("//td[@class='tw-text-left yf-2twxe2 lpin  shad']").nodes();
+        List<Selectable> timeList = html.xpath("//td[@class='tw-text-left yf-2twxe2']").nodes();
         for (int i = 0; i < symbolList.size(); i++) {
-            String symbol = symbolList.get(i).xpath("/td/a/text()").get();
-            String time = timeList.get(i).xpath("/td/text()").get();
+            String symbol = symbolList.get(i).xpath("/td/div/a/text()").get().trim();
+            String time = timeList.get(i).xpath("/td/text()").get().trim();
             if (StringUtils.isBlank(time)) {
                 time = timeList.get(i).xpath("/td/span/text()").get();
             }
@@ -96,6 +96,7 @@ public class GrabEarning implements PageProcessor {
             return;
         }
 
+        day = "2024-08-16";
         GrabEarning pageProcessor = new GrabEarning();
         pageProcessor.setDay(day);
         EarningPipeline pipeline = new EarningPipeline();
