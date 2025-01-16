@@ -111,7 +111,8 @@ public class ReadFromDBTest extends BaseTest {
     @Test
     public void checkEarningData() {
         List<EarningDate> earningDatas = earningDataMapper.queryEarningByDate("2024-02-28");
-        GetMethod get = new GetMethod("https://api.nasdaq.com/api/calendar/earnings?date=2024-02-28");
+        GetMethod get = new GetMethod("https://api.nasdaq.com/api/calendar/earnings?date=2024-08-23");
+        get.addRequestHeader("Connection", "keep-alive");
         get.addRequestHeader("authority", "api.nasdaq.com");
         get.addRequestHeader("accept", "application/json, text/plain, */*");
         get.addRequestHeader("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36");
