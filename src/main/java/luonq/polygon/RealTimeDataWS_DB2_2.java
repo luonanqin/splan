@@ -253,7 +253,7 @@ public class RealTimeDataWS_DB2_2 {
             //            optionTradeExecutor3.init();
             //            optionTradeExecutor.getRealTimeIV();
             optionTradeExecutor2.getFutuRealTimeIV();
-            optionTradeExecutor2.getPolygonRealTimeGreeks();
+//            optionTradeExecutor2.getPolygonRealTimeGreeks();
             //            optionTradeExecutor3.getFutuRealTimeIV();
             ReadWriteOptionTradeInfo.init();
             if (!testOption) {
@@ -410,7 +410,7 @@ public class RealTimeDataWS_DB2_2 {
         log.info("finish initialize many time. preTradeTime=" + Date.from(preTradeTimeInst) + ", openTime=" + Date.from(openTimeInst) + ", closeCheckTime=" + closeCheckTime);
     }
 
-    private void initThreadExecutor() {
+    public void initThreadExecutor() {
         int threadCount = 2000;
         int corePoolSize = threadCount;
         int maximumPoolSize = corePoolSize;
