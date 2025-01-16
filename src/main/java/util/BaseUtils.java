@@ -760,6 +760,31 @@ public class BaseUtils {
         return map;
     }
 
+    public static Map<String, List<EarningDate>> getAllEarningDate3(String date) throws Exception {
+        Map<String, List<EarningDate>> map = Maps.newHashMap();
+        if (StringUtils.isNotBlank(date)) {
+            String filePath = Constants.HIS_BASE_PATH + "earning_nasdaq/" + date;
+            LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            date = dateParse.format(Constants.FORMATTER);
+            LocalDate nextLocalDate = dateParse.plusDays(1);
+            if (nextLocalDate.getDayOfWeek().getValue() > 5) {
+                nextLocalDate = nextLocalDate.plusDays(2);
+            }
+            String nextDate = nextLocalDate.format(Constants.FORMATTER);
+            List<EarningDate> list = getEarningDateData(date, nextDate, filePath, true);
+
+            for (EarningDate earningDate : list) {
+                String actualDate = earningDate.getActualDate();
+                if (!map.containsKey(actualDate)) {
+                    map.put(actualDate, Lists.newArrayList());
+                }
+                map.get(actualDate).add(earningDate);
+            }
+        }
+
+        return map;
+    }
+
     private static List<EarningDate> getEarningDateData(String date, String nextDate, String filePath, boolean all) throws Exception {
         List<String> lines = readFile(filePath);
         List<EarningDate> list = Lists.newArrayList();
@@ -1072,8 +1097,8 @@ public class BaseUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        double callPredictedValue = getCallPredictedValue(7.8452, 8.5, 0.0527, 1.6317, "2024-02-20", "2024-02-23");
-        System.out.println(callPredictedValue);
+        Map<String, List<EarningDate>> allEarningDate3 = getAllEarningDate3("2024-12-31");
+        System.out.println(allEarningDate3);
     }
 
     public static Map<String, Map<String, OptionDaily>> loadOptionDailyMap(String stock) throws Exception {
