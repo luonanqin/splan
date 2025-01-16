@@ -295,7 +295,7 @@ public class RealTimeDataWS_DB2_2 {
             //                log.info("funds is {}", funds);
             //            }
             //            funds = tradeApi.getAvailableCash() * 0.92;
-            funds = 2714d;
+            funds = 712d;
 
             FTAPI.init();
             BasicQuote futuQuote = new BasicQuote();
