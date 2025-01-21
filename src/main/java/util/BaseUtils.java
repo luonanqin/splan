@@ -713,7 +713,7 @@ public class BaseUtils {
             Map<String, String> fileMap = getFileMap(Constants.HIS_BASE_PATH + "earning/");
             for (String fileName : fileMap.keySet()) {
                 String filePath = fileMap.get(fileName);
-                LocalDate dateParse = LocalDate.parse(fileName, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate dateParse = LocalDate.parse(fileName, Constants.DB_DATE_FORMATTER);
                 date = dateParse.format(Constants.FORMATTER);
                 LocalDate nextLocalDate = dateParse.plusDays(1);
                 if (nextLocalDate.getDayOfWeek().getValue() > 5) {
@@ -739,7 +739,7 @@ public class BaseUtils {
         Map<String, List<EarningDate>> map = Maps.newHashMap();
         if (StringUtils.isNotBlank(date)) {
             String filePath = Constants.HIS_BASE_PATH + "earning_finnhub/" + date;
-            LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate dateParse = LocalDate.parse(date, Constants.DB_DATE_FORMATTER);
             date = dateParse.format(Constants.FORMATTER);
             LocalDate nextLocalDate = dateParse.plusDays(1);
             if (nextLocalDate.getDayOfWeek().getValue() > 5) {
@@ -764,7 +764,7 @@ public class BaseUtils {
         Map<String, List<EarningDate>> map = Maps.newHashMap();
         if (StringUtils.isNotBlank(date)) {
             String filePath = Constants.HIS_BASE_PATH + "earning_nasdaq/" + date;
-            LocalDate dateParse = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate dateParse = LocalDate.parse(date, Constants.DB_DATE_FORMATTER);
             date = dateParse.format(Constants.FORMATTER);
             LocalDate nextLocalDate = dateParse.plusDays(1);
             if (nextLocalDate.getDayOfWeek().getValue() > 5) {

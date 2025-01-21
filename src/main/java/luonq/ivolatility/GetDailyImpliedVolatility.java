@@ -70,7 +70,8 @@ public class GetDailyImpliedVolatility {
             int status = httpClient.executeMethod(get);
             String content = get.getResponseBodyAsString();
             //                System.out.println(status + " " + content);
-            List<Map> listMap = JSON.parseArray(content, Map.class);
+            Map contentMap = JSON.parseObject(content, Map.class);
+            List<Map> listMap = JSON.parseArray(contentMap.get("data").toString(), Map.class);
             if (CollectionUtils.isEmpty(listMap)) {
                 log.warn("get stock {} option id empty", stock);
             }
@@ -80,7 +81,7 @@ public class GetDailyImpliedVolatility {
             }
 
             for (Map map : listMap) {
-                String optionCode = MapUtils.getString(map, "optionSymbol", "").replaceAll(" ", "");
+                String optionCode = MapUtils.getString(map, "OptionSymbol", "").replaceAll(" ", "");
                 String optionId = MapUtils.getString(map, "optionId");
                 if (StringUtils.isBlank(optionId)) {
                     log.error("get option id is null. option={}\turl={}", optionCode, url);
@@ -427,6 +428,7 @@ public class GetDailyImpliedVolatility {
 
         init();
 
+        getOptionId("DOCU", "2025-01-24", "45", "160", "2025-01-07");
         //        List<String> list = buildTestData();
         //        getOptionId(list);
         //        getHistoricalIV(getOptionCodeDateMap());
