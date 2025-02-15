@@ -146,7 +146,7 @@ public class WriteToDB {
 
         List<EarningDate> earningDateList = dateList.stream().map(date -> {
             try {
-                return BaseUtils.getAllEarningDate2(date);
+                return BaseUtils.getAllEarningDate3(date);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
