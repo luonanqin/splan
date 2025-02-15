@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class TickerDetailV3 {
 
+    private String date;
     private String ticker;
     private String list_date;
     private long share_class_shares_outstanding;

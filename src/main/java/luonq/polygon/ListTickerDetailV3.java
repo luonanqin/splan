@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -58,31 +60,31 @@ public class ListTickerDetailV3 {
         }
     }
 
-    public List<TickerDetailV3> getDetailList(List<String> urlList) throws Exception {
+    public static List<TickerDetailV3> getDetailList(Map<String, String> urlMap) throws Exception {
         List<TickerDetailV3> detailV3s = Lists.newArrayListWithExpectedSize(0);
-        if (CollectionUtils.isEmpty(urlList)) {
+        if (MapUtils.isEmpty(urlMap)) {
             return detailV3s;
         }
 
-        CountDownLatch cdl = new CountDownLatch(urlList.size());
-        for (String url : urlList) {
+        CountDownLatch cdl = new CountDownLatch(urlMap.size());
+        for (String date : urlMap.keySet()) {
+            String url = urlMap.get(date);
             CloseableHttpClient httpClient = queue.take();
 
             threadPool.execute(() -> {
                 HttpGet getMethod = new HttpGet(url);
-                List<String> callAndPut = Lists.newArrayList();
                 try {
                     CloseableHttpResponse execute = httpClient.execute(getMethod);
                     InputStream content = execute.getEntity().getContent();
                     TickerDetailV3Resp tickerResp = JSON.parseObject(content, TickerDetailV3Resp.class);
                     TickerDetailV3 tickerDetailV3 = tickerResp.getResults();
+                    tickerDetailV3.setDate(date);
                     detailV3s.add(tickerDetailV3);
                 } catch (Exception e) {
                 } finally {
                     getMethod.releaseConnection();
                     queue.offer(httpClient);
                     cdl.countDown();
-                    //                    System.out.println("option chain cdl:" + cdl.getCount());
                 }
             });
         }
@@ -106,12 +108,20 @@ public class ListTickerDetailV3 {
             List<String> dateList = aaplList.stream().map(StockKLine::getFormatDate).collect(Collectors.toList());
 
             for (String stock : stockList) {
-                Map<String, String> dateToSharingMap = Maps.newHashMap();
+                Map<String, TickerDetailV3> dateToSharingMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
 
-                List<String> urlList = Lists.newArrayList();
-                dateList.forEach(date -> urlList.add("https://api.polygon.io/v3/reference/tickers/" + stock + "?date=" + date + apiKeyParam));
+                Map<String, String> urlMap = Maps.newHashMap();
+                dateList.forEach(date -> urlMap.put(date, "https://api.polygon.io/v3/reference/tickers/" + stock + "?date=" + date + apiKeyParam));
 
+                List<TickerDetailV3> detailList = getDetailList(urlMap);
+                detailList.forEach(d -> dateToSharingMap.put(d.getDate(), d));
 
+                List<String> list = Lists.newArrayList();
+                for (String date : dateToSharingMap.keySet()) {
+                    TickerDetailV3 detail = dateToSharingMap.get(date);
+                    list.add(String.format("%s\t%l\t%l", date, detail.getShare_class_shares_outstanding(), detail.getMarket_cap()));
+                }
+                BaseUtils.writeFile(Constants.HIS_BASE_PATH + year + "/" + stock, list);
             }
         }
         FileWriter fw;
