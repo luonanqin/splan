@@ -10,4 +10,6 @@ public class TickerDetailV3 {
 
     private String ticker;
     private String list_date;
+    private long share_class_shares_outstanding;
+    private long market_cap;
 }
