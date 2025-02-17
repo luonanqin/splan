@@ -1,31 +1,24 @@
 package luonq.polygon;
 
-import bean.OptionChain;
-import bean.OptionChainResp;
 import bean.StockKLine;
 import bean.TickerDetailV3;
 import bean.TickerDetailV3Resp;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.LoggerFactory;
 import util.BaseUtils;
 import util.Constants;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +28,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static util.Constants.USER_PATH;
 
 /**
  * https://api.polygon.io/v3/reference/tickers/AAPL?date=2025-02-04&apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
@@ -93,8 +84,10 @@ public class ListTickerDetailV3 {
     }
 
     public static void main(String[] args) throws Exception {
-        String market = "XNYS";
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache").setLevel(Level.ERROR);
 
+        init();
         String apiKeyParam = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
         //        List<String> stockList = BaseUtils.getHasOptionStockList(market);
@@ -102,78 +95,39 @@ public class ListTickerDetailV3 {
         List<String> stockList = Lists.newArrayList(fileMap.keySet());
         List<Integer> yearList = Lists.newArrayList(2022, 2023, 2024);
 
-        HttpClient httpclient = new HttpClient();
         for (Integer year : yearList) {
-            List<StockKLine> aaplList = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + year + "/dailyKLline/AAPL", year + 1, year);
+            List<StockKLine> aaplList = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "/merge/AAPL", year, year - 1);
             List<String> dateList = aaplList.stream().map(StockKLine::getFormatDate).collect(Collectors.toList());
 
             for (String stock : stockList) {
+                String filePath = Constants.HIS_BASE_PATH + year + "/sharing/" + stock;
+                if (BaseUtils.fileExist(filePath)) {
+                    continue;
+                }
                 Map<String, TickerDetailV3> dateToSharingMap = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
 
                 Map<String, String> urlMap = Maps.newHashMap();
-                dateList.forEach(date -> urlMap.put(date, "https://api.polygon.io/v3/reference/tickers/" + stock + "?date=" + date + apiKeyParam));
+                dateList.forEach(date -> urlMap.put(date, "https://api.polygon.io/v3/reference/tickers/" + stock + "?date=" + date + "&" + apiKeyParam));
 
                 List<TickerDetailV3> detailList = getDetailList(urlMap);
-                detailList.forEach(d -> dateToSharingMap.put(d.getDate(), d));
+                if (CollectionUtils.isEmpty(detailList)) {
+                    BaseUtils.writeFile(filePath, Lists.newArrayList());
+                    continue;
+                }
+                for (TickerDetailV3 d : detailList) {
+                    if (d != null) {
+                        dateToSharingMap.put(d.getDate(), d);
+                    }
+                }
 
                 List<String> list = Lists.newArrayList();
                 for (String date : dateToSharingMap.keySet()) {
                     TickerDetailV3 detail = dateToSharingMap.get(date);
-                    list.add(String.format("%s\t%l\t%l", date, detail.getShare_class_shares_outstanding(), detail.getMarket_cap()));
+                    list.add(date + "\t" + detail.getShare_class_shares_outstanding() + "\t" + detail.getMarket_cap());
                 }
-                BaseUtils.writeFile(Constants.HIS_BASE_PATH + year + "/" + stock, list);
+                BaseUtils.writeFile(filePath, list);
+                System.out.println(System.currentTimeMillis() + " " + stock);
             }
-        }
-        FileWriter fw;
-        BufferedReader br;
-        String fileName = String.format("%s.txt", market);
-        try {
-            fw = new FileWriter(fileName);
-            br = new BufferedReader(new FileReader(Constants.HIS_BASE_PATH + "open/" + fileName));
-
-            List<String> hasDownload = Lists.newArrayList();
-            String download;
-            while (StringUtils.isNotBlank(download = br.readLine())) {
-                String code = download.substring(0, download.indexOf("\t"));
-                hasDownload.add(code);
-            }
-
-            for (String stock : stockList) {
-                if (hasDownload.contains(stock)) {
-                    System.out.println("has downloaded: " + stock);
-                    continue;
-                }
-
-                String url = "https://api.polygon.io/v3/reference/tickers/" + stock + "?" + apiKeyParam;
-                GetMethod get = new GetMethod(url);
-                int code = httpclient.executeMethod(get);
-                if (code != 200) {
-                    System.err.println(stock + " request failed. code=" + code);
-                    continue;
-                }
-
-                InputStream stream = get.getResponseBodyAsStream();
-                TickerDetailV3Resp tickerResp = JSON.parseObject(stream, TickerDetailV3Resp.class);
-                TickerDetailV3 tickerDetailV3 = tickerResp.getResults();
-                String data;
-                if (tickerDetailV3 == null || StringUtils.isBlank(tickerDetailV3.getList_date()) || StringUtils.isBlank(tickerDetailV3.getTicker())) {
-                    data = stock + "\t" + null + "\n";
-                } else {
-                    String listDate = tickerDetailV3.getList_date();
-                    String tickerName = tickerDetailV3.getTicker();
-
-                    data = tickerName + "\t" + listDate + "\n";
-                }
-                fw.write(data);
-                fw.flush();
-
-                System.out.print(data);
-                TimeUnit.SECONDS.sleep(14);
-
-                stream.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }
