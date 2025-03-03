@@ -8,8 +8,12 @@ import com.ib.client.Contract;
 import com.ib.client.ContractDetails;
 import com.ib.client.Decimal;
 import com.ib.client.Order;
+import com.ib.client.OrderCondition;
+import com.ib.client.OrderConditionType;
 import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
+import com.ib.client.PriceCondition;
+import com.ib.client.TimeCondition;
 import com.ib.client.Types;
 import com.ib.controller.AccountSummaryTag;
 import com.ib.controller.ApiController;
@@ -407,6 +411,7 @@ public class TradeApi {
         order.orderType(OrderType.MKT);
         order.totalQuantity(Decimal.get(count));
 
+
         OrderHandlerImpl orderHandler = new OrderHandlerImpl();
         client.placeOrModifyOrder(contract, order, orderHandler);
         int orderId = order.orderId();
@@ -497,6 +502,44 @@ public class TradeApi {
             }
         });
         cdl.await(2, TimeUnit.SECONDS);
+        return contract.conid();
+    }
+
+    public int getStockConId(String code) throws InterruptedException {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+        CountDownLatch cdl = new CountDownLatch(1);
+        client.reqContractDetails(contract, list -> {
+            try {
+                if (CollectionUtils.isEmpty(list)) {
+                    log.info("{} can't get conId", code);
+                    return;
+                }
+                ContractDetails contractDetails = list.get(0);
+                int conid = contractDetails.conid();
+                contract.conid(conid);
+                log.info("{} conId={}", code, conid);
+            } catch (Exception e) {
+                log.error("get stock conId error. code={}", code, e);
+            } finally {
+                cdl.countDown();
+            }
+        });
+        cdl.await(2, TimeUnit.SECONDS);
+
+        TimeCondition timeCondition = (TimeCondition) OrderCondition.create(OrderConditionType.Time);
+        timeCondition.time("2025-03-03 15:59:50");
+        timeCondition.conjunctionConnection(true);
+
+        PriceCondition priceCondition = (PriceCondition) OrderCondition.create(OrderConditionType.Price);
+        priceCondition.price(10d);
+        priceCondition.isMore(false);
+
+        order.conditions(Lists.newArrayList(timeCondition, priceCondition));
+        order.conditionsIgnoreRth(true);
+
         return contract.conid();
     }
 
