@@ -8,8 +8,12 @@ import com.ib.client.Contract;
 import com.ib.client.ContractDetails;
 import com.ib.client.Decimal;
 import com.ib.client.Order;
+import com.ib.client.OrderCondition;
+import com.ib.client.OrderConditionType;
 import com.ib.client.OrderStatus;
 import com.ib.client.OrderType;
+import com.ib.client.PriceCondition;
+import com.ib.client.TimeCondition;
 import com.ib.client.Types;
 import com.ib.controller.AccountSummaryTag;
 import com.ib.controller.ApiController;
@@ -107,6 +111,34 @@ public class TradeApi {
             log.info("there is no leagl order. code={}, orderId={}", code, orderId);
             return -1;
         }
+        return orderId;
+    }
+
+    public long placeMarketConditionBuyStockOrder(String code, double count, List<OrderCondition> condList) {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+
+        Order order = new Order();
+        order.action(Types.Action.BUY);
+        order.orderType(OrderType.MKT);
+        order.totalQuantity(Decimal.get(count));
+        order.conditions(condList);
+        order.conditionsIgnoreRth(false);
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setCode(code);
+        orderHandler.setCount(count);
+        client.placeOrModifyOrder(contract, order, orderHandler);
+        int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
+        log.info("place condition order: code=" + code + " conditions=" + condList + " count=" + count);
         return orderId;
     }
 
@@ -500,6 +532,59 @@ public class TradeApi {
         return contract.conid();
     }
 
+    public int getStockConId(String code) throws InterruptedException {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+        CountDownLatch cdl = new CountDownLatch(1);
+        client.reqContractDetails(contract, list -> {
+            try {
+                if (CollectionUtils.isEmpty(list)) {
+                    log.info("{} can't get conId", code);
+                    return;
+                }
+                ContractDetails contractDetails = list.get(0);
+                int conid = contractDetails.conid();
+                contract.conid(conid);
+                log.info("{} conId={}", code, conid);
+            } catch (Exception e) {
+                log.error("get stock conId error. code={}", code, e);
+            } finally {
+                cdl.countDown();
+            }
+        });
+        cdl.await(2, TimeUnit.SECONDS);
+
+        return contract.conid();
+    }
+
+    /**
+     * @param datetime      2025-03-03 15:59:50
+     * @param beforeOrAfter after=true before=false
+     * @return
+     */
+    public TimeCondition buildTimeCond(String datetime, boolean beforeOrAfter) {
+        TimeCondition timeCondition = (TimeCondition) OrderCondition.create(OrderConditionType.Time);
+        timeCondition.time(datetime);
+        timeCondition.isMore(beforeOrAfter);
+
+        return timeCondition;
+    }
+
+    /**
+     * @param price       10d
+     * @param greatOrLess great=true less=false
+     * @return
+     */
+    public PriceCondition buildPriceCond(double price, boolean greatOrLess) {
+        PriceCondition priceCondition = (PriceCondition) OrderCondition.create(OrderConditionType.Price);
+        priceCondition.price(price);
+        priceCondition.isMore(greatOrLess);
+
+        return priceCondition;
+    }
+
     public static void main(String[] args) {
         TradeApi tradeApi = new TradeApi(true);
         tradeApi.reqPosition();
@@ -511,7 +596,11 @@ public class TradeApi {
         int count = 1;
         //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
         String code = "NVDA  241011P00125000";
-        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
+        //        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
+        TimeCondition timeCondition = tradeApi.buildTimeCond("2025-03-05 15:59:59", true);
+        timeCondition.conjunctionConnection(true);
+        PriceCondition priceCondition = tradeApi.buildPriceCond(220d, false);
+        long orderId = tradeApi.placeMarketConditionBuyStockOrder("AAPL", 1, Lists.newArrayList(timeCondition, priceCondition));
         //        long orderId = tradeApi.placeNormalBuyOrderForStock("AAPL", 1, 224.6);
         System.out.println("orderId: " + orderId);
         //        bean.Order order = tradeApi.getOrder(orderId);
