@@ -560,11 +560,8 @@ public class TradeApi {
     }
 
     /**
-     * datetime=2025-03-03 15:59:50
-     * beforeOrAfter after=true before=false
-     *
-     * @param datetime
-     * @param beforeOrAfter
+     * @param datetime      2025-03-03 15:59:50
+     * @param beforeOrAfter after=true before=false
      * @return
      */
     public TimeCondition buildTimeCond(String datetime, boolean beforeOrAfter) {
@@ -576,11 +573,8 @@ public class TradeApi {
     }
 
     /**
-     * price=10d
-     * greatOrLess great=true less=false
-     *
-     * @param price
-     * @param greatOrLess
+     * @param price       10d
+     * @param greatOrLess great=true less=false
      * @return
      */
     public PriceCondition buildPriceCond(double price, boolean greatOrLess) {
@@ -602,7 +596,11 @@ public class TradeApi {
         int count = 1;
         //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
         String code = "NVDA  241011P00125000";
-        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
+        //        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
+        TimeCondition timeCondition = tradeApi.buildTimeCond("2025-03-05 15:59:59", true);
+        timeCondition.conjunctionConnection(true);
+        PriceCondition priceCondition = tradeApi.buildPriceCond(220d, false);
+        long orderId = tradeApi.placeMarketConditionBuyStockOrder("AAPL", 1, Lists.newArrayList(timeCondition, priceCondition));
         //        long orderId = tradeApi.placeNormalBuyOrderForStock("AAPL", 1, 224.6);
         System.out.println("orderId: " + orderId);
         //        bean.Order order = tradeApi.getOrder(orderId);
