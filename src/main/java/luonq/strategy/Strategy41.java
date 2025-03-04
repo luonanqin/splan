@@ -163,7 +163,7 @@ public class Strategy41 {
                             if (j < 0) {
                                 break;
                             }
-                            for (; j < ; j++) {
+                            for (; j < 10; j++) {
                                 
                             }
                         }

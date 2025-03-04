@@ -114,6 +114,34 @@ public class TradeApi {
         return orderId;
     }
 
+    public long placeMarketConditionBuyStockOrder(String code, double count, List<OrderCondition> condList) {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+
+        Order order = new Order();
+        order.action(Types.Action.BUY);
+        order.orderType(OrderType.MKT);
+        order.totalQuantity(Decimal.get(count));
+        order.conditions(condList);
+        order.conditionsIgnoreRth(false);
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setCode(code);
+        orderHandler.setCount(count);
+        client.placeOrModifyOrder(contract, order, orderHandler);
+        int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
+        log.info("place condition order: code=" + code + " conditions=" + condList + " count=" + count);
+        return orderId;
+    }
+
     public long placeNormalBuyOrderForStock(String code, double count, double price) {
         return placeNormalOrder(code, price, count, Types.SecType.STK, Types.Action.BUY);
     }
@@ -411,7 +439,6 @@ public class TradeApi {
         order.orderType(OrderType.MKT);
         order.totalQuantity(Decimal.get(count));
 
-
         OrderHandlerImpl orderHandler = new OrderHandlerImpl();
         client.placeOrModifyOrder(contract, order, orderHandler);
         int orderId = order.orderId();
@@ -529,18 +556,39 @@ public class TradeApi {
         });
         cdl.await(2, TimeUnit.SECONDS);
 
-        TimeCondition timeCondition = (TimeCondition) OrderCondition.create(OrderConditionType.Time);
-        timeCondition.time("2025-03-03 15:59:50");
-        timeCondition.conjunctionConnection(true);
-
-        PriceCondition priceCondition = (PriceCondition) OrderCondition.create(OrderConditionType.Price);
-        priceCondition.price(10d);
-        priceCondition.isMore(false);
-
-        order.conditions(Lists.newArrayList(timeCondition, priceCondition));
-        order.conditionsIgnoreRth(true);
-
         return contract.conid();
+    }
+
+    /**
+     * datetime=2025-03-03 15:59:50
+     * beforeOrAfter after=true before=false
+     *
+     * @param datetime
+     * @param beforeOrAfter
+     * @return
+     */
+    public TimeCondition buildTimeCond(String datetime, boolean beforeOrAfter) {
+        TimeCondition timeCondition = (TimeCondition) OrderCondition.create(OrderConditionType.Time);
+        timeCondition.time(datetime);
+        timeCondition.isMore(beforeOrAfter);
+
+        return timeCondition;
+    }
+
+    /**
+     * price=10d
+     * greatOrLess great=true less=false
+     *
+     * @param price
+     * @param greatOrLess
+     * @return
+     */
+    public PriceCondition buildPriceCond(double price, boolean greatOrLess) {
+        PriceCondition priceCondition = (PriceCondition) OrderCondition.create(OrderConditionType.Price);
+        priceCondition.price(price);
+        priceCondition.isMore(greatOrLess);
+
+        return priceCondition;
     }
 
     public static void main(String[] args) {
