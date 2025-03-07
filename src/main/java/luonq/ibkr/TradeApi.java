@@ -119,6 +119,7 @@ public class TradeApi {
         contract.localSymbol(code);
         contract.secType(Types.SecType.STK);
         contract.exchange("SMART");
+        contract.currency("USD");
 
         Order order = new Order();
         order.action(Types.Action.BUY);
@@ -587,6 +588,158 @@ public class TradeApi {
         return priceCondition;
     }
 
+    // 开盘市价单
+    public long placeOpenBuyStockOrder(String code, int count) {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+
+        Order order = new Order();
+        order.action(Types.Action.BUY);
+        order.orderType(OrderType.MKT);
+        order.tif("OPG");
+        order.totalQuantity(Decimal.get(count));
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setCode(code);
+        orderHandler.setCount(count);
+        client.placeOrModifyOrder(contract, order, orderHandler);
+        int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
+        log.info("place open buy order: code=" + code + " count=" + count);
+        return orderId;
+    }
+
+    public long placeUpDownOpenBuyStockOrder(String code, int count, double price, String date, boolean priceCond, boolean timeCond) {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+        contract.currency("USD");
+
+        Order order = new Order();
+        order.action(Types.Action.BUY);
+        order.orderType(OrderType.MKT);
+        order.totalQuantity(Decimal.get(count));
+
+        TimeCondition timeCondition = buildTimeCond(date + "-14:30:05", timeCond);
+        timeCondition.conjunctionConnection(true);
+        PriceCondition priceCondition = buildPriceCond(price, priceCond);
+        order.conditions(Lists.newArrayList(timeCondition, priceCondition));
+        order.conditionsIgnoreRth(false);
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setCode(code);
+        orderHandler.setCount(count);
+        client.placeOrModifyOrder(contract, order, orderHandler);
+        int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
+        String openInfo = priceCond ? "up" : "down";
+        log.info("place open " + openInfo + " buy open order: code=" + code + " count=" + count);
+        return orderId;
+    }
+
+    // 20250305-20:59:59
+    // 开盘上涨开盘买
+    public long placeUpOpenBuyStockOrder(String code, int count, double price, String date) {
+        return placeUpDownOpenBuyStockOrder(code, count, price, date, true, false);
+    }
+
+    // 开盘下跌开盘买
+    public long placeDownOpenBuyStockOrder(String code, int count, double price, String date) {
+        return placeUpDownOpenBuyStockOrder(code, count, price, date, false, false);
+    }
+
+    public long placeUpDownCloseBuyStockOrder(String code, int count, double price, String date, boolean priceCond, boolean timeCond) {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+        contract.currency("USD");
+
+        Order order = new Order();
+        order.action(Types.Action.BUY);
+        order.orderType(OrderType.MKT);
+        order.totalQuantity(Decimal.get(count));
+
+        TimeCondition timeCondition = buildTimeCond(date + "-20:59:50", timeCond);
+        timeCondition.conjunctionConnection(true);
+        PriceCondition priceCondition = buildPriceCond(price, priceCond);
+        order.conditions(Lists.newArrayList(timeCondition, priceCondition));
+        order.conditionsIgnoreRth(false);
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setCode(code);
+        orderHandler.setCount(count);
+        client.placeOrModifyOrder(contract, order, orderHandler);
+        int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
+        String openInfo = priceCond ? "up" : "down";
+        log.info("place open " + openInfo + " buy close order: code=" + code + " count=" + count);
+        return orderId;
+    }
+
+    // 开盘下跌收盘买
+    public long placeDownCloseBuyStockOrder(String code, int count, double price, String date) {
+        return placeUpDownCloseBuyStockOrder(code, count, price, date, false, true);
+    }
+
+    // 开盘上涨收盘买
+    public long placeUpCloseBuyStockOrder(String code, int count, double price, String date) {
+        return placeUpDownCloseBuyStockOrder(code, count, price, date, true, true);
+    }
+
+    // 收盘下跌收盘买
+    public long placeDownCloseBuyStockOrder(String code, int count, double price, String date) {
+        Contract contract = new Contract();
+        contract.localSymbol(code);
+        contract.secType(Types.SecType.STK);
+        contract.exchange("SMART");
+        contract.currency("USD");
+
+        Order order = new Order();
+        order.action(Types.Action.BUY);
+        order.orderType(OrderType.MKT);
+        order.totalQuantity(Decimal.get(count));
+
+        TimeCondition timeCondition = buildTimeCond(date + "-20:59:50", true);
+        timeCondition.conjunctionConnection(true);
+        PriceCondition priceCondition = buildPriceCond(price, false);
+        order.conditions(Lists.newArrayList(timeCondition, priceCondition));
+        order.conditionsIgnoreRth(false);
+
+        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
+        orderHandler.setCode(code);
+        orderHandler.setCount(count);
+        client.placeOrModifyOrder(contract, order, orderHandler);
+        int orderId = order.orderId();
+        orderHandler.setOrderId(orderId);
+
+        orderIdToContractMap.put(orderId, contract);
+        orderIdToOrderMap.put(orderId, order);
+        orderIdToHandlerMap.put(orderId, orderHandler);
+
+        String openInfo = priceCond ? "up" : "down";
+        log.info("place close " + openInfo + " buy open order: code=" + code + " count=" + count);
+        return orderId;
+    }
+
     public static void main(String[] args) throws InterruptedException {
         TradeApi tradeApi = new TradeApi(false);
         tradeApi.reqPosition();
@@ -602,8 +755,6 @@ public class TradeApi {
         TimeCondition timeCondition = tradeApi.buildTimeCond("20250305-20:59:59", true);
         timeCondition.conjunctionConnection(true);
         PriceCondition priceCondition = tradeApi.buildPriceCond(220d, false);
-
-        int aapl = tradeApi.getStockConId("AAPL");
         long orderId = tradeApi.placeMarketConditionBuyStockOrder("AAPL", 1, Lists.newArrayList(timeCondition, priceCondition));
         //        long orderId = tradeApi.placeNormalBuyOrderForStock("AAPL", 1, 224.6);
         System.out.println("orderId: " + orderId);
