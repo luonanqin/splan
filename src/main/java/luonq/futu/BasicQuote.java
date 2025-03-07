@@ -380,7 +380,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
 
     public void getSecuritySnapshot(String stock) {
         QotCommon.Security sec = QotCommon.Security.newBuilder()
-          .setMarket(QotCommon.QotMarket.QotMarket_US_Security_VALUE)
+          .setMarket(QotCommon.QotMarket.QotMarket_HK_Security_VALUE)
           .setCode(stock)
           .build();
         QotGetSecuritySnapshot.C2S c2s = QotGetSecuritySnapshot.C2S.newBuilder()
@@ -408,6 +408,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                 //                if (!stockToCurrPriceMap.containsKey(stock)) {
                 //                    return;
                 //                }
+                QotGetSecuritySnapshot.EquitySnapshotExData equityExData = snapshot.getEquityExData();
                 QotGetSecuritySnapshot.OptionSnapshotExData optionExData = snapshot.getOptionExData();
                 double impliedVolatility = optionExData.getImpliedVolatility();
                 double putPredictedValue = 0;
@@ -476,6 +477,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         //        quote.subBasicQuote("HUT240719P18000");
         //        quote.subBasicQuote("NVDA240719C121000");
         //        quote.unSubBasicQuote("TSLA240719C252500");
+        quote.getSecuritySnapshot("03690");
         quote.subBasicQuote("TSLA241129P335000");
         //        System.out.println(quote.getOptionIvTimeMap("TSLA240719C257500"));
         //        quote.getBasicQot("TSLA240719P255000");

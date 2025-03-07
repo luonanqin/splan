@@ -159,7 +159,7 @@ public class OptionTradeExecutor2_2 {
     // 平均到每个股票的交易金额
     private double avgFund;
     private double funds = Constants.INIT_CASH;
-    private int limitCount = 2; // 限制股票数量
+    private int limitCount = 1; // 限制股票数量
     private String season;
     private long openTime;
     private long closeTime;

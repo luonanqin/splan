@@ -572,7 +572,7 @@ public class Strategy33_2 {
             return "empty";
         }
 
-        if (sec < 60) { // 一分钟内需要和计算的买入价进行对比
+        if (sec < 120) { // 一分钟内需要和计算的买入价进行对比
             if (calCallOpen != 0 && calCallOpen < callOpen && calCallOpen >= callBid) {
                 callOpen = calCallOpen;
             }

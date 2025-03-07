@@ -9,6 +9,8 @@ import luonq.strategy.Strategy15_1;
 import luonq.strategy.Strategy15test;
 import luonq.strategy.Strategy17;
 import luonq.strategy.Strategy18;
+import luonq.strategy.Strategy40;
+import luonq.strategy.Strategy41;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import start.BaseTest;
@@ -37,6 +39,12 @@ public class StrategyTest extends BaseTest {
 
     @Autowired
     private Strategy18 strategy18;
+
+    @Autowired
+    private Strategy40 strategy40;
+
+    @Autowired
+    private Strategy41 strategy41;
 
     @Test
     public void test13() {
@@ -114,6 +122,26 @@ public class StrategyTest extends BaseTest {
     public void test18() {
         try {
             strategy18.main();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test40() {
+        try {
+            strategy40.test();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test41() {
+        try {
+            //            strategy41.filter1();
+            //            strategy41.filter2();
+            strategy41.filter3();
         } catch (Exception e) {
             e.printStackTrace();
         }

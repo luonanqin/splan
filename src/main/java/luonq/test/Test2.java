@@ -391,16 +391,24 @@ public class Test2 {
 
     public static void buyStock() throws Exception {
         List<String> lines = BaseUtils.readFile(Constants.USER_PATH + "historicalData/买股票");
-        Map<String, List<Double>> map = Maps.newHashMap();
+        Map<String, List<Double>> map = Maps.newTreeMap(Comparator.comparing(BaseUtils::formatDateToInt));
         for (String line : lines) {
             String[] split = line.split("\t");
             String date = split[0];
-            Double ratio = Double.valueOf(split[1]);
+            Double ratio = Double.valueOf(split[1]) / 100;
             List<Double> ratioList = map.get(date);
             if (CollectionUtils.isEmpty(ratioList)) {
                 map.put(date, Lists.newArrayList());
             }
-            map.get(date).add(ratio)
+            map.get(date).add(ratio);
+        }
+
+        double init = 10000;
+        for (String date : map.keySet()) {
+            List<Double> list = map.get(date);
+            Double avgRatio = list.stream().collect(Collectors.averagingDouble(Double::valueOf));
+            init = init * (1 + avgRatio);
+            System.out.println(date + " " + init + " " + avgRatio);
         }
     }
 
@@ -408,8 +416,9 @@ public class Test2 {
         //        deleteFile();
         //        calCallWithProtect();
         //        System.out.println();
-        calGainWithHandleFee();
+        //        calGainWithHandleFee();
         //        calSpreadWithHandleFee();
         //        calSellStraddleWithHandleFee();
+        buyStock();
     }
 }

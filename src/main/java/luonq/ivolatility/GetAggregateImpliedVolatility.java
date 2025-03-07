@@ -46,6 +46,7 @@ public class GetAggregateImpliedVolatility {
 
                 Map<String, String> optionFileMap = BaseUtils.getFileMap(optionFilePath);
                 for (String optionCode : optionFileMap.keySet()) {
+                    boolean flag = true;
                     List<String> lines = BaseUtils.readFile(optionFileMap.get(optionCode));
                     for (String firstLine : lines) {
                         String[] split = firstLine.split("\t");
@@ -57,7 +58,12 @@ public class GetAggregateImpliedVolatility {
                         if (!dateToIvMap.containsKey(date)) {
                             dateToIvMap.put(date, Maps.newHashMap());
                         }
+                        if (flag) {
+                            flag = false;
+                            continue;
+                        }
                         dateToIvMap.get(date).put(optionCode, Double.parseDouble(split[2]));
+                        flag = true;
                         break;
                     }
 
@@ -69,7 +75,12 @@ public class GetAggregateImpliedVolatility {
                         if (!dateToFirstIvTimeMap.containsKey(date)) {
                             dateToFirstIvTimeMap.put(date, Maps.newHashMap());
                         }
+                        if (flag) {
+                            flag = false;
+                            continue;
+                        }
                         dateToFirstIvTimeMap.get(date).put(optionCode, split[1]);
+                        flag = true;
 
                         break;
                     }
@@ -203,7 +214,7 @@ public class GetAggregateImpliedVolatility {
         if (!dateToFirstIvTimeMap.containsKey(date)) {
             dateToFirstIvTimeMap.put(date, Maps.newHashMap());
         }
-        String[] split = lines.get(0).split("\t");
+        String[] split = lines.get(1).split("\t");
         String firstDateTime = split[1];
         hisIv = Double.parseDouble(split[2]);
         dateToFirstIvTimeMap.get(date).put(optionCode, firstDateTime);

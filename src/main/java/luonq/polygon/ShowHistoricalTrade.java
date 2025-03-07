@@ -34,7 +34,7 @@ public class ShowHistoricalTrade {
     public static int limit = 50000;
     public static String apiKey = "apiKey=Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY";
 
-    public static void getData(String code, String date) throws Exception {
+    public static List<String> getData(String code, String date) throws Exception {
         String api = "https://api.polygon.io/v3/trades/";
         String timeLte = "timestamp.lte=";
         String timeGte = "timestamp.gte=";
@@ -65,9 +65,10 @@ public class ShowHistoricalTrade {
         String url = api + code + "?" + timeGte + gteTimestamp + "000000&" + timeLte + lteTimestamp + "000000&order=asc&limit=" + limit + "&" + apiKey;
 
         result = getTrade(url, httpClient);
+        List<String> res = Lists.newArrayList();
         if (CollectionUtils.isEmpty(result)) {
             log.info(code + " is empty");
-            return;
+            return res;
         }
 
         try {
@@ -81,11 +82,12 @@ public class ShowHistoricalTrade {
                 String timestamp = split[0];
                 LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(timestamp) / 1000000), ZoneId.systemDefault());
                 String format = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
-                System.out.println(format + "\t" + split[1] + "\t" + split[2]);
+                res.add(format + "\t" + split[1] + "\t" + split[2]);
             }
         } catch (Exception e) {
             log.error("error: " + result);
         }
+        return res;
     }
 
     public static List<String> getTrade(String url, HttpClient httpClient) {
@@ -140,7 +142,16 @@ public class ShowHistoricalTrade {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons").setLevel(Level.ERROR);
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("httpclient.wire").setLevel(Level.ERROR);
 
-        getData("O:M241213P00014500", "2024-12-11");
+        //        List<String> data = getData("O:TSLA241108C00320000", "2024-11-08");
+        //        List<String> data = getData("O:TSLA250103C00400000", "2025-01-03");
+        //        List<String> data = getData("O:AAPL240202C00182500", "2024-02-02");
+        //    List<String> data = getData("O:COIN240823C00207500", "2024-08-23");
+        //    List<String> data = getData("O:MSTR250110C00332500", "2025-01-10");
+        List<String> data = getData("O:LLY250117P00730000", "2025-01-17");
+        for (int i = 0; i < 20000 && i < data.size(); i++) {
+            System.out.println(data.get(i));
+        }
+        System.out.println(data.get(data.size() - 1));
         log.info("============ end ============");
     }
 }

@@ -91,7 +91,7 @@ public class WriteToDB {
      * 自定义股票和日期增量导入
      */
     public void additionToDB(List<String> codeList, List<String> dateList) throws Exception {
-        int curYear = LocalDate.now().getYear(), lastYear = curYear - 1;
+        int curYear = LocalDate.now().getYear()-1, lastYear = curYear - 1;
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge/");
         Map<String, String> maFileMap = BaseUtils.getFileMap(Constants.INDICATOR_MA_PATH + "daily/");

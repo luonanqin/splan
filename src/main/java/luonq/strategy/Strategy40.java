@@ -2,7 +2,13 @@ package luonq.strategy;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import luonq.data.ReadFromDB;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import util.BaseUtils;
 import util.Constants;
 
@@ -21,10 +27,21 @@ import static util.Constants.DB_DATE_FORMATTER;
  * // * 2.获取每周前3或4天的期权成交量，计算其标准差
  * 3.获取每周前3或4天的振幅，计算其标准差
  */
+@Component
 public class Strategy40 {
 
-    public static void main(String[] args) throws Exception {
+    @Autowired
+    private ReadFromDB readFromDB;
+
+    public void test() throws Exception {
         Map<String, String> fileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "2024/dailyKLine");
+        List<StockKLine> aapl = BaseUtils.loadDataToKline(Constants.HIS_BASE_PATH + "2024/dailyKLine/AAPL", 2024, 2023);
+        Map<String, Set<String>> dateToEarningStockMap = Maps.newHashMap();
+        for (StockKLine stockKLine : aapl) {
+            String formatDate = stockKLine.getFormatDate();
+            List<String> stocks = readFromDB.getStockForEarning(formatDate);
+            dateToEarningStockMap.put(formatDate, Sets.newHashSet(stocks));
+        }
 
         Set<String> optionStocks = BaseUtils.getPennyOptionStock();
 
@@ -58,6 +75,8 @@ public class Strategy40 {
                 }
             }
 
+
+
             LocalDate start = LocalDate.parse(startDate, DB_DATE_FORMATTER);
             while (true) {
                 if (start.getYear() > 2024) {
@@ -84,6 +103,13 @@ public class Strategy40 {
                         lastClose2 = kLine.getClose();
                     }
                 }
+                //                if (kLineList.size() < 2) {
+                //                    lastClose = kLineList.get(kLineList.size() - 1).getClose();
+                //                    continue;
+                //                }
+                if (CollectionUtils.isEmpty(kLineList)) {
+                    continue;
+                }
 
                 double[] openDiffArray = new double[kLineList.size() - 1];
                 double[] swingArray = new double[kLineList.size() - 1];
@@ -100,8 +126,15 @@ public class Strategy40 {
                 // 每周前几天振幅的标准差
                 double swingStd = stdev.evaluate(swingArray);
 
+                //
+                StockKLine lastKLine = kLineList.get(kLineList.size() - 2);
+                Set<String> earningStocks = dateToEarningStockMap.get(lastKLine.getFormatDate());
+                if (earningStocks.contains(stock)) {
+                    break;
+                }
+
                 // 每周最后一天的开盘涨跌幅
-                lastClose = kLineList.get(kLineList.size() - 2).getClose();
+                lastClose = lastKLine.getClose();
                 StockKLine curKLine = kLineList.get(kLineList.size() - 1);
                 double finalOpen = curKLine.getOpen();
                 double finalOpenDiff = Math.abs((finalOpen - lastClose) / lastClose);
@@ -111,8 +144,10 @@ public class Strategy40 {
                 double low = curKLine.getLow();
                 double swing = (high - low) / lastClose;
 
-                if (swing < 0.01 && finalOpenDiff > 0.01) {
-                    System.out.println(stock + "\t" + curKLine.getFormatDate() + "\t" + openDiffStd + "\t" + swingStd + "\t" + finalOpenDiff + "\t" + swing);
+                if (finalOpen > 20 && finalOpenDiff > 0.03) {
+                    //                    if (finalOpenDiff > 0.05) {
+                    //                if (swingStd < 0.01 && finalOpenDiff > 0.02) {
+                    System.out.println(stock + "\t" + curKLine.getFormatDate() + "\t" + finalOpen + "\t" + openDiffStd + "\t" + swingStd + "\t" + finalOpenDiff + "\t" + swing);
                 }
             }
         }

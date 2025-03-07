@@ -483,8 +483,8 @@ public class Strategy36 {
             double all2Diff = BigDecimal.valueOf(call2Diff + put2Diff).setScale(5, RoundingMode.HALF_UP).doubleValue();
             double totalCallDiff = callDiff + call2Diff;
             double totalPutDiff = putDiff + put2Diff;
-            double callDiffRatio = BigDecimal.valueOf(totalCallDiff / callOpen * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
-            double putDiffRatio = BigDecimal.valueOf(totalPutDiff / putOpen * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double callDiffRatio = BigDecimal.valueOf(totalCallDiff / (call2Open - callOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            double putDiffRatio = BigDecimal.valueOf(totalPutDiff / (put2Open - putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
             double allDiffRatio = 0;
             if (stockUpDown > 0) {
                 allDiffRatio = callDiffRatio;
@@ -501,15 +501,15 @@ public class Strategy36 {
                 return result;
             }
             if (i <= 10800 && i >= 120) {
-                if (allDiffRatio >= 15) {
+                if (allDiffRatio >= 20) {
                     result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio;
                     return result;
-                } else if (allDiffRatio < -15) {
+                } else if (allDiffRatio < -20) {
                     result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio;
                     return result;
                 }
             } else if (i > 10800) {
-                if (allDiffRatio < -15 || allDiffRatio > 15) {
+                if (allDiffRatio < -20 || allDiffRatio > 15) {
                     result = buyTime + "\t" + sellTime + "\t" + callOpen + "\t" + callClose + "\t" + putOpen + "\t" + putClose + "\t" + call2Open + "\t" + call2Close + "\t" + put2Open + "\t" + put2Close + "\t" + stockUpDown + "\t" + allDiffRatio + "\t" + callDiffRatio + "\t" + putDiffRatio;
                     return result;
                 }
@@ -721,7 +721,7 @@ public class Strategy36 {
             return false;
         }
 
-        if (ivList.get(0) > 0.4) {
+        if (ivList.get(0) < 0.4) {
             return true;
         } else {
             return false;
@@ -770,8 +770,8 @@ public class Strategy36 {
                 nextExpirationDate = LocalDate.parse(weekStrArray[i + 1], DB_DATE_FORMATTER).format(DateTimeFormatter.ofPattern("yyMMdd"));
             }
 
-            if (!date.equals("2024-01-05")) {
-                //                continue;
+            if (!date.equals("2024-01-19")) {
+                //                                continue;
             }
 
             Map<String, StockKLine> stockKLineMap = dateToStockKlineMap.get(date);
@@ -878,7 +878,8 @@ public class Strategy36 {
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
                     String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
                     ivInfo = callIvInfo + "\t" + putIvInfo;
-                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + date + "\t" + ivInfo + "\t" + simulateTrade);
+                    String optionList = outPriceCallOptionCode_1 + "\t" + outPricePutOptionCode_1 + "\t" + outPriceCallOptionCode_2 + "\t" + outPricePutOptionCode_2;
+                    System.out.println(stock + "\t" + open + "\t" + totalLastVolume + "\t" + date + "\t" + optionList + "\t" + ivInfo + "\t" + simulateTrade);
                 }
             }
         }

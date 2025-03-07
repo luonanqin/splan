@@ -805,7 +805,7 @@ public class Strategy37 {
                     String optionList = outPriceCallOptionCode_1 + "\t" + outCall1StrikePrice + "\t" + outPricePutOptionCode_1 + "\t" + outPut1StrikePrice + "\t" + outPriceCallOptionCode_2 + "\t" + outCall2StrikePrice + "\t" + outPricePutOptionCode_2 + "\t" + outPut2StrikePrice;
                     System.out.println(stock + "\t" + open + "\t" + totalLastVolume + "\t" + date + "\t" + optionList + "\t" + ivInfo + "\t" + simulateTrade);
                     count++;
-                    if (count == 3) {
+                    if (count == 10) {
                         break;
                     }
                 }

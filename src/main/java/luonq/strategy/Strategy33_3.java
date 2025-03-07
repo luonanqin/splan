@@ -16,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.LoggerFactory;
@@ -37,11 +38,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static luonq.strategy.Strategy32.*;
+import static luonq.strategy.Strategy32.calStraddleSimulateTrade;
+import static luonq.strategy.Strategy32.getCallAndPuts;
 import static util.Constants.*;
 
 /**
- * 宽跨式策略
+ * 宽跨式策略，附带gamma过滤策略
  */
 public class Strategy33_3 {
 
@@ -594,8 +596,8 @@ public class Strategy33_3 {
             if (localDate.isAfter(LocalDate.parse("2024-10-08", DB_DATE_FORMATTER))) {
                 //                continue;
             }
-            if (!date.equals("2024-11-14")) {
-                //                continue;
+            if (!date.equals("2024-12-11")) {
+//                continue;
             }
 
             List<String> earningStocks = earningForEveryDay.get(date);
@@ -609,7 +611,7 @@ public class Strategy33_3 {
             //            Set<String> stockSet = earningStocks.stream().collect(Collectors.toSet());
             Set<String> stockSet = stockKLineMap.keySet();
             for (String stock : stockSet) {
-                if (!stock.equals("KSS")) {
+                if (!stock.equals("MRNA")) {
                     //                    continue;
                 }
                 // 财报日不交易收益不符合预期，所以不限制
@@ -635,22 +637,22 @@ public class Strategy33_3 {
                     //                        System.out.println("nearlyOptionData2 is null. stock=" + stock + " open=" + open);
                     //                        continue;
                     //                    }
-                    String callStrikePrice = nearlyOptionData.getOutPriceCallOptionCode_1();
-                    String putStrikePrice = nearlyOptionData.getOutPricePutOptionCode_1();
+                    String outPriceCallOptionCode_1 = nearlyOptionData.getOutPriceCallOptionCode_1();
+                    String outPricePutOptionCode_1 = nearlyOptionData.getOutPricePutOptionCode_1();
                     if (StringUtils.isNotBlank(expirationDate)) {
-                        StringBuffer callSb = new StringBuffer(callStrikePrice);
+                        StringBuffer callSb = new StringBuffer(outPriceCallOptionCode_1);
                         callSb.replace(callSb.length() - 15, callSb.length() - 9, expirationDate);
-                        callStrikePrice = callSb.toString();
-                        StringBuffer putSb = new StringBuffer(putStrikePrice);
+                        outPriceCallOptionCode_1 = callSb.toString();
+                        StringBuffer putSb = new StringBuffer(outPricePutOptionCode_1);
                         putSb.replace(putSb.length() - 15, putSb.length() - 9, expirationDate);
-                        putStrikePrice = putSb.toString();
+                        outPricePutOptionCode_1 = putSb.toString();
                     }
-                    //                    if (!StringUtils.equals(callStrikePrice, nearlyOptionData2.getOutPriceCallOptionCode_1()) || !StringUtils.equals(putStrikePrice, nearlyOptionData2.getOutPricePutOptionCode_1())) {
+                    //                    if (!StringUtils.equals(outPriceCallOptionCode_1, nearlyOptionData2.getOutPriceCallOptionCode_1()) || !StringUtils.equals(outPricePutOptionCode_1, nearlyOptionData2.getOutPricePutOptionCode_1())) {
                     //                        System.out.println();
                     //                    }
 
-                    OptionDaily callDaily = requestOptionDaily(callStrikePrice, formatDate);
-                    OptionDaily putDaily = requestOptionDaily(putStrikePrice, formatDate);
+                    OptionDaily callDaily = requestOptionDaily(outPriceCallOptionCode_1, formatDate);
+                    OptionDaily putDaily = requestOptionDaily(outPricePutOptionCode_1, formatDate);
                     if (callDaily == null || putDaily == null) {
                         System.out.println(stock + " " + date + " option daily is null");
                         continue;
@@ -685,8 +687,8 @@ public class Strategy33_3 {
                     double allDiff = BigDecimal.valueOf(callDiff + putDiff).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     double diffRatio = BigDecimal.valueOf(allDiff / (callOpen + putOpen) * 100).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-                    List<Double> callIvList = getIvList(callStrikePrice, date);
-                    List<Double> putIvList = getIvList(putStrikePrice, date);
+                    List<Double> callIvList = getIvList(outPriceCallOptionCode_1, date);
+                    List<Double> putIvList = getIvList(outPricePutOptionCode_1, date);
                     boolean callCanTrade = Strategy32.canTradeForIv(callIvList);
                     boolean putCanTrade = Strategy32.canTradeForIv(putIvList);
                     if (!callCanTrade || !putCanTrade) {
@@ -694,7 +696,7 @@ public class Strategy33_3 {
                     }
 
                     // 计算理论call和put的买入价
-                    //                    int seconds = Strategy32.calCanTradeSeconds(stock, date, callStrikePrice, putStrikePrice, Strategy28.getDayAllSeconds(date));
+                    //                    int seconds = Strategy32.calCanTradeSeconds(stock, date, outPriceCallOptionCode_1, outPricePutOptionCode_1, Strategy28.getDayAllSeconds(date));
                     //                    if (!secToStockPriceMap.containsKey(stock)) {
                     //                        GetHistoricalSecAggregateTrade.getData(stock, date, 1800);
                     //                    } else {
@@ -704,10 +706,10 @@ public class Strategy33_3 {
                     //                            GetHistoricalSecAggregateTrade.getData(stock, date, 1800);
                     //                        }
                     //                    }
-                    Double calCallOpen = calOpen(secToStockPriceMap, callStrikePrice, date);
-                    Double calPutOpen = calOpen(secToStockPriceMap, putStrikePrice, date);
-                    //                    Double calCallOpen = calOpen(secToStockPriceMap, callStrikePrice, date, seconds);
-                    //                    Double calPutOpen = calOpen(secToStockPriceMap, putStrikePrice, date, seconds);
+                    Double calCallOpen = calOpen(secToStockPriceMap, outPriceCallOptionCode_1, date);
+                    Double calPutOpen = calOpen(secToStockPriceMap, outPricePutOptionCode_1, date);
+                    //                    Double calCallOpen = calOpen(secToStockPriceMap, outPriceCallOptionCode_1, date, seconds);
+                    //                    Double calPutOpen = calOpen(secToStockPriceMap, outPricePutOptionCode_1, date, seconds);
 
                     String simulateTrade = "";
                     String ivInfo = "";
@@ -734,7 +736,7 @@ public class Strategy33_3 {
                         }
                         AggregateOptionIV aggregateOptionIV = aggregateGreekList.get(0);
                         gammaMap.put(strikePrice, String.valueOf(aggregateOptionIV.getOptionGamma()));
-                        if (call.equals(callStrikePrice)) {
+                        if (call.equals(outPriceCallOptionCode_1)) {
                             callDelta = String.valueOf(aggregateOptionIV.getOptionDelta());
                         }
                     }
@@ -754,7 +756,7 @@ public class Strategy33_3 {
                         AggregateOptionIV aggregateOptionIV = aggregateGreekList.get(0);
                         String str = gammaMap.get(strikePrice) + "\t" + aggregateOptionIV.getOptionGamma();
                         gammaMap.put(strikePrice, str);
-                        if (put.equals(putStrikePrice)) {
+                        if (put.equals(outPricePutOptionCode_1)) {
                             putDelta = String.valueOf(aggregateOptionIV.getOptionDelta());
                         }
                     }
@@ -762,37 +764,91 @@ public class Strategy33_3 {
                     String callIvInfo = StringUtils.join(Lists.reverse(callIvList.subList(0, 3)), "\t");
                     String putIvInfo = StringUtils.join(Lists.reverse(putIvList.subList(0, 3)), "\t");
                     ivInfo = callIvInfo + "\t" + putIvInfo;
-                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + callDaily + "\t" + putDaily + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio + "\t" + ivInfo + "\t" + simulateTrade);
 
                     for (Double price : gammaMap.keySet()) {
                         System.out.println(price + "\t" + gammaMap.get(price));
                     }
                     System.out.println("delta\t" + callDelta + "\t" + putDelta);
 
+                    double callStrikePrice = nearlyOptionData.getOutCall1StrikePrice();
+                    double putStrikePrice = nearlyOptionData.getOutPut1StrikePrice();
                     int callGammaCount = 0, putGammaCount = 0;
+                    List<Double> callGammaList = Lists.newArrayList();
+                    List<Double> putGammaList = Lists.newArrayList();
+
                     for (Double price : gammaMap.keySet()) {
                         String str = gammaMap.get(price);
                         String[] split = str.split("\t");
+                        if (split.length < 2) {
+                            continue;
+                        }
                         double callGamma = Double.parseDouble(split[0]);
                         double putGamma = Double.parseDouble(split[1]);
                         if (callGamma == 0d || putGamma == 0d) {
                             continue;
                         }
+                        callGammaList.add(callGamma);
+                        putGammaList.add(putGamma);
 
-                        if (price < Double.valueOf(callStrikePrice)) {
+                        if (price < putStrikePrice) {
                             if (callGamma > putGamma) {
                                 putGammaCount++;
                             }
                         }
-                        if (price > Double.valueOf(putStrikePrice)) {
+                        if (price > callStrikePrice) {
                             if (putGamma > callGamma) {
                                 callGammaCount++;
                             }
                         }
                     }
+                    double[] callGammaArray = new double[callGammaList.size()];
+                    double[] putGammaArray = new double[putGammaList.size()];
+                    for (int i = 0; i < callGammaList.size(); i++) {
+                        callGammaArray[i] = callGammaList.get(i);
+                    }
+                    for (int i = 0; i < putGammaList.size(); i++) {
+                        putGammaArray[i] = putGammaList.get(i);
+                    }
                     System.out.println("upPutGamma=" + putGammaCount + "\tupCallGamma=" + callGammaCount);
+
+                    int sunGammaCount = callGammaCount + putGammaCount;
+                    int filtr1Res = filter1(gammaMap);
+
+                    StandardDeviation stdev = new StandardDeviation();
+                    double callGammaStdev = stdev.evaluate(callGammaArray);
+                    double putGammaStdev = stdev.evaluate(putGammaArray);
+
+                    System.out.println(stock + "\t" + open + "\t" + ratioStr + "\t" + totalLastVolume + "\t" + totalLastClose + "\t" + callDaily + "\t" + putDaily + "\t" + callDiff + "\t" + putDiff + "\t" + allDiff + "\t" + diffRatio + "\t" + ivInfo + "\t" + simulateTrade + "\t" + callGammaStdev + "\t" + putGammaStdev);
                 }
             }
         }
+    }
+
+    public static int filter1(Map<Double, String> gammaMap) {
+        int callGreaterPut = 0, putGreaterCall = 0;
+        for (Double price : gammaMap.keySet()) {
+            String str = gammaMap.get(price);
+            String[] split = str.split("\t");
+            if (split.length < 2) {
+                continue;
+            }
+            double callGamma = Double.parseDouble(split[0]);
+            double putGamma = Double.parseDouble(split[1]);
+            if (callGamma == 0d || putGamma == 0d) {
+                continue;
+            }
+
+            if (callGamma > putGamma) {
+                callGreaterPut++;
+            } else {
+                putGreaterCall++;
+            }
+        }
+        if (gammaMap.size() == 8 && (callGreaterPut >= 7 || putGreaterCall >= 7)) {
+            return 1;
+        } else if (gammaMap.size() == 9 && (callGreaterPut >= 8 || putGreaterCall >= 8)) {
+            return 1;
+        }
+        return 0;
     }
 }
