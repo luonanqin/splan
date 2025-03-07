@@ -580,8 +580,6 @@ public class TradeApi {
      */
     public PriceCondition buildPriceCond(double price, boolean greatOrLess) {
         PriceCondition priceCondition = (PriceCondition) OrderCondition.create(OrderConditionType.Price);
-        priceCondition.conId(265598);
-        priceCondition.exchange("SMART");
         priceCondition.price(price);
         priceCondition.isMore(greatOrLess);
 
@@ -745,14 +743,14 @@ public class TradeApi {
         tradeApi.reqPosition();
         double accountCash = tradeApi.getAccountCash();
         System.out.println(accountCash);
-//        double pnl = tradeApi.getPnl();
-//        accountCash = accountCash - pnl;
-//        System.out.println(accountCash);
+        double pnl = tradeApi.getPnl();
+        accountCash = accountCash - pnl;
+        System.out.println(accountCash);
         int count = 1;
         //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
         String code = "NVDA  241011P00125000";
         //        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
-        TimeCondition timeCondition = tradeApi.buildTimeCond("20250305-20:59:59", true);
+        TimeCondition timeCondition = tradeApi.buildTimeCond("2025-03-05 15:59:59", true);
         timeCondition.conjunctionConnection(true);
         PriceCondition priceCondition = tradeApi.buildPriceCond(220d, false);
         long orderId = tradeApi.placeMarketConditionBuyStockOrder("AAPL", 1, Lists.newArrayList(timeCondition, priceCondition));
