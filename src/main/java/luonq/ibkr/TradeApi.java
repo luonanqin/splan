@@ -614,7 +614,8 @@ public class TradeApi {
         return orderId;
     }
 
-    public long placeUpDownOpenBuyStockOrder(String code, int count, double price, String date, boolean priceCond, boolean timeCond) {
+    // 开盘买入
+    public long placeUpDownOpenBuyStockOpenOrder(String code, int count, double price, String date, boolean priceCond, boolean timeCond) {
         Contract contract = new Contract();
         contract.localSymbol(code);
         contract.secType(Types.SecType.STK);
@@ -644,22 +645,23 @@ public class TradeApi {
         orderIdToHandlerMap.put(orderId, orderHandler);
 
         String openInfo = priceCond ? "up" : "down";
-        log.info("place open " + openInfo + " buy open order: code=" + code + " count=" + count);
+        log.info("place open " + openInfo + " buy open order: code=" + code + " price=" + price + " count=" + count);
         return orderId;
     }
 
     // 20250305-20:59:59
     // 开盘上涨开盘买
     public long placeUpOpenBuyStockOrder(String code, int count, double price, String date) {
-        return placeUpDownOpenBuyStockOrder(code, count, price, date, true, false);
+        return placeUpDownOpenBuyStockOpenOrder(code, count, price, date, true, false);
     }
 
     // 开盘下跌开盘买
     public long placeDownOpenBuyStockOrder(String code, int count, double price, String date) {
-        return placeUpDownOpenBuyStockOrder(code, count, price, date, false, false);
+        return placeUpDownOpenBuyStockOpenOrder(code, count, price, date, false, false);
     }
 
-    public long placeUpDownCloseBuyStockOrder(String code, int count, double price, String date, boolean priceCond, boolean timeCond) {
+    // 收盘买入
+    public long placeUpDownCloseBuyStockCloseOrder(String code, int count, double price, String date, boolean priceCond, boolean timeCond) {
         Contract contract = new Contract();
         contract.localSymbol(code);
         contract.secType(Types.SecType.STK);
@@ -688,54 +690,19 @@ public class TradeApi {
         orderIdToOrderMap.put(orderId, order);
         orderIdToHandlerMap.put(orderId, orderHandler);
 
-        String openInfo = priceCond ? "up" : "down";
-        log.info("place open " + openInfo + " buy close order: code=" + code + " count=" + count);
+        String closeInfo = priceCond ? "up" : "down";
+        log.info("place close " + closeInfo + " buy close order: code=" + code + " price=" + price + " count=" + count);
         return orderId;
-    }
-
-    // 开盘下跌收盘买
-    public long placeDownCloseBuyStockOrder(String code, int count, double price, String date) {
-        return placeUpDownCloseBuyStockOrder(code, count, price, date, false, true);
-    }
-
-    // 开盘上涨收盘买
-    public long placeUpCloseBuyStockOrder(String code, int count, double price, String date) {
-        return placeUpDownCloseBuyStockOrder(code, count, price, date, true, true);
     }
 
     // 收盘下跌收盘买
-    public long placeDownCloseBuyStockOrder(String code, int count, double price, String date) {
-        Contract contract = new Contract();
-        contract.localSymbol(code);
-        contract.secType(Types.SecType.STK);
-        contract.exchange("SMART");
-        contract.currency("USD");
+    public long placeDownCloseBuyStockCloseOrder(String code, int count, double price, String date) {
+        return placeUpDownCloseBuyStockCloseOrder(code, count, price, date, false, true);
+    }
 
-        Order order = new Order();
-        order.action(Types.Action.BUY);
-        order.orderType(OrderType.MKT);
-        order.totalQuantity(Decimal.get(count));
-
-        TimeCondition timeCondition = buildTimeCond(date + "-20:59:50", true);
-        timeCondition.conjunctionConnection(true);
-        PriceCondition priceCondition = buildPriceCond(price, false);
-        order.conditions(Lists.newArrayList(timeCondition, priceCondition));
-        order.conditionsIgnoreRth(false);
-
-        OrderHandlerImpl orderHandler = new OrderHandlerImpl();
-        orderHandler.setCode(code);
-        orderHandler.setCount(count);
-        client.placeOrModifyOrder(contract, order, orderHandler);
-        int orderId = order.orderId();
-        orderHandler.setOrderId(orderId);
-
-        orderIdToContractMap.put(orderId, contract);
-        orderIdToOrderMap.put(orderId, order);
-        orderIdToHandlerMap.put(orderId, orderHandler);
-
-        String openInfo = priceCond ? "up" : "down";
-        log.info("place close " + openInfo + " buy open order: code=" + code + " count=" + count);
-        return orderId;
+    // 收盘上涨收盘买
+    public long placeUpCloseBuyStockCloseOrder(String code, int count, double price, String date) {
+        return placeUpDownCloseBuyStockCloseOrder(code, count, price, date, true, true);
     }
 
     public static void main(String[] args) {
