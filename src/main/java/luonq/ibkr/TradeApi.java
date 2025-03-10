@@ -19,8 +19,10 @@ import com.ib.controller.AccountSummaryTag;
 import com.ib.controller.ApiController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import util.BaseUtils;
 import util.Constants;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -39,6 +41,8 @@ public class TradeApi {
     private int port;
     private ApiController client;
     private boolean real = true;
+    private String openTime;
+    private String closeTime;
 
     public TradeApi() {
         this(false);
@@ -52,6 +56,7 @@ public class TradeApi {
             useRealEnv();
         }
         start();
+        calTradeTime();
     }
 
     public void useSimulateEnv() {
@@ -533,7 +538,7 @@ public class TradeApi {
         return contract.conid();
     }
 
-    public int getStockConId(String code) throws InterruptedException {
+    public int getStockConId(String code) {
         Contract contract = new Contract();
         contract.localSymbol(code);
         contract.secType(Types.SecType.STK);
@@ -555,13 +560,17 @@ public class TradeApi {
                 cdl.countDown();
             }
         });
-        cdl.await(2, TimeUnit.SECONDS);
+        try {
+            cdl.await(2, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error("ignore error. {}", code, e);
+        }
 
         return contract.conid();
     }
 
     /**
-     * @param datetime      2025-03-03 15:59:50
+     * @param datetime      20250303-15:59:50 需要utc时间
      * @param beforeOrAfter after=true before=false
      * @return
      */
@@ -574,12 +583,15 @@ public class TradeApi {
     }
 
     /**
+     * @param conId       conId
      * @param price       10d
      * @param greatOrLess great=true less=false
      * @return
      */
-    public PriceCondition buildPriceCond(double price, boolean greatOrLess) {
+    public PriceCondition buildPriceCond(int conId, double price, boolean greatOrLess) {
         PriceCondition priceCondition = (PriceCondition) OrderCondition.create(OrderConditionType.Price);
+        priceCondition.conId(conId);
+        priceCondition.exchange("SMART");
         priceCondition.price(price);
         priceCondition.isMore(greatOrLess);
 
@@ -592,6 +604,7 @@ public class TradeApi {
         contract.localSymbol(code);
         contract.secType(Types.SecType.STK);
         contract.exchange("SMART");
+        contract.currency("USD");
 
         Order order = new Order();
         order.action(Types.Action.BUY);
@@ -627,9 +640,10 @@ public class TradeApi {
         order.orderType(OrderType.MKT);
         order.totalQuantity(Decimal.get(count));
 
-        TimeCondition timeCondition = buildTimeCond(date + "-14:30:05", timeCond);
+        TimeCondition timeCondition = buildTimeCond(date + openTime, timeCond);
         timeCondition.conjunctionConnection(true);
-        PriceCondition priceCondition = buildPriceCond(price, priceCond);
+        int stockConId = getStockConId(code);
+        PriceCondition priceCondition = buildPriceCond(stockConId, price, priceCond);
         order.conditions(Lists.newArrayList(timeCondition, priceCondition));
         order.conditionsIgnoreRth(false);
 
@@ -651,12 +665,12 @@ public class TradeApi {
 
     // 20250305-20:59:59
     // 开盘上涨开盘买
-    public long placeUpOpenBuyStockOrder(String code, int count, double price, String date) {
+    public long placeUpOpenBuyStockOpenOrder(String code, int count, double price, String date) {
         return placeUpDownOpenBuyStockOpenOrder(code, count, price, date, true, false);
     }
 
     // 开盘下跌开盘买
-    public long placeDownOpenBuyStockOrder(String code, int count, double price, String date) {
+    public long placeDownOpenBuyStockOpenOrder(String code, int count, double price, String date) {
         return placeUpDownOpenBuyStockOpenOrder(code, count, price, date, false, false);
     }
 
@@ -673,9 +687,10 @@ public class TradeApi {
         order.orderType(OrderType.MKT);
         order.totalQuantity(Decimal.get(count));
 
-        TimeCondition timeCondition = buildTimeCond(date + "-20:59:50", timeCond);
+        TimeCondition timeCondition = buildTimeCond(date + closeTime, timeCond);
         timeCondition.conjunctionConnection(true);
-        PriceCondition priceCondition = buildPriceCond(price, priceCond);
+        int stockConId = getStockConId(code);
+        PriceCondition priceCondition = buildPriceCond(stockConId, price, priceCond);
         order.conditions(Lists.newArrayList(timeCondition, priceCondition));
         order.conditionsIgnoreRth(false);
 
@@ -705,24 +720,42 @@ public class TradeApi {
         return placeUpDownCloseBuyStockCloseOrder(code, count, price, date, true, true);
     }
 
+    public void calTradeTime() {
+        LocalDateTime summerTime = BaseUtils.getSummerTime(null);
+        LocalDateTime winterTime = BaseUtils.getWinterTime(null);
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(summerTime) && now.isBefore(winterTime)) {
+            openTime = "-13:30:05";
+            closeTime = "-19:59:50";
+        } else {
+            openTime = "-14:30:05";
+            closeTime = "-20:59:50";
+        }
+    }
+
     public static void main(String[] args) {
-        TradeApi tradeApi = new TradeApi(true);
-        tradeApi.reqPosition();
-        double accountCash = tradeApi.getAccountCash();
-        System.out.println(accountCash);
-        double pnl = tradeApi.getPnl();
-        accountCash = accountCash - pnl;
-        System.out.println(accountCash);
+        TradeApi tradeApi = new TradeApi(false);
+        //        tradeApi.reqPosition();
+        //        double accountCash = tradeApi.getAccountCash();
+        //        System.out.println(accountCash);
+        //        double pnl = tradeApi.getPnl();
+        //        accountCash = accountCash - pnl;
+        //        System.out.println(accountCash);
         int count = 1;
         //        tradeApi.positionHandler.setAvgCost("NVDA240802P00110000", count);
         String code = "NVDA  241011P00125000";
         //        long orderId = tradeApi.placeNormalBuyOrder(code, count, 0.6);
-        TimeCondition timeCondition = tradeApi.buildTimeCond("2025-03-05 15:59:59", true);
+        TimeCondition timeCondition = tradeApi.buildTimeCond("20250311-20:59:59", true);
         timeCondition.conjunctionConnection(true);
-        PriceCondition priceCondition = tradeApi.buildPriceCond(220d, false);
-        long orderId = tradeApi.placeMarketConditionBuyStockOrder("AAPL", 1, Lists.newArrayList(timeCondition, priceCondition));
+        PriceCondition priceCondition = tradeApi.buildPriceCond(265598, 220d, false);
+        //        long orderId = tradeApi.placeMarketConditionBuyStockOrder("AAPL", 1, Lists.newArrayList(timeCondition, priceCondition));
+//        long orderId = tradeApi.placeDownCloseBuyStockCloseOrder("AAPL", 1, 220, "20250310");
+//        tradeApi.placeUpCloseBuyStockCloseOrder("AMZN", 1, 220, "20250310");
+//        tradeApi.placeDownOpenBuyStockOpenOrder("TSLA", 1, 220, "20250310");
+//        tradeApi.placeUpOpenBuyStockOpenOrder("GOOG", 1, 220, "20250310");
+//        tradeApi.placeOpenBuyStockOrder("AMD", 1);
         //        long orderId = tradeApi.placeNormalBuyOrderForStock("AAPL", 1, 224.6);
-        System.out.println("orderId: " + orderId);
+//        System.out.println("orderId: " + orderId);
         //        bean.Order order = tradeApi.getOrder(orderId);
         //        tradeApi.setPositionAvgCost(code, order.getAvgPrice());
 
