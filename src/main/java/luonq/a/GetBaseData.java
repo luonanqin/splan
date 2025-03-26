@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static util.Constants.HS_BASE_PATH;
+import static util.Constants.SS_BASE_PATH;
 
 /**
  * 历史每日成交数据
@@ -58,11 +59,11 @@ public class GetBaseData {
         //		getHSData();
         //		lastDay = getLastDay();
         lastDay = "20240901";
-        today = "2025-03-22";
-        //        getOnedayIncrementalData(HS_BASE_PATH, Lists.newArrayList("002276","002352"));
-        //        		getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
-//        getIncrementalData(SS_BASE_PATH, Stock.getSsList(), 128);
-        getIncrementalData(HS_BASE_PATH, Stock.getHsList(), 128);
+        today = "2025-03-26";
+        //                getOnedayIncrementalData(HS_BASE_PATH, Lists.newArrayList("002276","002352"));
+        //        getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
+        getIncrementalData(SS_BASE_PATH, Stock.getSsList(), 2);
+        getIncrementalData(HS_BASE_PATH, Stock.getHsList(), 2);
     }
 
     private static void getOnedayIncrementalData(String rootPath, List<String> codeList) throws Exception {
@@ -76,10 +77,10 @@ public class GetBaseData {
 
             boolean exist = BaseUtils.fileExist(path);
             if (exist) {
-                continue;
+                //                continue;
             }
 
-            Thread.sleep(5000);
+            Thread.sleep(3000);
             writeData(code, path, uri);
         }
     }
