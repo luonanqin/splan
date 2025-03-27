@@ -25,6 +25,7 @@ public class StockKLine {
     private double close;
     private double high;
     private double low;
+    private double lastClose; // 昨收
     private double change; // 涨跌金额
     private double changePnt; // 涨跌百分比
     //    private double volume; // 成交量非成交额

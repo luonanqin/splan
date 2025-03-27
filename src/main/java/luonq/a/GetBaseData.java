@@ -58,12 +58,14 @@ public class GetBaseData {
         //		getSSData();
         //		getHSData();
         //		lastDay = getLastDay();
-        lastDay = "20240901";
-        today = "2025-03-26";
-        //                getOnedayIncrementalData(HS_BASE_PATH, Lists.newArrayList("002276","002352"));
-        //        getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
-        getIncrementalData(SS_BASE_PATH, Stock.getSsList(), 2);
-        getIncrementalData(HS_BASE_PATH, Stock.getHsList(), 2);
+        lastDay = "2025-03-26";
+        today = "2025-03-27";
+        //        getOnedayIncrementalData(HS_BASE_PATH, Lists.newArrayList("002276", "002352"));
+        getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
+        getOnedayIncrementalData(SS_BASE_PATH, Stock.getSsList());
+        //                getIncrementalData(SS_BASE_PATH, Lists.newArrayList("000001"), 2);
+        //        getIncrementalData(SS_BASE_PATH, Stock.getSsList(), 2);
+        //        getIncrementalData(HS_BASE_PATH, Stock.getHsList(), 2);
     }
 
     private static void getOnedayIncrementalData(String rootPath, List<String> codeList) throws Exception {
@@ -75,9 +77,14 @@ public class GetBaseData {
             String path = rootPath + code + ".csv";
             String uri = URL_PREFIX + "&query=" + code + "&code=" + code + "&end_time=" + today + "&count=" + count;
 
-            boolean exist = BaseUtils.fileExist(path);
-            if (exist) {
-                //                continue;
+            List<String> lines = BaseUtils.readFile(path);
+            if (lines.isEmpty()) {
+                System.out.println(code + " is empty");
+                continue;
+            }
+            String last = lines.get(lines.size() - 1);
+            if (last.contains(lastDay)) {
+                continue;
             }
 
             Thread.sleep(3000);

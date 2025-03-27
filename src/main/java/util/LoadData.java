@@ -253,16 +253,21 @@ public class LoadData {
                     String date = split[1];
                     double open = Double.parseDouble(split[2]);
                     double close = Double.parseDouble(split[3]);
-                    BigDecimal volumnCount = BigDecimal.valueOf(Long.valueOf(split[4]));
+                    String volStr = split[4];
+                    if (volStr.equals("--")) {
+                        continue;
+                    }
+                    BigDecimal volumnCount = BigDecimal.valueOf(Long.valueOf(volStr));
                     double highest = Double.parseDouble(split[5]);
                     double lowest = Double.parseDouble(split[6]);
+                    double lastClose = Double.parseDouble(split[11]);
                     String volumnMoney = split[7];
                     //					String rise = split[9];
                     //					String turnoverRate = split[10];
                     //					String market = split[13];
                     //					String circulatedMarket = split[14];
 
-                    StockKLine stockKLine = StockKLine.builder().code(code).date(date).open(open).close(close).high(highest).low(lowest).volume(volumnCount).build();
+                    StockKLine stockKLine = StockKLine.builder().code(code).date(date).open(open).close(close).high(highest).low(lowest).volume(volumnCount).lastClose(lastClose).build();
 
                     // 上市首日
                     //					if (close.equals("0.0")) {
@@ -319,7 +324,7 @@ public class LoadData {
 
                 kLineMap.put(code, stockKLines);
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(path);
             } finally {
                 try {
                     br.close();

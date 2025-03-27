@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 从前10天到前128天之间，找出这段时间里的两个高点（当日最高价），即高点和次高点，然后选出这两个高点之间差值比例小于10%，即最高点/次高点-1<0.1
+ * 从前20天到前128天之间，找出这段时间里的最高点（当日最高价），然后计算这个高点和当天高点之间差值比例小于15%
+ * 例如：002553 2025.3.13
  */
 public class Filter1 {
 
@@ -17,31 +18,58 @@ public class Filter1 {
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
+            if (!code.equals("601212")) {
+                //                continue;
+            }
             List<StockKLine> stockKLines = kLineMap.get(code);
+            if (stockKLines.size() < 100) {
+                continue;
+            }
 
-            int highIndex1 = 0;
-            double high1 = stockKLines.get(highIndex1).getHigh();
+            double spHigh = 0;
             for (int i = 0; i < stockKLines.size(); i++) {
-                double compareHigh = stockKLines.get(i).getHigh();
-                if (high1 < compareHigh) {
-                    high1 = compareHigh;
-                    highIndex1 = i;
+                StockKLine kLine = stockKLines.get(i);
+                if (kLine.getDate().equals("2024-10-08")) {
+                    spHigh = kLine.getHigh();
                 }
             }
 
-            int highIndex2 = highIndex1 == 0 ? 1 : 0;
-            double high2 = stockKLines.get(highIndex2).getHigh();
-            for (int i = 0; i < stockKLines.size(); i++) {
-                if (highIndex1 == i) {
-                    continue;
+            double high = Double.MIN_VALUE;
+            for (int i = stockKLines.size() - 21; i >= 0; i--) {
+                StockKLine kLine = stockKLines.get(i);
+                if (kLine.getDate().equals("2024-11-19")) {
+                    break;
                 }
+                double compareHigh = kLine.getHigh();
+                if (high < compareHigh) {
+                    high = compareHigh;
+                }
+            }
+            if (high < spHigh) {
+                continue;
+            }
+
+            double high2 = Double.MIN_VALUE;
+            int high2Index = 0;
+            for (int i = stockKLines.size() - 1; i >= stockKLines.size() - 20; i--) {
                 double compareHigh = stockKLines.get(i).getHigh();
                 if (high2 < compareHigh) {
                     high2 = compareHigh;
-                    highIndex2 = i;
+                    high2Index = stockKLines.size() - i;
                 }
             }
-            System.out.println(code + " " + stockKLines.get(highIndex1).getDate() + " " + stockKLines.get(highIndex2).getDate());
+
+            StockKLine curkLine = stockKLines.get(stockKLines.size() - 1);
+            double curClose = curkLine.getClose();
+            StockKLine _5kLine = stockKLines.get(stockKLines.size() - 9);
+            double _5High = _5kLine.getHigh();
+            double _5close = _5kLine.getClose();
+
+            double highRatio = Math.abs(high / _5High - 1) * 100;
+            double curHighRatio = Math.abs(high2 / _5High - 1) * 100;
+            if (highRatio < 10 && _5close < 15 && curHighRatio < 15 && high2Index < 3 && curClose < _5close) {
+                System.out.println(code);
+            }
         }
     }
 }
