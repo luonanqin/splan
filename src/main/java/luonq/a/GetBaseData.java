@@ -58,8 +58,8 @@ public class GetBaseData {
         //		getSSData();
         //		getHSData();
         //		lastDay = getLastDay();
-        lastDay = "2025-03-26";
-        today = "2025-03-27";
+        lastDay = "2025-03-27";
+        today = "2025-03-28";
         //        getOnedayIncrementalData(HS_BASE_PATH, Lists.newArrayList("002276", "002352"));
         getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
         getOnedayIncrementalData(SS_BASE_PATH, Stock.getSsList());

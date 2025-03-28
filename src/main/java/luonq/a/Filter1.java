@@ -61,13 +61,13 @@ public class Filter1 {
 
             StockKLine curkLine = stockKLines.get(stockKLines.size() - 1);
             double curClose = curkLine.getClose();
-            StockKLine _5kLine = stockKLines.get(stockKLines.size() - 9);
+            StockKLine _5kLine = stockKLines.get(stockKLines.size() - 6);
             double _5High = _5kLine.getHigh();
             double _5close = _5kLine.getClose();
 
             double highRatio = Math.abs(high / _5High - 1) * 100;
             double curHighRatio = Math.abs(high2 / _5High - 1) * 100;
-            if (highRatio < 10 && _5close < 15 && curHighRatio < 15 && high2Index < 3 && curClose < _5close) {
+            if (highRatio < 10 && _5close < 15 && curHighRatio < 15 && high2Index < 3) {
                 System.out.println(code);
             }
         }
