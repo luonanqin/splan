@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 找出近8天，波动小于15的股票
+ * 快跌横盘。找出近8天，波动小于15的股票
  * 例如：603949 2025-03-13之前
  */
 public class Filter4 {
@@ -29,7 +29,7 @@ public class Filter4 {
             if (latest.getClose() > 15d) {
                 //                continue;
             }
-            if (stockKLines.size() < temp+20) {
+            if (stockKLines.size() < temp + 20) {
                 System.out.println("x " + code);
                 continue;
             }
@@ -68,8 +68,8 @@ public class Filter4 {
                 }
             }
 
-//            boolean greater = lastDay.getClose() > firstDay.getClose();
-                        boolean greater = true;
+            //            boolean greater = lastDay.getClose() > firstDay.getClose();
+            boolean greater = true;
             if (lowHighDiff < 15 && greater && upTop && downTop) {
                 System.out.println(code);
             }
