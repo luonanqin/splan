@@ -22,7 +22,7 @@ public class Filter5 extends BaseFilter{
         Map<String, Integer> map = Maps.newHashMap();
         for (String code : kLineMap.keySet()) {
             if (!code.equals("605588")) {
-                continue;
+//                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
             int temp = 0;
