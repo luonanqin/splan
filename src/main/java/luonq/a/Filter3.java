@@ -36,7 +36,7 @@ public class Filter3 {
                 continue;
             }
             if (stockKLines.size() < 128) {
-                System.out.println("x " + code);
+//                System.out.println("x " + code);
                 continue;
             }
 

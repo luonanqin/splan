@@ -1,7 +1,6 @@
 package luonq.a;
 
 import bean.StockKLine;
-import com.google.common.collect.Maps;
 import util.LoadData;
 
 import java.math.BigDecimal;
@@ -10,7 +9,7 @@ import java.util.Map;
 
 /**
  * 前一天涨停然后连续三天下跌，其中第三天最低点超过涨停那天最低点，整体量没有大变化
- * 例如：603949 2025-03-13之前
+ * 例如：002358 2025-03-06之后
  */
 public class Filter6 extends BaseFilter{
 
@@ -19,7 +18,6 @@ public class Filter6 extends BaseFilter{
 
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
-        Map<String, Integer> map = Maps.newHashMap();
         for (String code : kLineMap.keySet()) {
             if (!code.equals("605588")) {
                 //                continue;
@@ -31,7 +29,7 @@ public class Filter6 extends BaseFilter{
                 continue;
             }
             if (stockKLines.size() < temp + 20) {
-                System.out.println("x " + code);
+//                System.out.println("x " + code);
                 continue;
             }
 
@@ -50,6 +48,9 @@ public class Filter6 extends BaseFilter{
             boolean lowTolow = _4Kline.getLow() > _1Kline.getLow();
 
             BigDecimal upDayAvgVol = avgVolMap.get(_4Kline.getDate());
+            if (upDayAvgVol == null) {
+                continue;
+            }
             BigDecimal multi3AvgVol = upDayAvgVol.multiply(BigDecimal.valueOf(3));
             boolean great3AvgVol = _4Kline.getVolume().compareTo(multi3AvgVol) < 0;
 

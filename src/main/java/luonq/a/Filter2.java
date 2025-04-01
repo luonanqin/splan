@@ -25,7 +25,12 @@ public class Filter2 {
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
             if (stockKLines.size() < 11) {
-                System.out.println("x " + code);
+                //                System.out.println("x " + code);
+                continue;
+            }
+            StockKLine latest = stockKLines.get(stockKLines.size() - 1);
+            double curClose = latest.getClose();
+            if (curClose > 15) {
                 continue;
             }
 

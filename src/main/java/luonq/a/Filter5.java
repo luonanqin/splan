@@ -12,7 +12,7 @@ import java.util.Map;
  * 前一天上涨超过3%然后连续三天下跌超过3%，且下跌三天连续缩量，整体量没有大变化
  * 例如：605588 2025-03-19之后
  */
-public class Filter5 extends BaseFilter{
+public class Filter5 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
@@ -22,16 +22,16 @@ public class Filter5 extends BaseFilter{
         Map<String, Integer> map = Maps.newHashMap();
         for (String code : kLineMap.keySet()) {
             if (!code.equals("605588")) {
-//                continue;
+                //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
             int temp = 0;
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
             if (latest.getClose() > 15d) {
-                //                continue;
+                                continue;
             }
             if (stockKLines.size() < temp + 20) {
-                System.out.println("x " + code);
+//                System.out.println("x " + code);
                 continue;
             }
 
@@ -49,6 +49,9 @@ public class Filter5 extends BaseFilter{
             boolean _2to3VolCompare = _2Kline.getVolume().compareTo(_3Kline.getVolume()) < 0;
 
             BigDecimal upDayAvgVol = avgVolMap.get(_4Kline.getDate());
+            if (upDayAvgVol == null) {
+                continue;
+            }
             BigDecimal multi3AvgVol = upDayAvgVol.multiply(BigDecimal.valueOf(3));
             boolean great3AvgVol = _4Kline.getVolume().compareTo(multi3AvgVol) < 0;
 

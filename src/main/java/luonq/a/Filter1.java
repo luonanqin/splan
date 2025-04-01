@@ -26,6 +26,12 @@ public class Filter1 {
                 continue;
             }
 
+            StockKLine latest = stockKLines.get(stockKLines.size() - 1);
+            double curClose = latest.getClose();
+            if (curClose > 15) {
+                continue;
+            }
+
             double spHigh = 0;
             for (int i = 0; i < stockKLines.size(); i++) {
                 StockKLine kLine = stockKLines.get(i);
@@ -59,8 +65,6 @@ public class Filter1 {
                 }
             }
 
-            StockKLine curkLine = stockKLines.get(stockKLines.size() - 1);
-            double curClose = curkLine.getClose();
             StockKLine _5kLine = stockKLines.get(stockKLines.size() - 6);
             double _5High = _5kLine.getHigh();
             double _5close = _5kLine.getClose();

@@ -27,10 +27,10 @@ public class Filter4 {
             int temp = 0;
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
             if (latest.getClose() > 15d) {
-                //                continue;
+                                continue;
             }
             if (stockKLines.size() < temp + 20) {
-                System.out.println("x " + code);
+//                System.out.println("x " + code);
                 continue;
             }
 
