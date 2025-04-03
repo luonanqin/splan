@@ -25,9 +25,9 @@ public class BaseFilter {
             BigDecimal avgVol = vol.divide(BigDecimal.valueOf(50), 0, RoundingMode.HALF_UP);
             vol = vol.subtract(stockKLines.get(i - 50).getVolume());
 
-            if (stockKLines.size() - i > 50) {
-                continue;
-            }
+//            if (stockKLines.size() - i > 50) {
+//                continue;
+//            }
             avgVolMap.put(kLine.getDate(), avgVol);
         }
 
