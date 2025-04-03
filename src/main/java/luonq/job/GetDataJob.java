@@ -2,6 +2,7 @@ package luonq.job;
 
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import luonq.a.GetBaseData;
 import luonq.execute.GrabOptionTradeData;
 import luonq.stock.Processor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,12 @@ public class GetDataJob extends BaseJob {
         log.info("getOptionTradeData.job start");
         grabOptionTradeData.grab();
         log.info("getOptionTradeData.job end");
+    }
+
+    @XxlJob("getABaseData.job")
+    public void getABaseData() throws Exception{
+        log.info("getABaseData.job start");
+        GetBaseData.getData();
+        log.info("getABaseData.job end");
     }
 }

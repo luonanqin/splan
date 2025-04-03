@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -35,8 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import static util.Constants.HS_BASE_PATH;
-import static util.Constants.SS_BASE_PATH;
+import static util.Constants.*;
 
 /**
  * 历史每日成交数据
@@ -44,7 +45,11 @@ import static util.Constants.SS_BASE_PATH;
  * https://finance.pae.baidu.com/vapi/v1/getquotation?srcid=5353&pointType=string&group=quotation_kline_ab&market_type=ab&newFormat=1&is_kc=0&ktype=day&finClientType=pc&end_time=2025-03-21&count=107&query=600000&code=600000
  * Created by Luonanqin on 1/14/19.
  */
+@Slf4j
 public class GetBaseData {
+
+    // 新一年的假期加在最前面
+    private static List<String> holidays = Lists.newArrayList("2025-04-04", "2025-05-01", "2025-05-02", "2025-06-02", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-06", "2025-10-07", "2025-10-08");
     private static HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
 
     private static String lastDay = "19960101", today = getToday();
@@ -58,14 +63,37 @@ public class GetBaseData {
         //		getSSData();
         //		getHSData();
         //		lastDay = getLastDay();
-        lastDay = "2025-03-28";
-        today = "2025-03-29";
+        lastDay = "2025-04-02";
+        today = "2025-04-03";
         //        getOnedayIncrementalData(SS_BASE_PATH, Lists.newArrayList("002276"));
         getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
         getOnedayIncrementalData(SS_BASE_PATH, Stock.getSsList());
         //                getIncrementalData(SS_BASE_PATH, Lists.newArrayList("000001"), 2);
         //        getIncrementalData(SS_BASE_PATH, Stock.getSsList(), 2);
         //        getIncrementalData(HS_BASE_PATH, Stock.getHsList(), 2);
+    }
+
+    public static void getData() throws Exception {
+        lastDay = "2025-04-02";
+        today = "2025-04-03";
+        LocalDate todayDate = LocalDate.now();
+        today = todayDate.format(DB_DATE_FORMATTER);
+        LocalDate lastDayDate = todayDate.minusDays(1);
+        lastDay = lastDayDate.format(DB_DATE_FORMATTER);
+
+        String holiday = holidays.get(0);
+        int holidayYear = Integer.parseInt(holiday.substring(0, 4));
+        if (lastDayDate.getYear() > holidayYear) {
+            log.error("there is no holiday for {}", holidayYear);
+            return;
+        }
+        if (lastDayDate.getDayOfWeek().getValue() > 5 || holidays.contains(lastDayDate)) {
+            log.info("yesterday is holiday");
+            return;
+        }
+
+        getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
+        getOnedayIncrementalData(SS_BASE_PATH, Stock.getSsList());
     }
 
     private static void getOnedayIncrementalData(String rootPath, List<String> codeList) throws Exception {
@@ -87,7 +115,7 @@ public class GetBaseData {
                 continue;
             }
 
-            Thread.sleep(3000);
+            Thread.sleep(1000);
             writeData(code, path, uri);
         }
     }

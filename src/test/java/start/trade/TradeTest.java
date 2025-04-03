@@ -72,4 +72,13 @@ public class TradeTest extends BaseTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void test_getABaseDataJob() {
+        try {
+            getDataJob.getABaseData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
