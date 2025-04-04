@@ -510,6 +510,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     }
 
     public void optUserSecurity(Map<String, Integer> codeMarketMap, String groupName, int opt) {
+        if (MapUtils.isEmpty(codeMarketMap)) {
+            log.warn("code market map is empty. groupName={}, opt={}", groupName, opt);
+            return;
+        }
         List<QotCommon.Security> securityList = codeMarketMap.entrySet().stream().map(e -> QotCommon.Security.newBuilder()
           .setMarket(e.getValue())
           .setCode(e.getKey())

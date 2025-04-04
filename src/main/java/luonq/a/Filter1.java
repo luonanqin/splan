@@ -1,6 +1,7 @@
 package luonq.a;
 
 import bean.StockKLine;
+import com.google.common.collect.Lists;
 import util.LoadData;
 
 import java.util.List;
@@ -13,8 +14,13 @@ import java.util.Map;
 public class Filter1 {
 
     public static void main(String[] args) {
+        cal();
+    }
+
+    public static List<String> cal() {
         LoadData.init();
 
+        List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
@@ -73,7 +79,10 @@ public class Filter1 {
             double curHighRatio = Math.abs(high2 / _5High - 1) * 100;
             if (highRatio < 10 && _5close < 15 && curHighRatio < 15 && high2Index < 3) {
                 System.out.println(code);
+                res.add(code);
             }
         }
+
+        return res;
     }
 }

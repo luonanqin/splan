@@ -2,6 +2,7 @@ package luonq.job;
 
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import luonq.a.FilterCalculator;
 import luonq.a.GetBaseData;
 import luonq.execute.GrabOptionTradeData;
 import luonq.stock.Processor;
@@ -54,5 +55,16 @@ public class GetDataJob extends BaseJob {
         log.info("getABaseData.job start");
         GetBaseData.getData();
         log.info("getABaseData.job end");
+    }
+
+    @Autowired
+    private FilterCalculator filterCalculator;
+
+    @XxlJob("filterCalculator.job")
+    public void filterCalculator() throws Exception{
+        log.info("filterCalculator.job start");
+        filterCalculator.init();
+        filterCalculator.cal();
+        log.info("filterCalculator.job end");
     }
 }

@@ -81,4 +81,13 @@ public class TradeTest extends BaseTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void test_filterCalculatorJob(){
+        try {
+            getDataJob.filterCalculator();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

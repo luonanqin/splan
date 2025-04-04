@@ -1,6 +1,7 @@
 package luonq.a;
 
 import bean.StockKLine;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import util.LoadData;
 
@@ -17,8 +18,13 @@ import java.util.Map;
 public class Filter3 {
 
     public static void main(String[] args) {
+        cal();
+    }
+
+    public static List<String> cal() {
         LoadData.init();
 
+        List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         Map<String, Integer> map = Maps.newHashMap();
@@ -95,6 +101,9 @@ public class Filter3 {
 
         for (String code : map.keySet()) {
             System.out.println(code + "\t" + map.get(code));
+            res.add(code);
         }
+
+        return res;
     }
 }
