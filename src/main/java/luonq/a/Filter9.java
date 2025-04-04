@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 找出近10天，成交量有大于50天均量线两倍至少2次，并且出现过一次连续下跌3天，并且10天前的40天最多出现1次成交量大于50天均量线两倍
- * 近15个交易日内要至少一次4%以上的涨幅
- * 例如：002628 2025.1.2至2025.3.21
+ * 找出近10天，成交量有大于50天均量线两倍至少2次，并且出现过一次连续下跌3天，并且10天前的40天最多出现1次成交量大于50天均量线两倍，并且近10天没有出现过一字板
+ * 例如：001258 2025-03-19至2025-04-01
  */
 public class Filter9 extends BaseFilter {
 
@@ -21,7 +20,7 @@ public class Filter9 extends BaseFilter {
 
         for (String code : kLineMap.keySet()) {
             if (!code.equals("001258")) {
-//                continue;
+                //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
             int temp = 0; // 用于测试历史数据做日期调整
@@ -47,10 +46,14 @@ public class Filter9 extends BaseFilter {
             }
 
             int last10UpAvgVolCount = 0;
+            boolean oneTop = false;
             for (int i = stockKLines.size() - 10 - temp; i < stockKLines.size() - temp; i++) {
                 StockKLine kLine = stockKLines.get(i);
                 if (kLine.getVolume().compareTo(avgVolMap.get(kLine.getDate()).multiply(BigDecimal.valueOf(2))) > 0) {
                     last10UpAvgVolCount++;
+                }
+                if (kLine.getClose() == kLine.getOpen()) {
+                    oneTop = true;
                 }
             }
 
@@ -61,7 +64,7 @@ public class Filter9 extends BaseFilter {
             double _2diffRatio = (_2Kline.getClose() / _2Kline.getLastClose() - 1) * 100;
             double _3diffRatio = (_3Kline.getClose() / _3Kline.getLastClose() - 1) * 100;
 
-            if (last40UpAvgVolCount <= 1 && last10UpAvgVolCount >= 2 && _1diffRatio < 0 && _2diffRatio < 0 && _3diffRatio < 0) {
+            if (last40UpAvgVolCount <= 1 && last10UpAvgVolCount >= 2 && _1diffRatio < 0 && _2diffRatio < 0 && _3diffRatio < 0 && !oneTop) {
                 System.out.println(code);
             }
         }

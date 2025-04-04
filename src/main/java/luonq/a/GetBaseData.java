@@ -63,8 +63,8 @@ public class GetBaseData {
         //		getSSData();
         //		getHSData();
         //		lastDay = getLastDay();
-        lastDay = "2025-04-02";
-        today = "2025-04-03";
+        lastDay = "2025-04-03";
+        today = "2025-04-04";
         //        getOnedayIncrementalData(SS_BASE_PATH, Lists.newArrayList("002276"));
         getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
         getOnedayIncrementalData(SS_BASE_PATH, Stock.getSsList());
@@ -74,8 +74,7 @@ public class GetBaseData {
     }
 
     public static void getData() throws Exception {
-        lastDay = "2025-04-02";
-        today = "2025-04-03";
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons.httpclient.HttpMethodBase").setLevel(Level.ERROR);
         LocalDate todayDate = LocalDate.now();
         today = todayDate.format(DB_DATE_FORMATTER);
         LocalDate lastDayDate = todayDate.minusDays(1);

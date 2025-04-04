@@ -11,7 +11,7 @@ import java.util.Map;
  * 前一天涨停然后连续三天下跌，其中第三天最低点超过涨停那天最低点，整体量没有大变化
  * 例如：002358 2025-03-06之后
  */
-public class Filter6 extends BaseFilter{
+public class Filter6 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
@@ -29,7 +29,7 @@ public class Filter6 extends BaseFilter{
                 continue;
             }
             if (stockKLines.size() < temp + 20) {
-//                System.out.println("x " + code);
+                //                System.out.println("x " + code);
                 continue;
             }
 
@@ -58,7 +58,7 @@ public class Filter6 extends BaseFilter{
             if (
               _1diffRatio < 0 && _2diffRatio < 0 && _3diffRatio < 0 &&
                 lowTolow && _4diffRatio > 9.95 && great3AvgVol
-                //                && _1to2VolCompare && _2to3VolCompare
+                && _1to2VolCompare && _2to3VolCompare
             ) {
                 System.out.println(code);
             }
