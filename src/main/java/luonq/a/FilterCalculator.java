@@ -54,13 +54,13 @@ public class FilterCalculator {
     }
 
     public void updateGroup(List<String> codeList, String group) {
+        Map<String, Integer> hisCodeMarket = quote.getUserSecurity(group);
+        quote.moveOutUserSecurity(hisCodeMarket, group);
+
         if (CollectionUtils.isEmpty(codeList)) {
             log.info("{} is empty", group);
             return;
         }
-
-        Map<String, Integer> hisCodeMarket = quote.getUserSecurity(group);
-        quote.moveOutUserSecurity(hisCodeMarket, group);
 
         Map<String, Integer> codeMarketMap = Maps.newHashMap();
         for (String code : codeList) {
