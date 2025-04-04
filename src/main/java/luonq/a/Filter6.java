@@ -1,6 +1,7 @@
 package luonq.a;
 
 import bean.StockKLine;
+import com.google.common.collect.Lists;
 import util.LoadData;
 
 import java.math.BigDecimal;
@@ -14,8 +15,13 @@ import java.util.Map;
 public class Filter6 extends BaseFilter {
 
     public static void main(String[] args) {
+        cal();
+    }
+
+    public static List<String> cal() {
         LoadData.init();
 
+        List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
@@ -61,8 +67,10 @@ public class Filter6 extends BaseFilter {
                 && _1to2VolCompare && _2to3VolCompare
             ) {
                 System.out.println(code);
+                res.add(code);
             }
         }
+        return res;
     }
 
 }

@@ -1,6 +1,7 @@
 package luonq.a;
 
 import bean.StockKLine;
+import com.google.common.collect.Lists;
 import util.LoadData;
 
 import java.util.List;
@@ -14,8 +15,13 @@ import java.util.Map;
 public class Filter8 extends BaseFilter {
 
     public static void main(String[] args) {
+        cal();
+    }
+
+    public static List<String> cal() {
         LoadData.init();
 
+        List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
@@ -61,9 +67,11 @@ public class Filter8 extends BaseFilter {
                 double close = kLine.getClose();
                 if (downCount >= 4 && close <= 15) {
                     System.out.println(kLine.getDate() + " " + code);
+                    res.add(code);
                 }
             }
         }
+        return res;
     }
 
 }

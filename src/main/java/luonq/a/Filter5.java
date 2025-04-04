@@ -1,6 +1,7 @@
 package luonq.a;
 
 import bean.StockKLine;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import util.LoadData;
 
@@ -15,8 +16,13 @@ import java.util.Map;
 public class Filter5 extends BaseFilter {
 
     public static void main(String[] args) {
+        cal();
+    }
+
+    public static List<String> cal() {
         LoadData.init();
 
+        List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         Map<String, Integer> map = Maps.newHashMap();
@@ -58,7 +64,9 @@ public class Filter5 extends BaseFilter {
             boolean greater = true;
             if (_1diffRatio < -3 && _2diffRatio < -3 && _3diffRatio < -3 && _4diffRatio > 3 && _1to2VolCompare && _2to3VolCompare && great3AvgVol) {
                 System.out.println(code);
+                res.add(code);
             }
         }
+        return res;
     }
 }
