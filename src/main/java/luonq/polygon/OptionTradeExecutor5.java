@@ -420,8 +420,8 @@ public class OptionTradeExecutor5 {
         tradeApi.stopForBuySpread_lmt(orderId, stopGainPrice);
         log.info("finish trade: buyCallOrder={}\tcall={}\tcall2={}\tcount={}\tcost={}", orderId, futuCall, futuCall2, count, avgPrice);
 
-        futuQuote.addUserSecurity(futuCall);
-        futuQuote.addUserSecurity(futuCall2);
+        futuQuote.addUsUserSecurity(futuCall);
+        futuQuote.addUsUserSecurity(futuCall2);
 
         buyOrderIdMap.put(ibkrCall, orderId);
         ReadWriteOptionTradeInfo.writeBuyOrderId(ibkrCall, (long) orderId);
