@@ -34,6 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 /**
  * Created by Luonanqin on 2023/5/5.
@@ -54,6 +57,8 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     private Map<String/* code */, String/* iv|updatetime */> optionIvTimeMap = Maps.newHashMap();
     private Map<String/* code */, Double/* trade */> optionTradeMap = Maps.newHashMap();
     private Map<String/* code */, Boolean/* show price */> showTradePriceMap = Maps.newHashMap();
+
+    private BlockingQueue<Map> codeMarketMapQueue = new LinkedBlockingQueue<>(1);
 
     @Data
     public static class StockQuote {
@@ -424,12 +429,19 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
-    public void getUserSecurity(String groupName) {
+    public Map<String, Integer> getUserSecurity(String groupName) {
         QotGetUserSecurity.C2S c2s = QotGetUserSecurity.C2S.newBuilder()
-          .setGroupName("观察")
+          .setGroupName(groupName)
           .build();
         QotGetUserSecurity.Request req = QotGetUserSecurity.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.getUserSecurity(req);
+        Map<String, Integer> map = null;
+        try {
+            map = codeMarketMapQueue.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 
     @Override
@@ -438,9 +450,18 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
             System.out.printf("QotGetUserSecurity failed: %s\n", rsp.getRetMsg());
         } else {
             try {
-                String json = JsonFormat.printer().print(rsp);
-                System.out.printf("Receive QotGetUserSecurity: %s\n", json);
-            } catch (InvalidProtocolBufferException e) {
+                Map<String, Integer> codeMarketMap = Maps.newHashMap();
+                //                String json = JsonFormat.printer().print(rsp);
+                //                System.out.printf("Receive QotGetUserSecurity: %s\n", json);
+                List<QotCommon.SecurityStaticInfo> staticInfoListList = rsp.getS2COrBuilder().getStaticInfoListList();
+                for (QotCommon.SecurityStaticInfo securityStaticInfo : staticInfoListList) {
+                    QotCommon.Security security = securityStaticInfo.getBasic().getSecurity();
+                    int market = security.getMarket();
+                    String code = security.getCode();
+                    codeMarketMap.put(code, market);
+                }
+                codeMarketMapQueue.offer(codeMarketMap);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -480,25 +501,33 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         }
     }
 
-    public void delUserSecurity(String groupName){
-        QotCommon.Security sec = QotCommon.Security.newBuilder()
-//          .setMarket(market)
-//          .setCode(code)
-          .build();
+    public void addUserSecurity(Map<String, Integer> codeMarketMap, String groupName) {
+        optUserSecurity(codeMarketMap, groupName, QotModifyUserSecurity.ModifyUserSecurityOp.ModifyUserSecurityOp_Add_VALUE);
+    }
+
+    public void moveOutUserSecurity(Map<String, Integer> codeMarketMap, String groupName) {
+        optUserSecurity(codeMarketMap, groupName, QotModifyUserSecurity.ModifyUserSecurityOp.ModifyUserSecurityOp_MoveOut_VALUE);
+    }
+
+    public void optUserSecurity(Map<String, Integer> codeMarketMap, String groupName, int opt) {
+        List<QotCommon.Security> securityList = codeMarketMap.entrySet().stream().map(e -> QotCommon.Security.newBuilder()
+          .setMarket(e.getValue())
+          .setCode(e.getKey())
+          .build()).collect(Collectors.toList());
+
+        //        QotCommon.Security sec = QotCommon.Security.newBuilder()
+        //          .setMarket(11)
+        //          .setCode("AAPL")
+        //          .build();
         QotModifyUserSecurity.C2S c2s = QotModifyUserSecurity.C2S.newBuilder()
           .setGroupName(groupName)
-          .setOp(QotModifyUserSecurity.ModifyUserSecurityOp.ModifyUserSecurityOp_Del_VALUE)
-          .addSecurityList(sec)
+          .setOp(opt)
+          //          .addSecurityList(sec)
+          .addAllSecurityList(securityList)
           .build();
         QotModifyUserSecurity.Request req = QotModifyUserSecurity.Request.newBuilder().setC2S(c2s).build();
         int seqNo = qot.modifyUserSecurity(req);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-//        log.info("addUserSecurity success. groupName={}, code={}", groupName, code);
-
+        log.info("optUserSecurity success. groupName={}, opt={}, codeAndMarket={}", groupName, opt, codeMarketMap);
     }
 
     public static void main(String[] args) throws Exception {
@@ -511,9 +540,15 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
 
         List<String> codeList = Lists.newArrayList("000612", "000973", "000972", "002918", "000735", "603132", "601198", "603377", "603015", "603017", "002905", "002908", "603363", "600094", "600097", "603123", "603002", "603126", "000993", "000751", "603229", "000633", "000510", "000759", "000636", "002816", "603117", "603599", "000980", "002928", "000504", "000509", "000507", "600193", "603103", "600076", "603585", "603227", "603106", "603328", "000932", "000816", "603693", "600063", "601033", "603697", "601156", "600187", "600067", "603458", "603577", "603578", "603336", "601018", "000802", "000922", "000928", "000809", "600053", "603686", "600176", "600299", "600178", "600179", "000959", "000958", "600282", "600284", "601010", "601133", "601015", "600168", "603798", "000821", "000820", "000701", "000708", "000705", "001914", "603660", "600392", "600151", "600152", "601002", "600155", "600156", "601003", "600399", "600279", "603303", "002996", "002875", "002512", "002513", "601901", "002750", "002630", "600815", "000697", "600817", "002758", "002516", "002638", "002519", "603098", "605399", "000582", "002622", "002501", "002860", "600802", "002861", "000567", "002620", "002626", "002628", "603081", "603088", "605388", "000571", "000691", "002898", "000595", "002410", "600916", "002660", "002782", "002766", "000584", "002647", "002526", "002761", "002641", "002883", "002520", "002763", "002769", "002527", "002649", "605122", "603065", "603066", "002890", "605366", "603188", "000592", "000531", "000892", "002951", "000659", "000899", "000657", "000419", "603172", "603055", "605599", "603177", "000882", "000886", "000523", "002828", "000528", "002708", "002825", "000529", "605580", "603161", "603165", "603162", "603041", "603042", "603168", "000672", "002735", "000797", "002973", "000796", "002616", "603390", "603033", "603399", "603278", "603155", "000680", "605337", "603038", "002721", "002600", "000782", "002724", "002603", "002966", "002609", "000547", "000426", "000668", "002606", "603020", "000791", "603027", "603028", "600897", "002479", "600777", "601989", "603801", "600658", "600416", "600538", "603808", "002598", "603806", "000061", "002120", "002122", "600782", "601872", "600300", "002480", "002360", "600644", "600523", "002226", "001258", "002106", "600525", "600405", "600648", "002343", "002586", "601619", "002224", "002225", "002110", "002111", "600892", "600651", "600774", "002259", "600513", "002019", "600636", "603901", "600516", "601606", "600759", "002498", "601608", "002015", "002378", "002016", "002379", "002258", "002020", "002263", "002385", "601611", "002382", "600622", "002248", "600744", "601958", "002244", "002124", "002245", "600507", "002246", "002488", "002489", "600509", "002373", "002494", "002011", "002254", "002250", "002677", "000014", "002679", "002558", "600615", "002673", "600857", "600979", "000016", "002554", "600739", "600619", "002682", "002440", "600981", "600982", "600983", "600863", "002787", "002424", "600843", "002546", "002789", "001216", "002426", "002427", "002662", "001331", "600846", "600847", "600727", "002786", "000488", "002423", "000009", "002309", "002790", "002793", "002672", "600973", "000157", "002215", "600710", "002337", "002458", "601801", "600955", "600834", "002453", "002696", "002454", "002697", "001366", "000037", "002456", "600719", "605050", "605055", "002340", "002204", "001236", "002446", "002207", "000029", "002200", "600703", "002322", "600825", "002686", "002202", "600705", "000026", "002324", "600829", "002329", "002208", "002209", "605166", "002570", "002693", "002451", "000030", "601108", "002079", "600380", "600023", "603535", "600268", "603759", "603639", "603637", "601339", "603879", "002069", "002191", "600490", "603880", "600491", "600130", "601101", "600495", "601222", "600133", "600497", "600255", "002195", "003042", "600358", "603869", "600359", "000911", "000910", "000917", "600360", "603993", "601330", "600241", "600121", "600243", "603997", "600366", "600468", "600105", "600228", "603978", "603739", "000902", "000903", "002090", "600470", "603982", "002098", "002099", "601200", "600595", "600232", "600233", "600597", "002094", "600234", "601566", "600215", "600216", "603848", "600459", "603725", "002035", "002399", "002038", "002042", "600582", "002043", "600343", "600222", "601798", "002041", "603836", "601777", "000088", "600207", "603719", "002145", "002024", "600208", "002394", "600330", "002033", "002275", "600452", "603601", "603843", "600696", "002391", "002030", "600556", "600435", "600558", "603703", "603828", "003032", "600320", "002067", "600203", "600667", "600425", "600789", "601515", "600428", "600429", "603817", "600550", "002176", "002170", "600310", "002173");
         for (String code : codeList) {
-//            quote.addChinaUserSecurity(code, "Filter5");
+            //            quote.addChinaUserSecurity(code, "Filter5");
         }
-        quote.delUserSecurity("Filter5");
+        Map<String, Integer> filter = quote.getUserSecurity("Filter6");
+        System.out.println(filter);
+        quote.moveOutUserSecurity(filter, "Filter6");
+        //        filter.clear();
+        //        filter.put("AAPL", 11);
+        filter = quote.getUserSecurity("美股");
+        quote.addUserSecurity(filter, "Filter6");
         //        quote.getUserSecurity();
         //        quote.addUserSecurity("AAPL");
         //        quote.addUserSecurity("AAPL240809C210000");

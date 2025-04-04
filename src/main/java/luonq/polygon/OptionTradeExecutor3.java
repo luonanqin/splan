@@ -506,9 +506,9 @@ public class OptionTradeExecutor3 {
                         }
                     }
                 }
-                futuQuote.addUserSecurity(putFutu);
-                futuQuote.addUserSecurity(callFutu);
-                futuQuote.addUserSecurity(stock);
+                futuQuote.addUsUserSecurity(putFutu);
+                futuQuote.addUsUserSecurity(callFutu);
+                futuQuote.addUsUserSecurity(stock);
                 log.info("begin trade: buyCallOrder={}\tcall={}\tcallPrice={}\tbuyPutOrder={}\tput={}\tputPrice={}\tcount={}", buyCallOrderId, call, callCalcPrice, buyPutOrderId, put, putCalcPrice, count);
 
                 // 测试阶段用预定限额控制下单股票

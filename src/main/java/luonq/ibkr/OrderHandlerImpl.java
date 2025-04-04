@@ -1,6 +1,7 @@
 package luonq.ibkr;
 
 import com.ib.client.Decimal;
+import com.ib.client.Order;
 import com.ib.client.OrderState;
 import com.ib.client.OrderStatus;
 import com.ib.controller.ApiController;
@@ -20,7 +21,7 @@ public class OrderHandlerImpl implements ApiController.IOrderHandler {
     private int errorCode;
 
     @Override
-    public void orderState(OrderState orderState) {
+    public void orderState(OrderState orderState, Order order) {
         //        System.out.println("orderState: " + orderState);
     }
 
