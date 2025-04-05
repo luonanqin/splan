@@ -58,7 +58,7 @@ public class Filter10 extends BaseFilter {
             boolean lessThan3 = _2Kline.getVolume().compareTo(_3Kline.getVolume()) < 0;
             boolean lessThan2 = _1Kline.getVolume().compareTo(_2Kline.getVolume()) < 0;
 
-            if (_3diffRatio > 6 && lowThanOpen && highThanLow && greatAvgVol && lessThan2 && lessThan3) {
+            if (_3diffRatio > 6 && _1diffRatio < 0 && _2diffRatio < 0 && lowThanOpen && highThanLow && greatAvgVol && lessThan2 && lessThan3) {
                 System.out.println(code);
                 res.add(code);
             }
