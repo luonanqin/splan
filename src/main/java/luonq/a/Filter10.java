@@ -26,16 +26,16 @@ public class Filter10 extends BaseFilter {
 
         for (String code : kLineMap.keySet()) {
             if (!code.equals("600156")) {
-                continue;
+//                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 0; // 用于测试历史数据做日期调整
+            int temp = 10; // 用于测试历史数据做日期调整
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
             double curClose = latest.getClose();
             double curLastClose = latest.getLastClose();
             double curRatio = (curClose / curLastClose - 1) * 100;
             if (curClose > 15d) {
-                continue;
+//                continue;
             }
             if (stockKLines.size() < 128) {
                 //                System.out.println("x " + code);
@@ -55,10 +55,10 @@ public class Filter10 extends BaseFilter {
             boolean highThanLow = _1Kline.getClose() > _3Kline.getLow();
             BigDecimal avgVol = avgVolMap.get(_3Kline.getDate());
             boolean greatAvgVol = _3Kline.getVolume().compareTo(avgVol.multiply(BigDecimal.valueOf(2))) > 0;
-            boolean lessThan3 = _2Kline.getVolume().compareTo(_1Kline.getVolume()) < 0;
-            boolean lessThan2 = _3Kline.getVolume().compareTo(_2Kline.getVolume()) < 0;
+            boolean lessThan3 = _2Kline.getVolume().compareTo(_3Kline.getVolume()) < 0;
+            boolean lessThan2 = _1Kline.getVolume().compareTo(_2Kline.getVolume()) < 0;
 
-            if (_1diffRatio > 6 && lowThanOpen && highThanLow && greatAvgVol && lessThan2 && lessThan3) {
+            if (_3diffRatio > 6 && lowThanOpen && highThanLow && greatAvgVol && lessThan2 && lessThan3) {
                 System.out.println(code);
                 res.add(code);
             }
