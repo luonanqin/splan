@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 前一天涨停然后连续三天下跌，其中第三天最低点超过涨停那天最低点，整体量没有大变化
- * 例如：002358 2025-03-06之后
+ * 找出中阳线之后连续两天下跌，最低价低于中阳线的开盘价，但是没有跌破最低价的股票
+ * 中阳线那天成交量至少是50天均量线的两倍，后面两天成交量主键下跌，都低于第一天
+ * 例如：600156 2025-03-21至2025-03-26
  */
-public class Filter6 extends BaseFilter {
+public class Filter10 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
@@ -24,16 +25,19 @@ public class Filter6 extends BaseFilter {
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("605588")) {
-                //                continue;
-            }
-            List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 0;
-            StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
-            if (latest.getClose() > 15d) {
+            if (!code.equals("600156")) {
                 continue;
             }
-            if (stockKLines.size() < temp + 20) {
+            List<StockKLine> stockKLines = kLineMap.get(code);
+            int temp = 0; // 用于测试历史数据做日期调整
+            StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
+            double curClose = latest.getClose();
+            double curLastClose = latest.getLastClose();
+            double curRatio = (curClose / curLastClose - 1) * 100;
+            if (curClose > 15d) {
+                continue;
+            }
+            if (stockKLines.size() < 128) {
                 //                System.out.println("x " + code);
                 continue;
             }
@@ -43,33 +47,22 @@ public class Filter6 extends BaseFilter {
             StockKLine _1Kline = stockKLines.get(stockKLines.size() - 1 - temp);
             StockKLine _2Kline = stockKLines.get(stockKLines.size() - 2 - temp);
             StockKLine _3Kline = stockKLines.get(stockKLines.size() - 3 - temp);
-            StockKLine _4Kline = stockKLines.get(stockKLines.size() - 4 - temp);
             double _1diffRatio = (_1Kline.getClose() / _1Kline.getLastClose() - 1) * 100;
             double _2diffRatio = (_2Kline.getClose() / _2Kline.getLastClose() - 1) * 100;
             double _3diffRatio = (_3Kline.getClose() / _3Kline.getLastClose() - 1) * 100;
-            double _4diffRatio = (_4Kline.getClose() / _4Kline.getLastClose() - 1) * 100;
-            boolean _1to2VolCompare = _1Kline.getVolume().compareTo(_2Kline.getVolume()) < 0;
-            boolean _2to3VolCompare = _2Kline.getVolume().compareTo(_3Kline.getVolume()) < 0;
-            boolean lowTolow = _4Kline.getLow() > _1Kline.getLow();
 
-            BigDecimal upDayAvgVol = avgVolMap.get(_4Kline.getDate());
-            if (upDayAvgVol == null) {
-                continue;
-            }
-            BigDecimal multi3AvgVol = upDayAvgVol.multiply(BigDecimal.valueOf(3));
-            boolean great3AvgVol = _4Kline.getVolume().compareTo(multi3AvgVol) < 0;
+            boolean lowThanOpen = _1Kline.getClose() < _3Kline.getOpen();
+            boolean highThanLow = _1Kline.getClose() > _3Kline.getLow();
+            BigDecimal avgVol = avgVolMap.get(_3Kline.getDate());
+            boolean greatAvgVol = _3Kline.getVolume().compareTo(avgVol.multiply(BigDecimal.valueOf(2))) > 0;
+            boolean lessThan3 = _2Kline.getVolume().compareTo(_1Kline.getVolume()) < 0;
+            boolean lessThan2 = _3Kline.getVolume().compareTo(_2Kline.getVolume()) < 0;
 
-            boolean greater = true;
-            if (
-              _1diffRatio < 0 && _2diffRatio < 0 && _3diffRatio < 0 &&
-                lowTolow && _4diffRatio > 9.95 && great3AvgVol
-                && _1to2VolCompare && _2to3VolCompare
-            ) {
+            if (_1diffRatio > 6 && lowThanOpen && highThanLow && greatAvgVol && lessThan2 && lessThan3) {
                 System.out.println(code);
                 res.add(code);
             }
         }
         return res;
     }
-
 }

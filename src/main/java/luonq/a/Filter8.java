@@ -15,12 +15,11 @@ import java.util.Map;
 public class Filter8 extends BaseFilter {
 
     public static void main(String[] args) {
+        LoadData.init();
         cal();
     }
 
     public static List<String> cal() {
-        LoadData.init();
-
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 

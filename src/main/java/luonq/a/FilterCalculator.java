@@ -8,6 +8,7 @@ import luonq.futu.BasicQuote;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import util.LoadData;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class FilterCalculator {
     }
 
     public void cal() {
+        LoadData.init();
         //        List<String> filter2 = Lists.newArrayList("000001", "600000");
         List<String> filter2 = Filter2.cal();
         List<String> filter3 = Filter3.cal();
