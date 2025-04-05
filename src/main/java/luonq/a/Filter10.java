@@ -26,16 +26,20 @@ public class Filter10 extends BaseFilter {
 
         for (String code : kLineMap.keySet()) {
             if (!code.equals("600156")) {
-//                continue;
+                //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
             int temp = 10; // 用于测试历史数据做日期调整
-            StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
+            int index = stockKLines.size() - 1 - temp;
+            if (index < 0) {
+                continue;
+            }
+            StockKLine latest = stockKLines.get(index);
             double curClose = latest.getClose();
             double curLastClose = latest.getLastClose();
             double curRatio = (curClose / curLastClose - 1) * 100;
             if (curClose > 15d) {
-//                continue;
+                continue;
             }
             if (stockKLines.size() < 128) {
                 //                System.out.println("x " + code);
