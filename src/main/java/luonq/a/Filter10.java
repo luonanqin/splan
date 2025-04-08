@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * 找出中阳线之后连续两天下跌，最低价低于中阳线的开盘价，但是没有跌破最低价的股票
- * 中阳线那天成交量至少是50天均量线的两倍，后面两天成交量主键下跌，都低于第一天
+ * 中阳线那天成交量至少是50天均量线的两倍，后面两天成交量逐渐下跌，都低于第一天
  * 例如：600156 2025-03-21至2025-03-26
  */
 public class Filter10 extends BaseFilter {
@@ -29,7 +29,7 @@ public class Filter10 extends BaseFilter {
                 //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 10; // 用于测试历史数据做日期调整
+            int temp = 0; // 用于测试历史数据做日期调整
             int index = stockKLines.size() - 1 - temp;
             if (index < 0) {
                 continue;
@@ -61,8 +61,9 @@ public class Filter10 extends BaseFilter {
             boolean greatAvgVol = _3Kline.getVolume().compareTo(avgVol.multiply(BigDecimal.valueOf(2))) > 0;
             boolean lessThan3 = _2Kline.getVolume().compareTo(_3Kline.getVolume()) < 0;
             boolean lessThan2 = _1Kline.getVolume().compareTo(_2Kline.getVolume()) < 0;
+            boolean lessThanOpen = _1Kline.getVolume().multiply(BigDecimal.valueOf(2)).compareTo(_3Kline.getVolume()) < 0;
 
-            if (_3diffRatio > 6 && _1diffRatio < 0 && _2diffRatio < 0 && lowThanOpen && highThanLow && greatAvgVol && lessThan2 && lessThan3) {
+            if (_3diffRatio > 6 && _1diffRatio < 0 && _2diffRatio < 0 && lowThanOpen && highThanLow && greatAvgVol && lessThan2 && lessThan3 && lessThanOpen) {
                 System.out.println(code);
                 res.add(code);
             }

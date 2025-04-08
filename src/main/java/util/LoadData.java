@@ -3,6 +3,7 @@ package util;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Luonanqin on 1/28/19.
@@ -18,6 +20,7 @@ import java.util.Map;
 public class LoadData {
 
     public final static Map<String, List<StockKLine>> kLineMap = Maps.newHashMap();
+    public final static Set<String> excludeDate = Sets.newHashSet();
     //	public final static Map<String, Map<String, FinanceData>> financeMap = Maps.newHashMap();
     //	public final static Map<String, ExtInfo> extInfoMap = Maps.newHashMap();
 
@@ -25,6 +28,7 @@ public class LoadData {
     private static List<String> ssList = Stock.getSsList();
 
     public static void init() {
+        excludeDate.add("2025-04-07"); // 关税落地后突发大跌
         loadStockKline();
         //		loadFinanceData();
         //		loadBaseExt();
@@ -251,6 +255,10 @@ public class LoadData {
                 while ((str = br.readLine()) != null) {
                     String[] split = str.split(",");
                     String date = split[1];
+                    // 特殊日期的数据不加载
+                    if (excludeDate.contains(date)) {
+                        continue;
+                    }
                     double open = Double.parseDouble(split[2]);
                     double close = Double.parseDouble(split[3]);
                     String volStr = split[4];

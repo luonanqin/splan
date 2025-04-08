@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 10天前，近50天只有一个涨停，并且涨停之后30天内没有出现收盘价低于涨停开盘价的
+ * 近40天只有一个涨停，并且涨停之后没有出现收盘价低于涨停开盘价的
  * 例如：002688 2025-01-17至2025-03-27
  */
 public class Filter11 extends BaseFilter {
@@ -25,10 +25,10 @@ public class Filter11 extends BaseFilter {
 
         for (String code : kLineMap.keySet()) {
             if (!code.equals("002688")) {
-                continue;
+                //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 10; // 用于测试历史数据做日期调整
+            int temp = 0; // 用于测试历史数据做日期调整
             int index = stockKLines.size() - 1 - temp;
             if (index < 0) {
                 continue;
@@ -48,29 +48,36 @@ public class Filter11 extends BaseFilter {
             Map<String/* date */, BigDecimal> avgVolMap = cal50volMa(stockKLines);
             int topCount = 0;
             int topIndex = 0;
-            for (int i = stockKLines.size() - 60 - temp; i < stockKLines.size() - 10 - temp; i++) {
+            double topClose = 0;
+            for (int i = stockKLines.size() - 40 - temp; i < stockKLines.size() - 10 - temp; i++) {
                 StockKLine kLine = stockKLines.get(i);
                 double ratio = 100 * (kLine.getClose() / kLine.getLastClose() - 1);
                 if (ratio > 9.90) {
                     topCount++;
                     topIndex = i;
+                    topClose = kLine.getClose();
                 }
             }
-            if (topCount > 1) {
+            if (topCount != 1 || topIndex + 30 > stockKLines.size() - 1 - temp) {
                 continue;
             }
 
             boolean lowThanTopOpen = false;
             StockKLine topKline = stockKLines.get(topIndex);
-            for (int i = topIndex + 1; i < topIndex + 31 && i < stockKLines.size() - 10 - temp; i++) {
+            double highestClose = Double.MIN_VALUE;
+            for (int i = topIndex + 1; i < stockKLines.size() - 3 - temp; i++) {
                 StockKLine kLine = stockKLines.get(i);
                 if (topKline.getOpen() > kLine.getClose()) {
                     lowThanTopOpen = true;
                     break;
                 }
+                if (highestClose < kLine.getClose()) {
+                    highestClose = kLine.getClose();
+                }
             }
+            double highestRatio = (highestClose / topClose - 1) * 100;
 
-            if (!lowThanTopOpen) {
+            if (!lowThanTopOpen && highestRatio < 8) {
                 System.out.println(code);
                 res.add(code);
             }
