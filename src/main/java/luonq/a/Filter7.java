@@ -30,7 +30,7 @@ public class Filter7 extends BaseFilter {
 //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 0;
+            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
 
             if (stockKLines.size() < temp + 22) {
                 //                System.out.println("x " + code);

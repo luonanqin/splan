@@ -12,7 +12,7 @@ import java.util.Map;
  * 快跌横盘。找出近8天，波动小于15的股票
  * 例如：603949 2025-03-13之前
  */
-public class Filter4 {
+public class Filter4 extends BaseFilter{
 
     public static void main(String[] args) {
         LoadData.init();
@@ -29,7 +29,7 @@ public class Filter4 {
                 //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 0;
+            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
             if (latest.getClose() > 15d) {
                                 continue;

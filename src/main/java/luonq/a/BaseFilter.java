@@ -2,9 +2,12 @@ package luonq.a;
 
 import bean.StockKLine;
 import com.google.common.collect.Maps;
+import util.Constants;
+import util.LoadData;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -32,5 +35,20 @@ public class BaseFilter {
         }
 
         return avgVolMap;
+    }
+
+    public static int fixTemp(List<StockKLine> stockKLines, int temp) {
+        StockKLine tempKLine = stockKLines.get(stockKLines.size() - 1 - temp);
+        String tempDate = tempKLine.getDate();
+        LocalDate tempLocalDate = LocalDate.parse(tempDate, Constants.DB_DATE_FORMATTER);
+        for (String date : LoadData.excludeDate) {
+            if (!tempLocalDate.isAfter(LocalDate.parse(date, Constants.DB_DATE_FORMATTER))) {
+                temp--;
+            }
+        }
+        if (temp < 0) {
+            temp = 0;
+        }
+        return temp;
     }
 }

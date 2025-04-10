@@ -35,6 +35,9 @@ public class FilterCalculator {
         List<String> filter6 = Filter6.cal();
         List<String> filter7 = Filter7.cal();
         List<String> filter9 = Filter9.cal();
+        List<String> filter10 = Filter10.cal();
+        List<String> filter11 = Filter11.cal();
+        List<String> filter12 = Filter12.cal();
 
         try {
             updateGroup(filter2, "Filter2");
@@ -50,6 +53,12 @@ public class FilterCalculator {
             updateGroup(filter7, "Filter7");
             Thread.sleep(3000);
             updateGroup(filter9, "Filter9");
+            Thread.sleep(3000);
+            updateGroup(filter10, "Filter10");
+            Thread.sleep(3000);
+            updateGroup(filter11, "Filter11");
+            Thread.sleep(3000);
+            updateGroup(filter12, "Filter12");
         } catch (InterruptedException e) {
             log.error("Filter InterruptedException", e);
         }

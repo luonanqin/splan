@@ -28,7 +28,7 @@ public class Filter11 extends BaseFilter {
                 //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 0; // 用于测试历史数据做日期调整
+            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
             int index = stockKLines.size() - 1 - temp;
             if (index < 0) {
                 continue;

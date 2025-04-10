@@ -12,7 +12,7 @@ import java.util.Map;
  * 找出近十天，涨跌幅超过7%的股票，并记录次数，排除2次以下，股价高于15的股票，并且十天前和当天差距不大于20%，最高点和最低点差距不大于25%
  * 例如：000882 2025.1.2至2025.1.14
  */
-public class Filter2 {
+public class Filter2 extends BaseFilter{
     public static void main(String[] args) {
         LoadData.init();
         cal();

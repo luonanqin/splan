@@ -15,7 +15,7 @@ import java.util.Map;
  * 近15个交易日内要至少一次4%以上的涨幅
  * 例如：002628 2025.1.2至2025.3.21
  */
-public class Filter3 {
+public class Filter3 extends BaseFilter{
 
     public static void main(String[] args) {
         LoadData.init();
@@ -32,7 +32,7 @@ public class Filter3 {
                 //                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = 0; // 用于测试历史数据做日期调整
+            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
             double curClose = latest.getClose();
             double curLastClose = latest.getLastClose();
