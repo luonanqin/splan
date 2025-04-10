@@ -75,7 +75,7 @@ public class GetBaseData {
 
     public static void getData() throws Exception {
         ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.apache.commons.httpclient.HttpMethodBase").setLevel(Level.ERROR);
-        LocalDate todayDate = LocalDate.now();
+        LocalDate todayDate = LocalDate.now().plusDays(1);
         today = todayDate.format(DB_DATE_FORMATTER);
         LocalDate lastDayDate = todayDate.minusDays(1);
         lastDay = lastDayDate.format(DB_DATE_FORMATTER);
