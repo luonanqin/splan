@@ -2,6 +2,7 @@ package luonq.a;
 
 import com.futu.openapi.FTAPI;
 import com.futu.openapi.pb.QotCommon;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +27,11 @@ public class FilterCalculator {
         FTAPI.init();
         quote = new BasicQuote();
         quote.start();
+        getInvalidCode();
     }
 
     public void cal() {
         LoadData.init();
-        getInvalidCode();
         //        List<String> filter2 = Lists.newArrayList("000001", "600000");
         List<String> filter2 = Filter2.cal();
         List<String> filter3 = Filter3.cal();
@@ -85,8 +86,8 @@ public class FilterCalculator {
     }
 
     public void updateGroup(List<String> codeList, String group) {
-        Map<String, Integer> hisCodeMarket = quote.getUserSecurity(group);
-        quote.moveOutUserSecurity(hisCodeMarket, group);
+//        Map<String, Integer> hisCodeMarket = quote.getUserSecurity(group);
+//        quote.moveOutUserSecurity(hisCodeMarket, group);
 
         if (CollectionUtils.isEmpty(codeList)) {
             log.info("{} is empty", group);
@@ -105,5 +106,11 @@ public class FilterCalculator {
             }
         }
         quote.addUserSecurity(codeMarketMap, group);
+    }
+
+    public static void main(String[] args) {
+        FilterCalculator filterCalculator = new FilterCalculator();
+        filterCalculator.init();
+        filterCalculator.updateGroup(Lists.newArrayList("000001"), "Filter4");
     }
 }
