@@ -28,9 +28,9 @@ public class BaseFilter {
             BigDecimal avgVol = vol.divide(BigDecimal.valueOf(50), 0, RoundingMode.HALF_UP);
             vol = vol.subtract(stockKLines.get(i - 50).getVolume());
 
-//            if (stockKLines.size() - i > 50) {
-//                continue;
-//            }
+            //            if (stockKLines.size() - i > 50) {
+            //                continue;
+            //            }
             avgVolMap.put(kLine.getDate(), avgVol);
         }
 
@@ -38,7 +38,12 @@ public class BaseFilter {
     }
 
     public static int fixTemp(List<StockKLine> stockKLines, int temp) {
-        StockKLine tempKLine = stockKLines.get(stockKLines.size() - 1 - temp);
+        int index = stockKLines.size() - 1 - temp;
+        if (index < 0) {
+            temp = 0;
+            return temp;
+        }
+        StockKLine tempKLine = stockKLines.get(index);
         String tempDate = tempKLine.getDate();
         LocalDate tempLocalDate = LocalDate.parse(tempDate, Constants.DB_DATE_FORMATTER);
         for (String date : LoadData.excludeDate) {

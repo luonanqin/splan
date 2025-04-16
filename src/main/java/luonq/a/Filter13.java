@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * 近十天的平均成交量是再前面十天的1.5倍，且这20天没有连续跌停和连续涨停
- * 例如： 2025-03-20至2025-03-26
+ * 例如：
  */
 public class Filter13 extends BaseFilter {
 
@@ -38,7 +38,7 @@ public class Filter13 extends BaseFilter {
             double curClose = latest.getClose();
             double curLastClose = latest.getLastClose();
             double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 15d) {
+            if (curClose > 12d) {
                 continue;
             }
             if (stockKLines.size() < 128) {
