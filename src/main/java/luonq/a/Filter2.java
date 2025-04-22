@@ -34,7 +34,7 @@ public class Filter2 extends BaseFilter{
             }
             StockKLine latest = stockKLines.get(stockKLines.size() - 1);
             double curClose = latest.getClose();
-            if (curClose > 15) {
+            if (curClose > 10) {
                 continue;
             }
 

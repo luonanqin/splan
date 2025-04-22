@@ -32,7 +32,7 @@ public class Filter5 extends BaseFilter {
             List<StockKLine> stockKLines = kLineMap.get(code);
             int temp = 0;
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
-            if (latest.getClose() > 15d) {
+            if (latest.getClose() > 10) {
                                 continue;
             }
             if (stockKLines.size() < temp + 20) {

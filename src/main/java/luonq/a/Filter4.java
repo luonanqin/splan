@@ -31,7 +31,7 @@ public class Filter4 extends BaseFilter{
             List<StockKLine> stockKLines = kLineMap.get(code);
             int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
-            if (latest.getClose() > 15d) {
+            if (latest.getClose() > 10) {
                                 continue;
             }
             if (stockKLines.size() < temp + 20) {

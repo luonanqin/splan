@@ -37,7 +37,7 @@ public class Filter15 extends BaseFilter {
             double curClose = latest.getClose();
             double curLastClose = latest.getLastClose();
             double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 15d) {
+            if (curClose > 10) {
                 continue;
             }
             if (stockKLines.size() < 128) {

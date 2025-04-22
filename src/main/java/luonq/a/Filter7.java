@@ -37,7 +37,7 @@ public class Filter7 extends BaseFilter {
                 continue;
             }
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
-            if (latest.getClose() > 15d) {
+            if (latest.getClose() > 10) {
                 continue;
             }
 
