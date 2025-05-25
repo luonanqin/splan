@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 数据交互</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .data-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .array-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .array-item span {
+            min-width: 100px;
+        }
+        input {
+            padding: 8px;
+            margin: 0 10px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .connected { background-color: #dff0d8; color: #3c763d; }
+        .disconnected { background-color: #f2dede; color: #a94442; }
+    </style>
+</head>
+<body>
+<h1>数据交互面板</h1>
+
+<div class="status disconnected" id="connectionStatus">
+    未连接到服务器
+</div>
+
+<div class="data-container">
+    <h2>接收到的数据：</h2>
+    <div id="dataDisplay">
+        <p>等待服务器数据...</p>
+    </div>
+</div>
+
+<script>
+    // 存储最新数据
+    let currentData = null;
+    const socket = new WebSocket('ws://localhost:8000/my-websocket');
+
+    // 连接状态显示
+    socket.onopen = () => {
+        document.getElementById('connectionStatus').className = 'status connected';
+        document.getElementById('connectionStatus').textContent = '已连接到服务器';
+    };
+
+    // 接收数据处理
+    socket.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            currentData = data;
+
+            let displayHTML = `
+                    <p><strong>a:</strong> ${data.a}</p>
+                    <p><strong>b:</strong> ${data.b}</p>
+                    <p><strong>c:</strong> ${data.c}</p>
+                    <p><strong>d:</strong> ${data.d}</p>
+                    <h3>数组 e:</h3>
+                `;
+
+            data.e.forEach((item, index) => {
+                displayHTML += `
+                        <div class="array-item">
+                            <span>e[${index}]: ${item}</span>
+                            <input type="text" id="input-for-e${index}" placeholder="输入新值">
+                            <button onclick="sendData(${index})">发送</button>
+                        </div>
+                    `;
+            });
+
+            document.getElementById('dataDisplay').innerHTML = displayHTML;
+        } catch (error) {
+            console.error('数据解析错误:', error);
+        }
+    };
+
+    // 发送数据函数
+    window.sendData = function(index) {
+        if (!currentData) return;
+
+        const inputValue = document.getElementById(`input-for-e${index}`).value.trim();
+        if (!inputValue) {
+            alert('请输入有效值');
+            return;
+        }
+
+        const payload = {
+            a: currentData.a,
+            b: currentData.b,
+            c: currentData.c,
+            d: currentData.d,
+            original_e: currentData.e[index],  // 原始数组值
+            x: inputValue,                    // 输入框的值
+            index: index                      // 数组索引（可选）
+        };
+
+        socket.send(JSON.stringify(payload));
+        console.log('已发送:', payload);
+    };
+
+    // 错误处理
+    socket.onerror = (error) => {
+        console.error('WebSocket错误:', error);
+        document.getElementById('connectionStatus').className = 'status disconnected';
+        document.getElementById('connectionStatus').textContent = '连接错误';
+    };
+
+    socket.onclose = () => {
+        document.getElementById('connectionStatus').className = 'status disconnected';
+        document.getElementById('connectionStatus').textContent = '连接已关闭';
+    };
+</script>
+</body>
+</html>
