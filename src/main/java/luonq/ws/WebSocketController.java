@@ -10,4 +10,10 @@ public class WebSocketController {
     public String wsPage() {
         return "ws"; // 对应templates/ws.html（不带扩展名）
     }
+
+    @GetMapping("")
+    public String buy(){
+
+        return "";
+    }
 }

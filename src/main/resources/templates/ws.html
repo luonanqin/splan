@@ -3,68 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket 数据交互</title>
+    <title>期权交易面板</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        .data-container {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .array-item {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-        }
-        .array-item span {
-            min-width: 100px;
-        }
-        input {
-            padding: 8px;
-            margin: 0 10px;
-            width: 200px;
-        }
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
         .status {
-            margin-top: 20px;
+            margin: 20px 0;
             padding: 10px;
             border-radius: 4px;
         }
         .connected { background-color: #dff0d8; color: #3c763d; }
         .disconnected { background-color: #f2dede; color: #a94442; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 5px;
+        }
+        button.buy-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.buy-btn:hover {
+            background-color: #45a049;
+        }
+        .stock-input-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-<h1>数据交互面板</h1>
+<h1>期权交易面板</h1>
 
 <div class="status disconnected" id="connectionStatus">
     未连接到服务器
 </div>
 
-<div class="data-container">
-    <h2>接收到的数据：</h2>
-    <div id="dataDisplay">
-        <p>等待服务器数据...</p>
+<div class="stock-input-container">
+    <h3>股票代码查询</h3>
+    <div>
+        <input type="text" id="stockCodeInput" placeholder="输入股票代码，如AAPL">
+        <button onclick="sendStockCode()">查询</button>
     </div>
 </div>
 
+<div id="optionsTableContainer">
+    <table id="optionsTable">
+        <thead>
+        <tr>
+            <th>Call</th>
+            <th>Put</th>
+            <th>Call Price</th>
+            <th>Put Price</th>
+            <th>Price</th>
+            <th>数量</th>
+            <th>交易</th>
+        </tr>
+        </thead>
+        <tbody id="optionsTableBody">
+        <!-- 数据将通过JavaScript动态填充 -->
+        </tbody>
+    </table>
+</div>
+
 <script>
-    // 存储最新数据
-    let currentData = null;
+    // WebSocket连接
     const socket = new WebSocket('ws://localhost:8000/my-websocket');
+    let currentOptionsData = null;
 
     // 连接状态显示
     socket.onopen = () => {
@@ -76,55 +104,95 @@
     socket.onmessage = (event) => {
         try {
             const data = JSON.parse(event.data);
-            currentData = data;
-
-            let displayHTML = `
-                    <p><strong>a:</strong> ${data.a}</p>
-                    <p><strong>b:</strong> ${data.b}</p>
-                    <p><strong>c:</strong> ${data.c}</p>
-                    <p><strong>d:</strong> ${data.d}</p>
-                    <h3>数组 e:</h3>
-                `;
-
-            data.e.forEach((item, index) => {
-                displayHTML += `
-                        <div class="array-item">
-                            <span>e[${index}]: ${item}</span>
-                            <input type="text" id="input-for-e${index}" placeholder="输入新值">
-                            <button onclick="sendData(${index})">发送</button>
-                        </div>
-                    `;
-            });
-
-            document.getElementById('dataDisplay').innerHTML = displayHTML;
+            currentOptionsData = data;
+            renderOptionsTable(data);
         } catch (error) {
             console.error('数据解析错误:', error);
         }
     };
 
-    // 发送数据函数
-    window.sendData = function(index) {
-        if (!currentData) return;
+    // 渲染期权表格
+    function renderOptionsTable(data) {
+        const tableBody = document.getElementById('optionsTableBody');
+        tableBody.innerHTML = '';
 
-        const inputValue = document.getElementById(`input-for-e${index}`).value.trim();
-        if (!inputValue) {
-            alert('请输入有效值');
+        // 假设后端返回的数据结构如下：
+        // {
+        //   "options": [
+        //     {
+        //       "callCode": "AAPL220616C00150000",
+        //       "putCode": "AAPL220616P00150000",
+        //       "callMidPrice": 3.45,
+        //       "putMidPrice": 2.78,
+        //       "sumPrice": 6.23
+        //     },
+        //     ...
+        //   ]
+        // }
+
+        if (data.options && data.options.length > 0) {
+            data.options.forEach((option, index) => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${option.callCode || ''}</td>
+                    <td>${option.putCode || ''}</td>
+                    <td>${option.callMidPrice ? option.callMidPrice.toFixed(2) : ''}</td>
+                    <td>${option.putMidPrice ? option.putMidPrice.toFixed(2) : ''}</td>
+                    <td>${option.sumPrice ? option.sumPrice.toFixed(2) : ''}</td>
+                    <td><input type="number" id="qty-${index}" min="1" value="1"></td>
+                    <td><button class="buy-btn" onclick="buyOption(${index})">买入</button></td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="7">暂无数据</td></tr>';
+        }
+    }
+
+    // 发送股票代码
+    function sendStockCode() {
+        if (socket.readyState !== WebSocket.OPEN) {
+            alert('WebSocket连接未就绪');
             return;
         }
 
-        const payload = {
-            a: currentData.a,
-            b: currentData.b,
-            c: currentData.c,
-            d: currentData.d,
-            original_e: currentData.e[index],  // 原始数组值
-            x: inputValue,                    // 输入框的值
-            index: index                      // 数组索引（可选）
+        const stockCode = document.getElementById('stockCodeInput').value.trim();
+        if (!stockCode) {
+            alert('请输入股票代码');
+            return;
+        }
+
+        socket.send(`code:${stockCode}`);
+        console.log('已发送股票代码:', stockCode);
+    }
+
+    // 买入期权
+    function buyOption(index) {
+        if (!currentOptionsData || !currentOptionsData.options || !currentOptionsData.options[index]) {
+            alert('数据未加载完成');
+            return;
+        }
+
+        const qtyInput = document.getElementById(`qty-${index}`);
+        const quantity = parseInt(qtyInput.value) || 1;
+
+        const option = currentOptionsData.options[index];
+        const orderData = {
+            action: 'buy',
+            callCode: option.callCode,
+            putCode: option.putCode,
+            callPrice: option.callMidPrice,
+            putPrice: option.putMidPrice,
+            quantity: quantity,
+            timestamp: new Date().toISOString()
         };
 
-        socket.send(JSON.stringify(payload));
-        console.log('已发送:', payload);
-    };
+        socket.send(JSON.stringify(orderData));
+        console.log('发送买入订单:', orderData);
+        alert(`已发送买入订单\nCall: ${option.callCode}\nPut: ${option.putCode}\n数量: ${quantity}`);
+    }
 
     // 错误处理
     socket.onerror = (error) => {
