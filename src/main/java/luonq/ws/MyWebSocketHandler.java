@@ -1,7 +1,7 @@
 package luonq.ws;
 
 import bean.OptionStraddle;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -49,7 +49,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         //        session.sendMessage(new TextMessage("Server response: " + payload));
         //        session.sendMessage(new TextMessage(initialData));
 
-        String[] split = payload.split(":");
+        String[] split = payload.split("\\-");
         String code = split[0];
         String priceStr = split[1];
 
@@ -83,33 +83,44 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
                 }
 
                 List<OptionStraddle> osList = Lists.newArrayList();
+                JSONArray options = new JSONArray();
                 for (String call : callList) {
                     Double callMid = callMidMap.get(call);
                     double min = Double.MAX_VALUE;
                     String putRes = "";
-                    Double putMid = 0d;
+                    Double putMidRes = 0d;
                     for (String put : putList) {
-                        putMid = putMidMap.get(put);
+                        Double putMid = putMidMap.get(put);
                         double diff = Math.abs(callMid - putMid);
                         if (min > diff) {
                             min = diff;
                             putRes = put;
+                            putMidRes = putMid;
                         }
                     }
                     OptionStraddle os = new OptionStraddle();
                     os.setCallCode(call);
                     os.setPutCode(putRes);
                     os.setCallMidPrice(callMid);
-                    os.setPutMidPrice(putMid);
-                    os.setSumPrice(callMid + putMid);
+                    os.setPutMidPrice(putMidRes);
+                    double sumPrice = callMid + putMidRes;
+                    os.setSumPrice(sumPrice);
+                    JSONObject option1 = new JSONObject();
+                    option1.put("callCode", call);
+                    option1.put("putCode", putRes);
+                    option1.put("callMidPrice", callMid);
+                    option1.put("putMidPrice", putMidRes);
+                    option1.put("sumPrice", sumPrice);
+                    options.add(option1);
                     osList.add(os);
                 }
 
                 JSONObject res = new JSONObject();
-                res.put("options", JSON.toJSONString(osList));
+                res.put("options", options);
                 session.sendMessage(new TextMessage(res.toString()));
 
                 Thread.sleep(1000);
+                System.out.println("refresh");
             }
         }
     }
@@ -137,9 +148,10 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             bq.subOrderBook(option);
             subCallOrderBook.add(option);
 
+            Double bid = 0d;
             while (true) {
                 Double ask = codeToAskMap.get(option);
-                Double bid = codeToBidMap.get(option);
+                bid = codeToBidMap.get(option);
                 if (ask == null || bid == null) {
                     try {
                         Thread.sleep(500);
@@ -159,7 +171,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             if (subCallOrderBook.size() >= 10 || callBottom) {
                 break;
             } else {
-                up += 5;
+                if (bid > 2) {
+                    up += 3 * 5;
+                } else {
+                    up += 5;
+                }
             }
         }
 
@@ -196,9 +212,10 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             bq.subOrderBook(option);
             subPutOrderBook.add(option);
 
+            Double bid = 0d;
             while (true) {
                 Double ask = codeToAskMap.get(option);
-                Double bid = codeToBidMap.get(option);
+                bid = codeToBidMap.get(option);
                 if (ask == null || bid == null) {
                     try {
                         Thread.sleep(500);
@@ -218,6 +235,9 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             if (subPutOrderBook.size() >= 10 || putBottom) {
                 break;
             } else {
+                if (bid > 2) {
+                    down -= 3 * 5;
+                }
                 down -= 5;
             }
         }
