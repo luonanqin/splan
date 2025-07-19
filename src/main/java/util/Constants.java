@@ -44,6 +44,10 @@ public final class Constants {
     public final static String SS_BASE_PATH = "/Users/Luonanqin/study/intellij_idea_workspaces/study/stock/src/main/resources/base/ss/";
     public final static String HS_BASE_PATH = "/Users/Luonanqin/study/intellij_idea_workspaces/study/stock/src/main/resources/base/hs/";
 
+    public final static String SS_PATH = "/Users/Luonanqin/study/intellij_idea_workspaces/study/stock/src/main/resources/ssList.txt";
+    public final static String HS_PATH = "/Users/Luonanqin/study/intellij_idea_workspaces/study/stock/src/main/resources/hsList.txt";
+    public final static String INVALID_CODE_PATH = "/Users/Luonanqin/study/intellij_idea_workspaces/study/stock/src/main/resources/invalidCode.txt";
+
     public final static String SS_BASE_EXT_PATH = "/Users/Luonanqin/study/intellij_idea_workspaces/study/stock/src/main/resources/baseExt/ss/";
     public final static String HS_BASE_EXT_PATH = "/Users/Luonanqin/study/intellij_idea_workspaces/study/stock/src/main/resources/baseExt/hs/";
 

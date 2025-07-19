@@ -12,9 +12,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import util.LoadData;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static util.Constants.INVALID_CODE_PATH;
 
 @Slf4j
 @Component
@@ -51,6 +57,7 @@ public class FilterCalculator {
         List<String> filter18 = new Filter18().cal();
         List<String> filter19 = new Filter19().cal();
         List<String> filter20 = new Filter20().cal();
+        List<String> filter21 = new Filter21().cal();
 
         try {
             updateGroup(filter2, "F2");
@@ -71,10 +78,10 @@ public class FilterCalculator {
             Thread.sleep(4000);
             updateGroup(filter11, "F11");
             Thread.sleep(4000);
-//            updateGroup(filter12, "F12");
-//            Thread.sleep(4000);
-//            updateGroup(filter13, "F13");
-//            Thread.sleep(4000);
+            //            updateGroup(filter12, "F12");
+            //            Thread.sleep(4000);
+            //            updateGroup(filter13, "F13");
+            //            Thread.sleep(4000);
             updateGroup(filter14, "F14");
             Thread.sleep(4000);
             updateGroup(filter15, "F15");
@@ -84,20 +91,45 @@ public class FilterCalculator {
             updateGroup(filter17, "F17");
             Thread.sleep(4000);
             updateGroup(filter18, "F18");
-            Thread.sleep(4000);
-            updateGroup(filter19, "F19");
+            //            Thread.sleep(4000);
+            //            updateGroup(filter19, "F19");
             Thread.sleep(4000);
             updateGroup(filter20, "F20");
+            Thread.sleep(4000);
+            updateGroup(filter21, "F21");
         } catch (InterruptedException e) {
             log.error("Filter InterruptedException", e);
         }
     }
 
     public void getInvalidCode() {
+        //        Map<String, Integer> all = quote.getUserSecurity("沪深");
         Map<String, Integer> invalid1 = quote.getUserSecurity("已过滤");
         Map<String, Integer> invalid2 = quote.getUserSecurity("高位出货");
         invalidCodes.addAll(invalid1.keySet());
         invalidCodes.addAll(invalid2.keySet());
+        invalidCodes.addAll(invalidCodeList());
+    }
+
+    public List<String> invalidCodeList() {
+        List<String> codeList = Lists.newArrayList();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(INVALID_CODE_PATH)));
+            String str;
+            while (StringUtils.isNotBlank(str = br.readLine())) {
+                codeList.add(StringUtils.split(str, "\t")[0]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return codeList;
     }
 
     public void updateGroup(List<String> codeList, String group) {
@@ -123,9 +155,16 @@ public class FilterCalculator {
         quote.addUserSecurity(codeMarketMap, group);
     }
 
+    public void clear() {
+        Map<String, Integer> codeMarketMap = Maps.newHashMap();
+        codeMarketMap.put("000001", QotCommon.QotMarket.QotMarket_CNSZ_Security_VALUE);
+        quote.deleteUserSecurity(codeMarketMap, "CN");
+    }
+
     public static void main(String[] args) {
         FilterCalculator filterCalculator = new FilterCalculator();
         filterCalculator.init();
-        filterCalculator.updateGroup(Lists.newArrayList("000001"), "Filter4");
+        //        filterCalculator.updateGroup(Lists.newArrayList("000001"), "Filter4");
+        filterCalculator.clear();
     }
 }
