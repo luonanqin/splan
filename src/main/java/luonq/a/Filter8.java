@@ -2,6 +2,7 @@ package luonq.a;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import util.LoadData;
 
 import java.util.List;
@@ -16,19 +17,19 @@ public class Filter8 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        cal();
+        new Filter8().cal();
     }
 
-    public static List<String> cal() {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("002905")) {
-//                continue;
+            if (StringUtils.isNotBlank(testCode) && !code.equals(testCode)) {
+                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
+            int temp = fixTemp(stockKLines, prevDays); // 用于测试历史数据做日期调整
 
             if (stockKLines.size() < temp + 22) {
                 //                System.out.println("x " + code);
@@ -41,7 +42,7 @@ public class Filter8 extends BaseFilter {
 
             //            Map<String/* date */, BigDecimal> avgVolMap = cal50volMa(stockKLines);
 
-            for (int i = 0; i < stockKLines.size()-7; i++) {
+            for (int i = 0; i < stockKLines.size() - 7; i++) {
                 StockKLine _1kLine = stockKLines.get(i); // 涨停
                 StockKLine _2kLine = stockKLines.get(i + 1); // 第一个跌停
                 StockKLine _3kLine = stockKLines.get(i + 2); // 第二个跌停

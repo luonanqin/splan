@@ -3,6 +3,7 @@ package luonq.a;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import util.LoadData;
 
 import java.util.List;
@@ -12,20 +13,21 @@ import java.util.Map;
  * 找出近十天，涨跌幅超过7%的股票，并记录次数，排除2次以下，股价高于15的股票，并且十天前和当天差距不大于20%，最高点和最低点差距不大于25%
  * 例如：000882 2025.1.2至2025.1.14
  */
-public class Filter2 extends BaseFilter{
+public class Filter2 extends BaseFilter {
+
     public static void main(String[] args) {
         LoadData.init();
-        cal();
+        new Filter2().cal();
     }
 
-    public static List<String> cal() {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         Map<String, Integer> map = Maps.newHashMap();
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("003010")) {
-                //                continue;
+            if (StringUtils.isNotBlank(testCode) && !code.equals(testCode)) {
+                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
             if (stockKLines.size() < 11) {
@@ -34,7 +36,7 @@ public class Filter2 extends BaseFilter{
             }
             StockKLine latest = stockKLines.get(stockKLines.size() - 1);
             double curClose = latest.getClose();
-            if (curClose > 10) {
+            if (curClose > 10 || curClose < 4) {
                 continue;
             }
 

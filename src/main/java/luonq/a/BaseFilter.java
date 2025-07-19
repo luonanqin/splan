@@ -11,7 +11,24 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class BaseFilter {
+public abstract class BaseFilter {
+
+    public List<String> cal() {
+        return cal(0, null);
+    }
+
+    public void testOne(int day, String testCode) {
+        cal(day, testCode);
+    }
+
+    public void test(int days) {
+        for (int i = 0; i < days; i++) {
+            System.out.println("days: " + i);
+            cal(i, null);
+        }
+    }
+
+    public abstract List<String> cal(int prevDays, String testCode);
 
     public static Map<String/* date */, BigDecimal> cal50volMa(List<StockKLine> stockKLines) {
         BigDecimal vol = BigDecimal.ZERO;

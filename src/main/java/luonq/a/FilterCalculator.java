@@ -33,49 +33,61 @@ public class FilterCalculator {
     public void cal() {
         LoadData.init();
         //        List<String> filter2 = Lists.newArrayList("000001", "600000");
-        List<String> filter2 = Filter2.cal();
-        List<String> filter3 = Filter3.cal();
-        List<String> filter4 = Filter4.cal();
-        List<String> filter5 = Filter5.cal();
-        List<String> filter6 = Filter6.cal();
-        List<String> filter7 = Filter7.cal();
-        List<String> filter9 = Filter9.cal();
-        List<String> filter10 = Filter10.cal();
-        List<String> filter11 = Filter11.cal();
-        List<String> filter12 = Filter12.cal();
-        List<String> filter13 = Filter13.cal();
-        List<String> filter14 = Filter14.cal();
-        List<String> filter15 = Filter15.cal();
-        List<String> filter16 = Filter16.cal();
+        List<String> filter2 = new Filter2().cal();
+        List<String> filter3 = new Filter3().cal();
+        List<String> filter4 = new Filter4().cal();
+        List<String> filter5 = new Filter5().cal();
+        List<String> filter6 = new Filter6().cal();
+        List<String> filter7 = new Filter7().cal();
+        List<String> filter9 = new Filter9().cal();
+        List<String> filter10 = new Filter10().cal();
+        List<String> filter11 = new Filter11().cal();
+        List<String> filter12 = new Filter12().cal();
+        List<String> filter13 = new Filter13().cal();
+        List<String> filter14 = new Filter14().cal();
+        List<String> filter15 = new Filter15().cal();
+        List<String> filter16 = new Filter16().cal();
+        List<String> filter17 = new Filter17().cal();
+        List<String> filter18 = new Filter18().cal();
+        List<String> filter19 = new Filter19().cal();
+        List<String> filter20 = new Filter20().cal();
 
         try {
-            updateGroup(filter2, "Filter2");
+            updateGroup(filter2, "F2");
             Thread.sleep(4000);
-            updateGroup(filter3, "Filter3");
+            //            updateGroup(filter3, "F3");
+            //            Thread.sleep(4000);
+            updateGroup(filter4, "F4");
             Thread.sleep(4000);
-            updateGroup(filter4, "Filter4");
+            updateGroup(filter5, "F5");
             Thread.sleep(4000);
-            updateGroup(filter5, "Filter5");
+            updateGroup(filter6, "F6");
             Thread.sleep(4000);
-            updateGroup(filter6, "Filter6");
+            //            updateGroup(filter7, "F7");
+            //            Thread.sleep(4000);
+            updateGroup(filter9, "F9");
             Thread.sleep(4000);
-            updateGroup(filter7, "Filter7");
+            updateGroup(filter10, "F10");
             Thread.sleep(4000);
-            updateGroup(filter9, "Filter9");
+            updateGroup(filter11, "F11");
             Thread.sleep(4000);
-            updateGroup(filter10, "Filter10");
+//            updateGroup(filter12, "F12");
+//            Thread.sleep(4000);
+//            updateGroup(filter13, "F13");
+//            Thread.sleep(4000);
+            updateGroup(filter14, "F14");
             Thread.sleep(4000);
-            updateGroup(filter11, "Filter11");
+            updateGroup(filter15, "F15");
             Thread.sleep(4000);
-            updateGroup(filter12, "Filter12");
+            updateGroup(filter16, "F16");
             Thread.sleep(4000);
-            updateGroup(filter13, "Filter13");
+            updateGroup(filter17, "F17");
             Thread.sleep(4000);
-            updateGroup(filter14, "Filter14");
+            updateGroup(filter18, "F18");
             Thread.sleep(4000);
-            updateGroup(filter15, "Filter15");
+            updateGroup(filter19, "F19");
             Thread.sleep(4000);
-            updateGroup(filter16, "Filter16");
+            updateGroup(filter20, "F20");
         } catch (InterruptedException e) {
             log.error("Filter InterruptedException", e);
         }
@@ -89,8 +101,8 @@ public class FilterCalculator {
     }
 
     public void updateGroup(List<String> codeList, String group) {
-//        Map<String, Integer> hisCodeMarket = quote.getUserSecurity(group);
-//        quote.moveOutUserSecurity(hisCodeMarket, group);
+        //        Map<String, Integer> hisCodeMarket = quote.getUserSecurity(group);
+        //        quote.moveOutUserSecurity(hisCodeMarket, group);
 
         if (CollectionUtils.isEmpty(codeList)) {
             log.info("{} is empty", group);

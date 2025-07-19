@@ -2,7 +2,7 @@ package luonq.a;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import util.LoadData;
 
 import java.util.List;
@@ -12,30 +12,31 @@ import java.util.Map;
  * 快跌横盘。找出近8天，波动小于15的股票
  * 例如：603949 2025-03-13之前
  */
-public class Filter4 extends BaseFilter{
+public class Filter4 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        cal();
+        new Filter4().cal();
+        //        test(10);
     }
 
-    public static List<String> cal() {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
-        Map<String, Integer> map = Maps.newHashMap();
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("603949")) {
-                //                continue;
+            if (StringUtils.isNotBlank(testCode) && !code.equals(testCode)) {
+                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
+            int temp = fixTemp(stockKLines, prevDays); // 用于测试历史数据做日期调整
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
-            if (latest.getClose() > 10) {
-                                continue;
+            double curClose = latest.getClose();
+            if (curClose > 10 || curClose < 4) {
+                continue;
             }
             if (stockKLines.size() < temp + 20) {
-//                System.out.println("x " + code);
+                //                System.out.println("x " + code);
                 continue;
             }
 

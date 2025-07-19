@@ -2,6 +2,7 @@ package luonq.a;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import util.LoadData;
 
 import java.util.List;
@@ -16,36 +17,34 @@ public class Filter16 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        cal();
+        Filter16 filter16 = new Filter16();
+        //        filter16.cal();
+        filter16.test(30);
     }
 
-    public static List<String> cal() {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("600644")) {
-                //                continue;
+            if (StringUtils.isNotBlank(testCode) && !code.equals(testCode)) {
+                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
+            int temp = fixTemp(stockKLines, prevDays); // 用于测试历史数据做日期调整
             int index = stockKLines.size() - 1 - temp;
             if (index < 0) {
                 continue;
             }
             StockKLine latest = stockKLines.get(index);
             double curClose = latest.getClose();
-            double curLastClose = latest.getLastClose();
-//            double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 10) {
+            if (curClose > 10 || curClose < 4) {
                 continue;
             }
             if (stockKLines.size() < 128) {
                 //                System.out.println("x " + code);
                 continue;
             }
-
-//            Map<String, BigDecimal> avgVolMap = cal50volMa(stockKLines);
 
             StockKLine _1Kline = stockKLines.get(stockKLines.size() - 1 - temp);
             StockKLine _2Kline = stockKLines.get(stockKLines.size() - 2 - temp);
@@ -65,14 +64,14 @@ public class Filter16 extends BaseFilter {
             // 第二天十字星
             boolean star = _8Kline.getClose() < _8High && _8Kline.getClose() > _8Kline.getLow() && _8Kline.getOpen() < _8High && _8Kline.getOpen() > _8Kline.getLow();
 
-            double _9Open = _9Kline.getOpen();
-            boolean _1 = _1Kline.getHigh() < _8High && _1Kline.getLow() > _9Open;
-            boolean _2 = _2Kline.getHigh() < _8High && _2Kline.getLow() > _9Open;
-            boolean _3 = _3Kline.getHigh() < _8High && _3Kline.getLow() > _9Open;
-            boolean _4 = _4Kline.getHigh() < _8High && _4Kline.getLow() > _9Open;
-            boolean _5 = _5Kline.getHigh() < _8High && _5Kline.getLow() > _9Open;
-            boolean _6 = _6Kline.getHigh() < _8High && _6Kline.getLow() > _9Open;
-            boolean _7 = _7Kline.getHigh() < _8High && _7Kline.getLow() > _9Open;
+            double _9HalfOpen = _9Kline.getOpen() + (_9Kline.getHigh() - _9Kline.getOpen()) / 2;
+            boolean _1 = _1Kline.getHigh() < _8High && _1Kline.getLow() > _9HalfOpen;
+            boolean _2 = _2Kline.getHigh() < _8High && _2Kline.getLow() > _9HalfOpen;
+            boolean _3 = _3Kline.getHigh() < _8High && _3Kline.getLow() > _9HalfOpen;
+            boolean _4 = _4Kline.getHigh() < _8High && _4Kline.getLow() > _9HalfOpen;
+            boolean _5 = _5Kline.getHigh() < _8High && _5Kline.getLow() > _9HalfOpen;
+            boolean _6 = _6Kline.getHigh() < _8High && _6Kline.getLow() > _9HalfOpen;
+            boolean _7 = _7Kline.getHigh() < _8High && _7Kline.getLow() > _9HalfOpen;
 
             if (upTop && star && _1 && _2 && _3 && _4 && _5 && _6 && _7) {
                 System.out.println(code);

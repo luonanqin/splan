@@ -2,6 +2,7 @@ package luonq.a;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import util.LoadData;
 
 import java.math.BigDecimal;
@@ -16,28 +17,28 @@ public class Filter15 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        cal();
+        Filter15 filter15 = new Filter15();
+        filter15.cal();
+        //        filter15.testOne(75, "600644");
     }
 
-    public static List<String> cal() {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("600644")) {
-                //                continue;
+            if (StringUtils.isNotBlank(testCode) && !code.equals(testCode)) {
+                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
+            int temp = fixTemp(stockKLines, prevDays); // 用于测试历史数据做日期调整
             int index = stockKLines.size() - 1 - temp;
             if (index < 0) {
                 continue;
             }
             StockKLine latest = stockKLines.get(index);
             double curClose = latest.getClose();
-            double curLastClose = latest.getLastClose();
-            double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 10) {
+            if (curClose > 10 || curClose < 4) {
                 continue;
             }
             if (stockKLines.size() < 128) {

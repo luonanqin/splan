@@ -17,27 +17,12 @@ public class Filter18 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        cal();
+        new Filter18().cal();
         //        test(10);
         //                        testOne(14, null);
     }
 
-    public static List<String> cal() {
-        return cal(0, null);
-    }
-
-    public static void test(int days) {
-        for (int i = 0; i < days; i++) {
-            System.out.println("days: " + i);
-            cal(i, null);
-        }
-    }
-
-    public static void testOne(int day, String testCode) {
-        cal(day, testCode);
-    }
-
-    public static List<String> cal(int prevDays, String testCode) {
+    public  List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
@@ -53,9 +38,7 @@ public class Filter18 extends BaseFilter {
             }
             StockKLine latest = stockKLines.get(index);
             double curClose = latest.getClose();
-            double curLastClose = latest.getLastClose();
-            //            double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 10) {
+            if (curClose > 10 || curClose < 4) {
                 continue;
             }
             if (stockKLines.size() < 128) {

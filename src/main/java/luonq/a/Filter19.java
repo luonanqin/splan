@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 连续阳线（包括假阳线）超过4根但不没有一根涨停，且成交量没有持续减少
+ * 连续阳线（包括假阳线）超过4根但没有一根涨停，且成交量波动不大
  * 需要观察假阳线如果缩量属于正常
  * 例如：002153 2025-07-08 ~ 2025-07-11
  */
@@ -17,27 +17,12 @@ public class Filter19 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-                cal();
-//        test(10);
-//                                testOne(1, null);
+        new Filter19().cal();
+        //        test(10);
+        //                                testOne(1, null);
     }
 
-    public static List<String> cal() {
-        return cal(0, null);
-    }
-
-    public static void test(int days) {
-        for (int i = 0; i < days; i++) {
-            System.out.println("days: " + i);
-            cal(i, null);
-        }
-    }
-
-    public static void testOne(int day, String testCode) {
-        cal(day, testCode);
-    }
-
-    public static List<String> cal(int prevDays, String testCode) {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
@@ -53,9 +38,7 @@ public class Filter19 extends BaseFilter {
             }
             StockKLine latest = stockKLines.get(index);
             double curClose = latest.getClose();
-            double curLastClose = latest.getLastClose();
-            //            double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 10) {
+            if (curClose > 10 || curClose < 4) {
                 continue;
             }
             if (stockKLines.size() < 128) {

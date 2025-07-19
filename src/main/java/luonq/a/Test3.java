@@ -19,27 +19,13 @@ public class Test3 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
+        Test3 test3 = new Test3();
         //        cal();
         //                test(10);
-        testOne(0, "001316");
+        test3.testOne(0, "001316");
     }
 
-    public static List<String> cal() {
-        return cal(0, null);
-    }
-
-    public static void test(int days) {
-        for (int i = 0; i < days; i++) {
-            System.out.println("days: " + i);
-            cal(i, null);
-        }
-    }
-
-    public static void testOne(int day, String testCode) {
-        cal(day, testCode);
-    }
-
-    public static List<String> cal(int prevDays, String testCode) {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 

@@ -2,6 +2,7 @@ package luonq.a;
 
 import bean.StockKLine;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import util.LoadData;
 
 import java.math.BigDecimal;
@@ -12,33 +13,24 @@ import java.util.Map;
  * 第一天涨停，第二天阴线并且放倍量，之后横盘几天收盘都高于第一天的涨停价
  * 如果后续中阳站上5日线，说明短期情绪转好
  * 如果后续小阴小阳且缩量，说明在洗盘
- * 例如：暂时没找到例子
+ * 例如：002639 2025-05-06 ~ 2025-05-23
  */
 public class Filter17 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        cal();
-        //        test(1);
+        Filter17 filter17 = new Filter17();
+        //        filter17.cal();
+        filter17.test(50);
     }
 
-    public static List<String> cal() {
-        return cal(0);
-    }
-
-    public static void test(int days) {
-        for (int i = 0; i < days; i++) {
-            cal(i);
-        }
-    }
-
-    public static List<String> cal(int prevDays) {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("600644")) {
-                //                continue;
+            if (StringUtils.isNotBlank(testCode) && !code.equals(testCode)) {
+                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
             int temp = fixTemp(stockKLines, prevDays); // 用于测试历史数据做日期调整
@@ -48,10 +40,8 @@ public class Filter17 extends BaseFilter {
             }
             StockKLine latest = stockKLines.get(index);
             double curClose = latest.getClose();
-            double curLastClose = latest.getLastClose();
-            //            double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 10) {
-                                continue;
+            if (curClose > 10 || curClose < 4) {
+                continue;
             }
             if (stockKLines.size() < 128) {
                 //                System.out.println("x " + code);
@@ -66,8 +56,8 @@ public class Filter17 extends BaseFilter {
             StockKLine _4Kline = stockKLines.get(stockKLines.size() - 4 - temp);
             StockKLine _5Kline = stockKLines.get(stockKLines.size() - 5 - temp);
 
-            double _4diffRatio = (_4Kline.getClose() / _4Kline.getLastClose() - 1) * 100;
-            double _3diffRatio = (_3Kline.getClose() / _3Kline.getLastClose() - 1) * 100;
+            double _4diffRatio = _4Kline.getDiffRatio();
+            double _3diffRatio = _3Kline.getDiffRatio();
 
             boolean upTop = _4diffRatio > 9.9; // 第一天涨停
             boolean volTimes = _3Kline.getVolume().compareTo(_4Kline.getVolume().multiply(BigDecimal.valueOf(2))) > 0; // 第二天阴线倍量

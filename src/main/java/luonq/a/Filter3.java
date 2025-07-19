@@ -3,6 +3,7 @@ package luonq.a;
 import bean.StockKLine;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import util.LoadData;
 
 import java.math.BigDecimal;
@@ -15,33 +16,31 @@ import java.util.Map;
  * 近15个交易日内要至少一次4%以上的涨幅
  * 例如：002628 2025.1.2至2025.3.21
  */
-public class Filter3 extends BaseFilter{
+public class Filter3 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        cal();
+        new Filter3().cal();
     }
 
-    public static List<String> cal() {
+    public List<String> cal(int prevDays, String testCode) {
         List<String> res = Lists.newArrayList();
         Map<String, List<StockKLine>> kLineMap = LoadData.kLineMap;
 
         Map<String, Integer> map = Maps.newHashMap();
         for (String code : kLineMap.keySet()) {
-            if (!code.equals("002628")) {
-                //                continue;
+            if (StringUtils.isNotBlank(testCode) && !code.equals(testCode)) {
+                continue;
             }
             List<StockKLine> stockKLines = kLineMap.get(code);
-            int temp = fixTemp(stockKLines, 0); // 用于测试历史数据做日期调整
+            int temp = fixTemp(stockKLines, prevDays); // 用于测试历史数据做日期调整
             StockKLine latest = stockKLines.get(stockKLines.size() - 1 - temp);
             double curClose = latest.getClose();
-            double curLastClose = latest.getLastClose();
-            double curRatio = (curClose / curLastClose - 1) * 100;
-            if (curClose > 10 || curRatio > 1) {
+            if (curClose > 10 || latest.getDiffRatio() > 1 || curClose < 4) {
                 continue;
             }
             if (stockKLines.size() < 128) {
-//                System.out.println("x " + code);
+                //                System.out.println("x " + code);
                 continue;
             }
 

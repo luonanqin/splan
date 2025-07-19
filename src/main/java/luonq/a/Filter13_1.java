@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 近十天的平均成交量是再前面十天的1.5倍，且这20天没有连续跌停和连续涨停
+ * 近20天的平均成交量是再前面20天的2倍，且这20天没有连续跌停和连续涨停
  * 例如：
  */
-public class Filter13 extends BaseFilter {
+public class Filter13_1 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        new Filter13().cal();
+        new Filter13_1().cal();
     }
 
     public List<String> cal(int prevDays, String testCode) {
@@ -46,12 +46,12 @@ public class Filter13 extends BaseFilter {
             }
 
             boolean continueBoard = false;
-            BigDecimal last10AvgVol = BigDecimal.ZERO;
-            double last10AvgClose = 0;
-            for (int i = stockKLines.size() - 1 - temp; i > stockKLines.size() - 11 - temp; i--) {
+            BigDecimal last20AvgVol = BigDecimal.ZERO;
+            double last20AvgClose = 0;
+            for (int i = stockKLines.size() - 1 - temp; i > stockKLines.size() - 21 - temp; i--) {
                 StockKLine kLine = stockKLines.get(i);
-                last10AvgVol = last10AvgVol.add(kLine.getVolume());
-                last10AvgClose = last10AvgClose + kLine.getClose();
+                last20AvgVol = last20AvgVol.add(kLine.getVolume());
+                last20AvgClose = last20AvgClose + kLine.getClose();
 
                 StockKLine lastKLine = stockKLines.get(i - 1);
                 double ratio = Math.abs((kLine.getClose() / kLine.getLastClose() - 1) * 100);
@@ -61,14 +61,14 @@ public class Filter13 extends BaseFilter {
                     break;
                 }
             }
-            last10AvgVol = last10AvgVol.divide(BigDecimal.valueOf(2), 0, RoundingMode.HALF_UP);
+            last20AvgVol = last20AvgVol.divide(BigDecimal.valueOf(2), 0, RoundingMode.HALF_UP);
 
-            BigDecimal lastlast10AvgVol = BigDecimal.ZERO;
-            double lastlast10AvgClose = 0;
-            for (int i = stockKLines.size() - 11 - temp; i > stockKLines.size() - 21 - temp; i--) {
+            BigDecimal lastlast20AvgVol = BigDecimal.ZERO;
+            double lastlast20AvgClose = 0;
+            for (int i = stockKLines.size() - 21 - temp; i > stockKLines.size() - 41 - temp; i--) {
                 StockKLine kLine = stockKLines.get(i);
-                lastlast10AvgVol = lastlast10AvgVol.add(kLine.getVolume());
-                lastlast10AvgClose = lastlast10AvgClose + kLine.getClose();
+                lastlast20AvgVol = lastlast20AvgVol.add(kLine.getVolume());
+                lastlast20AvgClose = lastlast20AvgClose + kLine.getClose();
 
                 StockKLine lastKLine = stockKLines.get(i - 1);
                 double ratio = Math.abs((kLine.getClose() / kLine.getLastClose() - 1) * 100);
@@ -78,12 +78,12 @@ public class Filter13 extends BaseFilter {
                     break;
                 }
             }
-            lastlast10AvgVol = lastlast10AvgVol.divide(BigDecimal.valueOf(2), 0, RoundingMode.HALF_UP);
+            lastlast20AvgVol = lastlast20AvgVol.divide(BigDecimal.valueOf(2), 0, RoundingMode.HALF_UP);
 
-            double avgVolTimes = last10AvgVol.divide(lastlast10AvgVol, 2, RoundingMode.HALF_UP).doubleValue();
-            boolean closeCompare = last10AvgClose > lastlast10AvgClose;
+            double avgVolTimes = last20AvgVol.divide(lastlast20AvgVol, 2, RoundingMode.HALF_UP).doubleValue();
+            boolean closeCompare = last20AvgClose > lastlast20AvgClose;
 
-            if (avgVolTimes < 2 && avgVolTimes > 1.5 && !continueBoard && closeCompare) {
+            if (avgVolTimes < 3 && avgVolTimes > 2 && !continueBoard && closeCompare) {
                 System.out.println(code);
                 res.add(code);
             }
