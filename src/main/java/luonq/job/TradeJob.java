@@ -30,7 +30,7 @@ public class TradeJob extends BaseJob {
             return;
         }
         realTimeDataWS_db.init();
-        BaseUtils.sendEmail("trade finish", "");
+        //        BaseUtils.sendEmail("trade finish", "");
         log.info("trade_DB.job end");
     }
 
@@ -41,7 +41,7 @@ public class TradeJob extends BaseJob {
             return;
         }
         realTimeDataWS_db2.init();
-        BaseUtils.sendEmail("option trade finish", "");
+        //        BaseUtils.sendEmail("option trade finish", "");
         log.info("OptionTrade.job end");
     }
 

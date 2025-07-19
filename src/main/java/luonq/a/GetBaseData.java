@@ -49,7 +49,7 @@ import static util.Constants.*;
 public class GetBaseData {
 
     // 新一年的假期加在最前面
-    private static List<String> holidays = Lists.newArrayList("2025-04-04", "2025-05-01", "2025-05-02", "2025-06-02", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-06", "2025-10-07", "2025-10-08");
+    private static List<String> holidays = Lists.newArrayList("2025-04-04", "2025-05-01", "2025-05-02", "2025-05-05", "2025-06-02", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-06", "2025-10-07", "2025-10-08");
     private static HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
 
     private static String lastDay = "19960101", today = getToday();
@@ -63,9 +63,10 @@ public class GetBaseData {
         //		getSSData();
         //		getHSData();
         //		lastDay = getLastDay();
-        lastDay = "2025-04-03";
-        today = "2025-04-04";
+        lastDay = "2025-06-30";
+        today = "2025-07-01";
         //        getOnedayIncrementalData(SS_BASE_PATH, Lists.newArrayList("002276"));
+//                getOnedayIncrementalData(HS_BASE_PATH, Lists.newArrayList("600997"));
         getOnedayIncrementalData(HS_BASE_PATH, Stock.getHsList());
         getOnedayIncrementalData(SS_BASE_PATH, Stock.getSsList());
         //                getIncrementalData(SS_BASE_PATH, Lists.newArrayList("000001"), 2);

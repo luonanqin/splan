@@ -29,6 +29,7 @@ public class LoadData {
 
     public static void init() {
         excludeDate.add("2025-04-07"); // 关税落地后突发大跌
+        excludeDate.add("2025-04-08"); // 关税落地后大跌后修复
         loadStockKline();
         //		loadFinanceData();
         //		loadBaseExt();
@@ -240,6 +241,7 @@ public class LoadData {
     // 1742486400,2025-03-21,11.49,11.42,137638897,11.52,11.39,1576151833.00,-0.07,-0.61,0.71,11.49,11.48,200978064,11.63,162338197,11.60,125881004
     private static void loadBaseData(String rootPath, List<String> codeList) {
         for (String code : codeList) {
+            Set<String> dates = Sets.newHashSet();
             String path = rootPath + code + ".csv";
             BufferedReader br = null;
             //			List<TradeLog> tradeLogs = new ArrayList<TradeLog>();
@@ -256,7 +258,7 @@ public class LoadData {
                     String[] split = str.split(",");
                     String date = split[1];
                     // 特殊日期的数据不加载
-                    if (excludeDate.contains(date)) {
+                    if (excludeDate.contains(date) || dates.contains(date)) {
                         continue;
                     }
                     double open = Double.parseDouble(split[2]);
@@ -328,6 +330,7 @@ public class LoadData {
                     //
                     //					tradeLogs.add(tradeLog);
                     stockKLines.add(stockKLine);
+                    dates.add(date);
                 }
 
                 kLineMap.put(code, stockKLines);

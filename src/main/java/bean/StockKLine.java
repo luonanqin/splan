@@ -42,6 +42,10 @@ public class StockKLine {
         return oDate.format(Constants.DB_DATE_FORMATTER);
     }
 
+    public double getDiffRatio(){
+        return 100 * (close / lastClose - 1);
+    }
+
     @Override
     public String toString() {
         return date + "," + open + "," + high + "," + low + "," + close + "," + change + "," + changePnt + "," + volume.toString();

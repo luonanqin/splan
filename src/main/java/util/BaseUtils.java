@@ -26,6 +26,7 @@ import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
@@ -894,7 +895,7 @@ public class BaseUtils {
 
         properties.put("mail.transport.protocol", "smtp");
         properties.put("mail.smtp.auth", "true");
-        //        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.host", "smtp.qq.com");
         properties.put("mail.smtp.port", 25);
 
@@ -913,7 +914,7 @@ public class BaseUtils {
             mimeMessage.setSubject(subject);
             mimeMessage.setText(message);
 
-            //            Transport.send(mimeMessage);
+            Transport.send(mimeMessage);
         } catch (Exception e) {
             log.error("sendEmail error. subject={}, message={}", subject, message, e);
         }
@@ -1097,8 +1098,7 @@ public class BaseUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        Map<String, List<EarningDate>> allEarningDate3 = getAllEarningDate3("2024-12-31");
-        System.out.println(allEarningDate3);
+        sendEmail("Test", "1234");
     }
 
     public static Map<String, Map<String, OptionDaily>> loadOptionDailyMap(String stock) throws Exception {

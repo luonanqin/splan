@@ -8,13 +8,12 @@ import luonq.data.WriteToDB;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import util.BaseUtils;
 
 import java.util.List;
 
 @Slf4j
 @Component
-public class SyncDataToDBJob extends BaseJob{
+public class SyncDataToDBJob extends BaseJob {
 
     @Autowired
     private WriteToDB writeToDB;
@@ -23,7 +22,7 @@ public class SyncDataToDBJob extends BaseJob{
     public void syncDataToDB() throws Exception {
         log.info("syncDataToDB.job start");
         writeToDB.additionToDB();
-        BaseUtils.sendEmail("syncDataToDB finish", "");
+        //        BaseUtils.sendEmail("syncDataToDB finish", "");
         log.info("syncDataToDB.job end");
     }
 
@@ -41,7 +40,7 @@ public class SyncDataToDBJob extends BaseJob{
             log.info("syncEarningToDB.job dateList: {}", dateList);
         }
         writeToDB.earningToDB(dateList);
-        BaseUtils.sendEmail("syncEarningToDB finish", "");
+        //        BaseUtils.sendEmail("syncEarningToDB finish", "");
         log.info("syncEarningToDB.job end");
     }
 
@@ -52,7 +51,7 @@ public class SyncDataToDBJob extends BaseJob{
             return;
         }
         writeToDB.rehabToDB();
-        BaseUtils.sendEmail("syncRehabToDB finish", "");
+        //        BaseUtils.sendEmail("syncRehabToDB finish", "");
         log.info("syncRehabToDB.job end");
     }
 }
