@@ -10,12 +10,15 @@ import luonq.futu.BasicQuote;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import util.BaseUtils;
+import util.Constants;
 import util.LoadData;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,6 +100,27 @@ public class FilterCalculator {
             updateGroup(filter20, "F20");
             Thread.sleep(4000);
             updateGroup(filter21, "F21");
+
+            Map<String, List<String>> filterMap = Maps.newTreeMap((o1, o2) -> {
+                Integer o1No = Integer.valueOf(o1.substring(6));
+                Integer o2No = Integer.valueOf(o2.substring(6));
+                return o1No - o2No;
+            });
+            filterMap.put("Filter2", filter2);
+            filterMap.put("Filter4", filter4);
+            filterMap.put("Filter5", filter5);
+            filterMap.put("Filter6", filter6);
+            filterMap.put("Filter9", filter9);
+            filterMap.put("Filter10", filter10);
+            filterMap.put("Filter11", filter11);
+            filterMap.put("Filter14", filter14);
+            filterMap.put("Filter15", filter15);
+            filterMap.put("Filter16", filter16);
+            filterMap.put("Filter17", filter17);
+            filterMap.put("Filter18", filter18);
+            filterMap.put("Filter20", filter20);
+            filterMap.put("Filter21", filter21);
+            sendEmail(filterMap);
         } catch (InterruptedException e) {
             log.error("Filter InterruptedException", e);
         }
@@ -161,10 +185,38 @@ public class FilterCalculator {
         quote.deleteUserSecurity(codeMarketMap, "CN");
     }
 
+    public void sendEmail(Map<String, List<String>> codeListMap) {
+        StringBuffer sb = new StringBuffer();
+        int sum = 0;
+        for (String filterName : codeListMap.keySet()) {
+            List<String> codeList = codeListMap.get(filterName);
+            if (codeList.size() == 0) {
+                continue;
+            }
+
+            sb.append(filterName)
+              .append(":\n")
+              .append(codeListMap.get(filterName))
+              .append("\n")
+              .append(" ")
+              .append("\n");
+            sum += codeList.size();
+        }
+        String message = sb.toString();
+
+        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
+        if (sum == 0) {
+            BaseUtils.sendEmail(today + "选股结果(无)", "");
+        } else {
+            BaseUtils.sendEmail(today + "选股结果(" + sum + ")", message);
+        }
+    }
+
     public static void main(String[] args) {
         FilterCalculator filterCalculator = new FilterCalculator();
         filterCalculator.init();
         //        filterCalculator.updateGroup(Lists.newArrayList("000001"), "Filter4");
-        filterCalculator.clear();
+        //        filterCalculator.clear();
+        filterCalculator.cal();
     }
 }
