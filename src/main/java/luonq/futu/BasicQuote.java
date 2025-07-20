@@ -10,6 +10,7 @@ import com.futu.openapi.pb.QotGetBasicQot;
 import com.futu.openapi.pb.QotGetSecuritySnapshot;
 import com.futu.openapi.pb.QotGetSubInfo;
 import com.futu.openapi.pb.QotGetUserSecurity;
+import com.futu.openapi.pb.QotGetUserSecurityGroup;
 import com.futu.openapi.pb.QotModifyUserSecurity;
 import com.futu.openapi.pb.QotRequestRehab;
 import com.futu.openapi.pb.QotSub;
@@ -59,6 +60,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
     private Map<String/* code */, Boolean/* show price */> showTradePriceMap = Maps.newHashMap();
 
     private BlockingQueue<Map> codeMarketMapQueue = new LinkedBlockingQueue<>(1);
+    private BlockingQueue<List<String>> groupQueue = new LinkedBlockingQueue<>(1);
 
     @Data
     public static class StockQuote {
@@ -176,7 +178,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                     if (volume >= 5 && price != 0) {
                         bidPrice = price;
                     }
-                    oriCodeToBidMap.put(code, bidPrice);
+                    oriCodeToBidMap.put(code, price);
                 }
                 if (CollectionUtils.isNotEmpty(orderBookAskListList)) {
                     QotCommon.OrderBook orderBook = orderBookAskListList.get(0);
@@ -187,7 +189,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
                     if (volume >= 5 && price != 0) {
                         askPrice = price;
                     }
-                    oriCodeToAskMap.put(code, askPrice);
+                    oriCodeToAskMap.put(code, price);
                 }
                 Double lastBid = codeToBidMap.get(code);
                 Double lastAsk = codeToAskMap.get(code);
@@ -509,6 +511,10 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         optUserSecurity(codeMarketMap, groupName, QotModifyUserSecurity.ModifyUserSecurityOp.ModifyUserSecurityOp_MoveOut_VALUE);
     }
 
+    public void deleteUserSecurity(Map<String, Integer> codeMarketMap, String groupName) {
+        optUserSecurity(codeMarketMap, groupName, QotModifyUserSecurity.ModifyUserSecurityOp.ModifyUserSecurityOp_Del_VALUE);
+    }
+
     public void optUserSecurity(Map<String, Integer> codeMarketMap, String groupName, int opt) {
         if (MapUtils.isEmpty(codeMarketMap)) {
             log.warn("code market map is empty. groupName={}, opt={}", groupName, opt);
@@ -534,6 +540,42 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         log.info("optUserSecurity success. groupName={}, opt={}, codeAndMarket={}", groupName, opt, codeMarketMap);
     }
 
+    public List<String> getUserSecurityGroup() {
+        QotGetUserSecurityGroup.C2S c2s = QotGetUserSecurityGroup.C2S.newBuilder()
+          .setGroupType(QotGetUserSecurityGroup.GroupType.GroupType_All_VALUE)
+          .build();
+        QotGetUserSecurityGroup.Request req = QotGetUserSecurityGroup.Request.newBuilder().setC2S(c2s).build();
+        int seqNo = qot.getUserSecurityGroup(req);
+        System.out.printf("Send QotGetUserSecurityGroup: %d\n", seqNo);
+        List<String> list = null;
+        try {
+            list = groupQueue.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public void onReply_GetUserSecurityGroup(FTAPI_Conn client, int nSerialNo, QotGetUserSecurityGroup.Response rsp) {
+        if (rsp.getRetType() != 0) {
+            System.out.printf("QotGetUserSecurityGroup failed: %s\n", rsp.getRetMsg());
+        } else {
+            try {
+                List<String> list = Lists.newArrayList();
+                //                String json = JsonFormat.printer().print(rsp);
+                //                System.out.printf("Receive QotGetUserSecurity: %s\n", json);
+                List<QotGetUserSecurityGroup.GroupData> groupListList = rsp.getS2COrBuilder().getGroupListList();
+                for (QotGetUserSecurityGroup.GroupData groupData : groupListList) {
+                    list.add(groupData.getGroupName());
+                }
+                groupQueue.offer(list);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Double a = 1.4;
         Double b = 1.3;
@@ -546,13 +588,13 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         for (String code : codeList) {
             //            quote.addChinaUserSecurity(code, "Filter5");
         }
-        Map<String, Integer> filter = quote.getUserSecurity("Filter6");
-        System.out.println(filter);
-        quote.moveOutUserSecurity(filter, "Filter6");
+        //        Map<String, Integer> filter = quote.getUserSecurity("Filter6");
+        //        System.out.println(filter);
+        //        quote.moveOutUserSecurity(filter, "Filter6");
         //        filter.clear();
         //        filter.put("AAPL", 11);
-        filter = quote.getUserSecurity("美股");
-        quote.addUserSecurity(filter, "Filter6");
+        //        filter = quote.getUserSecurity("美股");
+        //        quote.addUserSecurity(filter, "Filter6");
         //        quote.getUserSecurity();
         //        quote.addUserSecurity("AAPL");
         //        quote.addUserSecurity("AAPL240809C210000");
@@ -563,7 +605,7 @@ public class BasicQuote implements FTSPI_Qot, FTSPI_Conn {
         //        quote.subBasicQuote("HUT240719P18000");
         //        quote.subBasicQuote("NVDA240719C121000");
         //        quote.unSubBasicQuote("TSLA240719C252500");
-        quote.subBasicQuote("TSLA241129P335000");
+        quote.subBasicQuote("SPXW250527P5800000");
         //        System.out.println(quote.getOptionIvTimeMap("TSLA240719C257500"));
         //        quote.getBasicQot("TSLA240719P255000");
         //                quote.getBasicQot("TSLA240719P255000");

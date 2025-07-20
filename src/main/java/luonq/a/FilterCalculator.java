@@ -187,10 +187,39 @@ public class FilterCalculator {
         quote.addUserSecurity(codeMarketMap, group);
     }
 
+    // 手动调用清理
     public void clear() {
-        Map<String, Integer> codeMarketMap = Maps.newHashMap();
-        codeMarketMap.put("000001", QotCommon.QotMarket.QotMarket_CNSZ_Security_VALUE);
-        quote.deleteUserSecurity(codeMarketMap, "CN");
+        Map<String, Integer> clearCodeMap = Maps.newHashMap();
+        clearCodeMap.put("000001", QotCommon.QotMarket.QotMarket_CNSZ_Security_VALUE);
+        String clear = "清理";
+        // 排除分组
+        List<String> exceptGroup = Lists.newArrayList("全部", "加密货币", "沪深", "港股", "债券", "指数", "新加坡", "美股", "期货", "期权", "日股", "马来西亚", "澳大利亚", "加拿大", "美股期权", "美指", "港股", clear);
+
+        // 获取所有待清理code
+        Map<String, Integer> clearMap = quote.getUserSecurity(clear);
+        List<String> groupList = quote.getUserSecurityGroup();
+        groupList.removeAll(exceptGroup);
+
+        // 获取所有除清理分组以外的code
+        Map<String, Integer> codeMap = Maps.newHashMap();
+        groupList.forEach(group -> {
+            Map<String, Integer> userSecurity = quote.getUserSecurity(group);
+            codeMap.putAll(userSecurity);
+            System.out.println(group + " 分组股票数量=" + userSecurity.size());
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        // 如果code在清理分组但是不在其他分组，则清理
+        for (String code : clearMap.keySet()) {
+            if (!codeMap.containsKey(code)) {
+                clearCodeMap.put(code, clearMap.get(code));
+            }
+        }
+        System.out.println();
     }
 
     public void sendEmail(Map<String, List<String>> codeListMap) {
@@ -228,7 +257,11 @@ public class FilterCalculator {
         FilterCalculator filterCalculator = new FilterCalculator();
         filterCalculator.init();
         //        filterCalculator.updateGroup(Lists.newArrayList("000001"), "Filter4");
-        //        filterCalculator.clear();
-        filterCalculator.cal();
+        filterCalculator.clear();
+        //        Map<String, Integer> userSecurity = filterCalculator.quote.getUserSecurity("沪深");
+        //        filterCalculator.cal();
+        //        List<String> userSecurityGroup = filterCalculator.quote.getUserSecurityGroup();
+
+        System.out.println();
     }
 }
