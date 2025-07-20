@@ -61,6 +61,8 @@ public class FilterCalculator {
         List<String> filter19 = new Filter19().cal();
         List<String> filter20 = new Filter20().cal();
         List<String> filter21 = new Filter21().cal();
+        List<String> filter22 = new Filter22().cal();
+        List<String> filter23 = new Filter23().cal();
 
         try {
             updateGroup(filter2, "F2");
@@ -100,6 +102,10 @@ public class FilterCalculator {
             updateGroup(filter20, "F20");
             Thread.sleep(4000);
             updateGroup(filter21, "F21");
+            Thread.sleep(4000);
+            updateGroup(filter22, "F22");
+            Thread.sleep(4000);
+            updateGroup(filter23, "F23");
 
             Map<String, List<String>> filterMap = Maps.newTreeMap((o1, o2) -> {
                 Integer o1No = Integer.valueOf(o1.substring(6));
@@ -120,6 +126,8 @@ public class FilterCalculator {
             filterMap.put("Filter18", filter18);
             filterMap.put("Filter20", filter20);
             filterMap.put("Filter21", filter21);
+            filterMap.put("Filter22", filter22);
+            filterMap.put("Filter23", filter23);
             sendEmail(filterMap);
         } catch (InterruptedException e) {
             log.error("Filter InterruptedException", e);
@@ -204,7 +212,11 @@ public class FilterCalculator {
         }
         String message = sb.toString();
 
-        String today = LocalDate.now().format(Constants.DB_DATE_FORMATTER);
+        LocalDate now = LocalDate.now();
+        if (now.getDayOfWeek().getValue() > 5) {
+            return;
+        }
+        String today = now.format(Constants.DB_DATE_FORMATTER);
         if (sum == 0) {
             BaseUtils.sendEmail(today + "选股结果(无)", "");
         } else {
