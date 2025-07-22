@@ -55,7 +55,7 @@ public class FilterCalculator {
         List<String> filter13 = new Filter13().cal();
         List<String> filter14 = new Filter14().cal();
         List<String> filter15 = new Filter15().cal();
-        List<String> filter16 = new Filter16().cal();
+        List<String> filter16 = new Filter24().cal();
         List<String> filter17 = new Filter17().cal();
         List<String> filter18 = new Filter18().cal();
         List<String> filter19 = new Filter19().cal();
@@ -135,7 +135,6 @@ public class FilterCalculator {
     }
 
     public void getInvalidCode() {
-        //        Map<String, Integer> all = quote.getUserSecurity("沪深");
         Map<String, Integer> invalid1 = quote.getUserSecurity("已过滤");
         Map<String, Integer> invalid2 = quote.getUserSecurity("高位出货");
         invalidCodes.addAll(invalid1.keySet());
@@ -257,7 +256,8 @@ public class FilterCalculator {
         FilterCalculator filterCalculator = new FilterCalculator();
         filterCalculator.init();
         //        filterCalculator.updateGroup(Lists.newArrayList("000001"), "Filter4");
-        filterCalculator.clear();
+        filterCalculator.invalidCodeList();
+        //        filterCalculator.clear();
         //        Map<String, Integer> userSecurity = filterCalculator.quote.getUserSecurity("沪深");
         //        filterCalculator.cal();
         //        List<String> userSecurityGroup = filterCalculator.quote.getUserSecurityGroup();
