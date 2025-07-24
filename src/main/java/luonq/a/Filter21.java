@@ -22,9 +22,10 @@ public class Filter21 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        new Filter21().cal();
-        //        test(30);
-        //                                testOne(0, "601208");
+        Filter21 filter21 = new Filter21();
+//        filter21.cal();
+//        filter21.test(30);
+        filter21.testOne(2, "603176");
     }
 
     public List<String> cal(int prevDays, String testCode) {
