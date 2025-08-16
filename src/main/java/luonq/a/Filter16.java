@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 第一天涨停，第二天十字星，之后七天上不超过十字星，下不超过涨停开盘价（的一半），并且小阴小阳波动不大。
- * 等待一根放量阳线收盘前突破十字星的高点可进场，之后如果跌破了这根阳线的最低点才止损，否则持续拿着等待上涨
- * 例如：暂时没找到例子
+ * 前一天涨停，然后接着两天跌破涨停前日收盘，并且涨停前十天量都多于再前面的十天
+ * 涨停前面整体要微放量缓慢向上（简单说就是先有控盘，然后大波动洗盘）
+ * 例如：002406 2025-02-05 ~ 2025-03-12
  */
 public class Filter16 extends BaseFilter {
 
@@ -19,7 +19,8 @@ public class Filter16 extends BaseFilter {
         LoadData.init();
         Filter16 filter16 = new Filter16();
         //        filter16.cal();
-        filter16.test(30);
+        filter16.test(90);
+        //                filter16.testOne(94, "002406");
     }
 
     public List<String> cal(int prevDays, String testCode) {
@@ -50,33 +51,31 @@ public class Filter16 extends BaseFilter {
             StockKLine _2Kline = stockKLines.get(stockKLines.size() - 2 - temp);
             StockKLine _3Kline = stockKLines.get(stockKLines.size() - 3 - temp);
             StockKLine _4Kline = stockKLines.get(stockKLines.size() - 4 - temp);
-            StockKLine _5Kline = stockKLines.get(stockKLines.size() - 5 - temp);
-            StockKLine _6Kline = stockKLines.get(stockKLines.size() - 6 - temp);
-            StockKLine _7Kline = stockKLines.get(stockKLines.size() - 7 - temp);
-            StockKLine _8Kline = stockKLines.get(stockKLines.size() - 8 - temp);
-            StockKLine _9Kline = stockKLines.get(stockKLines.size() - 9 - temp);
-            StockKLine _10Kline = stockKLines.get(stockKLines.size() - 10 - temp);
-
-            double _9diffRatio = (_9Kline.getClose() / _10Kline.getLastClose() - 1) * 100;
-
-            boolean upTop = _9diffRatio > 9.9; // 第一天涨停
-            double _8High = _8Kline.getHigh();
-            // 第二天十字星
-            boolean star = _8Kline.getClose() < _8High && _8Kline.getClose() > _8Kline.getLow() && _8Kline.getOpen() < _8High && _8Kline.getOpen() > _8Kline.getLow();
-
-            double _9HalfOpen = _9Kline.getOpen() + (_9Kline.getHigh() - _9Kline.getOpen()) / 2;
-            boolean _1 = _1Kline.getHigh() < _8High && _1Kline.getLow() > _9HalfOpen;
-            boolean _2 = _2Kline.getHigh() < _8High && _2Kline.getLow() > _9HalfOpen;
-            boolean _3 = _3Kline.getHigh() < _8High && _3Kline.getLow() > _9HalfOpen;
-            boolean _4 = _4Kline.getHigh() < _8High && _4Kline.getLow() > _9HalfOpen;
-            boolean _5 = _5Kline.getHigh() < _8High && _5Kline.getLow() > _9HalfOpen;
-            boolean _6 = _6Kline.getHigh() < _8High && _6Kline.getLow() > _9HalfOpen;
-            boolean _7 = _7Kline.getHigh() < _8High && _7Kline.getLow() > _9HalfOpen;
-
-            if (upTop && star && _1 && _2 && _3 && _4 && _5 && _6 && _7) {
-                System.out.println(code);
-                res.add(code);
+            // 第一天要涨停且不是一字板
+            if (_3Kline.getDiffRatio() < 9.9 || _3Kline.getOpen() == _3Kline.getClose()) {
+                continue;
             }
+            // 涨停前一天不涨停
+            if (_4Kline.getDiffRatio() > 9.9) {
+                continue;
+            }
+            // 第二天开盘要高开
+            if (_2Kline.getOpen() < _2Kline.getLastClose()) {
+                continue;
+            }
+            // 第三天收盘要低于涨停前一天收盘
+            if (_1Kline.getClose() > _3Kline.getLastClose()) {
+                continue;
+            }
+
+            StockKLine _13Kline = stockKLines.get(stockKLines.size() - 13 - temp);
+            double ratio = (_3Kline.getLastClose() / _13Kline.getClose() - 1) * 100;
+            // 涨停前十天涨幅不高于10%，即排除连板
+            if (ratio > 10 || ratio < 0) {
+                continue;
+            }
+
+            System.out.println(code);
         }
         return res;
     }

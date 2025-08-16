@@ -55,7 +55,7 @@ public class FilterCalculator {
         List<String> filter13 = new Filter13().cal();
         List<String> filter14 = new Filter14().cal();
         List<String> filter15 = new Filter15().cal();
-        List<String> filter16 = new Filter16().cal();
+        List<String> filter16 = new Filter24().cal();
         List<String> filter17 = new Filter17().cal();
         List<String> filter18 = new Filter18().cal();
         List<String> filter19 = new Filter19().cal();
@@ -78,16 +78,16 @@ public class FilterCalculator {
             //            updateGroup(filter7, "F7");
             //            Thread.sleep(4000);
             updateGroup(filter9, "F9");
-            Thread.sleep(4000);
-            updateGroup(filter10, "F10");
+            //            Thread.sleep(4000);
+            //            updateGroup(filter10, "F10");
             Thread.sleep(4000);
             updateGroup(filter11, "F11");
             Thread.sleep(4000);
-            //            updateGroup(filter12, "F12");
+            updateGroup(filter12, "F12");
             //            Thread.sleep(4000);
             //            updateGroup(filter13, "F13");
             //            Thread.sleep(4000);
-            updateGroup(filter14, "F14");
+            //            updateGroup(filter14, "F14");
             Thread.sleep(4000);
             updateGroup(filter15, "F15");
             Thread.sleep(4000);
@@ -117,9 +117,8 @@ public class FilterCalculator {
             filterMap.put("Filter5", filter5);
             filterMap.put("Filter6", filter6);
             filterMap.put("Filter9", filter9);
-            filterMap.put("Filter10", filter10);
             filterMap.put("Filter11", filter11);
-            filterMap.put("Filter14", filter14);
+            filterMap.put("Filter12", filter12);
             filterMap.put("Filter15", filter15);
             filterMap.put("Filter16", filter16);
             filterMap.put("Filter17", filter17);
@@ -135,7 +134,6 @@ public class FilterCalculator {
     }
 
     public void getInvalidCode() {
-        //        Map<String, Integer> all = quote.getUserSecurity("沪深");
         Map<String, Integer> invalid1 = quote.getUserSecurity("已过滤");
         Map<String, Integer> invalid2 = quote.getUserSecurity("高位出货");
         invalidCodes.addAll(invalid1.keySet());
@@ -257,7 +255,8 @@ public class FilterCalculator {
         FilterCalculator filterCalculator = new FilterCalculator();
         filterCalculator.init();
         //        filterCalculator.updateGroup(Lists.newArrayList("000001"), "Filter4");
-        filterCalculator.clear();
+        filterCalculator.invalidCodeList();
+        //        filterCalculator.clear();
         //        Map<String, Integer> userSecurity = filterCalculator.quote.getUserSecurity("沪深");
         //        filterCalculator.cal();
         //        List<String> userSecurityGroup = filterCalculator.quote.getUserSecurityGroup();
