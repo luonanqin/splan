@@ -10,20 +10,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 测试场景：涨停后至少连续大跌两天，之后一个月回到高点，看看后续是否能继续上升
+ * 测试场景：寻找某一天阴线振幅超过前面十天平均值1.5倍，第二天阳线收盘不低于前日开盘的1%，看看后续走势
  * 测试结果：
- * 结论：至少要穿过20日线，横盘横盘时间才会小于5天。如果快速穿过60日线，横盘时间很短
- * 例子：603881 2024-12-31 ~ 2025-02-10
+ * 结论：前面没有明显出货的情况下，第二天阳线不要超出阴线太多，后续基本都向上走势
+ * 例子：000813 2025-07-15 ~ 2025-07-16
  */
-public class Test4 extends BaseFilter {
+public class Test6 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        Test4 test3 = new Test4();
+        Test6 test6 = new Test6();
         //        cal();
         //                test(10);
-//        test3.testOne(0, "603881");
-        test3.testOne(0, null);
+        //        test6.testOne(0, "000813");
+        test6.testOne(0, null);
     }
 
     public List<String> cal(int prevDays, String testCode) {
@@ -52,44 +52,54 @@ public class Test4 extends BaseFilter {
                 continue;
             }
 
-            //            Map<String, BigDecimal> avgVolMap = cal50volMa(stockKLines);
             Map<Integer, Integer> indexMap = Maps.newHashMap();
-            for (int i = 1; i < stockKLines.size() - 3; i++) {
-                StockKLine topKline = stockKLines.get(i);
-                double openDiff = (topKline.getOpen() / topKline.getLastClose() - 1) * 100;
-                // 第一天涨停
-                if (topKline.getDiffRatio() <= 9.9) {
+            int latestI = 0;
+            for (int i = 10; i < stockKLines.size() - 1; i++) {
+                StockKLine _1k = stockKLines.get(i);
+                if (_1k.getDate().equals("2025-07-15")) {
+                    //                    System.out.println();
+                }
+                if (_1k.getDiffRatio() > 0) {
+                    continue;
+                }
+                if (_1k.getHigh() / _1k.getOpen() > 1.01) {
                     continue;
                 }
 
-                //                StockKLine lastKline = stockKLines.get(i - 1);
-                //                if (lastKline.getDiffRatio() > 9.9) {
-                //                    continue;
-                //                }
+                double avgSwing = 0;
+                boolean hasTop = false;
+                for (int j = i - 1; j >= i - 9; j--) {
+                    StockKLine kLine = stockKLines.get(j);
+                    double swing = (kLine.getHigh() - kLine.getLow()) / kLine.getLastClose() * 100;
+                    avgSwing += swing;
+                    if (kLine.isTop()) {
+                        hasTop = true;
+                    }
+                }
+                if (hasTop) {
+                    continue;
+                }
+                avgSwing = avgSwing / 10;
 
-                StockKLine _1nextKline = stockKLines.get(i + 1);
-                // 第二天阴线不分真假
-                if (_1nextKline.getClose() > _1nextKline.getOpen()) {
+                double swing = (_1k.getHigh() - _1k.getLow()) / _1k.getLastClose() * 100;
+                if (swing < avgSwing * 1.5) {
                     continue;
                 }
 
-                StockKLine _2nextKline = stockKLines.get(i + 2);
-                // 第三天阴线近跌停
-                if (_2nextKline.getDiffRatio() > -9) {
+                StockKLine _2k = stockKLines.get(i + 1);
+                if (_2k.getClose() < _1k.getOpen() * 0.99) {
                     continue;
                 }
 
-                StockKLine _3nextKline = stockKLines.get(i + 3);
-                // 第四天阴线近跌停
-                if (_3nextKline.getDiffRatio() > -9) {
-                    continue;
-                }
-
-                indexMap.put(i + 1, 0);
+                latestI = i;
             }
+            if (latestI < stockKLines.size() - 50) {
+                continue;
+            }
+            indexMap.put(latestI, 0);
 
             for (Integer i : indexMap.keySet()) {
-                int j = i + 3;
+                int j = i + 2;
                 StockKLine i_kline = stockKLines.get(i);
                 for (; j < stockKLines.size(); j++) {
                     StockKLine kLine = stockKLines.get(j);

@@ -135,9 +135,9 @@ public class FilterCalculator {
 
     public void getInvalidCode() {
         Map<String, Integer> invalid1 = quote.getUserSecurity("已过滤");
-        Map<String, Integer> invalid2 = quote.getUserSecurity("高位出货");
+//        Map<String, Integer> invalid2 = quote.getUserSecurity("高位出货");
         invalidCodes.addAll(invalid1.keySet());
-        invalidCodes.addAll(invalid2.keySet());
+//        invalidCodes.addAll(invalid2.keySet());
         invalidCodes.addAll(invalidCodeList());
     }
 

@@ -10,20 +10,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 测试场景：涨停后至少连续大跌两天，之后一个月回到高点，看看后续是否能继续上升
- * 测试结果：
- * 结论：至少要穿过20日线，横盘横盘时间才会小于5天。如果快速穿过60日线，横盘时间很短
- * 例子：603881 2024-12-31 ~ 2025-02-10
+ * 测试场景：前一天2个点以下涨停并且再之前不是涨停即不连板，第二天最高不超过涨停价的2%，但是跌幅超过5%，看看后面怎么走
+ * 测试结果：30%没有回到原高点，25%5天内回到原高点
+ * 结论：如果是非高位股，洗盘时间要长并且向上，如果是高位股，就要看第二天的下跌幅度
+ * 例子：601606 2025-07-22 603767 2025-07-30
  */
-public class Test4 extends BaseFilter {
+public class Test8 extends BaseFilter {
 
     public static void main(String[] args) {
         LoadData.init();
-        Test4 test3 = new Test4();
+        Test8 test8 = new Test8();
         //        cal();
         //                test(10);
-//        test3.testOne(0, "603881");
-        test3.testOne(0, null);
+//        test8.testOne(0, "603767");
+        test8.testOne(0, null);
     }
 
     public List<String> cal(int prevDays, String testCode) {
@@ -52,44 +52,34 @@ public class Test4 extends BaseFilter {
                 continue;
             }
 
-            //            Map<String, BigDecimal> avgVolMap = cal50volMa(stockKLines);
             Map<Integer, Integer> indexMap = Maps.newHashMap();
-            for (int i = 1; i < stockKLines.size() - 3; i++) {
-                StockKLine topKline = stockKLines.get(i);
-                double openDiff = (topKline.getOpen() / topKline.getLastClose() - 1) * 100;
-                // 第一天涨停
-                if (topKline.getDiffRatio() <= 9.9) {
+            double highest = Double.MIN_VALUE;
+            for (int i = 1; i < stockKLines.size()-1; i++) {
+                StockKLine kLine = stockKLines.get(i);
+                if (!kLine.isTop()) {
+                    continue;
+                }
+                if (kLine.getOpen()/kLine.getLastClose()>1.02) {
                     continue;
                 }
 
-                //                StockKLine lastKline = stockKLines.get(i - 1);
-                //                if (lastKline.getDiffRatio() > 9.9) {
-                //                    continue;
-                //                }
-
-                StockKLine _1nextKline = stockKLines.get(i + 1);
-                // 第二天阴线不分真假
-                if (_1nextKline.getClose() > _1nextKline.getOpen()) {
+                StockKLine prevKLine = stockKLines.get(i-1);
+                if (prevKLine.isTop()) {
                     continue;
                 }
 
-                StockKLine _2nextKline = stockKLines.get(i + 2);
-                // 第三天阴线近跌停
-                if (_2nextKline.getDiffRatio() > -9) {
+                StockKLine nextKline = stockKLines.get(i + 1);
+                if (nextKline.getDiffRatio()>-4) {
                     continue;
                 }
-
-                StockKLine _3nextKline = stockKLines.get(i + 3);
-                // 第四天阴线近跌停
-                if (_3nextKline.getDiffRatio() > -9) {
+                if (nextKline.getHigh()/nextKline.getLastClose()>1.01) {
                     continue;
                 }
-
-                indexMap.put(i + 1, 0);
+            indexMap.put(i, 0);
             }
 
             for (Integer i : indexMap.keySet()) {
-                int j = i + 3;
+                int j = i + 2;
                 StockKLine i_kline = stockKLines.get(i);
                 for (; j < stockKLines.size(); j++) {
                     StockKLine kLine = stockKLines.get(j);
