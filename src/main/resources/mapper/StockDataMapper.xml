@@ -168,6 +168,20 @@
         limit #{page.limit}
     </select>
 
+    <select id="listStockDataYears" resultType="java.lang.String">
+        SELECT TABLE_NAME
+        FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME REGEXP '^[0-9]{4}$'
+        ORDER BY TABLE_NAME
+    </select>
+
+    <select id="listDistinctCodesForYear" resultType="java.lang.String">
+        SELECT DISTINCT code
+        FROM `${dbYear}`
+        ORDER BY code
+    </select>
+
     <select id="queryByCode" resultType="Total">
         select
         <include refid="queryColumn"/>

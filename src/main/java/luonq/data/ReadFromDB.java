@@ -14,7 +14,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Slf4j
@@ -88,5 +93,71 @@ public class ReadFromDB {
 
     public TradeCalendar getNextTradeCalendar(String tradeDay) {
         return tradeCalendarMapper.queryNextTradeCalendar(tradeDay);
+    }
+
+    /**
+     * 所有在库中有日线记录的股票代码（按年表汇总，有序）。
+     */
+    public List<String> listAllStockCodes() {
+        List<String> years = stockDataMapper.listStockDataYears();
+        if (years == null || years.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Set<String> codes = new LinkedHashSet<>();
+        for (String year : years) {
+            List<String> part = stockDataMapper.listDistinctCodesForYear(year);
+            if (part != null) {
+                codes.addAll(part);
+            }
+        }
+        List<String> sorted = new ArrayList<>(codes);
+        sorted.sort(Comparator.naturalOrder());
+        return sorted;
+    }
+
+    /**
+     * 某只股票日 K（跨年份分表），按日期升序。{@code from}、{@code to} 为 yyyy-MM-dd，闭区间，可空。
+     */
+    public List<Total> queryDailyByCode(String code, String from, String to) {
+        List<String> years = stockDataMapper.listStockDataYears();
+        if (years == null || years.isEmpty()) {
+            return Collections.emptyList();
+        }
+        int yMin = Integer.parseInt(years.get(0));
+        int yMax = Integer.parseInt(years.get(years.size() - 1));
+        int yFrom = yMin;
+        int yTo = yMax;
+        if (from != null && from.length() >= 4) {
+            yFrom = Math.max(yFrom, Integer.parseInt(from.substring(0, 4)));
+        }
+        if (to != null && to.length() >= 4) {
+            yTo = Math.min(yTo, Integer.parseInt(to.substring(0, 4)));
+        }
+        if (yFrom > yTo) {
+            return Collections.emptyList();
+        }
+        List<Total> merged = new ArrayList<>();
+        for (String year : years) {
+            int y = Integer.parseInt(year);
+            if (y < yFrom || y > yTo) {
+                continue;
+            }
+            List<Total> chunk = stockDataMapper.queryByCode(year, code, "asc");
+            if (chunk == null || chunk.isEmpty()) {
+                continue;
+            }
+            for (Total t : chunk) {
+                String d = t.getDate();
+                if (from != null && d.compareTo(from) < 0) {
+                    continue;
+                }
+                if (to != null && d.compareTo(to) > 0) {
+                    continue;
+                }
+                merged.add(t);
+            }
+        }
+        merged.sort(Comparator.comparing(Total::getDate));
+        return merged;
     }
 }

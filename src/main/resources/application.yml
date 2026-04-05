@@ -15,3 +15,9 @@ mybatis:
 
 logging:
   config: classpath:config/logback-spring.xml
+
+# Massive（文档 https://massive.com/docs/rest/stocks/market-operations/market-holidays ）/ Polygon 兼容 REST
+massive:
+  api:
+    base-url: https://api.polygon.io
+    key: Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
