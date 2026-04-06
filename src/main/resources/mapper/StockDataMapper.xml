@@ -160,6 +160,72 @@
         `ma60`=values(ma60)
     </insert>
 
+    <insert id="batchUpsertOhlcvDaily">
+        insert into `${dbYear}` (
+        `code`,
+        `date`,
+        `open`,
+        `close`,
+        `high`,
+        `low`,
+        `volume`,
+        `open_trade`,
+        `open_trade_time`,
+        `f1min_avg_price`,
+        `f1min_volume`,
+        `md`,
+        `mb`,
+        `up`,
+        `dn`,
+        `open_md`,
+        `open_mb`,
+        `open_up`,
+        `open_dn`,
+        `ma5`,
+        `ma10`,
+        `ma20`,
+        `ma30`,
+        `ma60`,
+        `create_time`,
+        `update_time`)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.code},
+            #{item.date},
+            #{item.open},
+            #{item.close},
+            #{item.high},
+            #{item.low},
+            #{item.volume},
+            #{item.openTrade},
+            #{item.openTradeTime},
+            #{item.f1minAvgPrice},
+            #{item.f1minVolume},
+            #{item.md},
+            #{item.mb},
+            #{item.up},
+            #{item.dn},
+            #{item.openMd},
+            #{item.openMb},
+            #{item.openUp},
+            #{item.openDn},
+            #{item.ma5},
+            #{item.ma10},
+            #{item.ma20},
+            #{item.ma30},
+            #{item.ma60},
+            now(),
+            now())
+        </foreach>
+        on duplicate key update
+        `open`=values(open),
+        `close`=values(close),
+        `high`=values(high),
+        `low`=values(low),
+        `volume`=values(volume),
+        `update_time`=now()
+    </insert>
+
     <select id="queryForAllYear" resultType="Total">
         select
         <include refid="queryColumn"/>

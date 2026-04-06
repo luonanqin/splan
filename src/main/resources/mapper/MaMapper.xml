@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.MaMapper">
+
+    <select id="selectMaxDate" resultType="java.lang.String">
+        select max(`date`) from `ma` where `code` = #{code} and `type` = #{type}
+    </select>
+
+    <select id="selectByCodeTypeBetween" resultType="StockMa">
+        select `id`, `code`, `date`, `type`, `ma5`, `ma10`, `ma20`, `ma30`, `ma60`
+        from `ma`
+        where `code` = #{code}
+          and `type` = #{type}
+          and `date` &gt;= #{fromInclusive}
+          and `date` &lt;= #{toInclusive}
+        order by `date` asc
+    </select>
+
+    <insert id="batchUpsertMa">
+        insert into `ma` (
+        `code`,
+        `date`,
+        `type`,
+        `ma5`,
+        `ma10`,
+        `ma20`,
+        `ma30`,
+        `ma60`,
+        `create_time`,
+        `update_time`)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.code},
+            #{item.date},
+            #{item.type},
+            #{item.ma5},
+            #{item.ma10},
+            #{item.ma20},
+            #{item.ma30},
+            #{item.ma60},
+            now(),
+            now())
+        </foreach>
+        on duplicate key update
+        `ma5` = values(ma5),
+        `ma10` = values(ma10),
+        `ma20` = values(ma20),
+        `ma30` = values(ma30),
+        `ma60` = values(ma60),
+        `update_time` = now()
+    </insert>
+</mapper>

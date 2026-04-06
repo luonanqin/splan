@@ -18,6 +18,11 @@ import java.util.Map;
 @AllArgsConstructor
 public class StockChartResponse {
     private String symbol;
+    /** e.g. {@code day}, {@code 1w}, {@code 1mo} — 与前端 {@code StockChartBundle.interval} 对齐 */
+    private String interval;
+    /** 是否还可能存在更早的日线（用于向左懒加载） */
+    @Builder.Default
+    private Boolean hasMoreOlder = false;
     private List<CandleBarDto> bars;
     @Builder.Default
     private Map<String, List<LinePointDto>> indicators = Collections.emptyMap();

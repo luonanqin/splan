@@ -160,4 +160,86 @@ public class ReadFromDB {
         merged.sort(Comparator.comparing(Total::getDate));
         return merged;
     }
+
+    /**
+     * 最新 {@code limit} 个交易日（按 date 升序）。从最近年份倒序扫表，性能优于全表合并再截断。
+     *
+     * @param toInclusive 若非空，只包含 date ≤ toInclusive 的行
+     */
+    public List<Total> queryLatestDaily(String code, int limit, String toInclusive) {
+        if (limit <= 0 || StringUtils.isBlank(code)) {
+            return Collections.emptyList();
+        }
+        List<String> years = stockDataMapper.listStockDataYears();
+        if (years == null || years.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> yrev = new ArrayList<>(years);
+        Collections.reverse(yrev);
+        List<Total> got = new ArrayList<>();
+        for (String year : yrev) {
+            List<Total> chunk = stockDataMapper.queryByCode(year, code, "desc");
+            if (chunk == null || chunk.isEmpty()) {
+                continue;
+            }
+            for (Total t : chunk) {
+                String d = t.getDate();
+                if (StringUtils.isBlank(d)) {
+                    continue;
+                }
+                if (toInclusive != null && !toInclusive.isEmpty() && d.compareTo(toInclusive) > 0) {
+                    continue;
+                }
+                got.add(t);
+                if (got.size() >= limit) {
+                    break;
+                }
+            }
+            if (got.size() >= limit) {
+                break;
+            }
+        }
+        Collections.reverse(got);
+        return got;
+    }
+
+    /**
+     * 严格早于 {@code beforeExclusive}（yyyy-MM-dd）的最近 {@code limit} 个交易日，按 date 升序。
+     */
+    public List<Total> queryDailyBeforeExclusive(String code, String beforeExclusive, int limit) {
+        if (limit <= 0 || StringUtils.isBlank(code) || StringUtils.isBlank(beforeExclusive)) {
+            return Collections.emptyList();
+        }
+        List<String> years = stockDataMapper.listStockDataYears();
+        if (years == null || years.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> yrev = new ArrayList<>(years);
+        Collections.reverse(yrev);
+        List<Total> got = new ArrayList<>();
+        for (String year : yrev) {
+            List<Total> chunk = stockDataMapper.queryByCode(year, code, "desc");
+            if (chunk == null || chunk.isEmpty()) {
+                continue;
+            }
+            for (Total t : chunk) {
+                String d = t.getDate();
+                if (StringUtils.isBlank(d)) {
+                    continue;
+                }
+                if (d.compareTo(beforeExclusive) >= 0) {
+                    continue;
+                }
+                got.add(t);
+                if (got.size() >= limit) {
+                    break;
+                }
+            }
+            if (got.size() >= limit) {
+                break;
+            }
+        }
+        Collections.reverse(got);
+        return got;
+    }
 }

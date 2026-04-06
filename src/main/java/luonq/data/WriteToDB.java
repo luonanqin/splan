@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import luonq.mapper.EarningDataMapper;
 import luonq.mapper.RehabDataMapper;
 import luonq.mapper.StockDataMapper;
+import luonq.service.ChartDataChangeNotifier;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,9 @@ public class WriteToDB {
 
     @Autowired
     private RehabDataMapper rehabDataMapper;
+
+    @Autowired
+    private ChartDataChangeNotifier chartDataChangeNotifier;
 
     /**
      * 一次性导入历史数据
@@ -91,7 +95,7 @@ public class WriteToDB {
      * 自定义股票和日期增量导入
      */
     public void additionToDB(List<String> codeList, List<String> dateList) throws Exception {
-        int curYear = LocalDate.now().getYear()-1, lastYear = curYear - 1;
+        int curYear = LocalDate.now().getYear(), lastYear = curYear - 1;
 
         Map<String, String> dailyFileMap = BaseUtils.getFileMap(Constants.HIS_BASE_PATH + "merge/");
         Map<String, String> maFileMap = BaseUtils.getFileMap(Constants.INDICATOR_MA_PATH + "daily/");
@@ -185,6 +189,13 @@ public class WriteToDB {
         }
 
         stockDataMapper.batchInsertFileData(totalList, year);
+        if (CollectionUtils.isNotEmpty(totalList)) {
+            totalList.stream()
+                    .map(Total::getCode)
+                    .filter(StringUtils::isNotBlank)
+                    .distinct()
+                    .forEach(chartDataChangeNotifier::notifySymbolChanged);
+        }
     }
 
     private void importHistoricalDate(Map<String, List<Total>> dateToTotalMap) {

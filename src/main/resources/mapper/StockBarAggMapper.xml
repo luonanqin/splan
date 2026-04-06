@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.StockBarAggMapper">
+
+    <select id="selectMaxBarDate" resultType="java.lang.String">
+        select max(`bar_date`) from `stock_bar_agg`
+        where `code` = #{code} and `period_type` = #{periodType}
+    </select>
+
+    <insert id="batchUpsertStockBarAgg">
+        insert into `stock_bar_agg` (
+        `code`,
+        `period_type`,
+        `bar_date`,
+        `first_trade_date`,
+        `open`,
+        `high`,
+        `low`,
+        `close`,
+        `volume`,
+        `create_time`,
+        `update_time`)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.code},
+            #{item.periodType},
+            #{item.barDate},
+            #{item.firstTradeDate},
+            #{item.open},
+            #{item.high},
+            #{item.low},
+            #{item.close},
+            #{item.volume},
+            now(),
+            now())
+        </foreach>
+        on duplicate key update
+        `first_trade_date` = values(first_trade_date),
+        `open` = values(open),
+        `high` = values(high),
+        `low` = values(low),
+        `close` = values(close),
+        `volume` = values(volume),
+        `update_time` = now()
+    </insert>
+</mapper>

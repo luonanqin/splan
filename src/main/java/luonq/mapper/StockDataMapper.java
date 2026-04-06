@@ -35,6 +35,11 @@ public interface StockDataMapper {
     void batchInsertFileData(@Param("list") List<Total> totalList, @Param("dbYear") String dbYear);
 
     /**
+     * 仅写入/更新 OHLCV；已存在行只更新 open/close/high/low/volume 与 update_time，不碰均线与布林等字段。
+     */
+    void batchUpsertOhlcvDaily(@Param("list") List<Total> totalList, @Param("dbYear") String dbYear);
+
+    /**
      * 分页批量返回全表数据
      */
     List<Total> queryForAllYear(@Param("dbYear") String dbYear, @Param("page") Page page);
@@ -43,6 +48,16 @@ public interface StockDataMapper {
      * 返回某只股票某年的数据
      */
     List<Total> queryByCode(@Param("dbYear") String dbYear, @Param("code") String code, @Param("dateOrderType") String dateOrderType);
+
+    /**
+     * 当前库中按年分表的股票日线表名（四位数字年份，如 2023）
+     */
+    List<String> listStockDataYears();
+
+    /**
+     * 某年表中出现的全部股票代码
+     */
+    List<String> listDistinctCodesForYear(@Param("dbYear") String dbYear);
 
     /**
      * 返回某天的股票列表

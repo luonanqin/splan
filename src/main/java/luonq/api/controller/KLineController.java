@@ -1,115 +1,64 @@
 package luonq.api.controller;
 
-import bean.Total;
-import luonq.api.dto.CandleBarDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import luonq.api.dto.StockChartResponse;
 import luonq.data.ReadFromDB;
-import org.springframework.http.HttpStatus;
+import luonq.service.StockChartQueryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Tag(name = "股票 K 线", description = "标的代码列表与 K 线 OHLCV、指标查询（供前端图表等）")
 @RestController
 @RequestMapping("/api/stocks")
+@Slf4j
 public class KLineController {
 
     private final ReadFromDB readFromDB;
+    private final StockChartQueryService stockChartQueryService;
 
-    public KLineController(ReadFromDB readFromDB) {
+    public KLineController(ReadFromDB readFromDB, StockChartQueryService stockChartQueryService) {
         this.readFromDB = readFromDB;
+        this.stockChartQueryService = stockChartQueryService;
     }
 
+    @Operation(summary = "列出全部股票代码", description = "从数据库年表汇总去重后的 ticker 列表，用于下拉、校验等。")
     @GetMapping
     public List<String> listSymbols() {
-        return readFromDB.listAllStockCodes();
+        List<String> codes = readFromDB.listAllStockCodes();
+        log.info("api GET /api/stocks listSymbols count={}", codes.size());
+        return codes;
     }
 
     /**
-     * 日 K。可选 {@code from} / {@code to}（yyyy-MM-dd，闭区间）。
+     * K 线。默认只返回最新 {@value luonq.service.StockChartQueryService#DEFAULT_INITIAL_LIMIT} 根；向左拖时用
+     * {@code before=当前最左一根的 time}&amp;{@code limit=100}（或省略 limit 用默认 {@value luonq.service.StockChartQueryService#DEFAULT_BEFORE_CHUNK}）。
+     * 若指定 {@code from} 或 {@code to} 任一，则按闭区间全量拉取（不走条数截断与缓存）。
      */
+    @Operation(
+            summary = "查询 K 线数据",
+            description = "默认返回最新若干根；传 before 向左分页。若指定 from 或 to 则闭区间全量拉取（不走缓存）。"
+                    + "interval：day/week/month/quarter。"
+    )
     @GetMapping("/{symbol}/chart")
-    public StockChartResponse dailyChart(
-            @PathVariable String symbol,
-            @RequestParam(required = false) String from,
-            @RequestParam(required = false) String to) {
-        List<Total> rows = readFromDB.queryDailyByCode(symbol, from, to);
-        if (rows.isEmpty()) {
-            List<Total> any = readFromDB.queryDailyByCode(symbol, null, null);
-            if (any.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No K-line data for symbol: " + symbol);
-            }
-            return StockChartResponse.builder()
-                    .symbol(symbol)
-                    .bars(Collections.emptyList())
-                    .indicators(Collections.emptyMap())
-                    .build();
-        }
-
-        List<CandleBarDto> bars = new ArrayList<>(rows.size());
-        for (Total t : rows) {
-            bars.add(CandleBarDto.builder()
-                    .time(t.getDate())
-                    .open(t.getOpen())
-                    .high(t.getHigh())
-                    .low(t.getLow())
-                    .close(t.getClose())
-                    .volume(t.getVolume() != null ? t.getVolume().doubleValue() : null)
-                    .build());
-        }
-
-        List<StockChartResponse.LinePointDto> ma20 = ma20FromTotals(rows);
-        if (ma20.isEmpty()) {
-            ma20 = buildMa(bars, 20);
-        }
-        Map<String, List<StockChartResponse.LinePointDto>> indicators = new HashMap<>();
-        indicators.put("ma20", ma20);
-
-        return StockChartResponse.builder()
-                .symbol(symbol)
-                .bars(bars)
-                .indicators(indicators)
-                .build();
-    }
-
-    private static List<StockChartResponse.LinePointDto> ma20FromTotals(List<Total> rows) {
-        List<StockChartResponse.LinePointDto> out = new ArrayList<>();
-        for (Total t : rows) {
-            if (t.getMa20() == 0.0) {
-                continue;
-            }
-            out.add(StockChartResponse.LinePointDto.builder()
-                    .time(t.getDate())
-                    .value(Math.round(t.getMa20() * 100.0) / 100.0)
-                    .build());
-        }
-        return out;
-    }
-
-    private static List<StockChartResponse.LinePointDto> buildMa(List<CandleBarDto> bars, int period) {
-        if (bars.size() < period) {
-            return Collections.emptyList();
-        }
-        List<StockChartResponse.LinePointDto> out = new ArrayList<>();
-        for (int i = period - 1; i < bars.size(); i++) {
-            double sum = 0;
-            for (int j = 0; j < period; j++) {
-                sum += bars.get(i - j).getClose();
-            }
-            double v = Math.round(sum * 100.0 / period) / 100.0;
-            out.add(StockChartResponse.LinePointDto.builder()
-                    .time(bars.get(i).getTime())
-                    .value(v)
-                    .build());
-        }
-        return out;
+    public StockChartResponse chart(
+            @Parameter(description = "股票代码，如 AAPL", required = true) @PathVariable String symbol,
+            @Parameter(description = "区间起始日期 yyyy-MM-dd；与 to 同时或择一使用则走全量拉取") @RequestParam(required = false) String from,
+            @Parameter(description = "区间结束日期 yyyy-MM-dd") @RequestParam(required = false) String to,
+            @Parameter(description = "K 线周期：day | week | month | quarter，默认 day") @RequestParam(required = false, defaultValue = "day") String interval,
+            @Parameter(description = "返回条数上限；初始默认 300，带 before 时默认 100") @RequestParam(required = false) Integer limit,
+            @Parameter(description = "向左加载：仅取严格早于此日期的数据（与 bar.time 一致，yyyy-MM-dd）") @RequestParam(required = false) String before,
+            @Parameter(description = "额外均线周期，逗号分隔，如 120,200；库表无列时由后端按收盘价计算（日线会向左补足历史）") @RequestParam(required = false) String computeMaPeriods) {
+        log.info(
+                "api GET /api/stocks/{}/chart interval={} limit={} before={} from={} to={} computeMaPeriods={}",
+                symbol, interval, limit, before, from, to, computeMaPeriods);
+        return stockChartQueryService.getChart(symbol, from, to, interval, limit, before, computeMaPeriods);
     }
 }

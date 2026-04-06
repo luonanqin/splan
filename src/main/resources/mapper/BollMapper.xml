@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.BollMapper">
+
+    <select id="selectMaxDate" resultType="java.lang.String">
+        select max(`date`) from `boll` where `code` = #{code} and `type` = #{type}
+    </select>
+
+    <select id="selectByCodeTypeBetween" resultType="StockBoll">
+        select `id`, `code`, `date`, `type`, `md`, `mb`, `up`, `dn`
+        from `boll`
+        where `code` = #{code}
+          and `type` = #{type}
+          and `date` &gt;= #{fromInclusive}
+          and `date` &lt;= #{toInclusive}
+        order by `date` asc
+    </select>
+
+    <insert id="batchUpsertBoll">
+        insert into `boll` (
+        `code`,
+        `date`,
+        `type`,
+        `md`,
+        `mb`,
+        `up`,
+        `dn`,
+        `create_time`,
+        `update_time`)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.code},
+            #{item.date},
+            #{item.type},
+            #{item.md},
+            #{item.mb},
+            #{item.up},
+            #{item.dn},
+            now(),
+            now())
+        </foreach>
+        on duplicate key update
+        `md` = values(md),
+        `mb` = values(mb),
+        `up` = values(up),
+        `dn` = values(dn),
+        `update_time` = now()
+    </insert>
+</mapper>
