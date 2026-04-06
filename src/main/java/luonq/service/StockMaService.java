@@ -1,13 +1,13 @@
 package luonq.service;
 
 import bean.MA;
+import bean.StockBarAgg;
 import bean.StockMa;
 import bean.Total;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import luonq.indicator.MovingAverageSma;
 import luonq.mapper.MaMapper;
-import luonq.mapper.StockDataMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +15,13 @@ import org.springframework.stereotype.Service;
 import util.Constants;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.temporal.WeekFields;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
- * 从 {@code option/weekOption} 读取股票列表，按年表拉取 OHLC，计算 day/week/month/quarter 均线并写入 {@code ma} 表。
+ * 跟踪标的列表见 {@link TrackedStockCodesProvider}；日线由年表拉取；周/月/季均线序列与 {@link StockBarAggService} 写入的 {@code stock_bar_agg} 一致（请先同步聚合表再算 MA）。
  */
 @Service
 @Slf4j
@@ -41,7 +36,6 @@ public class StockMaService {
     private static final int MIN_YEAR = 2022;
     private static final LocalDate MIN_DATE = LocalDate.of(MIN_YEAR, 1, 1);
     private static final int UPSERT_BATCH = 500;
-    private static final WeekFields US_WEEK = WeekFields.of(Locale.US);
 
     /** 日线增量：在已有 MA 水位线前多取若干日历日，保证 ma60 有足够交易日窗口 */
     private static final int INCR_DAY_LOOKBACK_DAYS = 200;
@@ -53,10 +47,13 @@ public class StockMaService {
     private static final int INCR_QUARTER_TAIL_DAYS = 5600;
 
     @Autowired
-    private StockDataMapper stockDataMapper;
+    private MaMapper maMapper;
 
     @Autowired
-    private MaMapper maMapper;
+    private StockDailyDataService stockDailyDataService;
+
+    @Autowired
+    private StockBarAggService stockBarAggService;
 
     @Autowired
     private ChartDataChangeNotifier chartDataChangeNotifier;
@@ -65,17 +62,10 @@ public class StockMaService {
     private TrackedStockCodesProvider trackedStockCodesProvider;
 
     /**
-     * weekOption 每行一个 code，空行与首尾空白忽略。
-     */
-    public List<String> loadTrackedCodes() {
-        return trackedStockCodesProvider.loadAll();
-    }
-
-    /**
-     * 全量：对 weekOption 中全部股票，从 {@value #MIN_YEAR} 年到 {@code endDate} 重建各周期 type 并 upsert。
+     * 全量：对跟踪列表中全部股票，从 {@value #MIN_YEAR} 年到 {@code endDate} 重建各周期 type 并 upsert。
      */
     public int syncFull(LocalDate endDate, List<String> codesOverride) {
-        List<String> codes = codesOverride != null ? codesOverride : loadTrackedCodes();
+        List<String> codes = codesOverride != null ? codesOverride : trackedStockCodesProvider.loadAll();
         if (CollectionUtils.isEmpty(codes)) {
             log.warn("no codes to sync");
             return 0;
@@ -95,7 +85,7 @@ public class StockMaService {
      * 增量：按 {@code ma} 表水位线只算必要区间。日线仅重算新交易日；周/月/季只在有限日历窗口内重算（行数很少）。
      */
     public int syncIncremental(LocalDate endDate) {
-        List<String> codes = loadTrackedCodes();
+        List<String> codes = trackedStockCodesProvider.loadAll();
         if (CollectionUtils.isEmpty(codes)) {
             log.warn("no codes to sync");
             return 0;
@@ -142,23 +132,22 @@ public class StockMaService {
     }
 
     private int recomputeFullAllTypes(String code, LocalDate endDate) {
-        List<Total> dailies = loadDailyTotalsRange(code, MIN_DATE, endDate);
+        String endStr = endDate.format(Constants.DB_DATE_FORMATTER);
+        List<Total> dailies = stockDailyDataService.fetchDailiesAsc(code, MIN_DATE, endDate);
         if (dailies.isEmpty()) {
             log.debug("no OHLC for code={} through {}", code, endDate);
             return 0;
         }
 
+        List<StockBarAgg> weekBars = stockBarAggService.queryByCodePeriodBetween(code, TYPE_WEEK, null, endStr);
+        List<StockBarAgg> monthBars = stockBarAggService.queryByCodePeriodBetween(code, TYPE_MONTH, null, endStr);
+        List<StockBarAgg> quarterBars = stockBarAggService.queryByCodePeriodBetween(code, TYPE_QUARTER, null, endStr);
+
         List<StockMa> all = new ArrayList<>();
         all.addAll(buildTypeRows(code, TYPE_DAY, dailies));
-
-        List<Total> weekBars = aggregateByWeek(dailies);
-        all.addAll(buildTypeRows(code, TYPE_WEEK, weekBars));
-
-        List<Total> monthBars = aggregateByMonth(dailies);
-        all.addAll(buildTypeRows(code, TYPE_MONTH, monthBars));
-
-        List<Total> quarterBars = aggregateByQuarter(dailies);
-        all.addAll(buildTypeRows(code, TYPE_QUARTER, quarterBars));
+        all.addAll(buildTypeRowsFromAgg(code, TYPE_WEEK, weekBars));
+        all.addAll(buildTypeRowsFromAgg(code, TYPE_MONTH, monthBars));
+        all.addAll(buildTypeRowsFromAgg(code, TYPE_QUARTER, quarterBars));
 
         upsertPartitioned(all);
         log.info("ma full upsert code={} dayBars={} weekBars={} monthBars={} quarterBars={} rows={}",
@@ -189,7 +178,7 @@ public class StockMaService {
                 loadStart = MIN_DATE;
             }
         }
-        List<Total> dailies = loadDailyTotalsRange(code, loadStart, endDate);
+        List<Total> dailies = stockDailyDataService.fetchDailiesAsc(code, loadStart, endDate);
         if (dailies.isEmpty()) {
             return 0;
         }
@@ -216,15 +205,12 @@ public class StockMaService {
         LocalDate loadStart = lastW == null
                 ? MIN_DATE
                 : maxDate(MIN_DATE, endDate.minusDays(INCR_WEEK_TAIL_DAYS));
-        List<Total> dailies = loadDailyTotalsRange(code, loadStart, endDate);
-        if (dailies.isEmpty()) {
-            return 0;
-        }
-        List<Total> weekBars = aggregateByWeek(dailies);
+        String loadStartStr = loadStart.format(Constants.DB_DATE_FORMATTER);
+        List<StockBarAgg> weekBars = stockBarAggService.queryByCodePeriodBetween(code, TYPE_WEEK, loadStartStr, endStr);
         if (weekBars.isEmpty()) {
             return 0;
         }
-        List<StockMa> built = buildTypeRows(code, TYPE_WEEK, weekBars);
+        List<StockMa> built = buildTypeRowsFromAgg(code, TYPE_WEEK, weekBars);
         List<StockMa> toWrite = built.stream()
                 .filter(r -> r.getDate().compareTo(endStr) <= 0)
                 .collect(Collectors.toList());
@@ -237,15 +223,12 @@ public class StockMaService {
         LocalDate loadStart = lastM == null
                 ? MIN_DATE
                 : maxDate(MIN_DATE, endDate.minusDays(INCR_MONTH_TAIL_DAYS));
-        List<Total> dailies = loadDailyTotalsRange(code, loadStart, endDate);
-        if (dailies.isEmpty()) {
-            return 0;
-        }
-        List<Total> monthBars = aggregateByMonth(dailies);
+        String loadStartStr = loadStart.format(Constants.DB_DATE_FORMATTER);
+        List<StockBarAgg> monthBars = stockBarAggService.queryByCodePeriodBetween(code, TYPE_MONTH, loadStartStr, endStr);
         if (monthBars.isEmpty()) {
             return 0;
         }
-        List<StockMa> built = buildTypeRows(code, TYPE_MONTH, monthBars);
+        List<StockMa> built = buildTypeRowsFromAgg(code, TYPE_MONTH, monthBars);
         List<StockMa> toWrite = built.stream()
                 .filter(r -> r.getDate().compareTo(endStr) <= 0)
                 .collect(Collectors.toList());
@@ -258,15 +241,12 @@ public class StockMaService {
         LocalDate loadStart = lastQ == null
                 ? MIN_DATE
                 : maxDate(MIN_DATE, endDate.minusDays(INCR_QUARTER_TAIL_DAYS));
-        List<Total> dailies = loadDailyTotalsRange(code, loadStart, endDate);
-        if (dailies.isEmpty()) {
-            return 0;
-        }
-        List<Total> quarterBars = aggregateByQuarter(dailies);
+        String loadStartStr = loadStart.format(Constants.DB_DATE_FORMATTER);
+        List<StockBarAgg> quarterBars = stockBarAggService.queryByCodePeriodBetween(code, TYPE_QUARTER, loadStartStr, endStr);
         if (quarterBars.isEmpty()) {
             return 0;
         }
-        List<StockMa> built = buildTypeRows(code, TYPE_QUARTER, quarterBars);
+        List<StockMa> built = buildTypeRowsFromAgg(code, TYPE_QUARTER, quarterBars);
         List<StockMa> toWrite = built.stream()
                 .filter(r -> r.getDate().compareTo(endStr) <= 0)
                 .collect(Collectors.toList());
@@ -290,6 +270,18 @@ public class StockMaService {
     private List<StockMa> buildTypeRows(String code, String type, List<Total> barsChrono) {
         List<Double> closes = barsChrono.stream().map(Total::getClose).collect(Collectors.toList());
         List<String> dates = barsChrono.stream().map(Total::getDate).collect(Collectors.toList());
+        return buildMaRows(code, type, closes, dates);
+    }
+
+    private List<StockMa> buildTypeRowsFromAgg(String code, String type, List<StockBarAgg> barsChrono) {
+        List<Double> closes = barsChrono.stream()
+                .map(a -> a.getClose() != null ? a.getClose().doubleValue() : 0.0)
+                .collect(Collectors.toList());
+        List<String> dates = barsChrono.stream().map(StockBarAgg::getBarDate).collect(Collectors.toList());
+        return buildMaRows(code, type, closes, dates);
+    }
+
+    private static List<StockMa> buildMaRows(String code, String type, List<Double> closes, List<String> dates) {
         List<MA> mas = MovingAverageSma.computeSeries(closes, dates, MovingAverageSma.SCALE_DB);
         List<StockMa> rows = new ArrayList<>(mas.size());
         for (MA m : mas) {
@@ -305,172 +297,6 @@ public class StockMaService {
                     .build());
         }
         return rows;
-    }
-
-    private List<Total> loadDailyTotalsRange(String code, LocalDate startDate, LocalDate endDate) {
-        LocalDate effStart = startDate.isBefore(MIN_DATE) ? MIN_DATE : startDate;
-        List<String> years = stockDataMapper.listStockDataYears();
-        if (years == null || years.isEmpty()) {
-            return Collections.emptyList();
-        }
-        int yStart = effStart.getYear();
-        int yEnd = endDate.getYear();
-        List<Total> merged = new ArrayList<>();
-        for (String y : years) {
-            int yi = Integer.parseInt(y);
-            if (yi < yStart || yi > yEnd) {
-                continue;
-            }
-            List<Total> chunk = stockDataMapper.queryByCode(y, code, "asc");
-            if (chunk == null || chunk.isEmpty()) {
-                continue;
-            }
-            for (Total t : chunk) {
-                if (StringUtils.isBlank(t.getDate())) {
-                    continue;
-                }
-                LocalDate d = LocalDate.parse(t.getDate(), Constants.DB_DATE_FORMATTER);
-                if (d.isBefore(effStart) || d.isAfter(endDate)) {
-                    continue;
-                }
-                merged.add(t);
-            }
-        }
-        merged.sort(Comparator.comparing(Total::getDate));
-        return merged;
-    }
-
-    /**
-     * 自然周（{@link Locale#US}）：每周取该周内最后一个交易日的 bar（收盘价作为周线收盘）。
-     */
-    private List<Total> aggregateByWeek(List<Total> dailiesAsc) {
-        if (dailiesAsc.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<Total> out = new ArrayList<>();
-        List<Total> bucket = new ArrayList<>();
-        LocalDate first = LocalDate.parse(dailiesAsc.get(0).getDate(), Constants.DB_DATE_FORMATTER);
-        int weekKey = first.get(US_WEEK.weekOfWeekBasedYear());
-        int weekYear = first.get(US_WEEK.weekBasedYear());
-
-        for (Total t : dailiesAsc) {
-            LocalDate d = LocalDate.parse(t.getDate(), Constants.DB_DATE_FORMATTER);
-            int wk = d.get(US_WEEK.weekOfWeekBasedYear());
-            int wy = d.get(US_WEEK.weekBasedYear());
-            if (wk != weekKey || wy != weekYear) {
-                flushMergedPeriodBar(out, bucket);
-                bucket.clear();
-                weekKey = wk;
-                weekYear = wy;
-            }
-            bucket.add(t);
-        }
-        flushMergedPeriodBar(out, bucket);
-        return out;
-    }
-
-    /**
-     * 周期 K：{@code date} 取<strong>周期内首个交易日</strong>（与图表/十字光标对齐周期起点）；OHLC 为周期内合并（开=首日开盘，收=末日收盘，高/低=区间内极值）。
-     * 均线/BOLL 等仍基于合并后的收盘价序列。
-     */
-    private static void flushMergedPeriodBar(List<Total> out, List<Total> bucket) {
-        if (bucket.isEmpty()) {
-            return;
-        }
-        Total first = bucket.get(0);
-        Total last = bucket.get(bucket.size() - 1);
-        double high = bucket.stream().mapToDouble(Total::getHigh).max().orElse(last.getHigh());
-        double low = bucket.stream().mapToDouble(Total::getLow).min().orElse(last.getLow());
-        BigDecimal volSum = BigDecimal.ZERO;
-        for (Total t : bucket) {
-            if (t.getVolume() != null) {
-                volSum = volSum.add(t.getVolume());
-            }
-        }
-        Total merged = new Total();
-        merged.setCode(last.getCode());
-        merged.setDate(first.getDate());
-        merged.setOpen(first.getOpen());
-        merged.setHigh(high);
-        merged.setLow(low);
-        merged.setClose(last.getClose());
-        merged.setVolume(volSum.compareTo(BigDecimal.ZERO) == 0 ? null : volSum);
-        out.add(merged);
-    }
-
-    /**
-     * 每个自然月合并为一条月线；合并行的 {@code date} 为该月首个交易日（见 {@link #flushMergedPeriodBar}）。
-     */
-    private List<Total> aggregateByMonth(List<Total> dailiesAsc) {
-        if (dailiesAsc.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<Total> out = new ArrayList<>();
-        List<Total> bucket = new ArrayList<>();
-        LocalDate first = LocalDate.parse(dailiesAsc.get(0).getDate(), Constants.DB_DATE_FORMATTER);
-        YearMonth ym = YearMonth.from(first);
-
-        for (Total t : dailiesAsc) {
-            LocalDate d = LocalDate.parse(t.getDate(), Constants.DB_DATE_FORMATTER);
-            YearMonth cur = YearMonth.from(d);
-            if (!cur.equals(ym)) {
-                flushMergedPeriodBar(out, bucket);
-                bucket.clear();
-                ym = cur;
-            }
-            bucket.add(t);
-        }
-        flushMergedPeriodBar(out, bucket);
-        return out;
-    }
-
-    /**
-     * 公历季（Q1–Q4）合并为季 K；合并行的 {@code date} 为该季首个交易日（见 {@link #flushMergedPeriodBar}）。
-     * 使用自然年+季分组，与 Java 8 兼容（{@code IsoFields.YEAR_OF_QUARTER} 仅 Java 9+）。
-     */
-    private List<Total> aggregateByQuarter(List<Total> dailiesAsc) {
-        if (dailiesAsc.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<Total> out = new ArrayList<>();
-        List<Total> bucket = new ArrayList<>();
-        LocalDate first = LocalDate.parse(dailiesAsc.get(0).getDate(), Constants.DB_DATE_FORMATTER);
-        long bucketKey = calendarQuarterKey(first);
-
-        for (Total t : dailiesAsc) {
-            LocalDate d = LocalDate.parse(t.getDate(), Constants.DB_DATE_FORMATTER);
-            long k = calendarQuarterKey(d);
-            if (k != bucketKey) {
-                flushMergedPeriodBar(out, bucket);
-                bucket.clear();
-                bucketKey = k;
-            }
-            bucket.add(t);
-        }
-        flushMergedPeriodBar(out, bucket);
-        return out;
-    }
-
-    private static long calendarQuarterKey(LocalDate d) {
-        int q = (d.getMonthValue() - 1) / 3 + 1;
-        return (long) d.getYear() * 10L + q;
-    }
-
-    /** 与 {@link StockBollService} 共用：年表日线（日期升序）。 */
-    public List<Total> fetchDailiesAsc(String code, LocalDate startDate, LocalDate endDate) {
-        return loadDailyTotalsRange(code, startDate, endDate);
-    }
-
-    public List<Total> aggregateWeekBars(List<Total> dailiesAsc) {
-        return aggregateByWeek(dailiesAsc);
-    }
-
-    public List<Total> aggregateMonthBars(List<Total> dailiesAsc) {
-        return aggregateByMonth(dailiesAsc);
-    }
-
-    public List<Total> aggregateQuarterBars(List<Total> dailiesAsc) {
-        return aggregateByQuarter(dailiesAsc);
     }
 
     /**

@@ -45,4 +45,50 @@
         `volume` = values(volume),
         `update_time` = now()
     </insert>
+
+    <sql id="aggColumns">
+        `id`,
+        `code`,
+        `period_type` as periodType,
+        `bar_date` as barDate,
+        `first_trade_date` as firstTradeDate,
+        `open`,
+        `high`,
+        `low`,
+        `close`,
+        `volume`
+    </sql>
+
+    <select id="selectByCodePeriodBetween" resultType="StockBarAgg">
+        select <include refid="aggColumns"/>
+        from `stock_bar_agg`
+        where `code` = #{code} and `period_type` = #{periodType}
+        <if test="fromInclusive != null and fromInclusive != ''">
+            and `bar_date` &gt;= #{fromInclusive}
+        </if>
+        <if test="toInclusive != null and toInclusive != ''">
+            and `bar_date` &lt;= #{toInclusive}
+        </if>
+        order by `bar_date` asc
+    </select>
+
+    <select id="selectLatestByCodePeriod" resultType="StockBarAgg">
+        select <include refid="aggColumns"/>
+        from `stock_bar_agg`
+        where `code` = #{code} and `period_type` = #{periodType}
+        <if test="toInclusive != null and toInclusive != ''">
+            and `bar_date` &lt;= #{toInclusive}
+        </if>
+        order by `bar_date` desc
+        limit #{limit}
+    </select>
+
+    <select id="selectBeforeExclusive" resultType="StockBarAgg">
+        select <include refid="aggColumns"/>
+        from `stock_bar_agg`
+        where `code` = #{code} and `period_type` = #{periodType}
+        and `bar_date` &lt; #{beforeExclusive}
+        order by `bar_date` desc
+        limit #{limit}
+    </select>
 </mapper>

@@ -1,3 +1,10 @@
+# OpenAPI：启动后访问 /v3/api-docs ，Postman → Import → Link 填入该地址即可导入全部接口
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,3 +28,6 @@ massive:
   api:
     base-url: https://api.polygon.io
     key: Ea9FNNIdlWnVnGcoTpZsOWuCWEB3JAqY
+  day-aggregates:
+    # Massive 日线下载 CSV：按年子目录 + yyyy-MM-dd.csv
+    base-path: /Users/Luonanqin/study/intellij_idea_workspaces/splan_data/massive/day_aggregates

@@ -1,5 +1,6 @@
 package luonq.service;
 
+import bean.StockBarAgg;
 import bean.StockBoll;
 import bean.StockMa;
 import bean.Total;
@@ -43,6 +44,7 @@ public class StockChartQueryService {
     public static final int DEFAULT_BEFORE_CHUNK = 100;
 
     private final ReadFromDB readFromDB;
+    private final StockBarAggService stockBarAggService;
     private final StockMaService stockMaService;
     private final StockBollService stockBollService;
 
@@ -55,9 +57,11 @@ public class StockChartQueryService {
 
     public StockChartQueryService(
             ReadFromDB readFromDB,
+            StockBarAggService stockBarAggService,
             StockMaService stockMaService,
             StockBollService stockBollService) {
         this.readFromDB = readFromDB;
+        this.stockBarAggService = stockBarAggService;
         this.stockMaService = stockMaService;
         this.stockBollService = stockBollService;
     }
@@ -221,6 +225,26 @@ public class StockChartQueryService {
 
     private StockChartResponse buildFullRange(
             String symbol, String from, String to, String intervalToken, List<Integer> computeMaPeriods) {
+        if (isAggregatedChartInterval(intervalToken)) {
+            String periodType = periodTypeForChartInterval(intervalToken);
+            List<StockBarAgg> aggRows = stockBarAggService.queryByCodePeriodBetween(symbol, periodType, from, to);
+            if (aggRows.isEmpty()) {
+                if (readFromDB.queryDailyByCode(symbol, null, null).isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No K-line data for symbol: " + symbol);
+                }
+                return StockChartResponse.builder()
+                        .symbol(symbol)
+                        .interval(intervalToken)
+                        .bars(Collections.emptyList())
+                        .indicators(Collections.emptyMap())
+                        .hasMoreOlder(false)
+                        .build();
+            }
+            List<Total> source = totalsFromStockBarAgg(aggRows);
+            List<CandleBarDto> bars = candleBarsFromStockBarAgg(aggRows);
+            return assembleResponseWithBars(symbol, intervalToken, source, bars, false, computeMaPeriods);
+        }
+
         List<Total> rows = readFromDB.queryDailyByCode(symbol, from, to);
         if (rows.isEmpty()) {
             List<Total> any = readFromDB.queryDailyByCode(symbol, null, null);
@@ -235,15 +259,7 @@ public class StockChartQueryService {
                     .hasMoreOlder(false)
                     .build();
         }
-        List<Total> source = rows;
-        if ("week".equals(intervalToken)) {
-            source = stockMaService.aggregateWeekBars(rows);
-        } else if ("month".equals(intervalToken)) {
-            source = stockMaService.aggregateMonthBars(rows);
-        } else if ("quarter".equals(intervalToken)) {
-            source = stockMaService.aggregateQuarterBars(rows);
-        }
-        return assembleResponse(symbol, intervalToken, source, false, computeMaPeriods);
+        return assembleResponse(symbol, intervalToken, rows, false, computeMaPeriods);
     }
 
     private StockChartResponse buildPaginated(
@@ -253,6 +269,32 @@ public class StockChartQueryService {
             int barLimit,
             String before,
             List<Integer> computeMaPeriods) {
+        if (isAggregatedChartInterval(intervalToken)) {
+            String periodType = periodTypeForChartInterval(intervalToken);
+            List<StockBarAgg> raw;
+            if (before != null && !before.trim().isEmpty()) {
+                raw = stockBarAggService.queryBeforeExclusive(symbol, periodType, before.trim(), barLimit);
+            } else {
+                raw = stockBarAggService.queryLatestByCodePeriod(symbol, periodType, barLimit, to);
+            }
+            if (raw.isEmpty()) {
+                if (readFromDB.queryDailyByCode(symbol, null, null).isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No K-line data for symbol: " + symbol);
+                }
+                return StockChartResponse.builder()
+                        .symbol(symbol)
+                        .interval(intervalToken)
+                        .bars(Collections.emptyList())
+                        .indicators(Collections.emptyMap())
+                        .hasMoreOlder(false)
+                        .build();
+            }
+            List<Total> source = totalsFromStockBarAgg(raw);
+            List<CandleBarDto> bars = candleBarsFromStockBarAgg(raw);
+            boolean hasMoreOlder = computeHasMoreOlder(symbol, source, intervalToken);
+            return assembleResponseWithBars(symbol, intervalToken, source, bars, hasMoreOlder, computeMaPeriods);
+        }
+
         List<Total> dailies;
         if (before != null && !before.trim().isEmpty()) {
             int dailyNeed = dailyFetchCountForInterval(barLimit, intervalToken);
@@ -277,14 +319,6 @@ public class StockChartQueryService {
         }
 
         List<Total> source = dailies;
-        if ("week".equals(intervalToken)) {
-            source = stockMaService.aggregateWeekBars(dailies);
-        } else if ("month".equals(intervalToken)) {
-            source = stockMaService.aggregateMonthBars(dailies);
-        } else if ("quarter".equals(intervalToken)) {
-            source = stockMaService.aggregateQuarterBars(dailies);
-        }
-
         if (before != null && !before.trim().isEmpty()) {
             if (source.size() > barLimit) {
                 source = new ArrayList<>(source.subList(source.size() - barLimit, source.size()));
@@ -295,17 +329,61 @@ public class StockChartQueryService {
             }
         }
 
-        boolean hasMoreOlder = computeHasMoreOlder(symbol, source);
+        boolean hasMoreOlder = computeHasMoreOlder(symbol, source, intervalToken);
         return assembleResponse(symbol, intervalToken, source, hasMoreOlder, computeMaPeriods);
     }
 
-    private boolean computeHasMoreOlder(String symbol, List<Total> source) {
+    private boolean computeHasMoreOlder(String symbol, List<Total> source, String intervalToken) {
         if (source.isEmpty()) {
             return false;
         }
         String oldest = source.get(0).getDate();
+        if (isAggregatedChartInterval(intervalToken)) {
+            String periodType = periodTypeForChartInterval(intervalToken);
+            List<StockBarAgg> probe = stockBarAggService.queryBeforeExclusive(symbol, periodType, oldest, 1);
+            return probe != null && !probe.isEmpty();
+        }
         List<Total> probe = readFromDB.queryDailyBeforeExclusive(symbol, oldest, 1);
         return probe != null && !probe.isEmpty();
+    }
+
+    private static boolean isAggregatedChartInterval(String intervalToken) {
+        return "week".equals(intervalToken)
+                || "month".equals(intervalToken)
+                || "quarter".equals(intervalToken);
+    }
+
+    /** 与 {@code stock_bar_agg.period_type} 一致：week | month | quarter */
+    private static String periodTypeForChartInterval(String intervalToken) {
+        return intervalToken;
+    }
+
+    private static List<Total> totalsFromStockBarAgg(List<StockBarAgg> list) {
+        List<Total> out = new ArrayList<>(list.size());
+        for (StockBarAgg a : list) {
+            out.add(totalFromStockBarAgg(a));
+        }
+        return out;
+    }
+
+    private static Total totalFromStockBarAgg(StockBarAgg a) {
+        Total t = new Total();
+        t.setCode(a.getCode());
+        t.setDate(a.getBarDate());
+        if (a.getOpen() != null) {
+            t.setOpen(a.getOpen().doubleValue());
+        }
+        if (a.getHigh() != null) {
+            t.setHigh(a.getHigh().doubleValue());
+        }
+        if (a.getLow() != null) {
+            t.setLow(a.getLow().doubleValue());
+        }
+        if (a.getClose() != null) {
+            t.setClose(a.getClose().doubleValue());
+        }
+        t.setVolume(BigDecimal.valueOf(a.getVolume()));
+        return t;
     }
 
     private StockChartResponse assembleResponse(
@@ -314,11 +392,17 @@ public class StockChartQueryService {
             List<Total> rows,
             boolean hasMoreOlder,
             List<Integer> computeMaPeriods) {
-        List<CandleBarDto> bars = new ArrayList<>(rows.size());
-        for (Total t : rows) {
-            bars.add(candleBarFromTotal(t));
-        }
+        return assembleResponseWithBars(
+                symbol, intervalToken, rows, candleBarsFromTotals(rows), hasMoreOlder, computeMaPeriods);
+    }
 
+    private StockChartResponse assembleResponseWithBars(
+            String symbol,
+            String intervalToken,
+            List<Total> rows,
+            List<CandleBarDto> bars,
+            boolean hasMoreOlder,
+            List<Integer> computeMaPeriods) {
         Map<String, List<StockChartResponse.LinePointDto>> indicators = new HashMap<>();
         fillMaIndicators(symbol, intervalToken, rows, bars, indicators);
         fillBollIndicators(symbol, intervalToken, rows, bars, indicators);
@@ -333,7 +417,65 @@ public class StockChartQueryService {
                 .build();
     }
 
-    private static CandleBarDto candleBarFromTotal(Total t) {
+    private static List<CandleBarDto> candleBarsFromTotals(List<Total> rows) {
+        List<CandleBarDto> bars = new ArrayList<>(rows.size());
+        Double prevClose = null;
+        for (Total t : rows) {
+            bars.add(candleBarFromTotal(t, prevClose));
+            prevClose = t.getClose();
+        }
+        return bars;
+    }
+
+    /** 周/月/季：K 线 DTO 与 {@code firstTradeDate} 直接来自聚合表，不经 {@link Total}。 */
+    private static List<CandleBarDto> candleBarsFromStockBarAgg(List<StockBarAgg> list) {
+        List<CandleBarDto> bars = new ArrayList<>(list.size());
+        Double prevClose = null;
+        for (StockBarAgg a : list) {
+            bars.add(candleBarFromStockBarAgg(a, prevClose));
+            double c = a.getClose() != null ? a.getClose().doubleValue() : 0;
+            prevClose = c;
+        }
+        return bars;
+    }
+
+    private static CandleBarDto candleBarFromStockBarAgg(StockBarAgg a, Double prevClose) {
+        double open = a.getOpen() != null ? a.getOpen().doubleValue() : 0;
+        double high = a.getHigh() != null ? a.getHigh().doubleValue() : 0;
+        double low = a.getLow() != null ? a.getLow().doubleValue() : 0;
+        double close = a.getClose() != null ? a.getClose().doubleValue() : 0;
+        Double change = null;
+        Double changePct = null;
+        if (prevClose != null) {
+            change = round2(close - prevClose);
+            if (prevClose != 0.0) {
+                changePct = round2((close - prevClose) / prevClose * 100.0);
+            }
+        }
+        CandleBarDto.CandleBarDtoBuilder b = CandleBarDto.builder()
+                .time(a.getBarDate())
+                .open(open)
+                .high(high)
+                .low(low)
+                .close(close)
+                .volume((double) a.getVolume())
+                .change(change)
+                .changePercent(changePct);
+        if (StringUtils.isNotBlank(a.getFirstTradeDate())) {
+            b.firstTradeDate(a.getFirstTradeDate());
+        }
+        return b.build();
+    }
+
+    private static CandleBarDto candleBarFromTotal(Total t, Double prevClose) {
+        Double change = null;
+        Double changePct = null;
+        if (prevClose != null) {
+            change = round2(t.getClose() - prevClose);
+            if (prevClose != 0.0) {
+                changePct = round2((t.getClose() - prevClose) / prevClose * 100.0);
+            }
+        }
         return CandleBarDto.builder()
                 .time(t.getDate())
                 .open(t.getOpen())
@@ -341,7 +483,13 @@ public class StockChartQueryService {
                 .low(t.getLow())
                 .close(t.getClose())
                 .volume(t.getVolume() != null ? t.getVolume().doubleValue() : null)
+                .change(change)
+                .changePercent(changePct)
                 .build();
+    }
+
+    private static double round2(double v) {
+        return Math.round(v * 100.0) / 100.0;
     }
 
     /**
@@ -365,8 +513,10 @@ public class StockChartQueryService {
         if ("day".equals(intervalToken)) {
             List<Total> warmup = readFromDB.queryDailyBeforeExclusive(symbol, rows.get(0).getDate(), maxP - 1);
             List<CandleBarDto> extended = new ArrayList<>(warmup.size() + bars.size());
+            Double prev = null;
             for (Total t : warmup) {
-                extended.add(candleBarFromTotal(t));
+                extended.add(candleBarFromTotal(t, prev));
+                prev = t.getClose();
             }
             extended.addAll(bars);
             for (int p : computeMaPeriods) {
