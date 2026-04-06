@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="luonq.mapper.OptionTradeRecordMapper">
+
+    <sql id="columns">
+        `id`,
+        `underlying_code` as underlyingCode,
+        `strike_price` as strikePrice,
+        `option_right` as optionRight,
+        `expiration_date` as expirationDate,
+        `buy_date` as buyDate,
+        `sell_date` as sellDate,
+        `buy_price` as buyPrice,
+        `sell_price` as sellPrice,
+        `quantity`,
+        `create_time` as createTime,
+        `update_time` as updateTime
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into `option_trade_record` (
+            `underlying_code`,
+            `strike_price`,
+            `option_right`,
+            `expiration_date`,
+            `buy_date`,
+            `sell_date`,
+            `buy_price`,
+            `sell_price`,
+            `quantity`,
+            `create_time`,
+            `update_time`)
+        values (
+            #{underlyingCode},
+            #{strikePrice},
+            #{optionRight},
+            #{expirationDate},
+            #{buyDate},
+            #{sellDate},
+            #{buyPrice},
+            #{sellPrice},
+            #{quantity},
+            now(),
+            now())
+    </insert>
+
+    <select id="selectById" resultType="OptionTradeRecord">
+        select <include refid="columns"/>
+        from `option_trade_record`
+        where `id` = #{id}
+    </select>
+
+    <select id="listByUnderlyingCode" resultType="OptionTradeRecord">
+        select <include refid="columns"/>
+        from `option_trade_record`
+        where `underlying_code` = #{underlyingCode}
+        order by `buy_date` desc
+    </select>
+
+    <update id="updateById">
+        update `option_trade_record`
+        set
+            `strike_price` = #{strikePrice},
+            `option_right` = #{optionRight},
+            `expiration_date` = #{expirationDate},
+            `buy_date` = #{buyDate},
+            `sell_date` = #{sellDate},
+            `buy_price` = #{buyPrice},
+            `sell_price` = #{sellPrice},
+            `quantity` = #{quantity},
+            `update_time` = now()
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from `option_trade_record`
+        where `id` = #{id}
+    </delete>
+</mapper>
