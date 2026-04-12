@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import luonq.a.FilterCalculator;
 import luonq.a.GetBaseData;
 import luonq.execute.GrabOptionTradeData;
+import luonq.polygon.PriceReminder;
 import luonq.stock.Processor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,7 +52,7 @@ public class GetDataJob extends BaseJob {
     }
 
     @XxlJob("getABaseData.job")
-    public void getABaseData() throws Exception{
+    public void getABaseData() throws Exception {
         log.info("getABaseData.job start");
         GetBaseData.getData();
         log.info("getABaseData.job end");
@@ -61,10 +62,18 @@ public class GetDataJob extends BaseJob {
     private FilterCalculator filterCalculator;
 
     @XxlJob("filterCalculator.job")
-    public void filterCalculator() throws Exception{
+    public void filterCalculator() throws Exception {
         log.info("filterCalculator.job start");
         filterCalculator.init();
         filterCalculator.cal();
         log.info("filterCalculator.job end");
+    }
+
+    @Autowired
+    private PriceReminder priceReminder;
+
+    @XxlJob("priceReminder.job")
+    public void priceReminder(){
+        priceReminder.setReminder();
     }
 }

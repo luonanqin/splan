@@ -9,6 +9,11 @@ public interface StockBarAggMapper {
 
     String selectMaxBarDate(@Param("code") String code, @Param("periodType") String periodType);
 
+    StockBarAgg selectByCodePeriodBarDate(
+            @Param("code") String code,
+            @Param("periodType") String periodType,
+            @Param("barDate") String barDate);
+
     void batchUpsertStockBarAgg(List<StockBarAgg> list);
 
     List<StockBarAgg> selectByCodePeriodBetween(

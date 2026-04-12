@@ -43,13 +43,18 @@ public class DailyBarSyncController {
 
     @Operation(
             summary = "Massive 日聚合增量同步（全市场）",
-            description = "只处理文件名日期 ≥ since 的 CSV；未传 since 时默认最近 "
+            description = "只处理文件名日期 ≥ since 的 CSV；未传 since 时先查库中各年分表已存日线的最大交易日，从该日期的下一天起同步；"
+                    + "若无分表或无任何有效日期，则回退为最近 "
                     + MassiveDayAggregateSyncService.DEFAULT_INCREMENTAL_LOOKBACK_DAYS
-                    + " 个日历日。有日 K 写入时发布事件触发派生逻辑，结果见日志。"
+                    + " 个日历日。响应中的 effectiveSince 为本次实际使用的起始日（含）。有日 K 写入时发布事件触发派生逻辑，结果见日志。"
     )
     @PostMapping("/sync-massive-incremental")
     public ResponseEntity<Map<String, Object>> syncMassiveIncremental(
-            @Parameter(description = "起始日期 yyyy-MM-dd（含）；不传则默认今天往前 " + MassiveDayAggregateSyncService.DEFAULT_INCREMENTAL_LOOKBACK_DAYS + " 天") @RequestParam(required = false) String since)
+            @Parameter(
+                    description = "起始日期 yyyy-MM-dd（含）；不传则按库中最新日线日期的下一天起算，无法解析时回退为今天往前 "
+                            + MassiveDayAggregateSyncService.DEFAULT_INCREMENTAL_LOOKBACK_DAYS
+                            + " 天")
+            @RequestParam(required = false) String since)
             throws Exception {
         LocalDate sinceDate = null;
         if (StringUtils.isNotBlank(since)) {
@@ -78,14 +83,19 @@ public class DailyBarSyncController {
 
     @Operation(
             summary = "Massive 日聚合单票增量同步",
-            description = "只处理文件名日期 ≥ since 的 CSV；未传 since 时默认今天往前 "
+            description = "只处理文件名日期 ≥ since 的 CSV；未传 since 时在各年分表中查该票已存日线的最大交易日，从该日期的下一天起同步；"
+                    + "若无分表或该票无任何有效日期，则回退为最近 "
                     + MassiveDayAggregateSyncService.DEFAULT_INCREMENTAL_LOOKBACK_DAYS
-                    + " 天。有日 K 写入时发布事件触发派生逻辑，结果见日志。"
+                    + " 个日历日。响应中的 effectiveSince 为本次实际使用的起始日（含）。有日 K 写入时发布事件触发派生逻辑，结果见日志。"
     )
     @PostMapping("/sync-massive-code-incremental")
     public ResponseEntity<Map<String, Object>> syncMassiveCodeIncremental(
             @Parameter(description = "股票代码，必填", required = true) @RequestParam String code,
-            @Parameter(description = "起始日期 yyyy-MM-dd（含）；不传则默认最近 " + MassiveDayAggregateSyncService.DEFAULT_INCREMENTAL_LOOKBACK_DAYS + " 天") @RequestParam(required = false) String since)
+            @Parameter(
+                    description = "起始日期 yyyy-MM-dd（含）；不传则按该票在库中最新日线日期的下一天起算，无法解析时回退为今天往前 "
+                            + MassiveDayAggregateSyncService.DEFAULT_INCREMENTAL_LOOKBACK_DAYS
+                            + " 天")
+            @RequestParam(required = false) String since)
             throws Exception {
         if (StringUtils.isBlank(code)) {
             Map<String, Object> err = new LinkedHashMap<>();
@@ -109,6 +119,9 @@ public class DailyBarSyncController {
         }
         body.put("filesTouched", r.filesTouched);
         body.put("rowsUpserted", r.rowsUpserted);
+        if (r.effectiveSinceInclusive != null) {
+            body.put("effectiveSince", r.effectiveSinceInclusive);
+        }
         if (!r.ok) {
             return ResponseEntity.badRequest().body(body);
         }

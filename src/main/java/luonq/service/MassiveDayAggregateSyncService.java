@@ -73,7 +73,8 @@ public class MassiveDayAggregateSyncService {
 
     /**
      * 增量：只处理文件名日期 ≥ {@code sinceInclusive} 的 CSV（减少全量扫盘）。
-     * {@code sinceInclusive == null} 时默认为「今天往前 {@value #DEFAULT_INCREMENTAL_LOOKBACK_DAYS} 个日历日」。
+     * {@code sinceInclusive == null} 时：先查各年分表中已存日线的最大 {@code date}，从该日期的下一天起同步；
+     * 若无分表或无任何有效日期，则回退为「今天往前 {@value #DEFAULT_INCREMENTAL_LOOKBACK_DAYS} 个日历日」。
      * 若有新写入日 K，会发布 {@link DailyOhlcvUpsertedEvent}，由监听器串联 MA/BOLL/周月季 K 等派生写入。
      */
     public SyncResult syncIncrementalTracked(LocalDate sinceInclusive) throws Exception {
@@ -83,7 +84,7 @@ public class MassiveDayAggregateSyncService {
         }
         LocalDate since = sinceInclusive != null
                 ? sinceInclusive
-                : LocalDate.now().minusDays(DEFAULT_INCREMENTAL_LOOKBACK_DAYS);
+                : resolveDefaultIncrementalSinceFromDatabase();
         return runSync(allow, since);
     }
 
@@ -99,16 +100,19 @@ public class MassiveDayAggregateSyncService {
     }
 
     /**
-     * 单票增量：只处理文件名日期 ≥ {@code sinceInclusive} 的 CSV；{@code sinceInclusive == null} 时默认与 {@link #syncIncrementalTracked} 相同。
+     * 单票增量：只处理文件名日期 ≥ {@code sinceInclusive} 的 CSV。
+     * {@code sinceInclusive == null} 时：在各年分表中查该票已存日线的最大 {@code date}，从该日期的下一天起同步；
+     * 若无分表或该票无任何有效日期，则回退为「今天往前 {@value #DEFAULT_INCREMENTAL_LOOKBACK_DAYS} 个日历日」。
      */
     public SyncResult syncOneCodeIncremental(String code, LocalDate sinceInclusive) throws Exception {
         if (StringUtils.isBlank(code)) {
             return SyncResult.fail("code is blank");
         }
-        Set<String> allow = Collections.singleton(code.trim().toUpperCase(Locale.ROOT));
+        String normalized = code.trim().toUpperCase(Locale.ROOT);
+        Set<String> allow = Collections.singleton(normalized);
         LocalDate since = sinceInclusive != null
                 ? sinceInclusive
-                : LocalDate.now().minusDays(DEFAULT_INCREMENTAL_LOOKBACK_DAYS);
+                : resolveDefaultIncrementalSinceFromDatabaseForCode(normalized);
         return runSync(allow, since);
     }
 
@@ -121,6 +125,84 @@ public class MassiveDayAggregateSyncService {
                 .map(s -> s.trim().toUpperCase(Locale.ROOT))
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    /**
+     * 全市场增量未指定 since 时：取库中所有年分表的最大交易日，从下一天开始；无法得到有效日期时回退为固定回溯天数。
+     */
+    private LocalDate resolveDefaultIncrementalSinceFromDatabase() {
+        List<String> years = stockDataMapper.listStockDataYears();
+        if (CollectionUtils.isEmpty(years)) {
+            LocalDate fb = LocalDate.now().minusDays(DEFAULT_INCREMENTAL_LOOKBACK_DAYS);
+            log.info(
+                    "incremental since: no yyyy stock tables, fallback {} calendar days -> {}",
+                    DEFAULT_INCREMENTAL_LOOKBACK_DAYS,
+                    fb);
+            return fb;
+        }
+        String maxStr = null;
+        for (String y : years) {
+            String m = stockDataMapper.selectMaxDateForYear(y);
+            if (StringUtils.isBlank(m) || !m.matches(DATE_FILE_REGEX)) {
+                continue;
+            }
+            if (maxStr == null || m.compareTo(maxStr) > 0) {
+                maxStr = m;
+            }
+        }
+        if (maxStr == null) {
+            LocalDate fb = LocalDate.now().minusDays(DEFAULT_INCREMENTAL_LOOKBACK_DAYS);
+            log.info(
+                    "incremental since: no valid max date in stock tables, fallback {} calendar days -> {}",
+                    DEFAULT_INCREMENTAL_LOOKBACK_DAYS,
+                    fb);
+            return fb;
+        }
+        LocalDate next = LocalDate.parse(maxStr, Constants.DB_DATE_FORMATTER).plusDays(1);
+        log.info("incremental since: latest daily date in DB {} -> sync from {} inclusive", maxStr, next);
+        return next;
+    }
+
+    /**
+     * 单票增量未指定 since 时：取该 code 在各年分表中的最大交易日，从下一天开始；无法得到有效日期时回退为固定回溯天数。
+     */
+    private LocalDate resolveDefaultIncrementalSinceFromDatabaseForCode(String normalizedCode) {
+        List<String> years = stockDataMapper.listStockDataYears();
+        if (CollectionUtils.isEmpty(years)) {
+            LocalDate fb = LocalDate.now().minusDays(DEFAULT_INCREMENTAL_LOOKBACK_DAYS);
+            log.info(
+                    "incremental since [{}]: no yyyy stock tables, fallback {} calendar days -> {}",
+                    normalizedCode,
+                    DEFAULT_INCREMENTAL_LOOKBACK_DAYS,
+                    fb);
+            return fb;
+        }
+        String maxStr = null;
+        for (String y : years) {
+            String m = stockDataMapper.selectMaxDateForCodeInYear(y, normalizedCode);
+            if (StringUtils.isBlank(m) || !m.matches(DATE_FILE_REGEX)) {
+                continue;
+            }
+            if (maxStr == null || m.compareTo(maxStr) > 0) {
+                maxStr = m;
+            }
+        }
+        if (maxStr == null) {
+            LocalDate fb = LocalDate.now().minusDays(DEFAULT_INCREMENTAL_LOOKBACK_DAYS);
+            log.info(
+                    "incremental since [{}]: no valid max date in stock tables, fallback {} calendar days -> {}",
+                    normalizedCode,
+                    DEFAULT_INCREMENTAL_LOOKBACK_DAYS,
+                    fb);
+            return fb;
+        }
+        LocalDate next = LocalDate.parse(maxStr, Constants.DB_DATE_FORMATTER).plusDays(1);
+        log.info(
+                "incremental since [{}]: latest daily date in DB {} -> sync from {} inclusive",
+                normalizedCode,
+                maxStr,
+                next);
+        return next;
     }
 
     /**
@@ -146,6 +228,8 @@ public class MassiveDayAggregateSyncService {
 
         int files = 0;
         long rows = 0;
+        /** 本次 run 中实际写入行数 &gt;0 的 CSV 文件名日期之最大 yyyy-MM-dd，供派生周月季 K 与 asOfDate 对齐（避免仅用 LocalDate.now() 早于已写入末日时漏日线） */
+        String maxWrittenTradeDateStr = null;
         Set<String> ensuredYears = new HashSet<>();
         for (Path yearDir : yearDirs) {
             String year = yearDir.getFileName().toString();
@@ -179,19 +263,28 @@ public class MassiveDayAggregateSyncService {
                 if (n > 0) {
                     files++;
                     rows += n;
+                    if (maxWrittenTradeDateStr == null || dateStr.compareTo(maxWrittenTradeDateStr) > 0) {
+                        maxWrittenTradeDateStr = dateStr;
+                    }
                 }
             }
         }
 
-        LocalDate endDate = LocalDate.now();
+        LocalDate asOfDateForDerivatives = LocalDate.now();
+        if (maxWrittenTradeDateStr != null) {
+            LocalDate lastWritten = LocalDate.parse(maxWrittenTradeDateStr, Constants.DB_DATE_FORMATTER);
+            if (lastWritten.isAfter(asOfDateForDerivatives)) {
+                asOfDateForDerivatives = lastWritten;
+            }
+        }
         log.info(
                 "massive day_aggregates sync done since={} filesTouched={} rowsUpserted={} allowSize={}",
                 sinceStr, files, rows, allowTickers.size());
         if (rows > 0) {
             String singleOrNull = allowTickers.size() == 1 ? allowTickers.iterator().next() : null;
-            applicationEventPublisher.publishEvent(new DailyOhlcvUpsertedEvent(endDate, rows, singleOrNull));
+            applicationEventPublisher.publishEvent(new DailyOhlcvUpsertedEvent(asOfDateForDerivatives, rows, singleOrNull));
         }
-        return SyncResult.ok(files, rows);
+        return SyncResult.ok(files, rows, sinceStr);
     }
 
     private static List<Path> listYearDirectories(Path root) throws Exception {
@@ -320,20 +413,28 @@ public class MassiveDayAggregateSyncService {
         public final String message;
         public final int filesTouched;
         public final long rowsUpserted;
+        /** 增量同步时实际使用的起始日期（yyyy-MM-dd，含）；全量同步为 null */
+        public final String effectiveSinceInclusive;
 
-        private SyncResult(boolean ok, String message, int filesTouched, long rowsUpserted) {
+        private SyncResult(
+                boolean ok,
+                String message,
+                int filesTouched,
+                long rowsUpserted,
+                String effectiveSinceInclusive) {
             this.ok = ok;
             this.message = message;
             this.filesTouched = filesTouched;
             this.rowsUpserted = rowsUpserted;
+            this.effectiveSinceInclusive = effectiveSinceInclusive;
         }
 
-        static SyncResult ok(int files, long rows) {
-            return new SyncResult(true, null, files, rows);
+        static SyncResult ok(int files, long rows, String effectiveSinceInclusive) {
+            return new SyncResult(true, null, files, rows, effectiveSinceInclusive);
         }
 
         static SyncResult fail(String msg) {
-            return new SyncResult(false, msg, 0, 0);
+            return new SyncResult(false, msg, 0, 0, null);
         }
     }
 }

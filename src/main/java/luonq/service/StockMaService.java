@@ -30,7 +30,7 @@ public class StockMaService {
     public static final String TYPE_DAY = "day";
     public static final String TYPE_WEEK = "week";
     public static final String TYPE_MONTH = "month";
-    /** 季线：ISO 季度，每季最后一个交易日为锚点 date */
+    /** 季线：自然季，{@code date} 与 {@code stock_bar_agg.bar_date} 一致（季首月 1 日） */
     public static final String TYPE_QUARTER = "quarter";
 
     private static final int MIN_YEAR = 2022;
@@ -167,7 +167,7 @@ public class StockMaService {
 
     private int syncDayMaIncremental(String code, LocalDate endDate, String endStr) {
         String lastDay = maMapper.selectMaxDate(code, TYPE_DAY);
-        if (lastDay != null && lastDay.compareTo(endStr) >= 0) {
+        if (lastDay != null && lastDay.compareTo(endStr) > 0) {
             return 0;
         }
         LocalDate loadStart = MIN_DATE;
@@ -183,16 +183,10 @@ public class StockMaService {
             return 0;
         }
         List<StockMa> built = buildTypeRows(code, TYPE_DAY, dailies);
-        List<StockMa> toWrite;
-        if (lastDay == null) {
-            toWrite = built.stream()
-                    .filter(r -> r.getDate().compareTo(endStr) <= 0)
-                    .collect(Collectors.toList());
-        } else {
-            toWrite = built.stream()
-                    .filter(r -> r.getDate().compareTo(lastDay) > 0 && r.getDate().compareTo(endStr) <= 0)
-                    .collect(Collectors.toList());
-        }
+        // 与周/月/季一致：窗口内凡 date≤endStr 一律 upsert，便于同日 OHLC 修正时更新已有行而非只追加新日历日
+        List<StockMa> toWrite = built.stream()
+                .filter(r -> r.getDate().compareTo(endStr) <= 0)
+                .collect(Collectors.toList());
         upsertPartitioned(toWrite);
         if (!toWrite.isEmpty()) {
             log.debug("ma incremental day code={} upsertRows={}", code, toWrite.size());

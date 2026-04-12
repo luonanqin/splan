@@ -15,6 +15,7 @@
         `period_type`,
         `bar_date`,
         `first_trade_date`,
+        `last_trade_date`,
         `open`,
         `high`,
         `low`,
@@ -28,6 +29,7 @@
             #{item.periodType},
             #{item.barDate},
             #{item.firstTradeDate},
+            #{item.lastTradeDate},
             #{item.open},
             #{item.high},
             #{item.low},
@@ -38,6 +40,7 @@
         </foreach>
         on duplicate key update
         `first_trade_date` = values(first_trade_date),
+        `last_trade_date` = values(last_trade_date),
         `open` = values(open),
         `high` = values(high),
         `low` = values(low),
@@ -52,12 +55,20 @@
         `period_type` as periodType,
         `bar_date` as barDate,
         `first_trade_date` as firstTradeDate,
+        `last_trade_date` as lastTradeDate,
         `open`,
         `high`,
         `low`,
         `close`,
         `volume`
     </sql>
+
+    <select id="selectByCodePeriodBarDate" resultType="StockBarAgg">
+        select <include refid="aggColumns"/>
+        from `stock_bar_agg`
+        where `code` = #{code} and `period_type` = #{periodType} and `bar_date` = #{barDate}
+        limit 1
+    </select>
 
     <select id="selectByCodePeriodBetween" resultType="StockBarAgg">
         select <include refid="aggColumns"/>

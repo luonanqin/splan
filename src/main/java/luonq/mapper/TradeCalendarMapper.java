@@ -31,4 +31,15 @@ public interface TradeCalendarMapper {
      * 查询下一交易日历信息
      */
     TradeCalendar queryNextTradeCalendar(String tradeDate);
+
+    /**
+     * 全部交易日（yyyy-MM-dd），与 Python massive_day_aggregates 脚本一致。
+     */
+    List<String> listAllTradeDatesOrderByDate();
+
+    /**
+     * 闭区间内最早一条交易日（yyyy-MM-dd）；区间内无记录时返回 null。
+     */
+    String selectMinTradingDateBetween(
+            @Param("fromInclusive") String fromInclusive, @Param("toInclusive") String toInclusive);
 }

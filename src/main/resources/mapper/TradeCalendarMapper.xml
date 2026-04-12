@@ -47,4 +47,13 @@
         from `trade_calendar`
         where date &gt; #{tradeDate} order by `date` asc limit 1
     </select>
+
+    <select id="listAllTradeDatesOrderByDate" resultType="java.lang.String">
+        select `date` from `trade_calendar` order by `date`
+    </select>
+
+    <select id="selectMinTradingDateBetween" resultType="java.lang.String">
+        select min(`date`) from `trade_calendar`
+        where `date` &gt;= #{fromInclusive} and `date` &lt;= #{toInclusive}
+    </select>
 </mapper>

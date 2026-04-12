@@ -49,7 +49,11 @@ public class OptionTradeRecordController {
         return optionTradeRecordService.create(symbol, body);
     }
 
-    @Operation(summary = "更新期权交易", description = "须属于路径中的 symbol。")
+    @Operation(
+            summary = "更新期权交易",
+            description = "须属于路径中的 symbol。请求体为整单（与 GET 列表项结构一致后再改字段）；"
+                    + "id 以路径为准。卖出日、卖出价可空；其余字段须合法。支持 camelCase 与 snake_case。"
+    )
     @PutMapping("/{id}")
     public OptionTradeRecordDto update(
             @PathVariable("symbol") String symbol,

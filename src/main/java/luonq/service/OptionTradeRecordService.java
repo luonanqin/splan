@@ -4,9 +4,9 @@ import bean.OptionTradeRecord;
 import luonq.api.dto.OptionTradeRecordDto;
 import luonq.api.dto.OptionTradeRecordWriteRequest;
 import luonq.mapper.OptionTradeRecordMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import util.Constants;
 
@@ -61,6 +61,9 @@ public class OptionTradeRecordService {
         if (code.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "symbol 不能为空");
         }
+        if (req == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "请求体不能为空");
+        }
         OptionTradeRecord existing = optionTradeRecordMapper.selectById(id);
         if (existing == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "记录不存在: id=" + id);
@@ -110,12 +113,12 @@ public class OptionTradeRecordService {
         if (!OptionTradeRecord.RIGHT_CALL.equals(right) && !OptionTradeRecord.RIGHT_PUT.equals(right)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "optionRight 须为 call 或 put");
         }
-        if (!StringUtils.hasText(req.getExpirationDate()) || !StringUtils.hasText(req.getBuyDate())) {
+        if (StringUtils.isBlank(req.getExpirationDate()) || StringUtils.isBlank(req.getBuyDate())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "expirationDate、buyDate 必填");
         }
-        LocalDate expiration = parseDate(req.getExpirationDate(), "expirationDate");
-        LocalDate buy = parseDate(req.getBuyDate(), "buyDate");
-        LocalDate sell = parseOptionalDate(req.getSellDate(), "sellDate");
+        String expiration = normalizeDate(req.getExpirationDate(), "expirationDate");
+        String buy = normalizeDate(req.getBuyDate(), "buyDate");
+        String sell = normalizeOptionalDate(req.getSellDate(), "sellDate");
 
         BigDecimal strike = req.getStrikePrice().setScale(2, RoundingMode.HALF_UP);
         BigDecimal buyPx = req.getBuyPrice().setScale(2, RoundingMode.HALF_UP);
@@ -137,19 +140,20 @@ public class OptionTradeRecordService {
                 .build();
     }
 
-    private static LocalDate parseDate(String raw, String field) {
+    /** 校验并规范为 yyyy-MM-dd */
+    private static String normalizeDate(String raw, String field) {
         try {
-            return LocalDate.parse(raw.trim(), Constants.DB_DATE_FORMATTER);
+            return LocalDate.parse(raw.trim(), Constants.DB_DATE_FORMATTER).format(Constants.DB_DATE_FORMATTER);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, field + " 日期格式须为 yyyy-MM-dd");
         }
     }
 
-    private static LocalDate parseOptionalDate(String raw, String field) {
-        if (raw == null || !StringUtils.hasText(raw.trim())) {
+    private static String normalizeOptionalDate(String raw, String field) {
+        if (StringUtils.isBlank(raw)) {
             return null;
         }
-        return parseDate(raw, field);
+        return normalizeDate(raw, field);
     }
 
     private static OptionTradeRecordDto toDto(OptionTradeRecord r) {
@@ -158,9 +162,9 @@ public class OptionTradeRecordService {
                 .underlyingCode(r.getUnderlyingCode())
                 .strikePrice(r.getStrikePrice())
                 .optionRight(r.getOptionRight())
-                .expirationDate(r.getExpirationDate() == null ? null : r.getExpirationDate().format(Constants.DB_DATE_FORMATTER))
-                .buyDate(r.getBuyDate() == null ? null : r.getBuyDate().format(Constants.DB_DATE_FORMATTER))
-                .sellDate(r.getSellDate() == null ? null : r.getSellDate().format(Constants.DB_DATE_FORMATTER))
+                .expirationDate(r.getExpirationDate())
+                .buyDate(r.getBuyDate())
+                .sellDate(r.getSellDate())
                 .buyPrice(r.getBuyPrice())
                 .sellPrice(r.getSellPrice())
                 .quantity(r.getQuantity())

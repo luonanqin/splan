@@ -55,6 +55,16 @@ public interface StockDataMapper {
     List<String> listStockDataYears();
 
     /**
+     * 某年日线表中 {@code date} 字段的最大值（yyyy-MM-dd）；无数据时为 null。
+     */
+    String selectMaxDateForYear(@Param("dbYear") String dbYear);
+
+    /**
+     * 某年日线表中指定 {@code code} 的 {@code date} 最大值（yyyy-MM-dd）；该票无行时为 null。
+     */
+    String selectMaxDateForCodeInYear(@Param("dbYear") String dbYear, @Param("code") String code);
+
+    /**
      * 某年表中出现的全部股票代码
      */
     List<String> listDistinctCodesForYear(@Param("dbYear") String dbYear);

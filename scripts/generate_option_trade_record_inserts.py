@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""从「股票交易 - 期权计划.csv」生成 option_trade_record 批量 INSERT（需与本表字段一致）。"""
+"""从「股票交易 - 期权计划.csv」生成 option_trade_record 批量 INSERT（需与本表字段一致）。
+
+代码列（标的）可能为空：此时从当前行向上查找，直到「代码」列非空，该行代码即本笔交易的 underlying。
+向上扫描时只要该行 CSV 在代码列上有单元格即可，不要求整行列数满足期权字段解析条件。
+"""
 
 import csv
 import re
@@ -9,6 +13,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
 # 列索引（0-based）：序号,时间,代码,...,买入时间,期权代码,到期时间,买入,均价,数量,...,卖出时间,卖出价格,...
+COL_UNDERLYING = 2
 COL_BUY_TIME = 5
 COL_OPTION_CODE = 6
 COL_EXP = 7
@@ -17,15 +22,28 @@ COL_QTY = 10
 COL_SELL_TIME = 12
 COL_SELL_PRICE = 13
 
+MIN_COLS_FOR_TRADE = 14
+
 # OCC 风格：YYMMDD + C|P + 行权价（整数或小数）
 CODE_TOKEN_RE = re.compile(r"(\d{6})([CP])([\d.]+)", re.IGNORECASE)
+
+
+def upward_underlying(all_rows: list, row_index: int, code_col: int = COL_UNDERLYING) -> str:
+    """从 row_index 向上（含本行）找第一个「代码」列非空的值。"""
+    for j in range(row_index, -1, -1):
+        r = all_rows[j]
+        if len(r) <= code_col:
+            continue
+        c = (r[code_col] or "").strip()
+        if c:
+            return c
+    return ""
 
 
 def parse_tokens(cell: str):
     if not cell or not str(cell).strip():
         return []
     s = str(cell).strip().replace("\n", " ").replace("\r", " ")
-    # 也匹配被空格分隔的多个 code
     out = []
     for m in CODE_TOKEN_RE.finditer(s):
         yy, cp, strike_s = m.group(1), m.group(2).upper(), m.group(3)
@@ -46,7 +64,6 @@ def parse_date(s: str):
     s = (s or "").strip()
     if not s or s.lower() in ("null", "none"):
         return None
-    # yyyy-MM-dd
     if re.match(r"^\d{4}-\d{2}-\d{2}$", s):
         return s
     return None
@@ -69,7 +86,6 @@ def split_qty(qty: int, n: int):
     if qty >= n:
         base, rem = divmod(qty, n)
         return [base + (1 if i < rem else 0) for i in range(n)]
-    # qty < n：双开 1 组 → 两腿各 1 张
     if qty == 1 and n == 2:
         return [1, 1]
     out = [0] * n
@@ -89,64 +105,66 @@ def main():
         out_path = Path(sys.argv[2])
 
     rows_out = []
-    underlying_fill = ""
 
     with open(csv_path, "r", encoding="utf-8-sig", newline="") as f:
         reader = csv.reader(f)
-        header = next(reader, None)
-        for row in reader:
-            if not row or len(row) < 14:
+        next(reader, None)  # 表头
+        all_rows = [r for r in reader if r]
+
+    for i, row in enumerate(all_rows):
+        if len(row) < MIN_COLS_FOR_TRADE:
+            continue
+
+        opt_cell = row[COL_OPTION_CODE] if len(row) > COL_OPTION_CODE else ""
+        tokens = parse_tokens(opt_cell)
+        if not tokens:
+            continue
+
+        buy_date = parse_date(row[COL_BUY_TIME] if len(row) > COL_BUY_TIME else "")
+        if not buy_date:
+            continue
+
+        buy_p = parse_price(row[COL_BUY_PRICE] if len(row) > COL_BUY_PRICE else "")
+        if buy_p is None:
+            continue
+        try:
+            qty = int(float(row[COL_QTY])) if len(row) > COL_QTY and str(row[COL_QTY]).strip() else 0
+        except ValueError:
+            qty = 0
+        if qty < 1:
+            continue
+
+        sell_date = parse_date(row[COL_SELL_TIME] if len(row) > COL_SELL_TIME else "")
+        sell_p = parse_price(row[COL_SELL_PRICE] if len(row) > COL_SELL_PRICE else "")
+
+        underlying = upward_underlying(all_rows, i)
+        if not underlying:
+            continue
+
+        n = len(tokens)
+        qtys = split_qty(qty, n)
+        uc = sql_escape(underlying)
+
+        for j, tok in enumerate(tokens):
+            exp_use = tok["exp"]
+            strike = tok["strike"]
+            right = tok["right"]
+            q = qtys[j] if j < len(qtys) else qty
+            if q < 1:
                 continue
-            # 代码列 forward fill
-            code_cell = row[2].strip() if len(row) > 2 else ""
-            if code_cell:
-                underlying_fill = code_cell
 
-            opt_cell = row[COL_OPTION_CODE] if len(row) > COL_OPTION_CODE else ""
-            tokens = parse_tokens(opt_cell)
-            if not tokens:
-                continue
+            strike_sql = str(strike.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+            sell_sql = "NULL" if sell_date is None else f"'{sql_escape(sell_date)}'"
+            sell_p_sql = "NULL" if sell_p is None else str(sell_p)
 
-            buy_date = parse_date(row[COL_BUY_TIME] if len(row) > COL_BUY_TIME else "")
-            if not buy_date:
-                continue
-
-            buy_p = parse_price(row[COL_BUY_PRICE] if len(row) > COL_BUY_PRICE else "")
-            if buy_p is None:
-                continue
-            try:
-                qty = int(float(row[COL_QTY])) if len(row) > COL_QTY and str(row[COL_QTY]).strip() else 0
-            except ValueError:
-                qty = 0
-            if qty < 1:
-                continue
-
-            sell_date = parse_date(row[COL_SELL_TIME] if len(row) > COL_SELL_TIME else "")
-            sell_p = parse_price(row[COL_SELL_PRICE] if len(row) > COL_SELL_PRICE else "")
-
-            n = len(tokens)
-            qtys = split_qty(qty, n)
-            uc = sql_escape(underlying_fill) if underlying_fill else ""
-
-            for i, tok in enumerate(tokens):
-                exp_use = tok["exp"]
-                strike = tok["strike"]
-                right = tok["right"]
-                q = qtys[i] if i < len(qtys) else qty
-                if q < 1:
-                    continue
-
-                strike_sql = str(strike.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
-                sell_sql = "NULL" if sell_date is None else f"'{sql_escape(sell_date)}'"
-                sell_p_sql = "NULL" if sell_p is None else str(sell_p)
-
-                line = (
-                    f"('{uc}',{strike_sql},'{right}','{exp_use}','{buy_date}',"
-                    f"{sell_sql},{buy_p},{sell_p_sql},{q},now(),now())"
-                )
-                rows_out.append(line)
+            line = (
+                f"('{uc}',{strike_sql},'{right}','{exp_use}','{buy_date}',"
+                f"{sell_sql},{buy_p},{sell_p_sql},{q},now(),now())"
+            )
+            rows_out.append(line)
 
     header_sql = """-- 由 scripts/generate_option_trade_record_inserts.py 自 CSV 生成
+-- 代码列为空时：向上继承最近非空代码列
 -- 执行前请先建表 option_trade_record
 
 SET NAMES utf8mb4;

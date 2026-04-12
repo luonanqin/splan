@@ -1,4 +1,5 @@
 -- 由 scripts/generate_option_trade_record_inserts.py 自 CSV 生成
+-- 代码列为空时：向上继承最近非空代码列
 -- 执行前请先建表 option_trade_record
 
 SET NAMES utf8mb4;

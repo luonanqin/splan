@@ -242,6 +242,14 @@
         ORDER BY TABLE_NAME
     </select>
 
+    <select id="selectMaxDateForYear" resultType="java.lang.String">
+        SELECT MAX(`date`) FROM `${dbYear}`
+    </select>
+
+    <select id="selectMaxDateForCodeInYear" resultType="java.lang.String">
+        SELECT MAX(`date`) FROM `${dbYear}` WHERE `code` = #{code}
+    </select>
+
     <select id="listDistinctCodesForYear" resultType="java.lang.String">
         SELECT DISTINCT code
         FROM `${dbYear}`

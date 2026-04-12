@@ -37,13 +37,17 @@ public class StockKLine {
         return String.valueOf(oDate.get(ChronoField.YEAR));
     }
 
-    public String getFormatDate(){
+    public String getFormatDate() {
         LocalDate oDate = LocalDate.parse(date, Constants.FORMATTER);
         return oDate.format(Constants.DB_DATE_FORMATTER);
     }
 
-    public double getDiffRatio(){
+    public double getDiffRatio() {
         return 100 * (close / lastClose - 1);
+    }
+
+    public boolean isTop() {
+        return getDiffRatio() > 9.91;
     }
 
     @Override

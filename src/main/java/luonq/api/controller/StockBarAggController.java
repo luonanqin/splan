@@ -30,7 +30,10 @@ public class StockBarAggController {
         this.stockBarAggService = stockBarAggService;
     }
 
-    @Operation(summary = "全量同步", description = "weekOption 全部标的，自 2022-01-01 起至 end（默认今天）重建周/月/季 K 并 upsert。")
+    @Operation(
+            summary = "全量同步",
+            description = "weekOption 全部标的，自 2022-01-01 起至 end（默认今天）重建周/月/季 K 并 upsert；含 last_trade_date（周期内最后已聚合交易日）。"
+    )
     @PostMapping("/sync-full")
     public ResponseEntity<Map<String, Object>> syncFull(
             @Parameter(description = "截止日期 yyyy-MM-dd（含）；不传为今天") @RequestParam(required = false) String end)
@@ -42,7 +45,10 @@ public class StockBarAggController {
         return ok(rows);
     }
 
-    @Operation(summary = "增量同步", description = "与 MA 相同的日线回溯窗口，重算可能受影响的周/月/季 K。")
+    @Operation(
+            summary = "增量同步",
+            description = "与 MA 相同的日线回溯窗口重算周/月/季 K；当前未完成周期若在库中已有 last_trade_date，则只从该日之后拉日线合并 OHLC。"
+    )
     @PostMapping("/sync-incremental")
     public ResponseEntity<Map<String, Object>> syncIncremental(
             @Parameter(description = "截止日期 yyyy-MM-dd（含）；不传为今天") @RequestParam(required = false) String end)

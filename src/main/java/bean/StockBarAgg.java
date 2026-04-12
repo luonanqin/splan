@@ -20,10 +20,12 @@ public class StockBarAgg {
     private String code;
     /** week / month / quarter */
     private String periodType;
-    /** 锚点：周期内最后交易日 */
+    /** 锚点：周线为该 ISO 周在 trade_calendar 中首个交易日（无则周一）；月/季见 {@link luonq.aggregate.PeriodOhlcvAggregator} */
     private String barDate;
     /** 周期内首个交易日 */
     private String firstTradeDate;
+    /** 本周期 K 已聚合到的最后交易日（增量时仅从此日之后拉日线合并 OHLC） */
+    private String lastTradeDate;
     private BigDecimal open;
     private BigDecimal high;
     private BigDecimal low;

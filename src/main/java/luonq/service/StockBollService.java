@@ -145,7 +145,7 @@ public class StockBollService {
 
     private int syncDayIncremental(String code, LocalDate endDate, String endStr) {
         String lastDay = bollMapper.selectMaxDate(code, StockMaService.TYPE_DAY);
-        if (lastDay != null && lastDay.compareTo(endStr) >= 0) {
+        if (lastDay != null && lastDay.compareTo(endStr) > 0) {
             return 0;
         }
         LocalDate loadStart = MIN_DATE;
@@ -161,16 +161,9 @@ public class StockBollService {
             return 0;
         }
         List<StockBoll> built = buildTypeRows(code, StockMaService.TYPE_DAY, dailies);
-        List<StockBoll> toWrite;
-        if (lastDay == null) {
-            toWrite = built.stream()
-                    .filter(r -> r.getDate().compareTo(endStr) <= 0)
-                    .collect(Collectors.toList());
-        } else {
-            toWrite = built.stream()
-                    .filter(r -> r.getDate().compareTo(lastDay) > 0 && r.getDate().compareTo(endStr) <= 0)
-                    .collect(Collectors.toList());
-        }
+        List<StockBoll> toWrite = built.stream()
+                .filter(r -> r.getDate().compareTo(endStr) <= 0)
+                .collect(Collectors.toList());
         upsertPartitioned(toWrite);
         return toWrite.size();
     }

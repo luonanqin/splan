@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 年分表日线 OHLC 读取（{@link StockDataMapper}），供 MA/BOLL/聚合等非「均线计算」模块复用。
@@ -62,5 +63,20 @@ public class StockDailyDataService {
         }
         merged.sort(Comparator.comparing(Total::getDate));
         return merged;
+    }
+
+    /**
+     * 严格晚于 {@code afterDateExclusive}（yyyy-MM-dd）、且不晚于 {@code endDate} 的日线，升序。
+     */
+    public List<Total> fetchDailiesStrictlyAfter(String code, String afterDateExclusive, LocalDate endDate) {
+        if (StringUtils.isBlank(code) || StringUtils.isBlank(afterDateExclusive) || endDate == null) {
+            return Collections.emptyList();
+        }
+        LocalDate after = LocalDate.parse(afterDateExclusive.trim(), Constants.DB_DATE_FORMATTER);
+        LocalDate from = after.plusDays(1);
+        List<Total> chunk = fetchDailiesAsc(code, from, endDate);
+        return chunk.stream()
+                .filter(t -> t.getDate().compareTo(afterDateExclusive) > 0)
+                .collect(Collectors.toList());
     }
 }
